@@ -25,6 +25,13 @@ evita variables automáticas C++ inicializadas atravesando cuerpos con esperas.
 No dependas de variables privadas en setup. El contrato completo y sus límites
 están en `docs/CODEGEN.md` y ADR 011 de la aplicación.
 
+`canFail: false` opcional en la plantilla de una instrucción indica que no puede
+registrar fallos y evita un guard C++ redundante. Por defecto es `true`; el autor
+debe comprobar ese contrato. Las entradas usadas tras un cuerpo con esperas se
+conservan en el estado del proceso; las demás evaluaciones usan temporales locales.
+El primer fallo emite `RB_ERROR <id-bloque> <mensaje>`. El programa Arduino inicia
+Serial a 115200 baudios. Los comentarios de ID son opcionales en la vista de código.
+
 La app valida estructura, no sintaxis completa de los lenguajes. Revisa y compila
 los resultados antes de publicarlos. El navegador nunca ejecuta las plantillas ni
 JS del paquete. Una plantilla ausente da error, sin programa parcial ni lecturas
