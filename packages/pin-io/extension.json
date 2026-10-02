@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "org.robotblocks.demo-board-io",
+  "name": "Pines de la tarjeta · demo",
+  "version": "1.0.0",
+  "author": { "name": "RobotBlocks" },
+  "minAppVersion": "0.3.0",
+  "description": "Operaciones digitales, analógicas y PWM con menús filtrados por capacidades. Solo representan el programa; no acceden a hardware.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.demo-board-io:pins", "name": "Pines de la tarjeta", "colour": "#AB737B" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [], "boards": [], "generators": [], "monitors": []
+  },
+  "assets": [],
+  "metadata": { "demo": true }
+}

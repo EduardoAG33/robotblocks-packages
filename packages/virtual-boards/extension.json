@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "id": "builtin.robot-lab",
+  "name": "Tarjetas virtuales",
+  "description": "Descriptores ficticios para practicar; no representan Teensy ni Arduino GIGA.",
+  "version": "1.0.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [],
+    "blocks": [],
+    "boards": [
+      {
+        "id": "builtin.robot-lab:board",
+        "name": "Robot Lab · virtual",
+        "description": "Descriptor ficticio para explorar capacidades. No representa hardware ni ejecuta programas.",
+        "capabilities": [
+          "digitalGPIO",
+          "analogInput",
+          "pwm",
+          "i2c",
+          "uart"
+        ],
+        "resources": [
+          {
+            "id": "port-a",
+            "label": "P1 · digital / PWM",
+            "capabilities": [
+              "pwm",
+              "digitalGPIO"
+            ]
+          },
+          {
+            "id": "port-b",
+            "label": "Bus I2C",
+            "capabilities": [
+              "i2c"
+            ],
+            "shared": true
+          },
+          {
+            "id": "port-c",
+            "label": "Puerto UART",
+            "capabilities": [
+              "uart"
+            ]
+          },
+          {
+            "id": "port-d",
+            "label": "P2 · digital / PWM",
+            "capabilities": [
+              "pwm",
+              "digitalGPIO"
+            ]
+          },
+          {
+            "id": "port-e",
+            "label": "A0 · analógico",
+            "capabilities": [
+              "analogInput"
+            ]
+          },
+          {
+            "id": "port-f",
+            "label": "P3 · digital",
+            "capabilities": [
+              "digitalGPIO"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "builtin.robot-lab:basic",
+        "name": "Robot Lab · básico",
+        "description": "Descriptor ficticio reducido para comprobar reasignaciones.",
+        "capabilities": [
+          "digitalGPIO",
+          "analogInput",
+          "pwm"
+        ],
+        "resources": [
+          {
+            "id": "port-a",
+            "label": "P1 · PWM",
+            "capabilities": [
+              "pwm"
+            ]
+          },
+          {
+            "id": "port-b",
+            "label": "A0 · analógico",
+            "capabilities": [
+              "analogInput"
+            ]
+          }
+        ]
+      }
+    ],
+    "devices": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": []
+}

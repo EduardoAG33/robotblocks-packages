@@ -1,0 +1,100 @@
+[
+  {
+    "id": "org.robotblocks.robotics:move",
+    "operation": "org.robotblocks.robotics:move",
+    "category": "org.robotblocks.robotics:robotics",
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 50
+      }
+    ],
+    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "requiredCapabilities": [],
+    "label": "avanzar a %SPEED %"
+  },
+  {
+    "id": "org.robotblocks.robotics:turn",
+    "operation": "org.robotblocks.robotics:turn",
+    "category": "org.robotblocks.robotics:robotics",
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90
+      }
+    ],
+    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "requiredCapabilities": [],
+    "label": "girar %ANGLE grados"
+  },
+  {
+    "id": "org.robotblocks.robotics:stop",
+    "operation": "org.robotblocks.robotics:stop",
+    "category": "org.robotblocks.robotics:robotics",
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "requiredCapabilities": [],
+    "label": "detener motores"
+  },
+  {
+    "id": "org.robotblocks.robotics:motor",
+    "operation": "org.robotblocks.robotics:motor",
+    "category": "org.robotblocks.robotics:robotics",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "motor"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 50
+      }
+    ],
+    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "requiredCapabilities": [],
+    "label": "mover %DEVICE a %SPEED %"
+  },
+  {
+    "id": "org.robotblocks.robotics:sensor",
+    "operation": "org.robotblocks.robotics:sensor",
+    "category": "org.robotblocks.robotics:robotics",
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "sensor"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "requiredCapabilities": [],
+    "label": "lectura de %DEVICE",
+    "output": "number"
+  }
+]
