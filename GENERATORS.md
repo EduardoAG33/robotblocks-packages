@@ -20,17 +20,25 @@ una ranura. Los cuerpos `{BODY}`/`{THEN}` deben ocupar líneas completas y el mo
 aplica su indentación. No uses entradas de proceso en inicializaciones ni cesiones
 ocultas. Python exige `global nombre` si una instrucción reasigna un global del paquete.
 
-Reserva los prefijos `rb_`, `v_`, `d_` para el motor. Los reporters son síncronos;
+Reserva los prefijos `rb_`, `v_`, `d_`, `fn_`, `p_` para el motor. Los reporters son síncronos;
 evita variables automáticas C++ inicializadas atravesando cuerpos con esperas.
 No dependas de variables privadas en setup. El contrato completo y sus límites
 están en `docs/CODEGEN.md` y ADR 011 de la aplicación.
 
-`canFail: false` opcional en la plantilla de una instrucción indica que no puede
+`canFail: false` opcional en una instrucción o reporter indica que no puede
 registrar fallos y evita un guard C++ redundante. Por defecto es `true`; el autor
 debe comprobar ese contrato. Las entradas usadas tras un cuerpo con esperas se
 conservan en el estado del proceso; las demás evaluaciones usan temporales locales.
 El primer fallo emite `RB_ERROR <id-bloque> <mensaje>`. El programa Arduino inicia
 Serial a 115200 baudios. Los comentarios de ID son opcionales en la vista de código.
+
+Desde Fase 5, `{BLOCK_ID}` inserta el ID escapado para fallos de una plantilla.
+Los eventos usan `event: { mode, expression }`: interval (intervalo literal en ms),
+change (lectura síncrona del estado) o message (versión de mensaje). Sus campos,
+imports y setup usan las mismas sustituciones; no llevan statement ni expression
+en el nivel superior. El motor genera las esperas y el muestreo cooperativo.
+Los bloques del núcleo añaden serie, tiempo y funciones síncronas con hasta dos
+parámetros. El contrato y los límites están en ADR 016 de la app. Listas: subfase 5.1.
 
 La app valida estructura, no sintaxis completa de los lenguajes. Revisa y compila
 los resultados antes de publicarlos. El navegador nunca ejecuta las plantillas ni
