@@ -3,7 +3,7 @@
   "id": "builtin.robot-lab",
   "name": "Tarjetas virtuales",
   "description": "Descriptores ficticios para practicar; no representan Teensy ni Arduino GIGA.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "RobotBlocks"
   },
@@ -18,7 +18,7 @@
     "boards": [
       {
         "id": "builtin.robot-lab:board",
-        "name": "Robot Lab · virtual",
+        "name": "Tarjeta virtual · completa",
         "description": "Descriptor ficticio para explorar capacidades. No representa hardware ni ejecuta programas.",
         "capabilities": [
           "digitalGPIO",
@@ -77,7 +77,7 @@
       },
       {
         "id": "builtin.robot-lab:basic",
-        "name": "Robot Lab · básico",
+        "name": "Tarjeta virtual · básica",
         "description": "Descriptor ficticio reducido para comprobar reasignaciones.",
         "capabilities": [
           "digitalGPIO",

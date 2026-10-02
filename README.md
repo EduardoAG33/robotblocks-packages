@@ -36,3 +36,9 @@ Teensy y Arduino GIGA son objetivos prioritarios. Primero hay que fijar el model
 Referencias oficiales: [organización de tarjetas y módulos de Mind+](https://mindplus.dfrobot.com/mp2/3Coding/32UploadMode/324ExtensionArea/) y [extensiones de usuario de Mind+ 1.x](https://mindplus.dfrobot.com.cn/ext-api). Se reutilizan ideas de organización; estos paquetes no son librerías Mind+ y no se importan sin adaptación. No incluyen sus iconos ni recursos gráficos.
 
 La ejecución de generadores y drivers requiere una fase posterior. Los paquetes actuales son datos y no ejecutan scripts del repositorio. No hay actualizaciones automáticas.
+
+La aplicación usa este catálogo como fuente única. `npm run validate-catalog` en
+la raíz de la aplicación comprueba los paquetes sin modificarlos; `npm run bundle-catalog`
+prepara su copia offline generada. Edita los JSON de este repositorio, nunca la copia
+generada. Los nombres de las tarjetas virtuales son neutrales; sus IDs se conservan
+para que los proyectos guardados mantengan sus referencias.
