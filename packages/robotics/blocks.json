@@ -9,7 +9,9 @@
       {
         "name": "SPEED",
         "type": "number",
-        "default": 50
+        "default": 50,
+        "min": -100,
+        "max": 100
       }
     ],
     "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
@@ -56,9 +58,7 @@
         "default": "",
         "reference": {
           "kind": "device",
-          "capabilities": [
-            "motor"
-          ]
+          "capabilities": ["motor"]
         }
       }
     ],
@@ -66,7 +66,9 @@
       {
         "name": "SPEED",
         "type": "number",
-        "default": 50
+        "default": 50,
+        "min": -100,
+        "max": 100
       }
     ],
     "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
@@ -85,9 +87,7 @@
         "default": "",
         "reference": {
           "kind": "device",
-          "capabilities": [
-            "sensor"
-          ]
+          "capabilities": ["sensor"]
         }
       }
     ],

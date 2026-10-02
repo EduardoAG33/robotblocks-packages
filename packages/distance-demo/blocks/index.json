@@ -5,10 +5,20 @@
     "label": "distancia del sensor %DEVICE en cm",
     "kind": "reporter",
     "output": "number",
-    "fields": [{ "name": "DEVICE", "type": "string", "default": "", "reference": { "kind": "device", "capabilities": ["distance"] } }],
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": ["distance"]
+        }
+      }
+    ],
     "inputs": [],
     "operation": "org.robotblocks.demo-distance-sensor:read",
     "tooltip": "Bloque de demostración. No lee un sensor real.",
-    "requiredCapabilities": ["i2c"]
+    "requiredCapabilities": []
   }
 ]

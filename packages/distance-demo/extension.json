@@ -1,23 +1,79 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "org.robotblocks.demo-distance-sensor",
   "name": "Sensor de distancia · demo",
-  "version": "1.1.0",
-  "author": { "name": "RobotBlocks" },
-  "minAppVersion": "0.2.0",
+  "version": "1.2.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
   "description": "Un bloque de lectura para demostrar el registro de extensiones. No contiene un driver ni devuelve telemetría real.",
-  "requiredCapabilities": ["i2c"],
+  "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [{ "id": "org.robotblocks.demo-distance-sensor:distance", "name": "Distancia demo", "colour": "#D16FE8" }],
+    "categories": [
+      {
+        "id": "org.robotblocks.demo-distance-sensor:distance",
+        "name": "Distancia demo",
+        "colour": "#D16FE8"
+      }
+    ],
     "blocks": ["blocks/index.json"],
-    "devices": [{ "id": "org.robotblocks.demo-distance-sensor:sensor", "name": "Sensor de distancia demo", "capabilities": ["sensor", "distance"], "requiredCapabilities": ["i2c"] }],
+    "devices": [
+      {
+        "id": "org.robotblocks.demo-distance-sensor:sensor",
+        "name": "Sensor de distancia demo",
+        "capabilities": ["sensor", "distance"],
+        "requiredCapabilities": ["i2c"],
+        "pins": [
+          {
+            "name": "i2c",
+            "label": "Bus I2C",
+            "capabilities": ["i2c"]
+          }
+        ]
+      },
+      {
+        "id": "org.robotblocks.demo-distance-sensor:ultrasonic",
+        "name": "Sensor de dos pines · demo",
+        "capabilities": ["sensor", "distance"],
+        "requiredCapabilities": [],
+        "pins": [
+          {
+            "name": "trig",
+            "label": "Trigger",
+            "capabilities": ["digitalOutput"]
+          },
+          {
+            "name": "echo",
+            "label": "Echo",
+            "capabilities": ["digitalInput"]
+          }
+        ]
+      }
+    ],
     "boards": [],
-    "generators": [{ "id": "org.robotblocks.demo-distance-sensor:preview", "target": "ir-preview", "entry": "generator/descriptor.json", "irVersion": 2 }],
-    "monitors": [{ "id": "org.robotblocks.demo-distance-sensor:distance-monitor", "name": "Distancia", "valueType": "number", "unit": "cm" }]
+    "generators": [
+      {
+        "id": "org.robotblocks.demo-distance-sensor:preview",
+        "target": "ir-preview",
+        "entry": "generator/descriptor.json",
+        "irVersion": 2
+      }
+    ],
+    "monitors": [
+      {
+        "id": "org.robotblocks.demo-distance-sensor:distance-monitor",
+        "name": "Distancia",
+        "valueType": "number",
+        "unit": "cm"
+      }
+    ]
   },
   "assets": [],
-  "metadata": { "demo": true }
+  "metadata": {
+    "demo": true
+  }
 }

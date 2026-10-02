@@ -1,30 +1,112 @@
 [
   {
-    "id": "org.robotblocks.demo-board-io:digital-read", "operation": "org.robotblocks.demo-board-io:digital-read",
-    "category": "org.robotblocks.demo-board-io:pins", "label": "pin digital %PIN está alto", "kind": "boolean", "output": "boolean",
-    "fields": [{ "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["digitalGPIO"] } }],
-    "inputs": [], "tooltip": "Lectura digital lógica. No lee hardware en esta etapa.", "requiredCapabilities": ["digitalGPIO"]
-  },
-  {
-    "id": "org.robotblocks.demo-board-io:digital-write", "operation": "org.robotblocks.demo-board-io:digital-write",
-    "category": "org.robotblocks.demo-board-io:pins", "label": "poner %PIN en %STATE", "kind": "command",
+    "id": "org.robotblocks.demo-board-io:digital-read",
+    "operation": "org.robotblocks.demo-board-io:digital-read",
+    "category": "org.robotblocks.demo-board-io:pins",
+    "label": "pin digital %PIN está alto",
+    "kind": "boolean",
+    "output": "boolean",
     "fields": [
-      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["digitalGPIO"] } },
-      { "name": "STATE", "type": "string", "default": "high", "options": [{ "label": "alto", "value": "high" }, { "label": "bajo", "value": "low" }] }
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalInput"]
+        }
+      }
     ],
-    "inputs": [], "tooltip": "Salida digital lógica. No cambia pines físicos.", "requiredCapabilities": ["digitalGPIO"]
+    "inputs": [],
+    "tooltip": "Lectura digital lógica. No lee hardware en esta etapa.",
+    "requiredCapabilities": ["digitalInput"]
   },
   {
-    "id": "org.robotblocks.demo-board-io:analog-read", "operation": "org.robotblocks.demo-board-io:analog-read",
-    "category": "org.robotblocks.demo-board-io:pins", "label": "leer pin analógico %PIN", "kind": "reporter", "output": "number",
-    "fields": [{ "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["analogInput"] } }],
-    "inputs": [], "tooltip": "Lectura analógica lógica. La resolución dependerá del futuro descriptor/generador.", "requiredCapabilities": ["analogInput"]
+    "id": "org.robotblocks.demo-board-io:digital-write",
+    "operation": "org.robotblocks.demo-board-io:digital-write",
+    "category": "org.robotblocks.demo-board-io:pins",
+    "label": "poner %PIN en %STATE",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      },
+      {
+        "name": "STATE",
+        "type": "string",
+        "default": "high",
+        "options": [
+          {
+            "label": "alto",
+            "value": "high"
+          },
+          {
+            "label": "bajo",
+            "value": "low"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Salida digital lógica. No cambia pines físicos.",
+    "requiredCapabilities": ["digitalOutput"]
   },
   {
-    "id": "org.robotblocks.demo-board-io:pwm-write", "operation": "org.robotblocks.demo-board-io:pwm-write",
-    "category": "org.robotblocks.demo-board-io:pins", "label": "PWM %PIN a %VALUE %", "kind": "command",
-    "fields": [{ "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }],
-    "inputs": [{ "name": "VALUE", "type": "number", "default": 50 }],
-    "tooltip": "Intensidad de 0 a 100 %. El futuro generador adaptará la resolución de la tarjeta. No ejecuta PWM real.", "requiredCapabilities": ["pwm"]
+    "id": "org.robotblocks.demo-board-io:analog-read",
+    "operation": "org.robotblocks.demo-board-io:analog-read",
+    "category": "org.robotblocks.demo-board-io:pins",
+    "label": "leer pin analógico %PIN",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["analogInput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Lectura analógica lógica. La resolución dependerá del futuro descriptor/generador.",
+    "requiredCapabilities": ["analogInput"]
+  },
+  {
+    "id": "org.robotblocks.demo-board-io:pwm-write",
+    "operation": "org.robotblocks.demo-board-io:pwm-write",
+    "category": "org.robotblocks.demo-board-io:pins",
+    "label": "PWM %PIN a %VALUE %",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["pwm"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 50,
+        "min": 0,
+        "max": 100,
+        "integer": true
+      }
+    ],
+    "tooltip": "Intensidad de 0 a 100 %. El futuro generador adaptará la resolución de la tarjeta. No ejecuta PWM real.",
+    "requiredCapabilities": ["pwm"]
   }
 ]

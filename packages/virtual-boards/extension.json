@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "builtin.robot-lab",
   "name": "Tarjetas virtuales",
   "description": "Descriptores ficticios para practicar; no representan Teensy ni Arduino GIGA.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": {
     "name": "RobotBlocks"
   },
@@ -20,86 +20,75 @@
         "id": "builtin.robot-lab:board",
         "name": "Tarjeta virtual · completa",
         "description": "Descriptor ficticio para explorar capacidades. No representa hardware ni ejecuta programas.",
-        "capabilities": [
-          "digitalGPIO",
-          "analogInput",
-          "pwm",
-          "i2c",
-          "uart"
-        ],
+        "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm", "i2c", "uart"],
         "resources": [
           {
             "id": "port-a",
             "label": "P1 · digital / PWM",
-            "capabilities": [
-              "pwm",
-              "digitalGPIO"
-            ]
+            "capabilities": ["pwm", "digitalInput", "digitalOutput"]
           },
           {
             "id": "port-b",
-            "label": "Bus I2C",
-            "capabilities": [
-              "i2c"
-            ],
+            "label": "Bus I2C 0 · SDA / SCL",
+            "capabilities": ["i2c"],
             "shared": true
           },
           {
             "id": "port-c",
             "label": "Puerto UART",
-            "capabilities": [
-              "uart"
-            ]
+            "capabilities": ["uart"]
           },
           {
             "id": "port-d",
             "label": "P2 · digital / PWM",
-            "capabilities": [
-              "pwm",
-              "digitalGPIO"
-            ]
+            "capabilities": ["pwm", "digitalInput", "digitalOutput"]
           },
           {
             "id": "port-e",
             "label": "A0 · analógico",
-            "capabilities": [
-              "analogInput"
-            ]
+            "capabilities": ["analogInput"]
           },
           {
             "id": "port-f",
-            "label": "P3 · digital",
-            "capabilities": [
-              "digitalGPIO"
-            ]
+            "label": "P3 · solo entrada",
+            "capabilities": ["digitalInput"],
+            "notes": "Pin ficticio de solo entrada para practicar la selección por capacidades."
           }
-        ]
+        ],
+        "family": "virtual",
+        "logicLevel": 3.3,
+        "adcBits": 12,
+        "pwm": {
+          "bits": 8,
+          "defaultFrequency": 5000
+        },
+        "targets": {}
       },
       {
         "id": "builtin.robot-lab:basic",
         "name": "Tarjeta virtual · básica",
         "description": "Descriptor ficticio reducido para comprobar reasignaciones.",
-        "capabilities": [
-          "digitalGPIO",
-          "analogInput",
-          "pwm"
-        ],
+        "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "resources": [
           {
             "id": "port-a",
             "label": "P1 · PWM",
-            "capabilities": [
-              "pwm"
-            ]
+            "capabilities": ["pwm"]
           },
           {
             "id": "port-b",
             "label": "A0 · analógico",
-            "capabilities": [
-              "analogInput"
-            ]
+            "capabilities": ["analogInput"]
           }
-        ]
+        ],
+        "family": "virtual",
+        "logicLevel": 3.3,
+        "adcBits": 12,
+        "pwm": {
+          "bits": 8,
+          "defaultFrequency": 5000
+        },
+        "targets": {}
       }
     ],
     "devices": [],

@@ -1,1 +1,5 @@
-{ "kind": "descriptor-only", "operation": "org.robotblocks.demo-distance-sensor:read", "description": "Punto de integración futuro. No genera código ejecutable." }
+{
+  "kind": "descriptor-only",
+  "operation": "org.robotblocks.demo-distance-sensor:read",
+  "description": "Punto de integración futuro. No genera código ejecutable."
+}

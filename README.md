@@ -4,14 +4,14 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 
 ## Estado actual
 
-| Paquete | Función | Estado |
-| --- | --- | --- |
+| Paquete                   | Función                                | Estado                                                             |
+| ------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
 | `packages/virtual-boards` | Descriptores de dos tarjetas ficticias | Ejemplo de arranque incluido; no reinstalar sobre el mismo ejemplo |
-| `packages/pin-io` | Digital, analógico y PWM | Edición y validación; sin ejecución |
-| `packages/robotics` | Movimiento, motores y lecturas lógicas | Módulo opcional, valores ovalados conectables |
-| `packages/distance-demo` | Ejemplo de sensor independiente | Sin driver real |
+| `packages/pin-io`         | Digital, analógico y PWM               | Edición y validación; sin ejecución                                |
+| `packages/robotics`       | Movimiento, motores y lecturas lógicas | Módulo opcional, valores ovalados conectables                      |
+| `packages/distance-demo`  | Ejemplo de sensor independiente        | Sin driver real                                                    |
 
-El catálogo está en `catalog.json`. Cada carpeta es un paquete RobotBlocks con `extension.json` y sus archivos declarados. Los ejemplos de pines y distancia son copias de publicación del prototipo 0.3; pueden evolucionar aquí sin añadir cada nueva tarjeta al programa.
+El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 
 ## Usar la copia local
 
@@ -22,7 +22,7 @@ El prototipo admite descarga directa por URL de repositorios públicos. Como est
 ## Aportar una tarjeta
 
 1. Crea `packages/mi-tarjeta/extension.json` con un ID propio.
-2. Declara en `contributes.boards` el nombre, capacidades y recursos reales de la tarjeta.
+2. Declara nombre, capacidades, recursos y metadatos: destinos/carga/FQBN, símbolos por lenguaje, lógica, ADC y PWM. Marca destinos `experimental: true` hasta confirmar pruebas físicas.
 3. Conserva IDs estables de recursos; el nombre visible del pin puede cambiar sin modificar el programa.
 4. Añade el paquete a `catalog.json` con `kind: "board"`.
 5. Valida en el editor y ejecuta `npm test` en este repositorio.
@@ -31,7 +31,7 @@ Teensy y Arduino GIGA son objetivos prioritarios. Primero hay que fijar el model
 
 ## Validación y referencias
 
-`npm test` comprueba integridad del catálogo, namespaces, archivos declarados, recursos y etiquetas. No necesita dependencias. GitHub Actions ejecuta esa comprobación; el editor realiza además la validación completa de tipos, versiones y dependencias al instalar.
+`npm test` comprueba integridad, namespaces, archivos, recursos, ranuras, límites numéricos y símbolos. No necesita dependencias. GitHub Actions ejecuta esa comprobación; la aplicación realiza además la validación Zod completa al instalar y con `npm run validate-catalog`.
 
 Referencias oficiales: [organización de tarjetas y módulos de Mind+](https://mindplus.dfrobot.com/mp2/3Coding/32UploadMode/324ExtensionArea/) y [extensiones de usuario de Mind+ 1.x](https://mindplus.dfrobot.com.cn/ext-api). Se reutilizan ideas de organización; estos paquetes no son librerías Mind+ y no se importan sin adaptación. No incluyen sus iconos ni recursos gráficos.
 
