@@ -2,9 +2,35 @@
   "schemaVersion": 1,
   "name": "RobotBlocks · tarjetas y extensiones",
   "packages": [
-    { "name": "Tarjetas virtuales", "description": "Dos tarjetas ficticias para practicar y comprobar compatibilidad. Sin hardware real.", "kind": "board", "path": "packages/virtual-boards" },
-    { "name": "Pines digitales, analógicos y PWM", "description": "Bloques de entrada y salida con selección de pines por capacidad.", "kind": "module", "path": "packages/pin-io" },
-    { "name": "Robótica", "description": "Movimiento, motores y sensores lógicos como extensión opcional.", "kind": "module", "path": "packages/robotics" },
-    { "name": "Distancia de demostración", "description": "Ejemplo de módulo independiente con sensor lógico. Sin driver real.", "kind": "module", "path": "packages/distance-demo" }
+    {
+      "name": "Tarjetas virtuales",
+      "description": "Dos tarjetas ficticias para practicar y comprobar compatibilidad. Sin hardware real.",
+      "kind": "board",
+      "path": "packages/virtual-boards"
+    },
+    {
+      "name": "Pines digitales, analógicos y PWM",
+      "description": "Bloques de entrada y salida con selección de pines por capacidad.",
+      "kind": "module",
+      "path": "packages/pin-io"
+    },
+    {
+      "name": "Robótica",
+      "description": "Movimiento, motores y sensores lógicos como extensión opcional.",
+      "kind": "module",
+      "path": "packages/robotics"
+    },
+    {
+      "name": "Distancia de demostración",
+      "description": "Ejemplo de módulo independiente con sensor lógico. Sin driver real.",
+      "kind": "module",
+      "path": "packages/distance-demo"
+    },
+    {
+      "name": "FireBeetle ESP32 DFR0478 · experimental",
+      "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Pendiente de validación física.",
+      "kind": "board",
+      "path": "packages/dfrobot-firebeetle-esp32"
+    }
   ]
 }

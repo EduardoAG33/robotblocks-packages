@@ -13,13 +13,29 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": ["digitalInput"]
+          "capabilities": [
+            "digitalInput"
+          ]
         }
       }
     ],
     "inputs": [],
-    "tooltip": "Lectura digital lógica. No lee hardware en esta etapa.",
-    "requiredCapabilities": ["digitalInput"]
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "requiredCapabilities": [
+      "digitalInput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "input_pin_{PIN} = Pin({PIN}, Pin.IN)"
+        ],
+        "expression": "input_pin_{PIN}.value() != 0",
+        "canFail": false
+      }
+    }
   },
   {
     "id": "org.robotblocks.demo-board-io:digital-write",
@@ -34,7 +50,9 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": ["digitalOutput"]
+          "capabilities": [
+            "digitalOutput"
+          ]
         }
       },
       {
@@ -54,8 +72,22 @@
       }
     ],
     "inputs": [],
-    "tooltip": "Salida digital lógica. No cambia pines físicos.",
-    "requiredCapabilities": ["digitalOutput"]
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "pin_{PIN} = Pin({PIN}, Pin.OUT)"
+        ],
+        "statement": "pin_{PIN}.value({STATE} == \"high\")",
+        "canFail": false
+      }
+    }
   },
   {
     "id": "org.robotblocks.demo-board-io:analog-read",
@@ -71,13 +103,28 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": ["analogInput"]
+          "capabilities": [
+            "analogInput"
+          ]
         }
       }
     ],
     "inputs": [],
-    "tooltip": "Lectura analógica lógica. La resolución dependerá del futuro descriptor/generador.",
-    "requiredCapabilities": ["analogInput"]
+    "tooltip": "ESP32: ADC de 12 bits (0–4095), atenuación 11 dB. ADC2 no disponible con WiFi activo.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "adc_{PIN} = rb_adc({PIN}, {BLOCK_ID})"
+        ],
+        "expression": "rb_adc_read(adc_{PIN}, {BLOCK_ID})"
+      }
+    }
   },
   {
     "id": "org.robotblocks.demo-board-io:pwm-write",
@@ -92,7 +139,9 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": ["pwm"]
+          "capabilities": [
+            "pwm"
+          ]
         }
       }
     ],
@@ -106,7 +155,67 @@
         "integer": true
       }
     ],
-    "tooltip": "Intensidad de 0 a 100 %. El futuro generador adaptará la resolución de la tarjeta. No ejecuta PWM real.",
-    "requiredCapabilities": ["pwm"]
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "requiredCapabilities": [
+      "pwm"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "pwm_{PIN} = PWM(Pin({PIN}), freq=5000)"
+        ],
+        "statement": "pwm_{PIN}.duty(int({VALUE} * 1023 / 100))",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.demo-board-io:digital-write-value",
+    "operation": "org.robotblocks.demo-board-io:digital-write-value",
+    "category": "org.robotblocks.demo-board-io:pins",
+    "label": "escribir pin digital %PIN valor %VALUE",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "pin_{PIN} = Pin({PIN}, Pin.OUT)"
+        ],
+        "statement": "pin_{PIN}.value({VALUE})",
+        "canFail": false
+      }
+    }
   }
 ]

@@ -1,5 +1,10 @@
-# Pines de la tarjeta · demo
+# Pines digitales, analógicos y PWM
 
-Paquete declarativo de cuatro bloques: lectura digital booleana, salida alto/bajo, lectura analógica y PWM con porcentaje conectable. Los menús solo muestran recursos que ofrecen la capacidad requerida. Las etiquetas pertenecen al descriptor y la IR conserva IDs; una selección incompatible permanece pendiente al cambiar de tarjeta.
+Cinco bloques: lectura digital, salida alto/bajo, salida numérica 0/1, lectura analógica y PWM.
+Los menús filtran capacidades, conservan IDs y mantienen selecciones incompatibles para diagnosticarlas.
 
-Las tarjetas incluidas son ficticias. No hay drivers, firmware ni definición de Arduino Nano. Entrada digital requiere `digitalInput`; salida requiere `digitalOutput`; P3 no aparece como salida. PWM acepta literales enteros 0–100 sin suponer resolución universal de 8 bits. Carga y deshacer conservan valores inválidos para diagnosticarlos. Servo y RGB siguen pendientes por preferencia del usuario.
+Plantillas MicroPython ESP32 experimentales: Pin.IN/OUT, ADC de 12 bits con atenuación 11 dB,
+PWM 5000 Hz con duty 0–1023. PWM acepta 0–100 % entero. ADC emite RB_ERROR si falla.
+Las tarjetas virtuales solo previsualizan; Arduino/otros firmwares quedan pendientes.
+Fuente: [referencia ESP32 de MicroPython](https://docs.micropython.org/en/latest/esp32/quickref.html).
+Servo/RGB siguen pendientes. Las extensiones son datos; nunca JS ejecutado.
