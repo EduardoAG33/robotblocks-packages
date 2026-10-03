@@ -12,17 +12,13 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "analogInput"
-          ]
+          "capabilities": ["analogInput"]
         }
       }
     ],
     "inputs": [],
     "tooltip": "En «al iniciar», uno por canal y en orden: el primero es el canal 1. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
         "globals": [
@@ -30,6 +26,15 @@
           "def linea_agregar(pin, bloque):\n    # [ADC, mínimo calibrado, máximo calibrado]\n    linea_canales.append([rb_adc(pin, bloque), 4095, 0])\n"
         ],
         "statement": "linea_agregar({PIN}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int pin; uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int pin, const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {pin, {ADC_MAX}, 0}; pinMode(pin, INPUT);\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = analogRead(linea_canales[i].pin); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (analogRead(c.pin) - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
+        "statement": "linea_agregar({PIN}, {BLOCK_ID});"
       }
     }
   },
@@ -42,9 +47,7 @@
     "fields": [],
     "inputs": [],
     "tooltip": "Toma una lectura de calibración. Úsalo dentro de «repetir» mientras el robot pasa todos los sensores sobre la línea y el fondo. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
         "globals": [
@@ -53,6 +56,15 @@
           "def linea_calibrar(bloque):\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        canal[1] = min(canal[1], valor)\n        canal[2] = max(canal[2], valor)\n"
         ],
         "statement": "linea_calibrar({BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int pin; uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int pin, const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {pin, {ADC_MAX}, 0}; pinMode(pin, INPUT);\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = analogRead(linea_canales[i].pin); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (analogRead(c.pin) - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
+        "statement": "linea_calibrar({BLOCK_ID});"
       }
     }
   },
@@ -82,9 +94,7 @@
     ],
     "inputs": [],
     "tooltip": "De -100 (bajo el canal 1) a 100 (bajo el último canal); 0 es el centro. Si pierde la línea, recuerda de qué lado se fue. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
         "globals": [
@@ -93,6 +103,15 @@
           "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n",
           "def linea_posicion(color, bloque):\n    # -100 bajo el canal 1, 0 al centro, 100 bajo el último canal.\n    global linea_ultima\n    niveles = linea_niveles(color, bloque)\n    total = sum(nivel for nivel in niveles if nivel > 10)\n    if total == 0:\n        return -100 if linea_ultima < 0 else 100\n    if len(niveles) == 1:\n        return 0\n    paso = 200 / (len(niveles) - 1)\n    suma = sum(nivel * (i * paso - 100) for i, nivel in enumerate(niveles) if nivel > 10)\n    linea_ultima = suma / total\n    return round(linea_ultima, 1)\n"
         ],
+        "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int pin; uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int pin, const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {pin, {ADC_MAX}, 0}; pinMode(pin, INPUT);\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = analogRead(linea_canales[i].pin); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (analogRead(c.pin) - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
         "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
       }
     }
@@ -131,9 +150,7 @@
       }
     ],
     "tooltip": "De 0 (fondo) a 100 (línea), ya calibrado. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
         "globals": [
@@ -142,6 +159,15 @@
           "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n",
           "def linea_canal(numero, color, bloque):\n    niveles = linea_niveles(color, bloque)\n    if not 1 <= numero <= len(niveles):\n        rb_fail(bloque, \"El sensor de línea tiene %d canales\" % len(niveles))\n    return round(niveles[int(numero) - 1], 1)\n"
         ],
+        "expression": "linea_canal({NUMBER}, {COLOR}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int pin; uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int pin, const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {pin, {ADC_MAX}, 0}; pinMode(pin, INPUT);\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = analogRead(linea_canales[i].pin); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (analogRead(c.pin) - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
         "expression": "linea_canal({NUMBER}, {COLOR}, {BLOCK_ID})"
       }
     }
@@ -172,9 +198,7 @@
     ],
     "inputs": [],
     "tooltip": "Verdadero si algún canal ve la línea con más del 50 %. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
         "globals": [
@@ -183,6 +207,15 @@
           "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n"
         ],
         "expression": "max(linea_niveles({COLOR}, {BLOCK_ID})) > 50"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int pin; uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int pin, const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {pin, {ADC_MAX}, 0}; pinMode(pin, INPUT);\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = analogRead(linea_canales[i].pin); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (analogRead(c.pin) - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
+        "expression": "linea_detectada({COLOR}, {BLOCK_ID})"
       }
     }
   }

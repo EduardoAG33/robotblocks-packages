@@ -18,6 +18,30 @@
           {
             "label": "2",
             "value": "2"
+          },
+          {
+            "label": "UART 3",
+            "value": "3"
+          },
+          {
+            "label": "UART 4",
+            "value": "4"
+          },
+          {
+            "label": "UART 5",
+            "value": "5"
+          },
+          {
+            "label": "UART 6",
+            "value": "6"
+          },
+          {
+            "label": "UART 7",
+            "value": "7"
+          },
+          {
+            "label": "UART 8",
+            "value": "8"
           }
         ]
       },
@@ -27,9 +51,7 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "digitalInput"
-          ]
+          "capabilities": ["digitalInput"]
         }
       },
       {
@@ -38,9 +60,7 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "digitalOutput"
-          ]
+          "capabilities": ["digitalOutput"]
         }
       }
     ],
@@ -55,20 +75,29 @@
       }
     ],
     "tooltip": "En «al iniciar». RX de la placa va al TX del otro equipo y viceversa; une las tierras. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalInput",
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import UART"
-        ],
+        "imports": ["from machine import UART"],
         "globals": [
           "uart_puertos = {}\n",
           "def uart_configurar(puerto, rx, tx, baudios, bloque):\n    try:\n        uart = UART(puerto, baudrate=int(baudios), rx=rx, tx=tx, timeout=0)\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar UART %s: %s\" % (puerto, error))\n    uart_puertos[puerto] = [uart, b\"\", \"\", False]  # UART, búfer, última línea, línea nueva\n"
         ],
         "statement": "uart_configurar(int({PORT}), {RX}, {TX}, {BAUD}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbUart { Stream* stream = nullptr; String buffer, ultima; bool nueva = false; };\n// Un objeto por puerto utilizado; no se reservan ocho buffers en UNO/Nano.\ninline void uart_configurar(RbUart& datos, Stream& stream) { datos.stream = &stream; datos.buffer = String(); datos.ultima = String(); datos.nueva = false; }\ninline bool uart_utf8(const String& text) {\n    for (unsigned int i = 0; i < text.length();) {\n        unsigned char c = text[i]; unsigned int n = c < 128 ? 1 : c >= 194 && c <= 223 ? 2 : c >= 224 && c <= 239 ? 3 : c >= 240 && c <= 244 ? 4 : 0;\n        if (!n || i + n > text.length()) return false;\n        for (unsigned int j = 1; j < n; j++) if ((text[i+j] & 192) != 128) return false;\n        if (n == 3 && ((c == 224 && (unsigned char)text[i+1] < 160) || (c == 237 && (unsigned char)text[i+1] >= 160))) return false;\n        if (n == 4 && ((c == 240 && (unsigned char)text[i+1] < 144) || (c == 244 && (unsigned char)text[i+1] >= 144))) return false;\n        i += n;\n    } return true;\n}\ninline bool uart_space(uint32_t c) { return (c >= 9 && c <= 13) || (c >= 28 && c <= 32) || c == 0x85 || c == 0xA0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200A) || c == 0x2028 || c == 0x2029 || c == 0x202F || c == 0x205F || c == 0x3000; }\ninline RbUart& uart_puerto(RbUart& d, const char* bloque) {\n    if (!d.stream) { rb_fail(bloque, \"Configura UART al iniciar\"); return d; }\n    while (d.stream->available() > 0) {\n        int value = d.stream->read(); if (value < 0) break;\n        if (value == '\\n') {\n            if (uart_utf8(d.buffer)) {\n                unsigned int first = 0, last = 0;\n                while (first < d.buffer.length() && uart_space(rb_codepoint(d.buffer, first))) first += rb_utf8_width(d.buffer[first]);\n                for (unsigned int i = first; i < d.buffer.length();) { unsigned int end = i + rb_utf8_width(d.buffer[i]); if (!uart_space(rb_codepoint(d.buffer, i))) last = end; i = end; }\n                d.ultima = String(); for (unsigned int i = first; i < last; i++) d.ultima += d.buffer[i]; d.nueva = true;\n            } d.buffer = String();\n        } else {\n            d.buffer += char(value);\n        }\n    }\n    if (d.buffer.length() > 512) { String tail; for (unsigned int i = d.buffer.length() - 512; i < d.buffer.length(); i++) tail += d.buffer[i]; d.buffer = tail; }\n    return d;\n}\ninline bool uart_hay_linea(RbUart& d, const char* bloque) { uart_puerto(d, bloque); bool nueva = d.nueva; d.nueva = false; return nueva; }\ninline float uart_dato(float numero, RbUart& d, const char* bloque) {\n    uart_puerto(d, bloque); int index = int(numero) - 1;\n    String part; int current = 0;\n    for (unsigned int i = 0; i <= d.ultima.length(); i++) {\n        char c = i == d.ultima.length() ? ',' : d.ultima[i];\n        if (c == ',') { if (current == index) { char* end; double value = strtod(part.c_str(), &end); while (*end == ' ' || *end == '\\r' || *end == '\\t') end++; return end != part.c_str() && !*end && isfinite(value) ? value : 0; } current++; part = String(); }\n        else part += c;\n    } return 0;\n}\ninline void uart_enviar(RbUart& d, const String& texto, const char* bloque) { uart_puerto(d, bloque); if (!rb_failed) d.stream->println(texto); }\ninline void uart_enviar(RbUart& d, float texto, const char* bloque) { uart_enviar(d, rb_to_text(texto, bloque), bloque); }\ninline void uart_enviar(RbUart& d, bool texto, const char* bloque) { uart_enviar(d, String(texto ? \"True\" : \"False\"), bloque); }",
+          "static RbUart uart_{UART_PORT};"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT",
+            "rx": "RX",
+            "tx": "TX"
+          }
+        },
+        "statement": "{UART_PORT}.begin(uint32_t({BAUD}));\nuart_configurar(uart_{UART_PORT}, {UART_PORT});"
       }
     }
   },
@@ -92,27 +121,58 @@
           {
             "label": "2",
             "value": "2"
+          },
+          {
+            "label": "UART 3",
+            "value": "3"
+          },
+          {
+            "label": "UART 4",
+            "value": "4"
+          },
+          {
+            "label": "UART 5",
+            "value": "5"
+          },
+          {
+            "label": "UART 6",
+            "value": "6"
+          },
+          {
+            "label": "UART 7",
+            "value": "7"
+          },
+          {
+            "label": "UART 8",
+            "value": "8"
           }
         ]
       }
     ],
     "inputs": [],
     "tooltip": "Verdadero una vez por cada línea nueva. No espera: si no hay datos, sigue el programa. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalInput",
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import UART"
-        ],
+        "imports": ["from machine import UART"],
         "globals": [
           "uart_puertos = {}\n",
           "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
           "def uart_hay_linea(puerto, bloque):\n    datos = uart_puerto(puerto, bloque)\n    nueva, datos[3] = datos[3], False\n    return nueva\n"
         ],
         "expression": "uart_hay_linea(int({PORT}), {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbUart { Stream* stream = nullptr; String buffer, ultima; bool nueva = false; };\n// Un objeto por puerto utilizado; no se reservan ocho buffers en UNO/Nano.\ninline void uart_configurar(RbUart& datos, Stream& stream) { datos.stream = &stream; datos.buffer = String(); datos.ultima = String(); datos.nueva = false; }\ninline bool uart_utf8(const String& text) {\n    for (unsigned int i = 0; i < text.length();) {\n        unsigned char c = text[i]; unsigned int n = c < 128 ? 1 : c >= 194 && c <= 223 ? 2 : c >= 224 && c <= 239 ? 3 : c >= 240 && c <= 244 ? 4 : 0;\n        if (!n || i + n > text.length()) return false;\n        for (unsigned int j = 1; j < n; j++) if ((text[i+j] & 192) != 128) return false;\n        if (n == 3 && ((c == 224 && (unsigned char)text[i+1] < 160) || (c == 237 && (unsigned char)text[i+1] >= 160))) return false;\n        if (n == 4 && ((c == 240 && (unsigned char)text[i+1] < 144) || (c == 244 && (unsigned char)text[i+1] >= 144))) return false;\n        i += n;\n    } return true;\n}\ninline bool uart_space(uint32_t c) { return (c >= 9 && c <= 13) || (c >= 28 && c <= 32) || c == 0x85 || c == 0xA0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200A) || c == 0x2028 || c == 0x2029 || c == 0x202F || c == 0x205F || c == 0x3000; }\ninline RbUart& uart_puerto(RbUart& d, const char* bloque) {\n    if (!d.stream) { rb_fail(bloque, \"Configura UART al iniciar\"); return d; }\n    while (d.stream->available() > 0) {\n        int value = d.stream->read(); if (value < 0) break;\n        if (value == '\\n') {\n            if (uart_utf8(d.buffer)) {\n                unsigned int first = 0, last = 0;\n                while (first < d.buffer.length() && uart_space(rb_codepoint(d.buffer, first))) first += rb_utf8_width(d.buffer[first]);\n                for (unsigned int i = first; i < d.buffer.length();) { unsigned int end = i + rb_utf8_width(d.buffer[i]); if (!uart_space(rb_codepoint(d.buffer, i))) last = end; i = end; }\n                d.ultima = String(); for (unsigned int i = first; i < last; i++) d.ultima += d.buffer[i]; d.nueva = true;\n            } d.buffer = String();\n        } else {\n            d.buffer += char(value);\n        }\n    }\n    if (d.buffer.length() > 512) { String tail; for (unsigned int i = d.buffer.length() - 512; i < d.buffer.length(); i++) tail += d.buffer[i]; d.buffer = tail; }\n    return d;\n}\ninline bool uart_hay_linea(RbUart& d, const char* bloque) { uart_puerto(d, bloque); bool nueva = d.nueva; d.nueva = false; return nueva; }\ninline float uart_dato(float numero, RbUart& d, const char* bloque) {\n    uart_puerto(d, bloque); int index = int(numero) - 1;\n    String part; int current = 0;\n    for (unsigned int i = 0; i <= d.ultima.length(); i++) {\n        char c = i == d.ultima.length() ? ',' : d.ultima[i];\n        if (c == ',') { if (current == index) { char* end; double value = strtod(part.c_str(), &end); while (*end == ' ' || *end == '\\r' || *end == '\\t') end++; return end != part.c_str() && !*end && isfinite(value) ? value : 0; } current++; part = String(); }\n        else part += c;\n    } return 0;\n}\ninline void uart_enviar(RbUart& d, const String& texto, const char* bloque) { uart_puerto(d, bloque); if (!rb_failed) d.stream->println(texto); }\ninline void uart_enviar(RbUart& d, float texto, const char* bloque) { uart_enviar(d, rb_to_text(texto, bloque), bloque); }\ninline void uart_enviar(RbUart& d, bool texto, const char* bloque) { uart_enviar(d, String(texto ? \"True\" : \"False\"), bloque); }",
+          "static RbUart uart_{UART_PORT};"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT"
+          }
+        },
+        "expression": "uart_hay_linea(uart_{UART_PORT}, {BLOCK_ID})"
       }
     }
   },
@@ -136,26 +196,57 @@
           {
             "label": "2",
             "value": "2"
+          },
+          {
+            "label": "UART 3",
+            "value": "3"
+          },
+          {
+            "label": "UART 4",
+            "value": "4"
+          },
+          {
+            "label": "UART 5",
+            "value": "5"
+          },
+          {
+            "label": "UART 6",
+            "value": "6"
+          },
+          {
+            "label": "UART 7",
+            "value": "7"
+          },
+          {
+            "label": "UART 8",
+            "value": "8"
           }
         ]
       }
     ],
     "inputs": [],
     "tooltip": "El texto completo de la última línea recibida. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalInput",
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import UART"
-        ],
+        "imports": ["from machine import UART"],
         "globals": [
           "uart_puertos = {}\n",
           "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n"
         ],
         "expression": "uart_puerto(int({PORT}), {BLOCK_ID})[2]"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbUart { Stream* stream = nullptr; String buffer, ultima; bool nueva = false; };\n// Un objeto por puerto utilizado; no se reservan ocho buffers en UNO/Nano.\ninline void uart_configurar(RbUart& datos, Stream& stream) { datos.stream = &stream; datos.buffer = String(); datos.ultima = String(); datos.nueva = false; }\ninline bool uart_utf8(const String& text) {\n    for (unsigned int i = 0; i < text.length();) {\n        unsigned char c = text[i]; unsigned int n = c < 128 ? 1 : c >= 194 && c <= 223 ? 2 : c >= 224 && c <= 239 ? 3 : c >= 240 && c <= 244 ? 4 : 0;\n        if (!n || i + n > text.length()) return false;\n        for (unsigned int j = 1; j < n; j++) if ((text[i+j] & 192) != 128) return false;\n        if (n == 3 && ((c == 224 && (unsigned char)text[i+1] < 160) || (c == 237 && (unsigned char)text[i+1] >= 160))) return false;\n        if (n == 4 && ((c == 240 && (unsigned char)text[i+1] < 144) || (c == 244 && (unsigned char)text[i+1] >= 144))) return false;\n        i += n;\n    } return true;\n}\ninline bool uart_space(uint32_t c) { return (c >= 9 && c <= 13) || (c >= 28 && c <= 32) || c == 0x85 || c == 0xA0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200A) || c == 0x2028 || c == 0x2029 || c == 0x202F || c == 0x205F || c == 0x3000; }\ninline RbUart& uart_puerto(RbUart& d, const char* bloque) {\n    if (!d.stream) { rb_fail(bloque, \"Configura UART al iniciar\"); return d; }\n    while (d.stream->available() > 0) {\n        int value = d.stream->read(); if (value < 0) break;\n        if (value == '\\n') {\n            if (uart_utf8(d.buffer)) {\n                unsigned int first = 0, last = 0;\n                while (first < d.buffer.length() && uart_space(rb_codepoint(d.buffer, first))) first += rb_utf8_width(d.buffer[first]);\n                for (unsigned int i = first; i < d.buffer.length();) { unsigned int end = i + rb_utf8_width(d.buffer[i]); if (!uart_space(rb_codepoint(d.buffer, i))) last = end; i = end; }\n                d.ultima = String(); for (unsigned int i = first; i < last; i++) d.ultima += d.buffer[i]; d.nueva = true;\n            } d.buffer = String();\n        } else {\n            d.buffer += char(value);\n        }\n    }\n    if (d.buffer.length() > 512) { String tail; for (unsigned int i = d.buffer.length() - 512; i < d.buffer.length(); i++) tail += d.buffer[i]; d.buffer = tail; }\n    return d;\n}\ninline bool uart_hay_linea(RbUart& d, const char* bloque) { uart_puerto(d, bloque); bool nueva = d.nueva; d.nueva = false; return nueva; }\ninline float uart_dato(float numero, RbUart& d, const char* bloque) {\n    uart_puerto(d, bloque); int index = int(numero) - 1;\n    String part; int current = 0;\n    for (unsigned int i = 0; i <= d.ultima.length(); i++) {\n        char c = i == d.ultima.length() ? ',' : d.ultima[i];\n        if (c == ',') { if (current == index) { char* end; double value = strtod(part.c_str(), &end); while (*end == ' ' || *end == '\\r' || *end == '\\t') end++; return end != part.c_str() && !*end && isfinite(value) ? value : 0; } current++; part = String(); }\n        else part += c;\n    } return 0;\n}\ninline void uart_enviar(RbUart& d, const String& texto, const char* bloque) { uart_puerto(d, bloque); if (!rb_failed) d.stream->println(texto); }\ninline void uart_enviar(RbUart& d, float texto, const char* bloque) { uart_enviar(d, rb_to_text(texto, bloque), bloque); }\ninline void uart_enviar(RbUart& d, bool texto, const char* bloque) { uart_enviar(d, String(texto ? \"True\" : \"False\"), bloque); }",
+          "static RbUart uart_{UART_PORT};"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT"
+          }
+        },
+        "expression": "uart_puerto(uart_{UART_PORT}, {BLOCK_ID}).ultima"
       }
     }
   },
@@ -179,6 +270,30 @@
           {
             "label": "2",
             "value": "2"
+          },
+          {
+            "label": "UART 3",
+            "value": "3"
+          },
+          {
+            "label": "UART 4",
+            "value": "4"
+          },
+          {
+            "label": "UART 5",
+            "value": "5"
+          },
+          {
+            "label": "UART 6",
+            "value": "6"
+          },
+          {
+            "label": "UART 7",
+            "value": "7"
+          },
+          {
+            "label": "UART 8",
+            "value": "8"
           }
         ]
       }
@@ -193,21 +308,28 @@
       }
     ],
     "tooltip": "Para «160,2400,2», el dato 1 es 160. Devuelve 0 si falta o no es un número. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalInput",
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import UART"
-        ],
+        "imports": ["from machine import UART"],
         "globals": [
           "uart_puertos = {}\n",
           "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
           "def uart_dato(numero, puerto, bloque):\n    partes = uart_puerto(puerto, bloque)[2].split(\",\")\n    try:\n        return float(partes[int(numero) - 1])\n    except (IndexError, ValueError):\n        return 0\n"
         ],
         "expression": "uart_dato({NUMBER}, int({PORT}), {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbUart { Stream* stream = nullptr; String buffer, ultima; bool nueva = false; };\n// Un objeto por puerto utilizado; no se reservan ocho buffers en UNO/Nano.\ninline void uart_configurar(RbUart& datos, Stream& stream) { datos.stream = &stream; datos.buffer = String(); datos.ultima = String(); datos.nueva = false; }\ninline bool uart_utf8(const String& text) {\n    for (unsigned int i = 0; i < text.length();) {\n        unsigned char c = text[i]; unsigned int n = c < 128 ? 1 : c >= 194 && c <= 223 ? 2 : c >= 224 && c <= 239 ? 3 : c >= 240 && c <= 244 ? 4 : 0;\n        if (!n || i + n > text.length()) return false;\n        for (unsigned int j = 1; j < n; j++) if ((text[i+j] & 192) != 128) return false;\n        if (n == 3 && ((c == 224 && (unsigned char)text[i+1] < 160) || (c == 237 && (unsigned char)text[i+1] >= 160))) return false;\n        if (n == 4 && ((c == 240 && (unsigned char)text[i+1] < 144) || (c == 244 && (unsigned char)text[i+1] >= 144))) return false;\n        i += n;\n    } return true;\n}\ninline bool uart_space(uint32_t c) { return (c >= 9 && c <= 13) || (c >= 28 && c <= 32) || c == 0x85 || c == 0xA0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200A) || c == 0x2028 || c == 0x2029 || c == 0x202F || c == 0x205F || c == 0x3000; }\ninline RbUart& uart_puerto(RbUart& d, const char* bloque) {\n    if (!d.stream) { rb_fail(bloque, \"Configura UART al iniciar\"); return d; }\n    while (d.stream->available() > 0) {\n        int value = d.stream->read(); if (value < 0) break;\n        if (value == '\\n') {\n            if (uart_utf8(d.buffer)) {\n                unsigned int first = 0, last = 0;\n                while (first < d.buffer.length() && uart_space(rb_codepoint(d.buffer, first))) first += rb_utf8_width(d.buffer[first]);\n                for (unsigned int i = first; i < d.buffer.length();) { unsigned int end = i + rb_utf8_width(d.buffer[i]); if (!uart_space(rb_codepoint(d.buffer, i))) last = end; i = end; }\n                d.ultima = String(); for (unsigned int i = first; i < last; i++) d.ultima += d.buffer[i]; d.nueva = true;\n            } d.buffer = String();\n        } else {\n            d.buffer += char(value);\n        }\n    }\n    if (d.buffer.length() > 512) { String tail; for (unsigned int i = d.buffer.length() - 512; i < d.buffer.length(); i++) tail += d.buffer[i]; d.buffer = tail; }\n    return d;\n}\ninline bool uart_hay_linea(RbUart& d, const char* bloque) { uart_puerto(d, bloque); bool nueva = d.nueva; d.nueva = false; return nueva; }\ninline float uart_dato(float numero, RbUart& d, const char* bloque) {\n    uart_puerto(d, bloque); int index = int(numero) - 1;\n    String part; int current = 0;\n    for (unsigned int i = 0; i <= d.ultima.length(); i++) {\n        char c = i == d.ultima.length() ? ',' : d.ultima[i];\n        if (c == ',') { if (current == index) { char* end; double value = strtod(part.c_str(), &end); while (*end == ' ' || *end == '\\r' || *end == '\\t') end++; return end != part.c_str() && !*end && isfinite(value) ? value : 0; } current++; part = String(); }\n        else part += c;\n    } return 0;\n}\ninline void uart_enviar(RbUart& d, const String& texto, const char* bloque) { uart_puerto(d, bloque); if (!rb_failed) d.stream->println(texto); }\ninline void uart_enviar(RbUart& d, float texto, const char* bloque) { uart_enviar(d, rb_to_text(texto, bloque), bloque); }\ninline void uart_enviar(RbUart& d, bool texto, const char* bloque) { uart_enviar(d, String(texto ? \"True\" : \"False\"), bloque); }",
+          "static RbUart uart_{UART_PORT};"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT"
+          }
+        },
+        "expression": "uart_dato({NUMBER}, uart_{UART_PORT}, {BLOCK_ID})"
       }
     }
   },
@@ -230,6 +352,30 @@
           {
             "label": "2",
             "value": "2"
+          },
+          {
+            "label": "UART 3",
+            "value": "3"
+          },
+          {
+            "label": "UART 4",
+            "value": "4"
+          },
+          {
+            "label": "UART 5",
+            "value": "5"
+          },
+          {
+            "label": "UART 6",
+            "value": "6"
+          },
+          {
+            "label": "UART 7",
+            "value": "7"
+          },
+          {
+            "label": "UART 8",
+            "value": "8"
           }
         ]
       }
@@ -242,21 +388,28 @@
       }
     ],
     "tooltip": "Envía el texto con salto de línea al final. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalInput",
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import UART"
-        ],
+        "imports": ["from machine import UART"],
         "globals": [
           "uart_puertos = {}\n",
           "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
           "def uart_enviar(puerto, texto, bloque):\n    uart_puerto(puerto, bloque)[0].write(str(texto) + \"\\n\")\n"
         ],
         "statement": "uart_enviar(int({PORT}), {TEXT}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbUart { Stream* stream = nullptr; String buffer, ultima; bool nueva = false; };\n// Un objeto por puerto utilizado; no se reservan ocho buffers en UNO/Nano.\ninline void uart_configurar(RbUart& datos, Stream& stream) { datos.stream = &stream; datos.buffer = String(); datos.ultima = String(); datos.nueva = false; }\ninline bool uart_utf8(const String& text) {\n    for (unsigned int i = 0; i < text.length();) {\n        unsigned char c = text[i]; unsigned int n = c < 128 ? 1 : c >= 194 && c <= 223 ? 2 : c >= 224 && c <= 239 ? 3 : c >= 240 && c <= 244 ? 4 : 0;\n        if (!n || i + n > text.length()) return false;\n        for (unsigned int j = 1; j < n; j++) if ((text[i+j] & 192) != 128) return false;\n        if (n == 3 && ((c == 224 && (unsigned char)text[i+1] < 160) || (c == 237 && (unsigned char)text[i+1] >= 160))) return false;\n        if (n == 4 && ((c == 240 && (unsigned char)text[i+1] < 144) || (c == 244 && (unsigned char)text[i+1] >= 144))) return false;\n        i += n;\n    } return true;\n}\ninline bool uart_space(uint32_t c) { return (c >= 9 && c <= 13) || (c >= 28 && c <= 32) || c == 0x85 || c == 0xA0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200A) || c == 0x2028 || c == 0x2029 || c == 0x202F || c == 0x205F || c == 0x3000; }\ninline RbUart& uart_puerto(RbUart& d, const char* bloque) {\n    if (!d.stream) { rb_fail(bloque, \"Configura UART al iniciar\"); return d; }\n    while (d.stream->available() > 0) {\n        int value = d.stream->read(); if (value < 0) break;\n        if (value == '\\n') {\n            if (uart_utf8(d.buffer)) {\n                unsigned int first = 0, last = 0;\n                while (first < d.buffer.length() && uart_space(rb_codepoint(d.buffer, first))) first += rb_utf8_width(d.buffer[first]);\n                for (unsigned int i = first; i < d.buffer.length();) { unsigned int end = i + rb_utf8_width(d.buffer[i]); if (!uart_space(rb_codepoint(d.buffer, i))) last = end; i = end; }\n                d.ultima = String(); for (unsigned int i = first; i < last; i++) d.ultima += d.buffer[i]; d.nueva = true;\n            } d.buffer = String();\n        } else {\n            d.buffer += char(value);\n        }\n    }\n    if (d.buffer.length() > 512) { String tail; for (unsigned int i = d.buffer.length() - 512; i < d.buffer.length(); i++) tail += d.buffer[i]; d.buffer = tail; }\n    return d;\n}\ninline bool uart_hay_linea(RbUart& d, const char* bloque) { uart_puerto(d, bloque); bool nueva = d.nueva; d.nueva = false; return nueva; }\ninline float uart_dato(float numero, RbUart& d, const char* bloque) {\n    uart_puerto(d, bloque); int index = int(numero) - 1;\n    String part; int current = 0;\n    for (unsigned int i = 0; i <= d.ultima.length(); i++) {\n        char c = i == d.ultima.length() ? ',' : d.ultima[i];\n        if (c == ',') { if (current == index) { char* end; double value = strtod(part.c_str(), &end); while (*end == ' ' || *end == '\\r' || *end == '\\t') end++; return end != part.c_str() && !*end && isfinite(value) ? value : 0; } current++; part = String(); }\n        else part += c;\n    } return 0;\n}\ninline void uart_enviar(RbUart& d, const String& texto, const char* bloque) { uart_puerto(d, bloque); if (!rb_failed) d.stream->println(texto); }\ninline void uart_enviar(RbUart& d, float texto, const char* bloque) { uart_enviar(d, rb_to_text(texto, bloque), bloque); }\ninline void uart_enviar(RbUart& d, bool texto, const char* bloque) { uart_enviar(d, String(texto ? \"True\" : \"False\"), bloque); }",
+          "static RbUart uart_{UART_PORT};"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT"
+          }
+        },
+        "statement": "uart_enviar(uart_{UART_PORT}, {TEXT}, {BLOCK_ID});"
       }
     }
   }
