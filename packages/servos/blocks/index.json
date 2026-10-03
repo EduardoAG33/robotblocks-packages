@@ -5,9 +5,7 @@
     "category": "org.robotblocks.servos:servos",
     "label": "servo en pin %PIN a %ANGLE grados",
     "kind": "command",
-    "requiredCapabilities": [
-      "pwm"
-    ],
+    "requiredCapabilities": ["pwm"],
     "fields": [
       {
         "name": "PIN",
@@ -15,9 +13,7 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "pwm"
-          ]
+          "capabilities": ["pwm"]
         }
       }
     ],
@@ -31,17 +27,24 @@
     "tooltip": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
+        "imports": ["from machine import Pin, PWM"],
         "globals": [
           "def servos_mover(servo, angulo):\n    angulo = max(0, min(180, angulo))\n    # Pulso de 0.5 ms (0°) a 2.5 ms (180°) cada 20 ms.\n    servo.duty_ns(int(500000 + angulo * 2000000 / 180))\n"
         ],
-        "setup": [
-          "servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"
-        ],
+        "setup": ["servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"],
         "statement": "servos_mover(servo_{PIN}, {ANGLE})",
         "canFail": false
+      },
+      "arduino": {
+        "globals": [
+          "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
+          "static Servo servo_{PIN};"
+        ],
+        "hardware": {
+          "features": ["servo"]
+        },
+        "includes": ["#include <Servo.h>"],
+        "statement": "servos_mover(servo_{PIN}, {PIN}, {ANGLE}, {BLOCK_ID});"
       }
     }
   },
@@ -51,9 +54,7 @@
     "category": "org.robotblocks.servos:servos",
     "label": "soltar servo en pin %PIN",
     "kind": "command",
-    "requiredCapabilities": [
-      "pwm"
-    ],
+    "requiredCapabilities": ["pwm"],
     "fields": [
       {
         "name": "PIN",
@@ -61,9 +62,7 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "pwm"
-          ]
+          "capabilities": ["pwm"]
         }
       }
     ],
@@ -71,14 +70,21 @@
     "tooltip": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"],
         "statement": "servo_{PIN}.duty_ns(0)",
         "canFail": false
+      },
+      "arduino": {
+        "globals": [
+          "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
+          "static Servo servo_{PIN};"
+        ],
+        "hardware": {
+          "features": ["servo"]
+        },
+        "includes": ["#include <Servo.h>"],
+        "statement": "if (servo_{PIN}.attached()) servo_{PIN}.detach();"
       }
     }
   }

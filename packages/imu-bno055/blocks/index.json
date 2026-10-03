@@ -12,9 +12,7 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "digitalOutput"
-          ]
+          "capabilities": ["digitalOutput"]
         }
       },
       {
@@ -23,23 +21,16 @@
         "default": "",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "digitalOutput"
-          ]
+          "capabilities": ["digitalOutput"]
         }
       }
     ],
     "inputs": [],
     "tooltip": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import I2C, Pin, SoftI2C",
-          "import time"
-        ],
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import time"],
         "globals": [
           "i2c_buses = {}\n",
           "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
@@ -48,6 +39,22 @@
           "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n"
         ],
         "statement": "imu_configurar({SDA}, {SCL}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
+        ],
+        "hardware": {
+          "i2c": {
+            "sda": "SDA",
+            "scl": "SCL"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "statement": "imu_configurar({I2C_BUS});",
+        "setup": ["{I2C_BUS}.begin();", "{I2C_BUS}.setClock(400000);"],
+        "waitUntil": "imu_iniciar({BLOCK_ID})"
       }
     }
   },
@@ -61,15 +68,10 @@
     "fields": [],
     "inputs": [],
     "tooltip": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import I2C, Pin, SoftI2C",
-          "import time"
-        ],
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import time"],
         "globals": [
           "i2c_buses = {}\n",
           "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
@@ -78,6 +80,17 @@
           "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n",
           "def imu_giro(bloque):\n    # -180 a 180 respecto al último «reiniciar»; positivo hacia la derecha.\n    return round((imu_euler(bloque)[0] - imu_cero + 180) % 360 - 180, 1)\n"
         ],
+        "expression": "imu_giro({BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "includes": ["#include <Wire.h>"],
         "expression": "imu_giro({BLOCK_ID})"
       }
     }
@@ -91,15 +104,10 @@
     "fields": [],
     "inputs": [],
     "tooltip": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import I2C, Pin, SoftI2C",
-          "import time"
-        ],
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import time"],
         "globals": [
           "i2c_buses = {}\n",
           "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
@@ -109,6 +117,17 @@
           "def imu_reiniciar(bloque):\n    global imu_cero\n    imu_cero = imu_euler(bloque)[0]\n"
         ],
         "statement": "imu_reiniciar({BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "includes": ["#include <Wire.h>"],
+        "statement": "imu_reiniciar({BLOCK_ID});"
       }
     }
   },
@@ -138,15 +157,10 @@
     ],
     "inputs": [],
     "tooltip": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import I2C, Pin, SoftI2C",
-          "import time"
-        ],
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import time"],
         "globals": [
           "i2c_buses = {}\n",
           "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
@@ -155,6 +169,17 @@
           "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n"
         ],
         "expression": "imu_euler({BLOCK_ID})[int({AXIS})]"
+      },
+      "arduino": {
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "includes": ["#include <Wire.h>"],
+        "expression": "imu_inclinacion({AXIS}, {BLOCK_ID})"
       }
     }
   }

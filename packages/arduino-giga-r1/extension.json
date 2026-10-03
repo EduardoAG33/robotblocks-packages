@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.arduino-giga-r1",
   "name": "Arduino GIGA R1 WiFi · experimental",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "RobotBlocks"
   },
@@ -30,12 +30,7 @@
         "family": "mbed_giga",
         "experimental": true,
         "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.",
-        "capabilities": [
-          "digitalInput",
-          "digitalOutput",
-          "analogInput",
-          "pwm"
-        ],
+        "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 3.3,
         "adcBits": 10,
         "pwm": {
@@ -52,10 +47,7 @@
           {
             "id": "d0",
             "label": "D0",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "0"
             },
@@ -64,10 +56,7 @@
           {
             "id": "d1",
             "label": "D1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "1"
             },
@@ -76,11 +65,7 @@
           {
             "id": "d2",
             "label": "D2",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "2"
             }
@@ -88,11 +73,7 @@
           {
             "id": "d3",
             "label": "D3",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "3"
             }
@@ -100,11 +81,7 @@
           {
             "id": "d4",
             "label": "D4",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "4"
             }
@@ -112,11 +89,7 @@
           {
             "id": "d5",
             "label": "D5",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "5"
             }
@@ -124,11 +97,7 @@
           {
             "id": "d6",
             "label": "D6",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "6"
             }
@@ -136,11 +105,7 @@
           {
             "id": "d7",
             "label": "D7",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "7"
             }
@@ -148,37 +113,25 @@
           {
             "id": "d8",
             "label": "D8",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "8"
             },
-            "notes": "I2C Wire1: SCL"
+            "notes": "I2C Wire2: SCL"
           },
           {
             "id": "d9",
             "label": "D9",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "9"
             },
-            "notes": "I2C Wire1: SDA"
+            "notes": "I2C Wire2: SDA"
           },
           {
             "id": "d10",
             "label": "D10",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "10"
             }
@@ -186,11 +139,7 @@
           {
             "id": "d11",
             "label": "D11",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "11"
             }
@@ -198,11 +147,7 @@
           {
             "id": "d12",
             "label": "D12",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "12"
             }
@@ -210,11 +155,7 @@
           {
             "id": "d13",
             "label": "D13",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "13"
             }
@@ -222,10 +163,7 @@
           {
             "id": "d14",
             "label": "D14",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "14"
             }
@@ -233,10 +171,7 @@
           {
             "id": "d15",
             "label": "D15",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "15"
             }
@@ -244,10 +179,7 @@
           {
             "id": "d16",
             "label": "D16",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "16"
             }
@@ -255,10 +187,7 @@
           {
             "id": "d17",
             "label": "D17",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "17"
             }
@@ -266,10 +195,7 @@
           {
             "id": "d18",
             "label": "D18",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "18"
             }
@@ -277,10 +203,7 @@
           {
             "id": "d19",
             "label": "D19",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "19"
             }
@@ -288,10 +211,7 @@
           {
             "id": "d20",
             "label": "D20",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "20"
             },
@@ -300,10 +220,7 @@
           {
             "id": "d21",
             "label": "D21",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "21"
             },
@@ -312,10 +229,7 @@
           {
             "id": "d22",
             "label": "D22",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "22"
             }
@@ -323,10 +237,7 @@
           {
             "id": "d23",
             "label": "D23",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "23"
             }
@@ -334,10 +245,7 @@
           {
             "id": "d24",
             "label": "D24",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "24"
             }
@@ -345,10 +253,7 @@
           {
             "id": "d25",
             "label": "D25",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "25"
             }
@@ -356,10 +261,7 @@
           {
             "id": "d26",
             "label": "D26",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "26"
             }
@@ -367,10 +269,7 @@
           {
             "id": "d27",
             "label": "D27",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "27"
             }
@@ -378,10 +277,7 @@
           {
             "id": "d28",
             "label": "D28",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "28"
             }
@@ -389,10 +285,7 @@
           {
             "id": "d29",
             "label": "D29",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "29"
             }
@@ -400,10 +293,7 @@
           {
             "id": "d30",
             "label": "D30",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "30"
             }
@@ -411,10 +301,7 @@
           {
             "id": "d31",
             "label": "D31",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "31"
             }
@@ -422,10 +309,7 @@
           {
             "id": "d32",
             "label": "D32",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "32"
             }
@@ -433,10 +317,7 @@
           {
             "id": "d33",
             "label": "D33",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "33"
             }
@@ -444,10 +325,7 @@
           {
             "id": "d34",
             "label": "D34",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "34"
             }
@@ -455,10 +333,7 @@
           {
             "id": "d35",
             "label": "D35",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "35"
             }
@@ -466,10 +341,7 @@
           {
             "id": "d36",
             "label": "D36",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "36"
             }
@@ -477,10 +349,7 @@
           {
             "id": "d37",
             "label": "D37",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "37"
             }
@@ -488,10 +357,7 @@
           {
             "id": "d38",
             "label": "D38",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "38"
             }
@@ -499,10 +365,7 @@
           {
             "id": "d39",
             "label": "D39",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "39"
             }
@@ -510,10 +373,7 @@
           {
             "id": "d40",
             "label": "D40",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "40"
             }
@@ -521,10 +381,7 @@
           {
             "id": "d41",
             "label": "D41",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "41"
             }
@@ -532,10 +389,7 @@
           {
             "id": "d42",
             "label": "D42",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "42"
             }
@@ -543,10 +397,7 @@
           {
             "id": "d43",
             "label": "D43",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "43"
             }
@@ -554,10 +405,7 @@
           {
             "id": "d44",
             "label": "D44",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "44"
             }
@@ -565,10 +413,7 @@
           {
             "id": "d45",
             "label": "D45",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "45"
             }
@@ -576,10 +421,7 @@
           {
             "id": "d46",
             "label": "D46",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "46"
             }
@@ -587,10 +429,7 @@
           {
             "id": "d47",
             "label": "D47",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "47"
             }
@@ -598,10 +437,7 @@
           {
             "id": "d48",
             "label": "D48",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "48"
             }
@@ -609,10 +445,7 @@
           {
             "id": "d49",
             "label": "D49",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "49"
             }
@@ -620,10 +453,7 @@
           {
             "id": "d50",
             "label": "D50",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "50"
             }
@@ -631,10 +461,7 @@
           {
             "id": "d51",
             "label": "D51",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "51"
             }
@@ -642,10 +469,7 @@
           {
             "id": "d52",
             "label": "D52",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "52"
             }
@@ -653,10 +477,7 @@
           {
             "id": "d53",
             "label": "D53",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "53"
             }
@@ -664,10 +485,7 @@
           {
             "id": "d54",
             "label": "D54",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "54"
             },
@@ -676,10 +494,7 @@
           {
             "id": "d55",
             "label": "D55",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "55"
             },
@@ -688,10 +503,7 @@
           {
             "id": "d56",
             "label": "D56",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "56"
             },
@@ -700,10 +512,7 @@
           {
             "id": "d57",
             "label": "D57",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "57"
             },
@@ -712,10 +521,7 @@
           {
             "id": "d58",
             "label": "D58",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "58"
             },
@@ -724,10 +530,7 @@
           {
             "id": "d59",
             "label": "D59",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "59"
             },
@@ -736,10 +539,7 @@
           {
             "id": "d60",
             "label": "D60",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "60"
             },
@@ -748,10 +548,7 @@
           {
             "id": "d61",
             "label": "D61",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "61"
             },
@@ -760,10 +557,7 @@
           {
             "id": "d62",
             "label": "D62",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "62"
             },
@@ -772,10 +566,7 @@
           {
             "id": "d63",
             "label": "D63",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "63"
             },
@@ -784,10 +575,7 @@
           {
             "id": "d64",
             "label": "D64",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "64"
             },
@@ -796,10 +584,7 @@
           {
             "id": "d65",
             "label": "D65",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "65"
             },
@@ -808,10 +593,7 @@
           {
             "id": "d66",
             "label": "D66",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "66"
             },
@@ -820,10 +602,7 @@
           {
             "id": "d67",
             "label": "D67",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "67"
             },
@@ -832,10 +611,7 @@
           {
             "id": "d68",
             "label": "D68",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "68"
             },
@@ -844,10 +620,7 @@
           {
             "id": "d69",
             "label": "D69",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "69"
             },
@@ -856,10 +629,7 @@
           {
             "id": "d70",
             "label": "D70",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "70"
             },
@@ -868,10 +638,7 @@
           {
             "id": "d71",
             "label": "D71",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "71"
             },
@@ -880,10 +647,7 @@
           {
             "id": "d72",
             "label": "D72",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "72"
             },
@@ -892,10 +656,7 @@
           {
             "id": "d73",
             "label": "D73",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "73"
             },
@@ -904,10 +665,7 @@
           {
             "id": "d74",
             "label": "D74",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "74"
             },
@@ -916,10 +674,7 @@
           {
             "id": "d75",
             "label": "D75",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "75"
             },
@@ -928,11 +683,7 @@
           {
             "id": "a0",
             "label": "A0",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A0"
             }
@@ -940,11 +691,7 @@
           {
             "id": "a1",
             "label": "A1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A1"
             }
@@ -952,11 +699,7 @@
           {
             "id": "a2",
             "label": "A2",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A2"
             }
@@ -964,11 +707,7 @@
           {
             "id": "a3",
             "label": "A3",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A3"
             }
@@ -976,11 +715,7 @@
           {
             "id": "a4",
             "label": "A4",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A4"
             }
@@ -988,11 +723,7 @@
           {
             "id": "a5",
             "label": "A5",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A5"
             }
@@ -1000,11 +731,7 @@
           {
             "id": "a6",
             "label": "A6",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A6"
             }
@@ -1012,11 +739,7 @@
           {
             "id": "a7",
             "label": "A7",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A7"
             },
@@ -1025,9 +748,7 @@
           {
             "id": "a8",
             "label": "A8",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A8"
             },
@@ -1036,9 +757,7 @@
           {
             "id": "a9",
             "label": "A9",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A9"
             },
@@ -1047,9 +766,7 @@
           {
             "id": "a10",
             "label": "A10",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A10"
             },
@@ -1058,9 +775,7 @@
           {
             "id": "a11",
             "label": "A11",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A11"
             },
@@ -1069,11 +784,7 @@
           {
             "id": "dac0",
             "label": "DAC0",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A12"
             },
@@ -1082,11 +793,7 @@
           {
             "id": "dac1",
             "label": "DAC1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A13"
             },
@@ -1095,10 +802,7 @@
           {
             "id": "d93",
             "label": "CAN RX",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "93"
             },
@@ -1107,10 +811,7 @@
           {
             "id": "d94",
             "label": "CAN TX",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "94"
             },
@@ -1119,33 +820,25 @@
           {
             "id": "d101",
             "label": "D101 / SCL1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "101"
             },
-            "notes": "I2C Wire2; duplicado en el conector de cámara."
+            "notes": "I2C Wire1; duplicado en el conector de cámara."
           },
           {
             "id": "d102",
             "label": "D102 / SDA1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "102"
             },
-            "notes": "I2C Wire2; duplicado en el conector de cámara."
+            "notes": "I2C Wire1; duplicado en el conector de cámara."
           },
           {
             "id": "led-red",
             "label": "RED / LED RGB",
-            "capabilities": [
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalOutput"],
             "symbol": {
               "arduino": "LEDR"
             },
@@ -1154,9 +847,7 @@
           {
             "id": "led-green",
             "label": "GREEN / LED RGB",
-            "capabilities": [
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalOutput"],
             "symbol": {
               "arduino": "LEDG"
             },
@@ -1165,13 +856,60 @@
           {
             "id": "led-blue",
             "label": "BLUE / LED RGB",
-            "capabilities": [
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalOutput"],
             "symbol": {
               "arduino": "LEDB"
             },
             "notes": "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D88."
+          }
+        ],
+        "arduinoApis": {
+          "adcResolution": true,
+          "pwmResolution": true,
+          "servo": true,
+          "servoPwmConflicts": []
+        },
+        "uart": [
+          {
+            "port": 1,
+            "symbol": "Serial1",
+            "rx": "d0",
+            "tx": "d1"
+          },
+          {
+            "port": 2,
+            "symbol": "Serial2",
+            "rx": "d19",
+            "tx": "d18"
+          },
+          {
+            "port": 3,
+            "symbol": "Serial3",
+            "rx": "d17",
+            "tx": "d16"
+          },
+          {
+            "port": 4,
+            "symbol": "Serial4",
+            "rx": "d15",
+            "tx": "d14"
+          }
+        ],
+        "i2c": [
+          {
+            "symbol": "Wire",
+            "sda": "d20",
+            "scl": "d21"
+          },
+          {
+            "symbol": "Wire1",
+            "sda": "d102",
+            "scl": "d101"
+          },
+          {
+            "symbol": "Wire2",
+            "sda": "d9",
+            "scl": "d8"
           }
         ]
       }

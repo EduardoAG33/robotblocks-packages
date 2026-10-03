@@ -84,3 +84,4 @@ for (const item of catalog.packages) {
 }
 console.log(`${catalog.packages.length} paquetes: integridad del catálogo aprobada.`);
 await import('./check-arduino-boards.mjs');
+await import('./check-arduino-extensions.mjs');

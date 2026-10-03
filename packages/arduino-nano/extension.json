@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.arduino-nano",
   "name": "Arduino Nano (ATmega328P) · experimental",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "RobotBlocks"
   },
@@ -30,12 +30,7 @@
         "family": "avr",
         "experimental": true,
         "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB.",
-        "capabilities": [
-          "digitalInput",
-          "digitalOutput",
-          "analogInput",
-          "pwm"
-        ],
+        "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 5,
         "adcBits": 10,
         "pwm": {
@@ -70,10 +65,7 @@
           {
             "id": "d2",
             "label": "D2",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "2"
             }
@@ -81,11 +73,7 @@
           {
             "id": "d3",
             "label": "D3",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "3"
             }
@@ -93,10 +81,7 @@
           {
             "id": "d4",
             "label": "D4",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "4"
             }
@@ -104,11 +89,7 @@
           {
             "id": "d5",
             "label": "D5",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "5"
             }
@@ -116,11 +97,7 @@
           {
             "id": "d6",
             "label": "D6",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "6"
             }
@@ -128,10 +105,7 @@
           {
             "id": "d7",
             "label": "D7",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "7"
             }
@@ -139,10 +113,7 @@
           {
             "id": "d8",
             "label": "D8",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "8"
             }
@@ -150,11 +121,7 @@
           {
             "id": "d9",
             "label": "D9",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "9"
             }
@@ -162,11 +129,7 @@
           {
             "id": "d10",
             "label": "D10",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "10"
             }
@@ -174,11 +137,7 @@
           {
             "id": "d11",
             "label": "D11",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "pwm"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "pwm"],
             "symbol": {
               "arduino": "11"
             }
@@ -186,10 +145,7 @@
           {
             "id": "d12",
             "label": "D12",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "12"
             }
@@ -197,10 +153,7 @@
           {
             "id": "d13",
             "label": "D13",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput"],
             "symbol": {
               "arduino": "13"
             },
@@ -209,11 +162,7 @@
           {
             "id": "a0",
             "label": "A0",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A0"
             }
@@ -221,11 +170,7 @@
           {
             "id": "a1",
             "label": "A1",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A1"
             }
@@ -233,11 +178,7 @@
           {
             "id": "a2",
             "label": "A2",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A2"
             }
@@ -245,11 +186,7 @@
           {
             "id": "a3",
             "label": "A3",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A3"
             }
@@ -257,11 +194,7 @@
           {
             "id": "a4",
             "label": "A4",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A4"
             },
@@ -270,11 +203,7 @@
           {
             "id": "a5",
             "label": "A5",
-            "capabilities": [
-              "digitalInput",
-              "digitalOutput",
-              "analogInput"
-            ],
+            "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
             "symbol": {
               "arduino": "A5"
             },
@@ -283,9 +212,7 @@
           {
             "id": "a6",
             "label": "A6",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A6"
             },
@@ -294,13 +221,34 @@
           {
             "id": "a7",
             "label": "A7",
-            "capabilities": [
-              "analogInput"
-            ],
+            "capabilities": ["analogInput"],
             "symbol": {
               "arduino": "A7"
             },
             "notes": "Solo analógico; sin entrada/salida digital ni pull-up."
+          }
+        ],
+        "arduinoApis": {
+          "adcResolution": false,
+          "pwmResolution": false,
+          "servo": true,
+          "servoPwmConflicts": ["d9", "d10"]
+        },
+        "uart": [
+          {
+            "port": 0,
+            "symbol": "Serial",
+            "rx": "d0",
+            "tx": "d1",
+            "reserved": true,
+            "notes": "Compartido con USB; reservado para la consola. La extensión UART requiere un puerto independiente."
+          }
+        ],
+        "i2c": [
+          {
+            "symbol": "Wire",
+            "sda": "a4",
+            "scl": "a5"
           }
         ]
       }
