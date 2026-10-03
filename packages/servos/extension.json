@@ -32,6 +32,7 @@
   },
   "assets": [],
   "metadata": {
-    "experimental": true
+    "experimental": true,
+    "group": "actuators"
   }
 }
