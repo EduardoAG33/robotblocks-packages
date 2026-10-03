@@ -1,5 +1,10 @@
 # UART: OpenMV y otras placas
 
+En UNO R4 Minima `Serial1` usa D0 RX/D1 TX sin compartir USB. En XIAO ESP32-S3
+UART1 se enruta a D7/GPIO44 RX y D6/GPIO43 TX; la plantilla declarativa usa
+`UART_PIN_ARGS` según `uart.pinsInBegin` de la tarjeta. Las demás tarjetas conservan
+`SerialN.begin(baud)` con sus pines fijos oficiales. Ningún paquete ejecuta JavaScript.
+
 Extensión **experimental** para MicroPython y Arduino/C++, probada en simulación y pendiente de prueba física. Comunica la placa con una **cámara OpenMV** (u otra placa) mediante **líneas de texto con datos separados por comas**.
 
 ## Bloques
