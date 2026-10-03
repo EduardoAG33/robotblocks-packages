@@ -175,8 +175,7 @@
               "micropython": "2",
               "arduino": "2"
             },
-            "notes": "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque. LED integrado; alto enciende, bajo apaga.",
-            "strapping": true
+            "notes": "ADC2: no disponible con WiFi activo. LED integrado; alto enciende, bajo apaga."
           },
           {
             "id": "gpio6",

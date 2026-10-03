@@ -10,9 +10,9 @@ Módulo y límites: [hoja ESP32-WROOM-32, secciones 2–4](https://www.espressif
 Etiquetas con serigrafía y GPIO; símbolos numéricos para MicroPython/Arduino.
 GPIO32/33/37/38 no aparecen en los conectores de este pinout; no se añaden. NC no es GPIO.
 
-- LED D9/GPIO2: alto enciende, bajo apaga; también strapping.
+- LED D9/GPIO2: alto enciende, bajo apaga. No se emite aviso de arranque por utilizar el LED ya integrado en la placa.
 - A0/36, A1/39, A2/34, A3/35: solo entrada, sin resistencias internas.
-- GPIO0/2/5/12/15: strapping; no forzar niveles durante arranque.
+- GPIO0/5/12/15: strapping; no forzar niveles durante arranque.
 - GPIO6–11: flash, incluidos D5/GPIO9 y D6/GPIO10; no seleccionables.
 - D0/GPIO3 y D1/GPIO1: reservados a USB/UART0; no seleccionables.
 - Lógica 3.3 V; nunca 5 V en GPIO. ADC de 12 bits (crudo 0–4095).
