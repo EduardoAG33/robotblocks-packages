@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.uart",
+  "name": "UART: OpenMV y otras placas",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Comunicación por UART con líneas de texto separadas por comas, por ejemplo «160,2400,2» desde una cámara OpenMV.",
+  "requiredCapabilities": [
+    "digitalInput",
+    "digitalOutput"
+  ],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.uart:uart",
+        "name": "UART",
+        "colour": "#4D97FF"
+      }
+    ],
+    "blocks": [
+      "blocks/index.json"
+    ],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "communication"
+  }
+}

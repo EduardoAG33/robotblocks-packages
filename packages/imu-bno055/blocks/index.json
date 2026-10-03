@@ -1,0 +1,161 @@
+[
+  {
+    "id": "org.robotblocks.imu-bno055:configure",
+    "operation": "org.robotblocks.imu-bno055:configure",
+    "category": "org.robotblocks.imu-bno055:imu",
+    "label": "configurar IMU BNO055 SDA %SDA SCL %SCL",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\n",
+          "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n",
+          "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n"
+        ],
+        "statement": "imu_configurar({SDA}, {SCL}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.imu-bno055:turn",
+    "operation": "org.robotblocks.imu-bno055:turn",
+    "category": "org.robotblocks.imu-bno055:imu",
+    "label": "ángulo de giro",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [],
+    "inputs": [],
+    "tooltip": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\n",
+          "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n",
+          "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n",
+          "def imu_giro(bloque):\n    # -180 a 180 respecto al último «reiniciar»; positivo hacia la derecha.\n    return round((imu_euler(bloque)[0] - imu_cero + 180) % 360 - 180, 1)\n"
+        ],
+        "expression": "imu_giro({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.imu-bno055:reset",
+    "operation": "org.robotblocks.imu-bno055:reset",
+    "category": "org.robotblocks.imu-bno055:imu",
+    "label": "reiniciar ángulo de giro",
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\n",
+          "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n",
+          "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n",
+          "def imu_reiniciar(bloque):\n    global imu_cero\n    imu_cero = imu_euler(bloque)[0]\n"
+        ],
+        "statement": "imu_reiniciar({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.imu-bno055:tilt",
+    "operation": "org.robotblocks.imu-bno055:tilt",
+    "category": "org.robotblocks.imu-bno055:imu",
+    "label": "inclinación %AXIS",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "AXIS",
+        "type": "string",
+        "default": "2",
+        "options": [
+          {
+            "label": "adelante/atrás",
+            "value": "2"
+          },
+          {
+            "label": "izquierda/derecha",
+            "value": "1"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\n",
+          "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n",
+          "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    return valores  # Rumbo, alabeo y cabeceo en grados\n"
+        ],
+        "expression": "imu_euler({BLOCK_ID})[int({AXIS})]"
+      }
+    }
+  }
+]

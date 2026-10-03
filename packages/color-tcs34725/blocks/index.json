@@ -1,0 +1,191 @@
+[
+  {
+    "id": "org.robotblocks.color-tcs34725:configure",
+    "operation": "org.robotblocks.color-tcs34725:configure",
+    "category": "org.robotblocks.color-tcs34725:color",
+    "label": "configurar sensor de color SDA %SDA SCL %SCL",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "color_bus = None\n",
+          "def color_configurar(sda, scl, bloque):\n    global color_bus\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if bus.readfrom_mem(0x29, 0x92, 1)[0] not in (0x44, 0x4D):\n            rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\")\n        bus.writeto_mem(0x29, 0x81, bytes([0xD5]))  # Integración de unos 100 ms\n        bus.writeto_mem(0x29, 0x8F, bytes([0x01]))  # Ganancia 4x\n        bus.writeto_mem(0x29, 0x80, bytes([0x01]))  # Encender\n        time.sleep_ms(3)\n        bus.writeto_mem(0x29, 0x80, bytes([0x03]))  # Encender y medir\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725 (0x29)\")\n    color_bus = bus\n",
+          "def color_leer(bloque):\n    if color_bus is None:\n        rb_fail(bloque, \"Configura el sensor de color al iniciar\")\n    try:\n        d = color_bus.readfrom_mem(0x29, 0xB4, 8)\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725\")\n    # Claridad, rojo, verde y azul (16 bits cada uno).\n    return [d[i] | d[i + 1] << 8 for i in range(0, 8, 2)]\n"
+        ],
+        "statement": "color_configurar({SDA}, {SCL}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.color-tcs34725:name",
+    "operation": "org.robotblocks.color-tcs34725:name",
+    "category": "org.robotblocks.color-tcs34725:color",
+    "label": "color detectado",
+    "kind": "reporter",
+    "output": "string",
+    "fields": [],
+    "inputs": [],
+    "tooltip": "negro, blanco, gris, rojo, naranja, amarillo, verde, azul o morado (aproximado). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "color_bus = None\n",
+          "def color_configurar(sda, scl, bloque):\n    global color_bus\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if bus.readfrom_mem(0x29, 0x92, 1)[0] not in (0x44, 0x4D):\n            rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\")\n        bus.writeto_mem(0x29, 0x81, bytes([0xD5]))  # Integración de unos 100 ms\n        bus.writeto_mem(0x29, 0x8F, bytes([0x01]))  # Ganancia 4x\n        bus.writeto_mem(0x29, 0x80, bytes([0x01]))  # Encender\n        time.sleep_ms(3)\n        bus.writeto_mem(0x29, 0x80, bytes([0x03]))  # Encender y medir\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725 (0x29)\")\n    color_bus = bus\n",
+          "def color_leer(bloque):\n    if color_bus is None:\n        rb_fail(bloque, \"Configura el sensor de color al iniciar\")\n    try:\n        d = color_bus.readfrom_mem(0x29, 0xB4, 8)\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725\")\n    # Claridad, rojo, verde y azul (16 bits cada uno).\n    return [d[i] | d[i + 1] << 8 for i in range(0, 8, 2)]\n",
+          "def color_hsv(bloque):\n    c, r, g, b = color_leer(bloque)\n    brillo = min(100, c * 100 / 44032)\n    mayor, menor = max(r, g, b), min(r, g, b)\n    if mayor == 0:\n        return 0, 0, brillo\n    delta = mayor - menor\n    saturacion = delta * 100 / mayor\n    if delta == 0:\n        tono = 0\n    elif mayor == r:\n        tono = 60 * ((g - b) / delta % 6)\n    elif mayor == g:\n        tono = 60 * ((b - r) / delta + 2)\n    else:\n        tono = 60 * ((r - g) / delta + 4)\n    return round(tono, 1), round(saturacion, 1), round(brillo, 1)\n",
+          "def color_nombre(bloque):\n    tono, saturacion, brillo = color_hsv(bloque)\n    # Rangos aproximados: comprueba los valores de tu pista con «tono».\n    if brillo < 3:\n        return \"negro\"\n    if saturacion < 20:\n        return \"blanco\" if brillo > 20 else \"gris\"\n    for limite, nombre in ((20, \"rojo\"), (45, \"naranja\"), (70, \"amarillo\"), (170, \"verde\"), (260, \"azul\"), (330, \"morado\")):\n        if tono < limite:\n            return nombre\n    return \"rojo\"\n"
+        ],
+        "expression": "color_nombre({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.color-tcs34725:component",
+    "operation": "org.robotblocks.color-tcs34725:component",
+    "category": "org.robotblocks.color-tcs34725:color",
+    "label": "%PART del color",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PART",
+        "type": "string",
+        "default": "0",
+        "options": [
+          {
+            "label": "tono (0–360)",
+            "value": "0"
+          },
+          {
+            "label": "saturación (0–100)",
+            "value": "1"
+          },
+          {
+            "label": "brillo (0–100)",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Tono en grados: rojo ≈ 0, amarillo ≈ 60, verde ≈ 120, azul ≈ 240. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "color_bus = None\n",
+          "def color_configurar(sda, scl, bloque):\n    global color_bus\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if bus.readfrom_mem(0x29, 0x92, 1)[0] not in (0x44, 0x4D):\n            rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\")\n        bus.writeto_mem(0x29, 0x81, bytes([0xD5]))  # Integración de unos 100 ms\n        bus.writeto_mem(0x29, 0x8F, bytes([0x01]))  # Ganancia 4x\n        bus.writeto_mem(0x29, 0x80, bytes([0x01]))  # Encender\n        time.sleep_ms(3)\n        bus.writeto_mem(0x29, 0x80, bytes([0x03]))  # Encender y medir\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725 (0x29)\")\n    color_bus = bus\n",
+          "def color_leer(bloque):\n    if color_bus is None:\n        rb_fail(bloque, \"Configura el sensor de color al iniciar\")\n    try:\n        d = color_bus.readfrom_mem(0x29, 0xB4, 8)\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725\")\n    # Claridad, rojo, verde y azul (16 bits cada uno).\n    return [d[i] | d[i + 1] << 8 for i in range(0, 8, 2)]\n",
+          "def color_hsv(bloque):\n    c, r, g, b = color_leer(bloque)\n    brillo = min(100, c * 100 / 44032)\n    mayor, menor = max(r, g, b), min(r, g, b)\n    if mayor == 0:\n        return 0, 0, brillo\n    delta = mayor - menor\n    saturacion = delta * 100 / mayor\n    if delta == 0:\n        tono = 0\n    elif mayor == r:\n        tono = 60 * ((g - b) / delta % 6)\n    elif mayor == g:\n        tono = 60 * ((b - r) / delta + 2)\n    else:\n        tono = 60 * ((r - g) / delta + 4)\n    return round(tono, 1), round(saturacion, 1), round(brillo, 1)\n"
+        ],
+        "expression": "color_hsv({BLOCK_ID})[int({PART})]"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.color-tcs34725:raw",
+    "operation": "org.robotblocks.color-tcs34725:raw",
+    "category": "org.robotblocks.color-tcs34725:color",
+    "label": "valor crudo %CHANNEL del sensor de color",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "CHANNEL",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "rojo",
+            "value": "1"
+          },
+          {
+            "label": "verde",
+            "value": "2"
+          },
+          {
+            "label": "azul",
+            "value": "3"
+          },
+          {
+            "label": "claridad",
+            "value": "0"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Cuentas del sensor (0 a unas 44000). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import I2C, Pin, SoftI2C",
+          "import time"
+        ],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "color_bus = None\n",
+          "def color_configurar(sda, scl, bloque):\n    global color_bus\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if bus.readfrom_mem(0x29, 0x92, 1)[0] not in (0x44, 0x4D):\n            rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\")\n        bus.writeto_mem(0x29, 0x81, bytes([0xD5]))  # Integración de unos 100 ms\n        bus.writeto_mem(0x29, 0x8F, bytes([0x01]))  # Ganancia 4x\n        bus.writeto_mem(0x29, 0x80, bytes([0x01]))  # Encender\n        time.sleep_ms(3)\n        bus.writeto_mem(0x29, 0x80, bytes([0x03]))  # Encender y medir\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725 (0x29)\")\n    color_bus = bus\n",
+          "def color_leer(bloque):\n    if color_bus is None:\n        rb_fail(bloque, \"Configura el sensor de color al iniciar\")\n    try:\n        d = color_bus.readfrom_mem(0x29, 0xB4, 8)\n    except OSError:\n        rb_fail(bloque, \"No responde el sensor de color TCS34725\")\n    # Claridad, rojo, verde y azul (16 bits cada uno).\n    return [d[i] | d[i + 1] << 8 for i in range(0, 8, 2)]\n"
+        ],
+        "expression": "color_leer({BLOCK_ID})[int({CHANNEL})]"
+      }
+    }
+  }
+]

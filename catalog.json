@@ -43,6 +43,36 @@
       "description": "Servos de 50 Hz con el pin elegido en el bloque. MicroPython experimental; pendiente de validación física.",
       "kind": "module",
       "path": "packages/servos"
+    },
+    {
+      "name": "Seguidor de línea (QTR analógico)",
+      "description": "Posición de la línea de -100 a 100 con calibración, para Pololu QTR/QTRX analógicas.",
+      "kind": "module",
+      "path": "packages/linea-qtr"
+    },
+    {
+      "name": "Ultrasónico HC-SR04",
+      "description": "Distancia en cm con HC-SR04, eligiendo TRIG y ECHO en el bloque.",
+      "kind": "module",
+      "path": "packages/ultrasonico-hcsr04"
+    },
+    {
+      "name": "Sensor de color TCS34725",
+      "description": "Color con TCS34725 (DFRobot SEN0212) por I2C: tono, brillo y nombre del color.",
+      "kind": "module",
+      "path": "packages/color-tcs34725"
+    },
+    {
+      "name": "IMU BNO055",
+      "description": "Ángulo de giro e inclinación con BNO055 (DFRobot SEN0253) por I2C.",
+      "kind": "module",
+      "path": "packages/imu-bno055"
+    },
+    {
+      "name": "UART: OpenMV y otras placas",
+      "description": "Recibe y envía líneas de texto por UART; lee datos separados por comas (OpenMV).",
+      "kind": "module",
+      "path": "packages/uart"
     }
   ]
 }
