@@ -1,0 +1,189 @@
+[
+  {
+    "id": "org.robotblocks.linea-qtr:add-channel",
+    "operation": "org.robotblocks.linea-qtr:add-channel",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": "agregar canal del sensor de línea en pin %PIN",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "analogInput"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "En «al iniciar», uno por canal y en orden: el primero es el canal 1. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_agregar(pin, bloque):\n    # [ADC, mínimo calibrado, máximo calibrado]\n    linea_canales.append([rb_adc(pin, bloque), 4095, 0])\n"
+        ],
+        "statement": "linea_agregar({PIN}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:calibrate",
+    "operation": "org.robotblocks.linea-qtr:calibrate",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": "calibrar sensor de línea",
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": "Toma una lectura de calibración. Úsalo dentro de «repetir» mientras el robot pasa todos los sensores sobre la línea y el fondo. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+          "def linea_calibrar(bloque):\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        canal[1] = min(canal[1], valor)\n        canal[2] = max(canal[2], valor)\n"
+        ],
+        "statement": "linea_calibrar({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:position",
+    "operation": "org.robotblocks.linea-qtr:position",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": "posición de la línea %COLOR",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "COLOR",
+        "type": "string",
+        "default": "negra",
+        "options": [
+          {
+            "label": "negra",
+            "value": "negra"
+          },
+          {
+            "label": "blanca",
+            "value": "blanca"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "De -100 (bajo el canal 1) a 100 (bajo el último canal); 0 es el centro. Si pierde la línea, recuerda de qué lado se fue. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+          "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n",
+          "def linea_posicion(color, bloque):\n    # -100 bajo el canal 1, 0 al centro, 100 bajo el último canal.\n    global linea_ultima\n    niveles = linea_niveles(color, bloque)\n    total = sum(nivel for nivel in niveles if nivel > 10)\n    if total == 0:\n        return -100 if linea_ultima < 0 else 100\n    if len(niveles) == 1:\n        return 0\n    paso = 200 / (len(niveles) - 1)\n    suma = sum(nivel * (i * paso - 100) for i, nivel in enumerate(niveles) if nivel > 10)\n    linea_ultima = suma / total\n    return round(linea_ultima, 1)\n"
+        ],
+        "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:channel",
+    "operation": "org.robotblocks.linea-qtr:channel",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": "canal %NUMBER del sensor de línea %COLOR",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "COLOR",
+        "type": "string",
+        "default": "negra",
+        "options": [
+          {
+            "label": "negra",
+            "value": "negra"
+          },
+          {
+            "label": "blanca",
+            "value": "blanca"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": "De 0 (fondo) a 100 (línea), ya calibrado. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+          "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n",
+          "def linea_canal(numero, color, bloque):\n    niveles = linea_niveles(color, bloque)\n    if not 1 <= numero <= len(niveles):\n        rb_fail(bloque, \"El sensor de línea tiene %d canales\" % len(niveles))\n    return round(niveles[int(numero) - 1], 1)\n"
+        ],
+        "expression": "linea_canal({NUMBER}, {COLOR}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:detected",
+    "operation": "org.robotblocks.linea-qtr:detected",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": "¿línea %COLOR detectada?",
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "COLOR",
+        "type": "string",
+        "default": "negra",
+        "options": [
+          {
+            "label": "negra",
+            "value": "negra"
+          },
+          {
+            "label": "blanca",
+            "value": "blanca"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Verdadero si algún canal ve la línea con más del 50 %. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
+    "requiredCapabilities": [
+      "analogInput"
+    ],
+    "generators": {
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+          "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n"
+        ],
+        "expression": "max(linea_niveles({COLOR}, {BLOCK_ID})) > 50"
+      }
+    }
+  }
+]

@@ -2,9 +2,77 @@
   "schemaVersion": 1,
   "name": "RobotBlocks · tarjetas y extensiones",
   "packages": [
-    { "name": "Tarjetas virtuales", "description": "Dos tarjetas ficticias para practicar y comprobar compatibilidad. Sin hardware real.", "kind": "board", "path": "packages/virtual-boards" },
-    { "name": "Pines digitales, analógicos y PWM", "description": "Bloques de entrada y salida con selección de pines por capacidad.", "kind": "module", "path": "packages/pin-io" },
-    { "name": "Robótica", "description": "Movimiento, motores y sensores lógicos como extensión opcional.", "kind": "module", "path": "packages/robotics" },
-    { "name": "Distancia de demostración", "description": "Ejemplo de módulo independiente con sensor lógico. Sin driver real.", "kind": "module", "path": "packages/distance-demo" }
+    {
+      "name": "Tarjetas virtuales",
+      "description": "Dos tarjetas ficticias para practicar y comprobar compatibilidad. Sin hardware real.",
+      "kind": "board",
+      "path": "packages/virtual-boards"
+    },
+    {
+      "name": "Pines digitales, analógicos y PWM",
+      "description": "Bloques de entrada y salida con selección de pines por capacidad.",
+      "kind": "module",
+      "path": "packages/pin-io"
+    },
+    {
+      "name": "Robótica",
+      "description": "Movimiento, motores y sensores lógicos como extensión opcional.",
+      "kind": "module",
+      "path": "packages/robotics"
+    },
+    {
+      "name": "Distancia de demostración",
+      "description": "Ejemplo de módulo independiente con sensor lógico. Sin driver real.",
+      "kind": "module",
+      "path": "packages/distance-demo"
+    },
+    {
+      "name": "FireBeetle ESP32 DFR0478 · experimental",
+      "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Pendiente de validación física.",
+      "kind": "board",
+      "path": "packages/dfrobot-firebeetle-esp32"
+    },
+    {
+      "name": "Motores DC (puente H)",
+      "description": "Hasta cuatro motores con TB6612FNG o L298N. MicroPython experimental; pendiente de validación física.",
+      "kind": "module",
+      "path": "packages/motores"
+    },
+    {
+      "name": "Servos",
+      "description": "Servos de 50 Hz con el pin elegido en el bloque. MicroPython experimental; pendiente de validación física.",
+      "kind": "module",
+      "path": "packages/servos"
+    },
+    {
+      "name": "Seguidor de línea (QTR analógico)",
+      "description": "Posición de la línea de -100 a 100 con calibración, para Pololu QTR/QTRX analógicas.",
+      "kind": "module",
+      "path": "packages/linea-qtr"
+    },
+    {
+      "name": "Ultrasónico HC-SR04",
+      "description": "Distancia en cm con HC-SR04, eligiendo TRIG y ECHO en el bloque.",
+      "kind": "module",
+      "path": "packages/ultrasonico-hcsr04"
+    },
+    {
+      "name": "Sensor de color TCS34725",
+      "description": "Color con TCS34725 (DFRobot SEN0212) por I2C: tono, brillo y nombre del color.",
+      "kind": "module",
+      "path": "packages/color-tcs34725"
+    },
+    {
+      "name": "IMU BNO055",
+      "description": "Ángulo de giro e inclinación con BNO055 (DFRobot SEN0253) por I2C.",
+      "kind": "module",
+      "path": "packages/imu-bno055"
+    },
+    {
+      "name": "UART: OpenMV y otras placas",
+      "description": "Recibe y envía líneas de texto por UART; lee datos separados por comas (OpenMV).",
+      "kind": "module",
+      "path": "packages/uart"
+    }
   ]
 }

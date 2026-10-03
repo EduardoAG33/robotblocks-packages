@@ -20,11 +20,16 @@
         "colour": "#4C97FF"
       }
     ],
-    "blocks": ["blocks.json"],
+    "blocks": [
+      "blocks.json"
+    ],
     "boards": [],
     "devices": [],
     "generators": [],
     "monitors": []
   },
-  "assets": []
+  "assets": [],
+  "metadata": {
+    "group": "other"
+  }
 }

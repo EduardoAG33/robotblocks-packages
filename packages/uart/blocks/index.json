@@ -1,0 +1,263 @@
+[
+  {
+    "id": "org.robotblocks.uart:configure",
+    "operation": "org.robotblocks.uart:configure",
+    "category": "org.robotblocks.uart:uart",
+    "label": "configurar UART %PORT RX %RX TX %TX a %BAUD baudios",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "name": "RX",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalInput"
+          ]
+        }
+      },
+      {
+        "name": "TX",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "BAUD",
+        "type": "number",
+        "default": 19200,
+        "min": 300,
+        "max": 2000000,
+        "integer": true
+      }
+    ],
+    "tooltip": "En «al iniciar». RX de la placa va al TX del otro equipo y viceversa; une las tierras. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalInput",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import UART"
+        ],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_configurar(puerto, rx, tx, baudios, bloque):\n    try:\n        uart = UART(puerto, baudrate=int(baudios), rx=rx, tx=tx, timeout=0)\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar UART %s: %s\" % (puerto, error))\n    uart_puertos[puerto] = [uart, b\"\", \"\", False]  # UART, búfer, última línea, línea nueva\n"
+        ],
+        "statement": "uart_configurar(int({PORT}), {RX}, {TX}, {BAUD}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.uart:received",
+    "operation": "org.robotblocks.uart:received",
+    "category": "org.robotblocks.uart:uart",
+    "label": "¿llegó una línea por UART %PORT?",
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Verdadero una vez por cada línea nueva. No espera: si no hay datos, sigue el programa. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalInput",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import UART"
+        ],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_hay_linea(puerto, bloque):\n    datos = uart_puerto(puerto, bloque)\n    nueva, datos[3] = datos[3], False\n    return nueva\n"
+        ],
+        "expression": "uart_hay_linea(int({PORT}), {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.uart:line",
+    "operation": "org.robotblocks.uart:line",
+    "category": "org.robotblocks.uart:uart",
+    "label": "última línea de UART %PORT",
+    "kind": "reporter",
+    "output": "string",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "El texto completo de la última línea recibida. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalInput",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import UART"
+        ],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n"
+        ],
+        "expression": "uart_puerto(int({PORT}), {BLOCK_ID})[2]"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.uart:field",
+    "operation": "org.robotblocks.uart:field",
+    "category": "org.robotblocks.uart:uart",
+    "label": "dato %NUMBER de la última línea de UART %PORT",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": "Para «160,2400,2», el dato 1 es 160. Devuelve 0 si falta o no es un número. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalInput",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import UART"
+        ],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_dato(numero, puerto, bloque):\n    partes = uart_puerto(puerto, bloque)[2].split(\",\")\n    try:\n        return float(partes[int(numero) - 1])\n    except (IndexError, ValueError):\n        return 0\n"
+        ],
+        "expression": "uart_dato({NUMBER}, int({PORT}), {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.uart:send",
+    "operation": "org.robotblocks.uart:send",
+    "category": "org.robotblocks.uart:uart",
+    "label": "enviar por UART %PORT %TEXT",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "TEXT",
+        "type": "value",
+        "default": "hola"
+      }
+    ],
+    "tooltip": "Envía el texto con salto de línea al final. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalInput",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import UART"
+        ],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].any():\n        recibido = datos[0].read()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            datos[2] = linea.decode().strip()\n            datos[3] = True\n        except UnicodeError:\n            pass\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_enviar(puerto, texto, bloque):\n    uart_puerto(puerto, bloque)[0].write(str(texto) + \"\\n\")\n"
+        ],
+        "statement": "uart_enviar(int({PORT}), {TEXT}, {BLOCK_ID})"
+      }
+    }
+  }
+]

@@ -1,0 +1,85 @@
+[
+  {
+    "id": "org.robotblocks.servos:move",
+    "operation": "org.robotblocks.servos:move",
+    "category": "org.robotblocks.servos:servos",
+    "label": "servo en pin %PIN a %ANGLE grados",
+    "kind": "command",
+    "requiredCapabilities": [
+      "pwm"
+    ],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "pwm"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90
+      }
+    ],
+    "tooltip": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "globals": [
+          "def servos_mover(servo, angulo):\n    angulo = max(0, min(180, angulo))\n    # Pulso de 0.5 ms (0°) a 2.5 ms (180°) cada 20 ms.\n    servo.duty_ns(int(500000 + angulo * 2000000 / 180))\n"
+        ],
+        "setup": [
+          "servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"
+        ],
+        "statement": "servos_mover(servo_{PIN}, {ANGLE})",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.servos:release",
+    "operation": "org.robotblocks.servos:release",
+    "category": "org.robotblocks.servos:servos",
+    "label": "soltar servo en pin %PIN",
+    "kind": "command",
+    "requiredCapabilities": [
+      "pwm"
+    ],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "pwm"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"
+        ],
+        "statement": "servo_{PIN}.duty_ns(0)",
+        "canFail": false
+      }
+    }
+  }
+]

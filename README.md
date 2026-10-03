@@ -10,6 +10,13 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/pin-io`         | Digital, analógico y PWM               | Edición y validación; sin ejecución                                |
 | `packages/robotics`       | Movimiento, motores y lecturas lógicas | Módulo opcional, valores ovalados conectables                      |
 | `packages/distance-demo`  | Ejemplo de sensor independiente        | Sin driver real                                                    |
+| `packages/motores`        | Motores DC con puente H (TB6612FNG/L298N) | MicroPython experimental, incluido; pendiente de prueba física     |
+| `packages/servos`         | Servos con el pin elegido en el bloque | MicroPython experimental, incluido; pendiente de prueba física     |
+| `packages/linea-qtr`      | Seguidor de línea Pololu QTR/QTRX analógico | MicroPython experimental, opcional; pendiente de prueba física |
+| `packages/ultrasonico-hcsr04` | Distancia con HC-SR04              | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/color-tcs34725` | Color con TCS34725 (DFRobot SEN0212)   | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/imu-bno055`     | Giro e inclinación con BNO055 (SEN0253) | MicroPython experimental, opcional; pendiente de prueba física    |
+| `packages/uart`           | Líneas de texto por UART (OpenMV)      | MicroPython experimental, opcional; pendiente de prueba física     |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 

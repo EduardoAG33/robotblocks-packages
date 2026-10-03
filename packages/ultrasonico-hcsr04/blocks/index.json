@@ -1,0 +1,57 @@
+[
+  {
+    "id": "org.robotblocks.ultrasonico:distance",
+    "operation": "org.robotblocks.ultrasonico:distance",
+    "category": "org.robotblocks.ultrasonico:ultrasonico",
+    "label": "distancia ultrasónica en cm TRIG %TRIG ECHO %ECHO",
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "TRIG",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      },
+      {
+        "name": "ECHO",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalInput"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "De 2 a 400 cm; devuelve 400 si no hay eco. En placas de 3.3 V usa un divisor de voltaje en ECHO o un HC-SR04P. MicroPython experimental.",
+    "requiredCapabilities": [
+      "digitalOutput",
+      "digitalInput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, time_pulse_us",
+          "import time"
+        ],
+        "globals": [
+          "def ultrasonico_cm(trig, echo):\n    trig.value(0)\n    time.sleep_us(2)\n    trig.value(1)\n    time.sleep_us(10)\n    trig.value(0)\n    duracion = time_pulse_us(echo, 1, 30000)\n    if duracion < 0:\n        return 400  # Sin eco: fuera de alcance.\n    return round(duracion / 58, 1)\n"
+        ],
+        "setup": [
+          "ultra_trig_{TRIG} = Pin({TRIG}, Pin.OUT, value=0)",
+          "ultra_echo_{ECHO} = Pin({ECHO}, Pin.IN)"
+        ],
+        "expression": "ultrasonico_cm(ultra_trig_{TRIG}, ultra_echo_{ECHO})",
+        "canFail": false
+      }
+    }
+  }
+]

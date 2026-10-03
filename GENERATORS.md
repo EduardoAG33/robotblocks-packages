@@ -15,12 +15,13 @@ cada bloque. Los descriptores del manifiesto no sustituyen estas plantillas.
 Este ejemplo solo transforma una entrada numérica; no describe hardware.
 Los valores usan `expression`; las instrucciones, `statement`. Los arrays
 `imports`, `includes`, `globals`, `setup` se deduplican. `{CAMPO}` se escapa o
-resuelve a símbolo/identificador; `{ENTRADA}` se parentiza. `{DEVICE.trig}` resuelve
+resuelve a símbolo/identificador; `{ENTRADA}` conserva paréntesis solo cuando protege precedencia.
+Los literales simples, identificadores y llamadas completas no los necesitan. `{DEVICE.trig}` resuelve
 una ranura. Los cuerpos `{BODY}`/`{THEN}` deben ocupar líneas completas y el motor
 aplica su indentación. No uses entradas de proceso en inicializaciones ni cesiones
 ocultas. Python exige `global nombre` si una instrucción reasigna un global del paquete.
 
-Reserva los prefijos `rb_`, `v_`, `d_`, `fn_`, `p_` para el motor. Los reporters son síncronos;
+Reserva los prefijos `rb_`, `v_`, `d_`, `fn_`, `p_`, `proceso_` para el motor. Los reporters son síncronos;
 evita variables automáticas C++ inicializadas atravesando cuerpos con esperas.
 No dependas de variables privadas en setup. El contrato completo y sus límites
 están en `docs/CODEGEN.md` y ADR 011 de la aplicación.

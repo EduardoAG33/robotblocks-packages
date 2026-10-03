@@ -20,36 +20,52 @@
         "colour": "#D16FE8"
       }
     ],
-    "blocks": ["blocks/index.json"],
+    "blocks": [
+      "blocks/index.json"
+    ],
     "devices": [
       {
         "id": "org.robotblocks.demo-distance-sensor:sensor",
         "name": "Sensor de distancia demo",
-        "capabilities": ["sensor", "distance"],
-        "requiredCapabilities": ["i2c"],
+        "capabilities": [
+          "sensor",
+          "distance"
+        ],
+        "requiredCapabilities": [
+          "i2c"
+        ],
         "pins": [
           {
             "name": "i2c",
             "label": "Bus I2C",
-            "capabilities": ["i2c"]
+            "capabilities": [
+              "i2c"
+            ]
           }
         ]
       },
       {
         "id": "org.robotblocks.demo-distance-sensor:ultrasonic",
         "name": "Sensor de dos pines · demo",
-        "capabilities": ["sensor", "distance"],
+        "capabilities": [
+          "sensor",
+          "distance"
+        ],
         "requiredCapabilities": [],
         "pins": [
           {
             "name": "trig",
             "label": "Trigger",
-            "capabilities": ["digitalOutput"]
+            "capabilities": [
+              "digitalOutput"
+            ]
           },
           {
             "name": "echo",
             "label": "Echo",
-            "capabilities": ["digitalInput"]
+            "capabilities": [
+              "digitalInput"
+            ]
           }
         ]
       }
@@ -74,6 +90,7 @@
   },
   "assets": [],
   "metadata": {
-    "demo": true
+    "demo": true,
+    "group": "sensors"
   }
 }

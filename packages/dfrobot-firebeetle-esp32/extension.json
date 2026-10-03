@@ -1,0 +1,445 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.dfrobot-firebeetle-esp32",
+  "name": "FireBeetle ESP32 DFR0478 · experimental",
+  "version": "0.1.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Pendiente de validación física.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "assets": [],
+  "metadata": {
+    "experimental": true
+  },
+  "contributes": {
+    "categories": [],
+    "blocks": [],
+    "devices": [],
+    "generators": [],
+    "monitors": [],
+    "boards": [
+      {
+        "id": "org.robotblocks.dfrobot-firebeetle-esp32:board",
+        "name": "FireBeetle ESP32 DFR0478 · experimental",
+        "family": "esp32",
+        "experimental": true,
+        "description": "Lógica de 3.3 V. LED D9/GPIO2. USB CH340. Pines flash y UART0 excluidos de selección.",
+        "capabilities": [
+          "digitalInput",
+          "digitalOutput",
+          "analogInput",
+          "pwm"
+        ],
+        "logicLevel": 3.3,
+        "adcBits": 12,
+        "pwm": {
+          "bits": 10,
+          "defaultFrequency": 5000
+        },
+        "targets": {
+          "micropython": {
+            "upload": "webserial-raw-repl"
+          }
+        },
+        "resources": [
+          {
+            "id": "gpio3",
+            "label": "D0 / RXD · GPIO3",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "3",
+              "arduino": "3"
+            },
+            "notes": "Reservado para la consola USB/UART0. No utilizar durante Web Serial."
+          },
+          {
+            "id": "gpio1",
+            "label": "D1 / TXD · GPIO1",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "1",
+              "arduino": "1"
+            },
+            "notes": "Reservado para la consola USB/UART0. No utilizar durante Web Serial."
+          },
+          {
+            "id": "gpio25",
+            "label": "D2 · GPIO25",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "25",
+              "arduino": "25"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio26",
+            "label": "D3 · GPIO26",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "26",
+              "arduino": "26"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio27",
+            "label": "D4 · GPIO27",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "27",
+              "arduino": "27"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio9",
+            "label": "D5 / SD2 · GPIO9",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "9",
+              "arduino": "9"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio10",
+            "label": "D6 / SD3 · GPIO10",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "10",
+              "arduino": "10"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio13",
+            "label": "D7 · GPIO13",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "13",
+              "arduino": "13"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio5",
+            "label": "D8 · GPIO5",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "5",
+              "arduino": "5"
+            },
+            "notes": "Pin de strapping: no forzar su nivel durante arranque.",
+            "strapping": true
+          },
+          {
+            "id": "gpio2",
+            "label": "D9 / LED integrado · GPIO2",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "2",
+              "arduino": "2"
+            },
+            "notes": "ADC2: no disponible con WiFi activo. LED integrado; alto enciende, bajo apaga."
+          },
+          {
+            "id": "gpio6",
+            "label": "CLK · GPIO6",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "6",
+              "arduino": "6"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio7",
+            "label": "SD0 · GPIO7",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "7",
+              "arduino": "7"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio8",
+            "label": "SD1 · GPIO8",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "8",
+              "arduino": "8"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio11",
+            "label": "CMD · GPIO11",
+            "capabilities": [],
+            "symbol": {
+              "micropython": "11",
+              "arduino": "11"
+            },
+            "notes": "Reservado para memoria flash. No utilizar como GPIO."
+          },
+          {
+            "id": "gpio36",
+            "label": "A0 / SENSOR_VP · GPIO36 · solo entrada",
+            "capabilities": [
+              "digitalInput",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "36",
+              "arduino": "36"
+            },
+            "notes": "Solo entrada; sin pull-up/pull-down internos. ADC1."
+          },
+          {
+            "id": "gpio39",
+            "label": "A1 / SENSOR_VN · GPIO39 · solo entrada",
+            "capabilities": [
+              "digitalInput",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "39",
+              "arduino": "39"
+            },
+            "notes": "Solo entrada; sin pull-up/pull-down internos. ADC1."
+          },
+          {
+            "id": "gpio34",
+            "label": "A2 · GPIO34 · solo entrada",
+            "capabilities": [
+              "digitalInput",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "34",
+              "arduino": "34"
+            },
+            "notes": "Solo entrada; sin pull-up/pull-down internos. ADC1."
+          },
+          {
+            "id": "gpio35",
+            "label": "A3 · GPIO35 · solo entrada",
+            "capabilities": [
+              "digitalInput",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "35",
+              "arduino": "35"
+            },
+            "notes": "Solo entrada; sin pull-up/pull-down internos. ADC1."
+          },
+          {
+            "id": "gpio15",
+            "label": "A4 · GPIO15",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "15",
+              "arduino": "15"
+            },
+            "notes": "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.",
+            "strapping": true
+          },
+          {
+            "id": "gpio0",
+            "label": "IO0 · GPIO0",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "0",
+              "arduino": "0"
+            },
+            "notes": "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.",
+            "strapping": true
+          },
+          {
+            "id": "gpio18",
+            "label": "SCK · GPIO18",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "18",
+              "arduino": "18"
+            }
+          },
+          {
+            "id": "gpio23",
+            "label": "MOSI · GPIO23",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "23",
+              "arduino": "23"
+            }
+          },
+          {
+            "id": "gpio19",
+            "label": "MISO · GPIO19",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "19",
+              "arduino": "19"
+            }
+          },
+          {
+            "id": "gpio21",
+            "label": "SDA · GPIO21",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "21",
+              "arduino": "21"
+            }
+          },
+          {
+            "id": "gpio22",
+            "label": "SCL · GPIO22",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "22",
+              "arduino": "22"
+            }
+          },
+          {
+            "id": "gpio14",
+            "label": "BCLK · GPIO14",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "14",
+              "arduino": "14"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio12",
+            "label": "MCLK · GPIO12",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "12",
+              "arduino": "12"
+            },
+            "notes": "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.",
+            "strapping": true
+          },
+          {
+            "id": "gpio4",
+            "label": "DO · GPIO4",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm",
+              "analogInput"
+            ],
+            "symbol": {
+              "micropython": "4",
+              "arduino": "4"
+            },
+            "notes": "ADC2: no disponible con WiFi activo."
+          },
+          {
+            "id": "gpio16",
+            "label": "DI · GPIO16",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "16",
+              "arduino": "16"
+            }
+          },
+          {
+            "id": "gpio17",
+            "label": "LRCK · GPIO17",
+            "capabilities": [
+              "digitalInput",
+              "digitalOutput",
+              "pwm"
+            ],
+            "symbol": {
+              "micropython": "17",
+              "arduino": "17"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
