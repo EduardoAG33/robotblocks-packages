@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.servos",
+  "name": "Servos",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Servos de 50 Hz eligiendo el pin en el bloque. Plantillas MicroPython experimentales; Arduino pendiente.",
+  "requiredCapabilities": [
+    "pwm"
+  ],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.servos:servos",
+        "name": "Servos",
+        "colour": "#9966FF"
+      }
+    ],
+    "blocks": [
+      "blocks/index.json"
+    ],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true
+  }
+}

@@ -1,156 +1,267 @@
 [
   {
-    "id": "org.robotblocks.motores:servo-angle",
-    "operation": "org.robotblocks.motores:servo-angle",
+    "id": "org.robotblocks.motores:configure",
+    "operation": "org.robotblocks.motores:configure",
     "category": "org.robotblocks.motores:motores",
-    "label": "mover servo %DEVICE a %ANGLE grados",
+    "label": "configurar motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2",
     "kind": "command",
+    "requiredCapabilities": [
+      "pwm",
+      "digitalOutput"
+    ],
     "fields": [
       {
-        "name": "DEVICE",
+        "name": "MOTOR",
+        "type": "string",
+        "default": "A",
+        "options": [
+          {
+            "label": "A",
+            "value": "A"
+          },
+          {
+            "label": "B",
+            "value": "B"
+          },
+          {
+            "label": "C",
+            "value": "C"
+          },
+          {
+            "label": "D",
+            "value": "D"
+          }
+        ]
+      },
+      {
+        "name": "PWM",
         "type": "string",
         "default": "",
         "reference": {
-          "kind": "device",
+          "kind": "resource",
           "capabilities": [
-            "servo"
+            "pwm"
+          ]
+        }
+      },
+      {
+        "name": "IN1",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
+          ]
+        }
+      },
+      {
+        "name": "IN2",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "digitalOutput"
           ]
         }
       }
     ],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90,
-        "min": 0,
-        "max": 180
-      }
-    ],
-    "tooltip": "Servo de 50 Hz. Aliméntalo con 5 V externos y une las tierras (GND) con la placa. MicroPython experimental.",
-    "requiredCapabilities": [
-      "pwm"
-    ],
+    "inputs": [],
+    "tooltip": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
     "generators": {
       "micropython": {
         "imports": [
           "from machine import Pin, PWM"
         ],
         "globals": [
-          "def motores_servo(servo, angulo):\n    # Pulso de 0.5 ms (0°) a 2.5 ms (180°) cada 20 ms.\n    servo.duty_ns(int(500000 + angulo * 2000000 / 180))\n"
+          "motores_puente = {}\n",
+          "def motores_configurar(motor, pwm, in1, in2):\n    motores_puente[motor] = (PWM(Pin(pwm), freq=1000, duty_u16=0), Pin(in1, Pin.OUT, value=0), Pin(in2, Pin.OUT, value=0))\n"
         ],
-        "setup": [
-          "{DEVICE} = PWM(Pin({DEVICE.signal}), freq=50, duty_u16=0)"
-        ],
-        "statement": "motores_servo({DEVICE}, {ANGLE})",
+        "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2})",
         "canFail": false
       }
     }
   },
   {
-    "id": "org.robotblocks.motores:servo-release",
-    "operation": "org.robotblocks.motores:servo-release",
+    "id": "org.robotblocks.motores:speed",
+    "operation": "org.robotblocks.motores:speed",
     "category": "org.robotblocks.motores:motores",
-    "label": "soltar servo %DEVICE",
+    "label": "motor %MOTOR a %SPEED %",
     "kind": "command",
-    "fields": [
-      {
-        "name": "DEVICE",
-        "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": [
-            "servo"
-          ]
-        }
-      }
-    ],
-    "inputs": [],
-    "tooltip": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz. Aliméntalo con 5 V externos y une las tierras (GND) con la placa. MicroPython experimental.",
     "requiredCapabilities": [
-      "pwm"
+      "pwm",
+      "digitalOutput"
     ],
-    "generators": {
-      "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "{DEVICE} = PWM(Pin({DEVICE.signal}), freq=50, duty_u16=0)"
-        ],
-        "statement": "{DEVICE}.duty_ns(0)",
-        "canFail": false
-      }
-    }
-  },
-  {
-    "id": "org.robotblocks.motores:motor-speed",
-    "operation": "org.robotblocks.motores:motor-speed",
-    "category": "org.robotblocks.motores:motores",
-    "label": "motor %DEVICE a velocidad %SPEED %",
-    "kind": "command",
     "fields": [
       {
-        "name": "DEVICE",
+        "name": "MOTOR",
         "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": [
-            "dcMotor"
-          ]
-        }
+        "default": "A",
+        "options": [
+          {
+            "label": "A",
+            "value": "A"
+          },
+          {
+            "label": "B",
+            "value": "B"
+          },
+          {
+            "label": "C",
+            "value": "C"
+          },
+          {
+            "label": "D",
+            "value": "D"
+          }
+        ]
       }
     ],
     "inputs": [
       {
         "name": "SPEED",
         "type": "number",
-        "default": 50,
-        "min": -100,
-        "max": 100
+        "default": 50
       }
     ],
-    "tooltip": "Velocidad de -100 % (reversa) a 100 % (adelante); 0 detiene el motor en libre. Un canal del TB6612FNG. Conecta STBY a 3.3 V (o ponlo en alto con un bloque de pin) y une las tierras. MicroPython experimental.",
-    "requiredCapabilities": [
-      "pwm",
-      "digitalOutput"
-    ],
+    "tooltip": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
     "generators": {
       "micropython": {
         "imports": [
           "from machine import Pin, PWM"
         ],
         "globals": [
-          "def motores_detener(motor, modo):\n    pwm, in1, in2 = motor\n    # TB6612FNG: IN1=IN2=alto frena en corto; IN1=IN2=bajo con PWM alto deja el motor libre.\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(0 if frenar else 65535)\n",
-          "def motores_dc(motor, velocidad):\n    if velocidad == 0:\n        motores_detener(motor, \"libre\")\n        return\n    pwm, in1, in2 = motor\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
+          "motores_puente = {}\n",
+          "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+          "def motores_velocidad(motor, velocidad, bloque):\n    salidas = motores_puente.get(motor)\n    if salidas is None:\n        rb_fail(bloque, \"Motor %s sin configurar: usa configurar motor al iniciar\" % motor)\n    velocidad = max(-100, min(100, velocidad))\n    if velocidad == 0:\n        motores_parar(salidas, \"libre\")\n        return\n    pwm, in1, in2 = salidas\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
         ],
-        "setup": [
-          "{DEVICE} = (PWM(Pin({DEVICE.pwm}), freq=1000, duty_u16=0), Pin({DEVICE.in1}, Pin.OUT, value=0), Pin({DEVICE.in2}, Pin.OUT, value=0))"
-        ],
-        "statement": "motores_dc({DEVICE}, {SPEED})",
-        "canFail": false
+        "statement": "motores_velocidad({MOTOR}, {SPEED}, {BLOCK_ID})"
       }
     }
   },
   {
-    "id": "org.robotblocks.motores:motor-stop",
-    "operation": "org.robotblocks.motores:motor-stop",
+    "id": "org.robotblocks.motores:pair",
+    "operation": "org.robotblocks.motores:pair",
     "category": "org.robotblocks.motores:motores",
-    "label": "detener motor %DEVICE %MODE",
+    "label": "motores %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED",
     "kind": "command",
+    "requiredCapabilities": [
+      "pwm",
+      "digitalOutput"
+    ],
     "fields": [
       {
-        "name": "DEVICE",
+        "name": "LEFT",
         "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": [
-            "dcMotor"
-          ]
-        }
+        "default": "B",
+        "options": [
+          {
+            "label": "A",
+            "value": "A"
+          },
+          {
+            "label": "B",
+            "value": "B"
+          },
+          {
+            "label": "C",
+            "value": "C"
+          },
+          {
+            "label": "D",
+            "value": "D"
+          }
+        ]
+      },
+      {
+        "name": "RIGHT",
+        "type": "string",
+        "default": "C",
+        "options": [
+          {
+            "label": "A",
+            "value": "A"
+          },
+          {
+            "label": "B",
+            "value": "B"
+          },
+          {
+            "label": "C",
+            "value": "C"
+          },
+          {
+            "label": "D",
+            "value": "D"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "LEFT_SPEED",
+        "type": "number",
+        "default": 50
+      },
+      {
+        "name": "RIGHT_SPEED",
+        "type": "number",
+        "default": 50
+      }
+    ],
+    "tooltip": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "globals": [
+          "motores_puente = {}\n",
+          "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+          "def motores_velocidad(motor, velocidad, bloque):\n    salidas = motores_puente.get(motor)\n    if salidas is None:\n        rb_fail(bloque, \"Motor %s sin configurar: usa configurar motor al iniciar\" % motor)\n    velocidad = max(-100, min(100, velocidad))\n    if velocidad == 0:\n        motores_parar(salidas, \"libre\")\n        return\n    pwm, in1, in2 = salidas\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
+        ],
+        "statement": "motores_velocidad({LEFT}, {LEFT_SPEED}, {BLOCK_ID})\nmotores_velocidad({RIGHT}, {RIGHT_SPEED}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.motores:stop",
+    "operation": "org.robotblocks.motores:stop",
+    "category": "org.robotblocks.motores:motores",
+    "label": "detener %MOTOR %MODE",
+    "kind": "command",
+    "requiredCapabilities": [
+      "pwm",
+      "digitalOutput"
+    ],
+    "fields": [
+      {
+        "name": "MOTOR",
+        "type": "string",
+        "default": "todos",
+        "options": [
+          {
+            "label": "todos los motores",
+            "value": "todos"
+          },
+          {
+            "label": "motor A",
+            "value": "A"
+          },
+          {
+            "label": "motor B",
+            "value": "B"
+          },
+          {
+            "label": "motor C",
+            "value": "C"
+          },
+          {
+            "label": "motor D",
+            "value": "D"
+          }
+        ]
       },
       {
         "name": "MODE",
@@ -169,23 +280,18 @@
       }
     ],
     "inputs": [],
-    "tooltip": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. Un canal del TB6612FNG. Conecta STBY a 3.3 V (o ponlo en alto con un bloque de pin) y une las tierras. MicroPython experimental.",
-    "requiredCapabilities": [
-      "pwm",
-      "digitalOutput"
-    ],
+    "tooltip": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
     "generators": {
       "micropython": {
         "imports": [
           "from machine import Pin, PWM"
         ],
         "globals": [
-          "def motores_detener(motor, modo):\n    pwm, in1, in2 = motor\n    # TB6612FNG: IN1=IN2=alto frena en corto; IN1=IN2=bajo con PWM alto deja el motor libre.\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(0 if frenar else 65535)\n"
+          "motores_puente = {}\n",
+          "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+          "def motores_detener(motor, modo):\n    for letra, salidas in motores_puente.items():\n        if motor == \"todos\" or motor == letra:\n            motores_parar(salidas, modo)\n"
         ],
-        "setup": [
-          "{DEVICE} = (PWM(Pin({DEVICE.pwm}), freq=1000, duty_u16=0), Pin({DEVICE.in1}, Pin.OUT, value=0), Pin({DEVICE.in2}, Pin.OUT, value=0))"
-        ],
-        "statement": "motores_detener({DEVICE}, {MODE})",
+        "statement": "motores_detener({MOTOR}, {MODE})",
         "canFail": false
       }
     }

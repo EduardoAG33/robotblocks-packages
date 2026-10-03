@@ -1,44 +1,38 @@
-# Motores: servo y motor DC (TB6612FNG)
+# Motores DC (puente H)
 
-Extensión **experimental** para MicroPython (probada en simulación; pendiente de prueba física). Las plantillas de Arduino llegarán con la fase de compilación.
-
-## Dispositivos
-
-Configúralos en **Mi tarjeta → Configurar dispositivos** y elige sus pines.
-
-| Dispositivo | Pines | Notas |
-| --- | --- | --- |
-| Servo (SG90, MG90S, MG996R) | Señal → pin con PWM | Pulso de 0.5 ms (0°) a 2.5 ms (180°) a 50 Hz. Si tu servo no llega a los extremos o vibra en ellos, usa un rango más corto, por ejemplo de 10° a 170°. |
-| Motor DC · TB6612FNG | PWM → PWMA/PWMB, IN1 → AIN1/BIN1, IN2 → AIN2/BIN2 | Un dispositivo por canal. Para dos motores crea dos dispositivos. |
+Extensión **experimental** para MicroPython (probada en simulación; pendiente de prueba física). Funciona con **TB6612FNG** y **L298N**, o con cualquier puente H que use PWM + IN1 + IN2. Las plantillas de Arduino llegarán con la fase de compilación.
 
 ## Bloques
 
-- **mover servo … a … grados** (0 a 180).
-- **soltar servo …**: deja de enviar pulsos y el servo ya no se sostiene en su posición.
-- **motor … a velocidad … %**: de -100 (reversa) a 100 (adelante); 0 lo deja en libre.
-- **detener motor … frenando / en libre**.
+| Bloque | Uso |
+| --- | --- |
+| **configurar motor [A–D] PWM [pin] IN1 [pin] IN2 [pin]** | En «al iniciar», una vez por motor. Es el único lugar donde se eligen pines. |
+| **motor [A–D] a (velocidad) %** | De -100 (reversa) a 100 (adelante). Los valores mayores se limitan, así que puedes conectar la salida de un control PID sin miedo a errores. 0 deja el motor en libre. |
+| **motores [B] (50) [C] (50)** | Dos motores a la vez, por ejemplo izquierdo y derecho. |
+| **detener [todos los motores / motor A–D] [frenando / en libre]** | Frenando se detiene enseguida; en libre gira hasta pararse solo. |
+
+Usar un motor que no se configuró detiene el programa con `RB_ERROR` y la app resalta el bloque.
 
 ## Conexiones
 
-**Servo**
-
-- Señal (naranja/amarillo) → pin PWM de la placa.
-- Rojo → 5 V de una fuente externa o de un regulador. Evita sacar los 5 V del USB para servos grandes como el MG996R.
-- Café/negro → GND, **común con la placa**.
-
-**TB6612FNG**
-
-- VM → batería de los motores (hasta 13.5 V). VCC → 3.3 V de la placa. GND → común.
-- **STBY → 3.3 V** para que el driver esté siempre activo. Si lo controlas con un pin, ponlo en alto con el bloque «poner pin en alto» de *Pines de la tarjeta* al iniciar.
-- AO1/AO2 (o BO1/BO2) → terminales del motor. Si el motor gira al revés, intercambia esos dos cables o usa velocidades negativas.
-
-Tabla de verdad usada (hoja de datos de Toshiba TB6612FNG):
-
-| IN1 | IN2 | PWM | Resultado |
+| Puente H | PWM | IN1 | IN2 |
 | --- | --- | --- | --- |
-| H | L | PWM | Adelante |
-| L | H | PWM | Reversa |
-| H | H | — | Freno en corto |
-| L | L | H | Libre (salidas apagadas) |
+| TB6612FNG canal A / B | PWMA / PWMB | AIN1 / BIN1 | AIN2 / BIN2 |
+| L298N motor A / B | ENA / ENB (quita el puente del jumper) | IN1 / IN3 | IN2 / IN4 |
 
-Nunca conectes 5 V a los GPIO del ESP32: trabajan a 3.3 V.
+- **TB6612FNG:** VM → batería de los motores (hasta 13.5 V), VCC → 3.3 V de la placa, **STBY → 3.3 V** (o ponlo en alto con un bloque de pin al iniciar).
+- **L298N:** +12 V → batería; une su GND con el de la placa.
+- **Siempre GND común** entre la placa, el driver y la batería.
+- Si un motor gira al revés, intercambia IN1 e IN2 en «configurar motor» o los cables del motor.
+- Nunca conectes 5 V a los GPIO del ESP32: trabajan a 3.3 V.
+
+## Lógica usada
+
+| Acción | IN1 | IN2 | PWM |
+| --- | --- | --- | --- |
+| Adelante | H | L | velocidad |
+| Reversa | L | H | velocidad |
+| Frenar | H | H | alto |
+| Libre | L | L | 0 |
+
+Es la misma convención que el bloque `MOTORES` de Los Grises en Mind+ y frena tanto en el TB6612FNG (freno en corto) como en el L298N («fast motor stop»).

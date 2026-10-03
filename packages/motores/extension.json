@@ -1,14 +1,17 @@
 {
   "schemaVersion": 2,
   "id": "org.robotblocks.motores",
-  "name": "Motores: servo y motor DC (TB6612FNG)",
+  "name": "Motores DC (puente H)",
   "version": "1.0.0",
   "author": {
     "name": "Los Grises · RobotBlocks"
   },
   "minAppVersion": "0.4.0",
-  "description": "Servo de 50 Hz y motor DC con un canal del driver TB6612FNG. Plantillas MicroPython experimentales; Arduino pendiente.",
-  "requiredCapabilities": ["pwm", "digitalOutput"],
+  "description": "Hasta cuatro motores (A–D) con TB6612FNG o L298N: PWM + IN1 + IN2. Plantillas MicroPython experimentales; Arduino pendiente.",
+  "requiredCapabilities": [
+    "pwm",
+    "digitalOutput"
+  ],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
@@ -20,45 +23,10 @@
         "colour": "#4C97FF"
       }
     ],
-    "blocks": ["blocks/index.json"],
-    "devices": [
-      {
-        "id": "org.robotblocks.motores:servo",
-        "name": "Servo (SG90, MG90S, MG996R)",
-        "capabilities": ["servo"],
-        "requiredCapabilities": ["pwm"],
-        "pins": [
-          {
-            "name": "signal",
-            "label": "Señal",
-            "capabilities": ["pwm"]
-          }
-        ]
-      },
-      {
-        "id": "org.robotblocks.motores:tb6612",
-        "name": "Motor DC · TB6612FNG (un canal)",
-        "capabilities": ["motor", "dcMotor"],
-        "requiredCapabilities": ["pwm", "digitalOutput"],
-        "pins": [
-          {
-            "name": "pwm",
-            "label": "PWM (PWMA/PWMB)",
-            "capabilities": ["pwm"]
-          },
-          {
-            "name": "in1",
-            "label": "IN1 (AIN1/BIN1)",
-            "capabilities": ["digitalOutput"]
-          },
-          {
-            "name": "in2",
-            "label": "IN2 (AIN2/BIN2)",
-            "capabilities": ["digitalOutput"]
-          }
-        ]
-      }
+    "blocks": [
+      "blocks/index.json"
     ],
+    "devices": [],
     "boards": [],
     "generators": [],
     "monitors": []

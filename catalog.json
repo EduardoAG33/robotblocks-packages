@@ -33,10 +33,16 @@
       "path": "packages/dfrobot-firebeetle-esp32"
     },
     {
-      "name": "Motores: servo y motor DC",
-      "description": "Servo de 50 Hz y motor DC con el driver TB6612FNG. MicroPython experimental; pendiente de validación física.",
+      "name": "Motores DC (puente H)",
+      "description": "Hasta cuatro motores con TB6612FNG o L298N. MicroPython experimental; pendiente de validación física.",
       "kind": "module",
       "path": "packages/motores"
+    },
+    {
+      "name": "Servos",
+      "description": "Servos de 50 Hz con el pin elegido en el bloque. MicroPython experimental; pendiente de validación física.",
+      "kind": "module",
+      "path": "packages/servos"
     }
   ]
 }
