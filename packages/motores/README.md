@@ -1,6 +1,6 @@
 # Motores DC (puente H)
 
-Extensión **experimental** para MicroPython (probada en simulación; pendiente de prueba física). Funciona con **TB6612FNG** y **L298N**, o con cualquier puente H que use PWM + IN1 + IN2. Las plantillas de Arduino llegarán con la fase de compilación.
+Extensión **experimental** para MicroPython (probada en simulación; pendiente de prueba física). Funciona con **TB6612FNG**, **L298N** y el shield **Pololu Dual VNH5019** (#2507), o con cualquier puente H que use PWM + IN1 + IN2. Las plantillas de Arduino llegarán con la fase de compilación.
 
 ## Bloques
 
@@ -19,9 +19,11 @@ Usar un motor que no se configuró detiene el programa con `RB_ERROR` y la app r
 | --- | --- | --- | --- |
 | TB6612FNG canal A / B | PWMA / PWMB | AIN1 / BIN1 | AIN2 / BIN2 |
 | L298N motor A / B | ENA / ENB (quita el puente del jumper) | IN1 / IN3 | IN2 / IN4 |
+| Pololu Dual VNH5019 (shield) M1 / M2 | D9 / D10 | D2 / D7 (INA) | D4 / D8 (INB) |
 
 - **TB6612FNG:** VM → batería de los motores (hasta 13.5 V), VCC → 3.3 V de la placa, **STBY → 3.3 V** (o ponlo en alto con un bloque de pin al iniciar).
 - **L298N:** +12 V → batería; une su GND con el de la placa.
+- **Pololu Dual VNH5019:** se monta sobre la Arduino GIGA o Uno; VIN de 5.5 a 24 V, hasta 12 A por motor. Acepta lógica de 3.3 V. Sus pines EN/DIAG (D6/D12) quedan en alto por defecto y bajan si hay una falla; CS (A0/A1) entrega unos 140 mV por amperio. Bloques de corriente y falla: pendientes.
 - **Siempre GND común** entre la placa, el driver y la batería.
 - Si un motor gira al revés, intercambia IN1 e IN2 en «configurar motor» o los cables del motor.
 - Nunca conectes 5 V a los GPIO del ESP32: trabajan a 3.3 V.
@@ -35,4 +37,4 @@ Usar un motor que no se configuró detiene el programa con `RB_ERROR` y la app r
 | Frenar | H | H | alto |
 | Libre | L | L | 0 |
 
-Es la misma convención que el bloque `MOTORES` de Los Grises en Mind+ y frena tanto en el TB6612FNG (freno en corto) como en el L298N («fast motor stop»).
+Es la misma convención que el bloque `MOTORES` de Los Grises en Mind+. Frena en el TB6612FNG (freno en corto), en el L298N («fast motor stop») y en el VNH5019 (freno a VCC). En el VNH5019, «libre» apaga las salidas.
