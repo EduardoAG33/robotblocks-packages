@@ -20,7 +20,7 @@
       }
     ],
     "inputs": [],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
     "requiredCapabilities": [
       "digitalInput"
     ],
@@ -33,6 +33,13 @@
           "input_pin_{PIN} = Pin({PIN}, Pin.IN)"
         ],
         "expression": "input_pin_{PIN}.value() != 0",
+        "canFail": false
+      },
+      "arduino": {
+        "setup": [
+          "pinMode({PIN}, INPUT);"
+        ],
+        "expression": "digitalRead({PIN}) != 0",
         "canFail": false
       }
     }
@@ -72,7 +79,7 @@
       }
     ],
     "inputs": [],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
     "requiredCapabilities": [
       "digitalOutput"
     ],
@@ -85,6 +92,13 @@
           "pin_{PIN} = Pin({PIN}, Pin.OUT)"
         ],
         "statement": "pin_{PIN}.value({STATE} == \"high\")",
+        "canFail": false
+      },
+      "arduino": {
+        "setup": [
+          "pinMode({PIN}, OUTPUT);"
+        ],
+        "statement": "digitalWrite({PIN}, String({STATE}) == String(\"high\") ? 1 : 0);",
         "canFail": false
       }
     }
@@ -110,7 +124,7 @@
       }
     ],
     "inputs": [],
-    "tooltip": "ESP32: ADC de 12 bits (0–4095), atenuación 11 dB. ADC2 no disponible con WiFi activo.",
+    "tooltip": "ESP32: ADC de 12 bits (0–4095), atenuación 11 dB. ADC2 no disponible con WiFi activo. Arduino experimental: API del core, sin librerías externas.",
     "requiredCapabilities": [
       "analogInput"
     ],
@@ -123,6 +137,10 @@
           "adc_{PIN} = rb_adc({PIN}, {BLOCK_ID})"
         ],
         "expression": "rb_adc_read(adc_{PIN}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "expression": "analogRead({PIN})",
+        "canFail": false
       }
     }
   },
@@ -155,7 +173,7 @@
         "integer": true
       }
     ],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
     "requiredCapabilities": [
       "pwm"
     ],
@@ -168,6 +186,13 @@
           "pwm_{PIN} = PWM(Pin({PIN}), freq=5000)"
         ],
         "statement": "pwm_{PIN}.duty(int({VALUE} * 1023 / 100))",
+        "canFail": false
+      },
+      "arduino": {
+        "setup": [
+          "pinMode({PIN}, OUTPUT);"
+        ],
+        "statement": "analogWrite({PIN}, int({VALUE} * 255 / 100));",
         "canFail": false
       }
     }
@@ -201,7 +226,7 @@
         "integer": true
       }
     ],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar.",
+    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
     "requiredCapabilities": [
       "digitalOutput"
     ],
@@ -214,6 +239,13 @@
           "pin_{PIN} = Pin({PIN}, Pin.OUT)"
         ],
         "statement": "pin_{PIN}.value({VALUE})",
+        "canFail": false
+      },
+      "arduino": {
+        "setup": [
+          "pinMode({PIN}, OUTPUT);"
+        ],
+        "statement": "digitalWrite({PIN}, {VALUE});",
         "canFail": false
       }
     }

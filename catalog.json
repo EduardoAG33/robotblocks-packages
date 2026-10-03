@@ -73,6 +73,36 @@
       "description": "Recibe y envía líneas de texto por UART; lee datos separados por comas (OpenMV).",
       "kind": "module",
       "path": "packages/uart"
+    },
+    {
+      "name": "Arduino UNO R3 · experimental",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/arduino-uno"
+    },
+    {
+      "name": "Arduino Nano (ATmega328P) · experimental",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/arduino-nano"
+    },
+    {
+      "name": "Arduino GIGA R1 WiFi · experimental",
+      "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/arduino-giga-r1"
+    },
+    {
+      "name": "Teensy 4.0 · experimental",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/teensy-40"
+    },
+    {
+      "name": "Teensy 4.1 · experimental",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/teensy-41"
     }
   ]
 }
