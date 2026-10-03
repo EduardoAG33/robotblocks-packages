@@ -14,7 +14,8 @@
   "permissions": [],
   "assets": [],
   "metadata": {
-    "experimental": true
+    "experimental": true,
+    "group": "boards"
   },
   "contributes": {
     "categories": [],

@@ -4,19 +4,24 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 
 ## Estado actual
 
-| Paquete                   | Función                                | Estado                                                             |
-| ------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
-| `packages/virtual-boards` | Descriptores de dos tarjetas ficticias | Ejemplo de arranque incluido; no reinstalar sobre el mismo ejemplo |
-| `packages/pin-io`         | Digital, analógico y PWM               | Edición y validación; sin ejecución                                |
-| `packages/robotics`       | Movimiento, motores y lecturas lógicas | Módulo opcional, valores ovalados conectables                      |
-| `packages/distance-demo`  | Ejemplo de sensor independiente        | Sin driver real                                                    |
-| `packages/motores`        | Motores DC con puente H (TB6612FNG/L298N) | MicroPython experimental, incluido; pendiente de prueba física     |
-| `packages/servos`         | Servos con el pin elegido en el bloque | MicroPython experimental, incluido; pendiente de prueba física     |
-| `packages/linea-qtr`      | Seguidor de línea Pololu QTR/QTRX analógico | MicroPython experimental, opcional; pendiente de prueba física |
-| `packages/ultrasonico-hcsr04` | Distancia con HC-SR04              | MicroPython experimental, opcional; pendiente de prueba física     |
-| `packages/color-tcs34725` | Color con TCS34725 (DFRobot SEN0212)   | MicroPython experimental, opcional; pendiente de prueba física     |
-| `packages/imu-bno055`     | Giro e inclinación con BNO055 (SEN0253) | MicroPython experimental, opcional; pendiente de prueba física    |
-| `packages/uart`           | Líneas de texto por UART (OpenMV)      | MicroPython experimental, opcional; pendiente de prueba física     |
+| Paquete                       | Función                                     | Estado                                                             |
+| ----------------------------- | ------------------------------------------- | ------------------------------------------------------------------ |
+| `packages/virtual-boards`     | Descriptores de dos tarjetas ficticias      | Ejemplo de arranque incluido; no reinstalar sobre el mismo ejemplo |
+| `packages/pin-io`             | Digital, analógico y PWM                    | MicroPython ESP32 y API Arduino experimental                       |
+| `packages/robotics`           | Movimiento, motores y lecturas lógicas      | Módulo opcional, valores ovalados conectables                      |
+| `packages/distance-demo`      | Ejemplo de sensor independiente             | Sin driver real                                                    |
+| `packages/motores`            | Motores DC con puente H (TB6612FNG/L298N)   | MicroPython experimental, incluido; pendiente de prueba física     |
+| `packages/servos`             | Servos con el pin elegido en el bloque      | MicroPython experimental, incluido; pendiente de prueba física     |
+| `packages/linea-qtr`          | Seguidor de línea Pololu QTR/QTRX analógico | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/ultrasonico-hcsr04` | Distancia con HC-SR04                       | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/color-tcs34725`     | Color con TCS34725 (DFRobot SEN0212)        | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)     | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/uart`               | Líneas de texto por UART (OpenMV)           | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |
+| `packages/arduino-nano`       | Arduino Nano ATmega328P                     | Arduino experimental, sin carga                                    |
+| `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |
+| `packages/teensy-40`          | Teensy 4.0 (pinout propio)                  | Arduino experimental, sin carga                                    |
+| `packages/teensy-41`          | Teensy 4.1 (pinout propio)                  | Arduino experimental, sin carga                                    |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 
@@ -34,7 +39,11 @@ El prototipo admite descarga directa por URL de repositorios públicos. Como est
 4. Añade el paquete a `catalog.json` con `kind: "board"`.
 5. Valida en el editor y ejecuta `npm test` en este repositorio.
 
-Teensy y Arduino GIGA son objetivos prioritarios. Primero hay que fijar el modelo exacto, consultar su documentación oficial, definir pines y restricciones, y después implementar generación, compilación y carga. **Todavía no hay soporte funcional para esas tarjetas.** Un descriptor visible no equivale a poder cargar firmware.
+Los paquetes `arduino-uno`, `arduino-nano`, `arduino-giga-r1`, `teensy-40` y `teensy-41`
+aportan descriptores experimentales independientes y fuentes oficiales con tablas de pines
+en cada README. Generan lógica y E/S básica C++/Arduino; la compilación con cores y la carga
+se verificarán en Fase 8. Motores, Servos, QTR, HC-SR04, TCS34725, BNO055 y UART carecen de
+plantillas Arduino y lo indican en los diagnósticos. Un descriptor visible no confirma hardware probado.
 
 ## Validación y referencias
 
@@ -43,8 +52,8 @@ Teensy y Arduino GIGA son objetivos prioritarios. Primero hay que fijar el model
 Referencias oficiales: [organización de tarjetas y módulos de Mind+](https://mindplus.dfrobot.com/mp2/3Coding/32UploadMode/324ExtensionArea/) y [extensiones de usuario de Mind+ 1.x](https://mindplus.dfrobot.com.cn/ext-api). Se reutilizan ideas de organización; estos paquetes no son librerías Mind+ y no se importan sin adaptación. No incluyen sus iconos ni recursos gráficos.
 
 La app genera lógica MicroPython/Arduino y acepta [plantillas por bloque](GENERATORS.md).
-Los paquetes actuales carecen de esas plantillas de hardware y muestran diagnósticos
-al generar. Son datos; no ejecutan scripts en el editor. Carga, drivers y pruebas
+Los paquetes de motores, servos y sensores solo aportan plantillas MicroPython y muestran
+diagnósticos al generar Arduino. Son datos; no ejecutan scripts en el editor. Carga Arduino y pruebas
 físicas siguen pendientes. No hay actualizaciones automáticas.
 
 La aplicación usa este catálogo como fuente única. `npm run validate-catalog` en
