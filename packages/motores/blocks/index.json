@@ -1,0 +1,193 @@
+[
+  {
+    "id": "org.robotblocks.motores:servo-angle",
+    "operation": "org.robotblocks.motores:servo-angle",
+    "category": "org.robotblocks.motores:motores",
+    "label": "mover servo %DEVICE a %ANGLE grados",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "servo"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90,
+        "min": 0,
+        "max": 180
+      }
+    ],
+    "tooltip": "Servo de 50 Hz. Aliméntalo con 5 V externos y une las tierras (GND) con la placa. MicroPython experimental.",
+    "requiredCapabilities": [
+      "pwm"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "globals": [
+          "def motores_servo(servo, angulo):\n    # Pulso de 0.5 ms (0°) a 2.5 ms (180°) cada 20 ms.\n    servo.duty_ns(int(500000 + angulo * 2000000 / 180))\n"
+        ],
+        "setup": [
+          "{DEVICE} = PWM(Pin({DEVICE.signal}), freq=50, duty_u16=0)"
+        ],
+        "statement": "motores_servo({DEVICE}, {ANGLE})",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.motores:servo-release",
+    "operation": "org.robotblocks.motores:servo-release",
+    "category": "org.robotblocks.motores:motores",
+    "label": "soltar servo %DEVICE",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "servo"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz. Aliméntalo con 5 V externos y une las tierras (GND) con la placa. MicroPython experimental.",
+    "requiredCapabilities": [
+      "pwm"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "setup": [
+          "{DEVICE} = PWM(Pin({DEVICE.signal}), freq=50, duty_u16=0)"
+        ],
+        "statement": "{DEVICE}.duty_ns(0)",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.motores:motor-speed",
+    "operation": "org.robotblocks.motores:motor-speed",
+    "category": "org.robotblocks.motores:motores",
+    "label": "motor %DEVICE a velocidad %SPEED %",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "dcMotor"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 50,
+        "min": -100,
+        "max": 100
+      }
+    ],
+    "tooltip": "Velocidad de -100 % (reversa) a 100 % (adelante); 0 detiene el motor en libre. Un canal del TB6612FNG. Conecta STBY a 3.3 V (o ponlo en alto con un bloque de pin) y une las tierras. MicroPython experimental.",
+    "requiredCapabilities": [
+      "pwm",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "globals": [
+          "def motores_detener(motor, modo):\n    pwm, in1, in2 = motor\n    # TB6612FNG: IN1=IN2=alto frena en corto; IN1=IN2=bajo con PWM alto deja el motor libre.\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(0 if frenar else 65535)\n",
+          "def motores_dc(motor, velocidad):\n    if velocidad == 0:\n        motores_detener(motor, \"libre\")\n        return\n    pwm, in1, in2 = motor\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
+        ],
+        "setup": [
+          "{DEVICE} = (PWM(Pin({DEVICE.pwm}), freq=1000, duty_u16=0), Pin({DEVICE.in1}, Pin.OUT, value=0), Pin({DEVICE.in2}, Pin.OUT, value=0))"
+        ],
+        "statement": "motores_dc({DEVICE}, {SPEED})",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.motores:motor-stop",
+    "operation": "org.robotblocks.motores:motor-stop",
+    "category": "org.robotblocks.motores:motores",
+    "label": "detener motor %DEVICE %MODE",
+    "kind": "command",
+    "fields": [
+      {
+        "name": "DEVICE",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "device",
+          "capabilities": [
+            "dcMotor"
+          ]
+        }
+      },
+      {
+        "name": "MODE",
+        "type": "string",
+        "default": "frenar",
+        "options": [
+          {
+            "label": "frenando",
+            "value": "frenar"
+          },
+          {
+            "label": "en libre",
+            "value": "libre"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. Un canal del TB6612FNG. Conecta STBY a 3.3 V (o ponlo en alto con un bloque de pin) y une las tierras. MicroPython experimental.",
+    "requiredCapabilities": [
+      "pwm",
+      "digitalOutput"
+    ],
+    "generators": {
+      "micropython": {
+        "imports": [
+          "from machine import Pin, PWM"
+        ],
+        "globals": [
+          "def motores_detener(motor, modo):\n    pwm, in1, in2 = motor\n    # TB6612FNG: IN1=IN2=alto frena en corto; IN1=IN2=bajo con PWM alto deja el motor libre.\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(0 if frenar else 65535)\n"
+        ],
+        "setup": [
+          "{DEVICE} = (PWM(Pin({DEVICE.pwm}), freq=1000, duty_u16=0), Pin({DEVICE.in1}, Pin.OUT, value=0), Pin({DEVICE.in2}, Pin.OUT, value=0))"
+        ],
+        "statement": "motores_detener({DEVICE}, {MODE})",
+        "canFail": false
+      }
+    }
+  }
+]

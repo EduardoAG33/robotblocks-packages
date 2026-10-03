@@ -10,6 +10,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/pin-io`         | Digital, analógico y PWM               | Edición y validación; sin ejecución                                |
 | `packages/robotics`       | Movimiento, motores y lecturas lógicas | Módulo opcional, valores ovalados conectables                      |
 | `packages/distance-demo`  | Ejemplo de sensor independiente        | Sin driver real                                                    |
+| `packages/motores`        | Servo y motor DC con TB6612FNG         | MicroPython experimental, incluido; pendiente de prueba física     |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 

@@ -31,6 +31,12 @@
       "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Pendiente de validación física.",
       "kind": "board",
       "path": "packages/dfrobot-firebeetle-esp32"
+    },
+    {
+      "name": "Motores: servo y motor DC",
+      "description": "Servo de 50 Hz y motor DC con el driver TB6612FNG. MicroPython experimental; pendiente de validación física.",
+      "kind": "module",
+      "path": "packages/motores"
     }
   ]
 }
