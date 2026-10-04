@@ -3,9 +3,7 @@
   "id": "org.robotblocks.lego-spike-prime",
   "name": "SPIKE Prime / Pybricks · experimental",
   "version": "0.1.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
   "requiredCapabilities": [],
@@ -15,7 +13,15 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "boards"
+    "group": "boards",
+    "translations": {
+      "en": {
+        "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.": "Hub with Pybricks 3.6.1+ firmware (compatible with 4.0). The app only uploads programs over Bluetooth; it does not install firmware. Physical testing pending.",
+        "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos.": "One Powered Up motor or sensor per port; these are not GPIO. Block references share the device, not two physical devices.",
+        "Botón integrado.": "Built-in button.",
+        "También detiene el programa por defecto.": "Also stops the program by default."
+      }
+    }
   },
   "contributes": {
     "categories": [],
@@ -28,129 +34,101 @@
         "family": "pybricks-prime",
         "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
         "experimental": true,
-        "targets": {
-          "pybricks": {
-            "upload": "webbluetooth-pybricks"
-          }
-        },
+        "targets": { "pybricks": { "upload": "webbluetooth-pybricks" } },
         "capabilities": ["poweredUpPort", "hubButtons", "hubDisplay", "hubImu", "hubSpeaker"],
         "resources": [
           {
             "id": "a",
-            "label": "A",
+            "label": { "es": "A", "en": "A" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.A"
-            },
+            "symbol": { "pybricks": "Port.A" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "b",
-            "label": "B",
+            "label": { "es": "B", "en": "B" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.B"
-            },
+            "symbol": { "pybricks": "Port.B" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "c",
-            "label": "C",
+            "label": { "es": "C", "en": "C" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.C"
-            },
+            "symbol": { "pybricks": "Port.C" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "d",
-            "label": "D",
+            "label": { "es": "D", "en": "D" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.D"
-            },
+            "symbol": { "pybricks": "Port.D" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "e",
-            "label": "E",
+            "label": { "es": "E", "en": "E" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.E"
-            },
+            "symbol": { "pybricks": "Port.E" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "f",
-            "label": "F",
+            "label": { "es": "F", "en": "F" },
             "capabilities": ["poweredUpPort"],
-            "symbol": {
-              "pybricks": "Port.F"
-            },
+            "symbol": { "pybricks": "Port.F" },
             "shared": true,
             "notes": "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos."
           },
           {
             "id": "left",
-            "label": "Botón LEFT",
+            "label": { "es": "Botón LEFT", "en": "LEFT button" },
             "capabilities": ["hubButtons"],
             "shared": true,
-            "symbol": {
-              "pybricks": "Button.LEFT"
-            },
+            "symbol": { "pybricks": "Button.LEFT" },
             "notes": "Botón integrado."
           },
           {
             "id": "center",
-            "label": "Botón CENTER",
+            "label": { "es": "Botón CENTER", "en": "CENTER button" },
             "capabilities": ["hubButtons"],
             "shared": true,
-            "symbol": {
-              "pybricks": "Button.CENTER"
-            },
+            "symbol": { "pybricks": "Button.CENTER" },
             "notes": "También detiene el programa por defecto."
           },
           {
             "id": "right",
-            "label": "Botón RIGHT",
+            "label": { "es": "Botón RIGHT", "en": "RIGHT button" },
             "capabilities": ["hubButtons"],
             "shared": true,
-            "symbol": {
-              "pybricks": "Button.RIGHT"
-            },
+            "symbol": { "pybricks": "Button.RIGHT" },
             "notes": "Botón integrado."
           },
           {
             "id": "display",
-            "label": "Matriz 5×5",
+            "label": { "es": "Matriz 5×5", "en": "5×5 matrix" },
             "capabilities": ["hubDisplay"],
             "shared": true,
-            "symbol": {
-              "pybricks": "rb_hub.display"
-            }
+            "symbol": { "pybricks": "rb_hub.display" }
           },
           {
             "id": "imu",
-            "label": "IMU",
+            "label": { "es": "IMU", "en": "IMU" },
             "capabilities": ["hubImu"],
             "shared": true,
-            "symbol": {
-              "pybricks": "rb_hub.imu"
-            }
+            "symbol": { "pybricks": "rb_hub.imu" }
           },
           {
             "id": "speaker",
-            "label": "Altavoz",
+            "label": { "es": "Altavoz", "en": "Speaker" },
             "capabilities": ["hubSpeaker"],
             "shared": true,
-            "symbol": {
-              "pybricks": "rb_hub.speaker"
-            }
+            "symbol": { "pybricks": "rb_hub.speaker" }
           }
         ]
       }

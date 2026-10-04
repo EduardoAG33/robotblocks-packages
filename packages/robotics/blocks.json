@@ -5,18 +5,13 @@
     "category": "org.robotblocks.robotics:robotics",
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 50,
-        "min": -100,
-        "max": 100
-      }
-    ],
-    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 50, "min": -100, "max": 100 }],
+    "tooltip": {
+      "es": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+      "en": "Logical robotics model. Execution and drivers pending."
+    },
     "requiredCapabilities": [],
-    "label": "avanzar a %SPEED %"
+    "label": { "es": "avanzar a %SPEED %", "en": "move forward at %SPEED %" }
   },
   {
     "id": "org.robotblocks.robotics:turn",
@@ -24,16 +19,13 @@
     "category": "org.robotblocks.robotics:robotics",
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90
-      }
-    ],
-    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 90 }],
+    "tooltip": {
+      "es": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+      "en": "Logical robotics model. Execution and drivers pending."
+    },
     "requiredCapabilities": [],
-    "label": "girar %ANGLE grados"
+    "label": { "es": "girar %ANGLE grados", "en": "turn %ANGLE degrees" }
   },
   {
     "id": "org.robotblocks.robotics:stop",
@@ -42,9 +34,12 @@
     "kind": "command",
     "fields": [],
     "inputs": [],
-    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "tooltip": {
+      "es": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+      "en": "Logical robotics model. Execution and drivers pending."
+    },
     "requiredCapabilities": [],
-    "label": "detener motores"
+    "label": { "es": "detener motores", "en": "stop motors" }
   },
   {
     "id": "org.robotblocks.robotics:motor",
@@ -56,24 +51,16 @@
         "name": "DEVICE",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": ["motor"]
-        }
+        "reference": { "kind": "device", "capabilities": ["motor"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 50,
-        "min": -100,
-        "max": 100
-      }
-    ],
-    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 50, "min": -100, "max": 100 }],
+    "tooltip": {
+      "es": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+      "en": "Logical robotics model. Execution and drivers pending."
+    },
     "requiredCapabilities": [],
-    "label": "mover %DEVICE a %SPEED %"
+    "label": { "es": "mover %DEVICE a %SPEED %", "en": "move %DEVICE at %SPEED %" }
   },
   {
     "id": "org.robotblocks.robotics:sensor",
@@ -85,16 +72,16 @@
         "name": "DEVICE",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": ["sensor"]
-        }
+        "reference": { "kind": "device", "capabilities": ["sensor"] }
       }
     ],
     "inputs": [],
-    "tooltip": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+    "tooltip": {
+      "es": "Modelo lógico de robótica. Ejecución y drivers pendientes.",
+      "en": "Logical robotics model. Execution and drivers pending."
+    },
     "requiredCapabilities": [],
-    "label": "lectura de %DEVICE",
+    "label": { "es": "lectura de %DEVICE", "en": "reading from %DEVICE" },
     "output": "number"
   }
 ]

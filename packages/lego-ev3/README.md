@@ -5,15 +5,15 @@ ev3dev y Pybricks 2.0. La app genera un único `main.py` y no instala firmware.
 Apagar el ladrillo y quitar la microSD permite volver al firmware LEGO y a EV3-G.
 No se incluyen imágenes, logotipos ni archivos de terceros.
 
-| Recurso | Capacidad | Símbolo Pybricks 2.0 |
-| --- | --- | --- |
-| A, B, C, D | ev3MotorPort | Port.A, Port.B, Port.C, Port.D |
-| S1, S2, S3, S4 | ev3SensorPort | Port.S1, Port.S2, Port.S3, Port.S4 |
-| LEFT, RIGHT, UP, DOWN, CENTER | hubButtons | Button.LEFT, Button.RIGHT, Button.UP, Button.DOWN, Button.CENTER |
-| Atrás | Reservado al sistema; sin capacidades de bloque | No figura en Button v2.0; detiene el programa |
-| Pantalla | hubDisplay | rb_hub.screen |
-| Altavoz | hubSpeaker | rb_hub.speaker |
-| Luz de estado | hubLight | rb_hub.light |
+| Recurso                       | Capacidad                                       | Símbolo Pybricks 2.0                                             |
+| ----------------------------- | ----------------------------------------------- | ---------------------------------------------------------------- |
+| A, B, C, D                    | ev3MotorPort                                    | Port.A, Port.B, Port.C, Port.D                                   |
+| S1, S2, S3, S4                | ev3SensorPort                                   | Port.S1, Port.S2, Port.S3, Port.S4                               |
+| LEFT, RIGHT, UP, DOWN, CENTER | hubButtons                                      | Button.LEFT, Button.RIGHT, Button.UP, Button.DOWN, Button.CENTER |
+| Atrás                         | Reservado al sistema; sin capacidades de bloque | No figura en Button v2.0; detiene el programa                    |
+| Pantalla                      | hubDisplay                                      | rb_hub.screen                                                    |
+| Altavoz                       | hubSpeaker                                      | rb_hub.speaker                                                   |
+| Luz de estado                 | hubLight                                        | rb_hub.light                                                     |
 
 Los puertos de sensores y motores son diferentes y **no son GPIO**. Solo se conecta
 un dispositivo físico por puerto; los bloques comparten su referencia. No hay IMU

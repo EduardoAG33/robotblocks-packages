@@ -67,7 +67,10 @@ for (const item of catalog.packages) {
       assert(block.operation.startsWith(`${manifest.id}:`));
       const names = [...block.fields, ...block.inputs].map((input) => input.name);
       assert.equal(new Set(names).size, names.length);
-      assert.deepEqual([...block.label.matchAll(/%([A-Z][A-Z0-9_]*)/g)].map((match) => match[1]).sort(), names.sort());
+      assert.deepEqual(Object.keys(block.label).sort(), ['en', 'es']);
+      assert.deepEqual(Object.keys(block.tooltip).sort(), ['en', 'es']);
+      for (const label of Object.values(block.label))
+        assert.deepEqual([...label.matchAll(/%([A-Z][A-Z0-9_]*)/g)].map((match) => match[1]).sort(), [...names].sort());
       for (const input of block.inputs) {
         if (input.min !== undefined || input.max !== undefined || input.integer !== undefined)
           assert.equal(input.type, 'number');

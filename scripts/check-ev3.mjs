@@ -16,7 +16,7 @@ const board = boardPackage.contributes.boards[0];
 assert.deepEqual(board.targets, { pybricks: { upload: 'ev3dev-manual' } });
 assert.deepEqual(devices.supportedBoards, [board.id]);
 assert.deepEqual(
-  board.resources.slice(0, 8).map((r) => [r.label, r.symbol.pybricks, r.capabilities]),
+  board.resources.slice(0, 8).map((r) => [r.label.es, r.symbol.pybricks, r.capabilities]),
   [
     ...[...'ABCD'].map((p) => [p, `Port.${p}`, ['ev3MotorPort']]),
     ...['S1', 'S2', 'S3', 'S4'].map((p) => [p, `Port.${p}`, ['ev3SensorPort']]),

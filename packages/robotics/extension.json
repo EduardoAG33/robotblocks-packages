@@ -4,25 +4,15 @@
   "name": "Robótica",
   "description": "Movimiento y sensores lógicos como módulo opcional, con valores conectables.",
   "version": "1.1.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [
-      {
-        "id": "org.robotblocks.robotics:robotics",
-        "name": "Robótica",
-        "colour": "#4C97FF"
-      }
-    ],
-    "blocks": [
-      "blocks.json"
-    ],
+    "categories": [{ "id": "org.robotblocks.robotics:robotics", "name": "Robótica", "colour": "#4C97FF" }],
+    "blocks": ["blocks.json"],
     "boards": [],
     "devices": [],
     "generators": [],
@@ -30,6 +20,12 @@
   },
   "assets": [],
   "metadata": {
-    "group": "other"
+    "group": "other",
+    "translations": {
+      "en": {
+        "Robótica": "Robotics",
+        "Movimiento y sensores lógicos como módulo opcional, con valores conectables.": "Logical movement and sensors as an optional module, with connectable values."
+      }
+    }
   }
 }

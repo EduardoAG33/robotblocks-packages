@@ -3,71 +3,50 @@
     "id": "org.robotblocks.lego-ev3-devices:motor-run",
     "operation": "org.robotblocks.lego-ev3-devices:motor-run",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "motor %PORT girar a %SPEED grados/s",
+    "label": { "es": "motor %PORT girar a %SPEED grados/s", "en": "motor %PORT run at %SPEED degrees/s" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 500, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:motor-angle",
     "operation": "org.robotblocks.lego-ev3-devices:motor-angle",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "motor %PORT girar %ANGLE grados a %SPEED grados/s",
+    "label": {
+      "es": "motor %PORT girar %ANGLE grados a %SPEED grados/s",
+      "en": "motor %PORT run %ANGLE degrees at %SPEED degrees/s"
+    },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       }
     ],
     "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90,
-        "min": -2147483648,
-        "max": 2147483647
-      },
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": 1,
-        "max": 2147483647
-      }
+      { "name": "ANGLE", "type": "number", "default": 90, "min": -2147483648, "max": 2147483647 },
+      { "name": "SPEED", "type": "number", "default": 500, "min": 1, "max": 2147483647 }
     ],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
     "generators": {
       "pybricks": {
         "cooperative": true,
@@ -79,37 +58,25 @@
     "id": "org.robotblocks.lego-ev3-devices:motor-time",
     "operation": "org.robotblocks.lego-ev3-devices:motor-time",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "motor %PORT girar %MS ms a %SPEED grados/s",
+    "label": { "es": "motor %PORT girar %MS ms a %SPEED grados/s", "en": "motor %PORT run %MS ms at %SPEED degrees/s" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       }
     ],
     "inputs": [
-      {
-        "name": "MS",
-        "type": "number",
-        "default": 1000,
-        "min": 0,
-        "max": 2147483647
-      },
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": -2147483648,
-        "max": 2147483647
-      }
+      { "name": "MS", "type": "number", "default": 1000, "min": 0, "max": 2147483647 },
+      { "name": "SPEED", "type": "number", "default": 500, "min": -2147483648, "max": 2147483647 }
     ],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
     "generators": {
       "pybricks": {
         "cooperative": true,
@@ -121,52 +88,39 @@
     "id": "org.robotblocks.lego-ev3-devices:motor-stop",
     "operation": "org.robotblocks.lego-ev3-devices:motor-stop",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "motor %PORT detener %MODE",
+    "label": { "es": "motor %PORT detener %MODE", "en": "motor %PORT stop %MODE" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       },
       {
         "name": "MODE",
         "type": "string",
         "default": "brake",
         "options": [
-          {
-            "label": "frenar",
-            "value": "brake"
-          },
-          {
-            "label": "mantener",
-            "value": "hold"
-          },
-          {
-            "label": "libre",
-            "value": "coast"
-          }
+          { "label": { "es": "frenar", "en": "brake" }, "value": "brake" },
+          { "label": { "es": "mantener", "en": "hold" }, "value": "hold" },
+          { "label": { "es": "libre", "en": "coast" }, "value": "coast" }
         ]
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:motor-position",
     "operation": "org.robotblocks.lego-ev3-devices:motor-position",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "ángulo del motor %PORT en grados",
+    "label": { "es": "ángulo del motor %PORT en grados", "en": "motor %PORT angle in degrees" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -174,129 +128,89 @@
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:motor-reset",
     "operation": "org.robotblocks.lego-ev3-devices:motor-reset",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "motor %PORT reiniciar ángulo a %ANGLE",
+    "label": { "es": "motor %PORT reiniciar ángulo a %ANGLE", "en": "motor %PORT reset angle to %ANGLE" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:drive-config",
     "operation": "org.robotblocks.lego-ev3-devices:drive-config",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "configurar base izq %LEFT sentido %LEFT_DIRECTION der %RIGHT sentido %RIGHT_DIRECTION rueda %DIAMETER mm eje %TRACK mm",
+    "label": {
+      "es": "configurar base izq %LEFT sentido %LEFT_DIRECTION der %RIGHT sentido %RIGHT_DIRECTION rueda %DIAMETER mm eje %TRACK mm",
+      "en": "configure drive base left %LEFT direction %LEFT_DIRECTION right %RIGHT direction %RIGHT_DIRECTION wheel %DIAMETER mm track %TRACK mm"
+    },
     "kind": "command",
     "fields": [
       {
         "name": "LEFT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       },
       {
         "name": "LEFT_DIRECTION",
         "type": "string",
         "default": "counterclockwise",
         "options": [
-          {
-            "label": "antihorario",
-            "value": "counterclockwise"
-          },
-          {
-            "label": "horario",
-            "value": "clockwise"
-          }
+          { "label": { "es": "antihorario", "en": "counterclockwise" }, "value": "counterclockwise" },
+          { "label": { "es": "horario", "en": "clockwise" }, "value": "clockwise" }
         ]
       },
       {
         "name": "RIGHT",
         "type": "string",
         "default": "b",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3MotorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
       },
       {
         "name": "RIGHT_DIRECTION",
         "type": "string",
         "default": "clockwise",
         "options": [
-          {
-            "label": "horario",
-            "value": "clockwise"
-          },
-          {
-            "label": "antihorario",
-            "value": "counterclockwise"
-          }
+          { "label": { "es": "horario", "en": "clockwise" }, "value": "clockwise" },
+          { "label": { "es": "antihorario", "en": "counterclockwise" }, "value": "counterclockwise" }
         ]
       }
     ],
     "inputs": [
-      {
-        "name": "DIAMETER",
-        "type": "number",
-        "default": 56,
-        "min": 1,
-        "max": 1000
-      },
-      {
-        "name": "TRACK",
-        "type": "number",
-        "default": 114,
-        "min": 1,
-        "max": 2000
-      }
+      { "name": "DIAMETER", "type": "number", "default": 56, "min": 1, "max": 1000 },
+      { "name": "TRACK", "type": "number", "default": 114, "min": 1, "max": 2000 }
     ],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
     "generators": {
       "pybricks": {
         "statement": "rb_drive_config({LEFT}, {RIGHT}, {DIAMETER}, {TRACK}, {LEFT_DIRECTION}, {RIGHT_DIRECTION}, {BLOCK_ID})"
@@ -307,104 +221,77 @@
     "id": "org.robotblocks.lego-ev3-devices:drive-straight",
     "operation": "org.robotblocks.lego-ev3-devices:drive-straight",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "base avanzar %MM mm",
+    "label": { "es": "base avanzar %MM mm", "en": "drive base straight %MM mm" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "MM",
-        "type": "number",
-        "default": 100,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "MM", "type": "number", "default": 100, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_drive_move(\"straight\", {MM}, {BLOCK_ID})"
-      }
+      "pybricks": { "cooperative": true, "statement": "await rb_drive_move(\"straight\", {MM}, {BLOCK_ID})" }
     }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:drive-turn",
     "operation": "org.robotblocks.lego-ev3-devices:drive-turn",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "base girar %ANGLE grados",
+    "label": { "es": "base girar %ANGLE grados", "en": "drive base turn %ANGLE degrees" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 90, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_drive_move(\"turn\", {ANGLE}, {BLOCK_ID})"
-      }
+      "pybricks": { "cooperative": true, "statement": "await rb_drive_move(\"turn\", {ANGLE}, {BLOCK_ID})" }
     }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:drive-drive",
     "operation": "org.robotblocks.lego-ev3-devices:drive-drive",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "base conducir %SPEED mm/s giro %TURN grados/s",
+    "label": {
+      "es": "base conducir %SPEED mm/s giro %TURN grados/s",
+      "en": "drive base drive %SPEED mm/s turn rate %TURN degrees/s"
+    },
     "kind": "command",
     "fields": [],
     "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 100,
-        "min": -2147483648,
-        "max": 2147483647
-      },
-      {
-        "name": "TURN",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
+      { "name": "SPEED", "type": "number", "default": 100, "min": -2147483648, "max": 2147483647 },
+      { "name": "TURN", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }
     ],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_drive({BLOCK_ID}).drive({SPEED}, {TURN})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "statement": "rb_drive({BLOCK_ID}).drive({SPEED}, {TURN})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:drive-stop",
     "operation": "org.robotblocks.lego-ev3-devices:drive-stop",
     "category": "org.robotblocks.lego-ev3-devices:motors",
-    "label": "base detener",
+    "label": { "es": "base detener", "en": "drive base stop" },
     "kind": "command",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["ev3MotorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_drive({BLOCK_ID}).stop()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "statement": "rb_drive({BLOCK_ID}).stop()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:color",
     "operation": "org.robotblocks.lego-ev3-devices:color",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "color del sensor %PORT",
+    "label": { "es": "color del sensor %PORT", "en": "color sensor %PORT color" },
     "kind": "reporter",
     "output": "string",
     "fields": [
@@ -412,26 +299,22 @@
         "name": "PORT",
         "type": "string",
         "default": "s1",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "str(rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "str(rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:reflection",
     "operation": "org.robotblocks.lego-ev3-devices:reflection",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "reflexión del sensor %PORT (%)",
+    "label": { "es": "reflexión del sensor %PORT (%)", "en": "sensor %PORT reflection (%)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -439,26 +322,22 @@
         "name": "PORT",
         "type": "string",
         "default": "s1",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:ambient",
     "operation": "org.robotblocks.lego-ev3-devices:ambient",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "luz ambiente del sensor %PORT (%)",
+    "label": { "es": "luz ambiente del sensor %PORT (%)", "en": "sensor %PORT ambient light (%)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -466,26 +345,22 @@
         "name": "PORT",
         "type": "string",
         "default": "s1",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:distance",
     "operation": "org.robotblocks.lego-ev3-devices:distance",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "distancia del sensor %PORT (mm)",
+    "label": { "es": "distancia del sensor %PORT (mm)", "en": "sensor %PORT distance (mm)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -493,26 +368,22 @@
         "name": "PORT",
         "type": "string",
         "default": "s2",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_device({PORT}, UltrasonicSensor, {BLOCK_ID}).distance()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "rb_device({PORT}, UltrasonicSensor, {BLOCK_ID}).distance()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:button",
     "operation": "org.robotblocks.lego-ev3-devices:button",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "botón %BUTTON presionado",
+    "label": { "es": "botón %BUTTON presionado", "en": "button %BUTTON pressed" },
     "kind": "boolean",
     "output": "boolean",
     "fields": [
@@ -520,262 +391,199 @@
         "name": "BUTTON",
         "type": "string",
         "default": "left",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["hubButtons"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["hubButtons"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["hubButtons"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "expression": "{BUTTON} in rb_hub.buttons.pressed()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "expression": "{BUTTON} in rb_hub.buttons.pressed()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:beep",
     "operation": "org.robotblocks.lego-ev3-devices:beep",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "altavoz beep %HZ Hz por %MS ms",
+    "label": { "es": "altavoz beep %HZ Hz por %MS ms", "en": "speaker beep %HZ Hz for %MS ms" },
     "kind": "command",
     "fields": [],
     "inputs": [
-      {
-        "name": "HZ",
-        "type": "number",
-        "default": 500,
-        "min": 64,
-        "max": 24000
-      },
-      {
-        "name": "MS",
-        "type": "number",
-        "default": 100,
-        "min": 0,
-        "max": 2147483647
-      }
+      { "name": "HZ", "type": "number", "default": 500, "min": 64, "max": 24000 },
+      { "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647 }
     ],
     "requiredCapabilities": ["hubSpeaker"],
-    "tooltip": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
-    "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_beep({HZ}, {MS}, {BLOCK_ID})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+      "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+    },
+    "generators": { "pybricks": { "cooperative": true, "statement": "await rb_beep({HZ}, {MS}, {BLOCK_ID})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:gyro-angle",
     "operation": "org.robotblocks.lego-ev3-devices:gyro-angle",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "giroscopio %PORT ángulo (grados)",
+    "label": { "es": "giroscopio %PORT ángulo (grados)", "en": "gyroscope %PORT angle (degrees)" },
     "kind": "reporter",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "s3",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
     "output": "number",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_gyro({PORT}, \"angle\", {BLOCK_ID}).angle()"
-      }
-    }
+    "generators": { "pybricks": { "expression": "rb_gyro({PORT}, \"angle\", {BLOCK_ID}).angle()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:gyro-speed",
     "operation": "org.robotblocks.lego-ev3-devices:gyro-speed",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "giroscopio %PORT velocidad (grados/s)",
+    "label": { "es": "giroscopio %PORT velocidad (grados/s)", "en": "gyroscope %PORT speed (degrees/s)" },
     "kind": "reporter",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "s3",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
     "output": "number",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_gyro({PORT}, \"speed\", {BLOCK_ID}).speed()"
-      }
-    }
+    "generators": { "pybricks": { "expression": "rb_gyro({PORT}, \"speed\", {BLOCK_ID}).speed()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:touch",
     "operation": "org.robotblocks.lego-ev3-devices:touch",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "tacto %PORT presionado",
+    "label": { "es": "tacto %PORT presionado", "en": "touch sensor %PORT pressed" },
     "kind": "reporter",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "s4",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
     "output": "boolean",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_device({PORT}, TouchSensor, {BLOCK_ID}).pressed()"
-      }
-    }
+    "generators": { "pybricks": { "expression": "rb_device({PORT}, TouchSensor, {BLOCK_ID}).pressed()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:infrared-distance",
     "operation": "org.robotblocks.lego-ev3-devices:infrared-distance",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "infrarrojo %PORT distancia relativa (%)",
+    "label": { "es": "infrarrojo %PORT distancia relativa (%)", "en": "infrared %PORT relative distance (%)" },
     "kind": "reporter",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "s4",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
     "output": "number",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_device({PORT}, InfraredSensor, {BLOCK_ID}).distance()"
-      }
-    }
+    "generators": { "pybricks": { "expression": "rb_device({PORT}, InfraredSensor, {BLOCK_ID}).distance()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:gyro-reset",
     "operation": "org.robotblocks.lego-ev3-devices:gyro-reset",
     "category": "org.robotblocks.lego-ev3-devices:sensors",
-    "label": "giroscopio %PORT reiniciar ángulo a %ANGLE",
+    "label": { "es": "giroscopio %PORT reiniciar ángulo a %ANGLE", "en": "gyroscope %PORT reset angle to %ANGLE" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "s3",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["ev3SensorPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["ev3SensorPort"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_gyro({PORT}, \"angle\", {BLOCK_ID}).reset_angle({ANGLE})"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_gyro({PORT}, \"angle\", {BLOCK_ID}).reset_angle({ANGLE})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:screen-text",
     "operation": "org.robotblocks.lego-ev3-devices:screen-text",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "pantalla escribir %TEXT",
+    "label": { "es": "pantalla escribir %TEXT", "en": "screen print %TEXT" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "TEXT",
-        "type": "string",
-        "default": "Hola"
-      }
-    ],
+    "inputs": [{ "name": "TEXT", "type": "string", "default": "Hola" }],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.screen.print({TEXT})"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.screen.print({TEXT})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:screen-number",
     "operation": "org.robotblocks.lego-ev3-devices:screen-number",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "pantalla mostrar número %NUMBER",
+    "label": { "es": "pantalla mostrar número %NUMBER", "en": "screen display number %NUMBER" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "NUMBER",
-        "type": "number",
-        "default": 1,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "NUMBER", "type": "number", "default": 1, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.screen.print({NUMBER})"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.screen.print({NUMBER})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:screen-clear",
     "operation": "org.robotblocks.lego-ev3-devices:screen-clear",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "pantalla borrar",
+    "label": { "es": "pantalla borrar", "en": "screen clear" },
     "kind": "command",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.screen.clear()"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.screen.clear()" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:light",
     "operation": "org.robotblocks.lego-ev3-devices:light",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "luz de estado %COLOR",
+    "label": { "es": "luz de estado %COLOR", "en": "status light %COLOR" },
     "kind": "command",
     "fields": [
       {
@@ -783,44 +591,33 @@
         "type": "string",
         "default": "GREEN",
         "options": [
-          {
-            "label": "verde",
-            "value": "GREEN"
-          },
-          {
-            "label": "rojo",
-            "value": "RED"
-          },
-          {
-            "label": "naranja",
-            "value": "ORANGE"
-          }
+          { "label": { "es": "verde", "en": "green" }, "value": "GREEN" },
+          { "label": { "es": "rojo", "en": "red" }, "value": "RED" },
+          { "label": { "es": "naranja", "en": "orange" }, "value": "ORANGE" }
         ]
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["hubLight"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_light({COLOR})"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_light({COLOR})" } }
   },
   {
     "id": "org.robotblocks.lego-ev3-devices:light-off",
     "operation": "org.robotblocks.lego-ev3-devices:light-off",
     "category": "org.robotblocks.lego-ev3-devices:hub",
-    "label": "luz de estado apagar",
+    "label": { "es": "luz de estado apagar", "en": "status light off" },
     "kind": "command",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["hubLight"],
-    "tooltip": "EV3 microSD / Pybricks 2.0 · experimental.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.light.off()"
-      }
-    }
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.light.off()" } }
   }
 ]

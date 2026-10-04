@@ -3,9 +3,7 @@
   "id": "org.robotblocks.arduino-uno-r4-minima",
   "name": "Arduino UNO R4 Minima · experimental",
   "version": "0.1.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.",
   "requiredCapabilities": [],
@@ -15,7 +13,19 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "boards"
+    "group": "boards",
+    "translations": {
+      "en": {
+        "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.": "5 V logic. Default 10-bit ADC (up to 14); 8-bit PWM and 12-bit A0 DAC. Native USB, Serial1 free on D0/D1. Experimental C++; upload pending Phase 8 and physical validation.",
+        "Serial1 RX; libre porque Serial usa USB nativo.": "Serial1 RX; free because Serial uses native USB.",
+        "Serial1 TX; libre porque Serial usa USB nativo.": "Serial1 TX; free because Serial uses native USB.",
+        "LED integrado; alto enciende, bajo apaga. Compartido con SPI SCK.": "Built-in LED; high turns it on, low turns it off. Shared with SPI SCK.",
+        "DAC de 12 bits en A0. No confundir DAC con PWM; no hay bloque DAC nuevo.": "12-bit DAC on A0. Do not confuse DAC with PWM; no new DAC block is provided.",
+        "I2C SDA; compartido con el bus Wire.": "I2C SDA; shared with the Wire bus.",
+        "I2C SCL; compartido con el bus Wire.": "I2C SCL; shared with the Wire bus.",
+        "USB nativo usa Serial; D0/D1 libres para Serial1.": "Native USB uses Serial; D0/D1 free for Serial1."
+      }
+    }
   },
   "contributes": {
     "categories": [],
@@ -33,190 +43,137 @@
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm", "analogOutput"],
         "logicLevel": 5,
         "adcBits": 10,
-        "pwm": {
-          "bits": 8,
-          "defaultFrequency": 490
-        },
-        "targets": {
-          "arduino": {
-            "upload": "arduino-cli",
-            "fqbn": "arduino:renesas_uno:minima"
-          }
-        },
+        "pwm": { "bits": 8, "defaultFrequency": 490 },
+        "targets": { "arduino": { "upload": "arduino-cli", "fqbn": "arduino:renesas_uno:minima" } },
         "resources": [
           {
             "id": "d0",
-            "label": "D0",
+            "label": { "es": "D0", "en": "D0" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "0"
-            },
+            "symbol": { "arduino": "0" },
             "notes": "Serial1 RX; libre porque Serial usa USB nativo."
           },
           {
             "id": "d1",
-            "label": "D1",
+            "label": { "es": "D1", "en": "D1" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "1"
-            },
+            "symbol": { "arduino": "1" },
             "notes": "Serial1 TX; libre porque Serial usa USB nativo."
           },
           {
             "id": "d2",
-            "label": "D2",
+            "label": { "es": "D2", "en": "D2" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "2"
-            }
+            "symbol": { "arduino": "2" }
           },
           {
             "id": "d3",
-            "label": "D3",
+            "label": { "es": "D3", "en": "D3" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "3"
-            }
+            "symbol": { "arduino": "3" }
           },
           {
             "id": "d4",
-            "label": "D4",
+            "label": { "es": "D4", "en": "D4" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "4"
-            }
+            "symbol": { "arduino": "4" }
           },
           {
             "id": "d5",
-            "label": "D5",
+            "label": { "es": "D5", "en": "D5" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "5"
-            }
+            "symbol": { "arduino": "5" }
           },
           {
             "id": "d6",
-            "label": "D6",
+            "label": { "es": "D6", "en": "D6" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "6"
-            }
+            "symbol": { "arduino": "6" }
           },
           {
             "id": "d7",
-            "label": "D7",
+            "label": { "es": "D7", "en": "D7" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "7"
-            }
+            "symbol": { "arduino": "7" }
           },
           {
             "id": "d8",
-            "label": "D8",
+            "label": { "es": "D8", "en": "D8" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "8"
-            }
+            "symbol": { "arduino": "8" }
           },
           {
             "id": "d9",
-            "label": "D9",
+            "label": { "es": "D9", "en": "D9" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "9"
-            }
+            "symbol": { "arduino": "9" }
           },
           {
             "id": "d10",
-            "label": "D10",
+            "label": { "es": "D10", "en": "D10" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "10"
-            }
+            "symbol": { "arduino": "10" }
           },
           {
             "id": "d11",
-            "label": "D11",
+            "label": { "es": "D11", "en": "D11" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "11"
-            }
+            "symbol": { "arduino": "11" }
           },
           {
             "id": "d12",
-            "label": "D12",
+            "label": { "es": "D12", "en": "D12" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "12"
-            }
+            "symbol": { "arduino": "12" }
           },
           {
             "id": "d13",
-            "label": "D13",
+            "label": { "es": "D13", "en": "D13" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "13"
-            },
+            "symbol": { "arduino": "13" },
             "notes": "LED integrado; alto enciende, bajo apaga. Compartido con SPI SCK."
           },
           {
             "id": "a0",
-            "label": "A0",
+            "label": { "es": "A0", "en": "A0" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "analogOutput"],
-            "symbol": {
-              "arduino": "A0"
-            },
+            "symbol": { "arduino": "A0" },
             "notes": "DAC de 12 bits en A0. No confundir DAC con PWM; no hay bloque DAC nuevo."
           },
           {
             "id": "a1",
-            "label": "A1",
+            "label": { "es": "A1", "en": "A1" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A1"
-            }
+            "symbol": { "arduino": "A1" }
           },
           {
             "id": "a2",
-            "label": "A2",
+            "label": { "es": "A2", "en": "A2" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A2"
-            }
+            "symbol": { "arduino": "A2" }
           },
           {
             "id": "a3",
-            "label": "A3",
+            "label": { "es": "A3", "en": "A3" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A3"
-            }
+            "symbol": { "arduino": "A3" }
           },
           {
             "id": "a4",
-            "label": "A4",
+            "label": { "es": "A4", "en": "A4" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A4"
-            },
+            "symbol": { "arduino": "A4" },
             "notes": "I2C SDA; compartido con el bus Wire."
           },
           {
             "id": "a5",
-            "label": "A5",
+            "label": { "es": "A5", "en": "A5" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A5"
-            },
+            "symbol": { "arduino": "A5" },
             "notes": "I2C SCL; compartido con el bus Wire."
           }
         ],
-        "arduinoApis": {
-          "adcResolution": true,
-          "pwmResolution": true,
-          "servo": true,
-          "servoPwmConflicts": []
-        },
+        "arduinoApis": { "adcResolution": true, "pwmResolution": true, "servo": true, "servoPwmConflicts": [] },
         "uart": [
           {
             "port": 1,
@@ -226,13 +183,7 @@
             "notes": "USB nativo usa Serial; D0/D1 libres para Serial1."
           }
         ],
-        "i2c": [
-          {
-            "symbol": "Wire",
-            "sda": "a4",
-            "scl": "a5"
-          }
-        ]
+        "i2c": [{ "symbol": "Wire", "sda": "a4", "scl": "a5" }]
       }
     ]
   }

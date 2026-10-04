@@ -3,9 +3,7 @@
   "id": "org.robotblocks.lego-ev3-devices",
   "name": "EV3: motores, sensores y ladrillo · experimental",
   "version": "0.1.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.",
   "requiredCapabilities": ["ev3MotorPort", "ev3SensorPort"],
@@ -15,25 +13,22 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "actuators"
+    "group": "actuators",
+    "translations": {
+      "en": {
+        "EV3: motores, sensores y ladrillo · experimental": "EV3: motors, sensors and brick · experimental",
+        "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.": "Declarative templates for EV3 MicroPython / Pybricks 2.0 microSD.",
+        "EV3 · Motores": "EV3 · Motors",
+        "EV3 · Sensores": "EV3 · Sensors",
+        "EV3 · Ladrillo": "EV3 · Brick"
+      }
+    }
   },
   "contributes": {
     "categories": [
-      {
-        "id": "org.robotblocks.lego-ev3-devices:motors",
-        "name": "EV3 · Motores",
-        "colour": "#4C97FF"
-      },
-      {
-        "id": "org.robotblocks.lego-ev3-devices:sensors",
-        "name": "EV3 · Sensores",
-        "colour": "#59BFA8"
-      },
-      {
-        "id": "org.robotblocks.lego-ev3-devices:hub",
-        "name": "EV3 · Ladrillo",
-        "colour": "#9966FF"
-      }
+      { "id": "org.robotblocks.lego-ev3-devices:motors", "name": "EV3 · Motores", "colour": "#4C97FF" },
+      { "id": "org.robotblocks.lego-ev3-devices:sensors", "name": "EV3 · Sensores", "colour": "#59BFA8" },
+      { "id": "org.robotblocks.lego-ev3-devices:hub", "name": "EV3 · Ladrillo", "colour": "#9966FF" }
     ],
     "blocks": ["blocks/index.json"],
     "devices": [],

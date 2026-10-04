@@ -3,28 +3,17 @@
     "id": "org.robotblocks.servos:move",
     "operation": "org.robotblocks.servos:move",
     "category": "org.robotblocks.servos:servos",
-    "label": "servo en pin %PIN a %ANGLE grados",
+    "label": { "es": "servo en pin %PIN a %ANGLE grados", "en": "servo on pin %PIN to %ANGLE degrees" },
     "kind": "command",
     "requiredCapabilities": ["pwm"],
     "fields": [
-      {
-        "name": "PIN",
-        "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["pwm"]
-        }
-      }
+      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }
     ],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90
-      }
-    ],
-    "tooltip": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 90 }],
+    "tooltip": {
+      "es": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+      "en": "Angle from 0 to 180; out-of-range values are clamped. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -40,9 +29,7 @@
           "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
           "static Servo servo_{PIN};"
         ],
-        "hardware": {
-          "features": ["servo"]
-        },
+        "hardware": { "features": ["servo"] },
         "includes": ["#include <Servo.h>"],
         "statement": "servos_mover(servo_{PIN}, {PIN}, {ANGLE}, {BLOCK_ID});"
       }
@@ -52,22 +39,17 @@
     "id": "org.robotblocks.servos:release",
     "operation": "org.robotblocks.servos:release",
     "category": "org.robotblocks.servos:servos",
-    "label": "soltar servo en pin %PIN",
+    "label": { "es": "soltar servo en pin %PIN", "en": "release servo on pin %PIN" },
     "kind": "command",
     "requiredCapabilities": ["pwm"],
     "fields": [
-      {
-        "name": "PIN",
-        "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["pwm"]
-        }
-      }
+      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }
     ],
     "inputs": [],
-    "tooltip": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+    "tooltip": {
+      "es": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
+      "en": "Stops sending pulses: the servo no longer holds its position. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -80,9 +62,7 @@
           "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
           "static Servo servo_{PIN};"
         ],
-        "hardware": {
-          "features": ["servo"]
-        },
+        "hardware": { "features": ["servo"] },
         "includes": ["#include <Servo.h>"],
         "statement": "if (servo_{PIN}.attached()) servo_{PIN}.detach();"
       }

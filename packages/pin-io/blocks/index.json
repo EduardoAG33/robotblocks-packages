@@ -3,7 +3,7 @@
     "id": "org.robotblocks.demo-board-io:digital-read",
     "operation": "org.robotblocks.demo-board-io:digital-read",
     "category": "org.robotblocks.demo-board-io:pins",
-    "label": "pin digital %PIN está alto",
+    "label": { "es": "pin digital %PIN está alto", "en": "digital pin %PIN is high" },
     "kind": "boolean",
     "output": "boolean",
     "fields": [
@@ -11,93 +11,63 @@
         "name": "PIN",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": [
-            "digitalInput"
-          ]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
-    "requiredCapabilities": [
-      "digitalInput"
-    ],
+    "tooltip": {
+      "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+      "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+    },
+    "requiredCapabilities": ["digitalInput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "input_pin_{PIN} = Pin({PIN}, Pin.IN)"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["input_pin_{PIN} = Pin({PIN}, Pin.IN)"],
         "expression": "input_pin_{PIN}.value() != 0",
         "canFail": false
       },
-      "arduino": {
-        "setup": [
-          "pinMode({PIN}, INPUT);"
-        ],
-        "expression": "digitalRead({PIN}) != 0",
-        "canFail": false
-      }
+      "arduino": { "setup": ["pinMode({PIN}, INPUT);"], "expression": "digitalRead({PIN}) != 0", "canFail": false }
     }
   },
   {
     "id": "org.robotblocks.demo-board-io:digital-write",
     "operation": "org.robotblocks.demo-board-io:digital-write",
     "category": "org.robotblocks.demo-board-io:pins",
-    "label": "poner %PIN en %STATE",
+    "label": { "es": "poner %PIN en %STATE", "en": "set %PIN to %STATE" },
     "kind": "command",
     "fields": [
       {
         "name": "PIN",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": [
-            "digitalOutput"
-          ]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       },
       {
         "name": "STATE",
         "type": "string",
         "default": "high",
         "options": [
-          {
-            "label": "alto",
-            "value": "high"
-          },
-          {
-            "label": "bajo",
-            "value": "low"
-          }
+          { "label": { "es": "alto", "en": "high" }, "value": "high" },
+          { "label": { "es": "bajo", "en": "low" }, "value": "low" }
         ]
       }
     ],
     "inputs": [],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "tooltip": {
+      "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+      "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+    },
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "pin_{PIN} = Pin({PIN}, Pin.OUT)"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["pin_{PIN} = Pin({PIN}, Pin.OUT)"],
         "statement": "pin_{PIN}.value({STATE} == \"high\")",
         "canFail": false
       },
       "arduino": {
-        "setup": [
-          "pinMode({PIN}, OUTPUT);"
-        ],
+        "setup": ["pinMode({PIN}, OUTPUT);"],
         "statement": "digitalWrite({PIN}, String({STATE}) == String(\"high\") ? 1 : 0);",
         "canFail": false
       }
@@ -107,7 +77,7 @@
     "id": "org.robotblocks.demo-board-io:analog-read",
     "operation": "org.robotblocks.demo-board-io:analog-read",
     "category": "org.robotblocks.demo-board-io:pins",
-    "label": "leer pin analógico %PIN",
+    "label": { "es": "leer pin analógico %PIN", "en": "read analog pin %PIN" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -115,83 +85,48 @@
         "name": "PIN",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": [
-            "analogInput"
-          ]
-        }
+        "reference": { "kind": "resource", "capabilities": ["analogInput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "ESP32: ADC de 12 bits (0–4095), atenuación 11 dB. ADC2 no disponible con WiFi activo. Arduino experimental: API del core, sin librerías externas.",
-    "requiredCapabilities": [
-      "analogInput"
-    ],
+    "tooltip": {
+      "es": "ESP32: ADC de 12 bits (0–4095), atenuación 11 dB. ADC2 no disponible con WiFi activo. Arduino experimental: API del core, sin librerías externas.",
+      "en": "ESP32: 12-bit ADC (0–4095), 11 dB attenuation. ADC2 unavailable with WiFi active. Experimental Arduino: core API, no external libraries."
+    },
+    "requiredCapabilities": ["analogInput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "adc_{PIN} = rb_adc({PIN}, {BLOCK_ID})"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["adc_{PIN} = rb_adc({PIN}, {BLOCK_ID})"],
         "expression": "rb_adc_read(adc_{PIN}, {BLOCK_ID})"
       },
-      "arduino": {
-        "expression": "analogRead({PIN})",
-        "canFail": false
-      }
+      "arduino": { "expression": "analogRead({PIN})", "canFail": false }
     }
   },
   {
     "id": "org.robotblocks.demo-board-io:pwm-write",
     "operation": "org.robotblocks.demo-board-io:pwm-write",
     "category": "org.robotblocks.demo-board-io:pins",
-    "label": "PWM %PIN a %VALUE %",
+    "label": { "es": "PWM %PIN a %VALUE %", "en": "PWM %PIN to %VALUE %" },
     "kind": "command",
     "fields": [
-      {
-        "name": "PIN",
-        "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": [
-            "pwm"
-          ]
-        }
-      }
+      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }
     ],
-    "inputs": [
-      {
-        "name": "VALUE",
-        "type": "number",
-        "default": 50,
-        "min": 0,
-        "max": 100,
-        "integer": true
-      }
-    ],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
-    "requiredCapabilities": [
-      "pwm"
-    ],
+    "inputs": [{ "name": "VALUE", "type": "number", "default": 50, "min": 0, "max": 100, "integer": true }],
+    "tooltip": {
+      "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+      "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+    },
+    "requiredCapabilities": ["pwm"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "pwm_{PIN} = PWM(Pin({PIN}), freq=5000)"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["pwm_{PIN} = PWM(Pin({PIN}), freq=5000)"],
         "statement": "pwm_{PIN}.duty(int({VALUE} * 1023 / 100))",
         "canFail": false
       },
       "arduino": {
-        "setup": [
-          "pinMode({PIN}, OUTPUT);"
-        ],
+        "setup": ["pinMode({PIN}, OUTPUT);"],
         "statement": "analogWrite({PIN}, int({VALUE} * 255 / 100));",
         "canFail": false
       }
@@ -201,50 +136,31 @@
     "id": "org.robotblocks.demo-board-io:digital-write-value",
     "operation": "org.robotblocks.demo-board-io:digital-write-value",
     "category": "org.robotblocks.demo-board-io:pins",
-    "label": "escribir pin digital %PIN valor %VALUE",
+    "label": { "es": "escribir pin digital %PIN valor %VALUE", "en": "write digital pin %PIN value %VALUE" },
     "kind": "command",
     "fields": [
       {
         "name": "PIN",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": [
-            "digitalOutput"
-          ]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "VALUE",
-        "type": "number",
-        "default": 1,
-        "min": 0,
-        "max": 1,
-        "integer": true
-      }
-    ],
-    "tooltip": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
-    "requiredCapabilities": [
-      "digitalOutput"
-    ],
+    "inputs": [{ "name": "VALUE", "type": "number", "default": 1, "min": 0, "max": 1, "integer": true }],
+    "tooltip": {
+      "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+      "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+    },
+    "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
-        "imports": [
-          "from machine import Pin, PWM"
-        ],
-        "setup": [
-          "pin_{PIN} = Pin({PIN}, Pin.OUT)"
-        ],
+        "imports": ["from machine import Pin, PWM"],
+        "setup": ["pin_{PIN} = Pin({PIN}, Pin.OUT)"],
         "statement": "pin_{PIN}.value({VALUE})",
         "canFail": false
       },
       "arduino": {
-        "setup": [
-          "pinMode({PIN}, OUTPUT);"
-        ],
+        "setup": ["pinMode({PIN}, OUTPUT);"],
         "statement": "digitalWrite({PIN}, {VALUE});",
         "canFail": false
       }

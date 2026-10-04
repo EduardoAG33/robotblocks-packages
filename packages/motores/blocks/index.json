@@ -3,7 +3,10 @@
     "id": "org.robotblocks.motores:configure",
     "operation": "org.robotblocks.motores:configure",
     "category": "org.robotblocks.motores:motores",
-    "label": "configurar motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2",
+    "label": {
+      "es": "configurar motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2",
+      "en": "configure motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2"
+    },
     "kind": "command",
     "requiredCapabilities": ["pwm", "digitalOutput"],
     "fields": [
@@ -12,54 +15,31 @@
         "type": "string",
         "default": "A",
         "options": [
-          {
-            "label": "A",
-            "value": "A"
-          },
-          {
-            "label": "B",
-            "value": "B"
-          },
-          {
-            "label": "C",
-            "value": "C"
-          },
-          {
-            "label": "D",
-            "value": "D"
-          }
+          { "label": { "es": "A", "en": "A" }, "value": "A" },
+          { "label": { "es": "B", "en": "B" }, "value": "B" },
+          { "label": { "es": "C", "en": "C" }, "value": "C" },
+          { "label": { "es": "D", "en": "D" }, "value": "D" }
         ]
       },
-      {
-        "name": "PWM",
-        "type": "string",
-        "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["pwm"]
-        }
-      },
+      { "name": "PWM", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } },
       {
         "name": "IN1",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       },
       {
         "name": "IN2",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+    "tooltip": {
+      "es": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+      "en": "Place in “when started”, once per motor. PWM connects to ENA/PWMA; IN1 and IN2 to the direction pins. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -74,9 +54,7 @@
         "globals": [
           "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
         ],
-        "hardware": {
-          "features": ["pwm"]
-        },
+        "hardware": { "features": ["pwm"] },
         "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2});"
       }
     }
@@ -85,7 +63,7 @@
     "id": "org.robotblocks.motores:speed",
     "operation": "org.robotblocks.motores:speed",
     "category": "org.robotblocks.motores:motores",
-    "label": "motor %MOTOR a %SPEED %",
+    "label": { "es": "motor %MOTOR a %SPEED %", "en": "motor %MOTOR at %SPEED %" },
     "kind": "command",
     "requiredCapabilities": ["pwm", "digitalOutput"],
     "fields": [
@@ -94,33 +72,18 @@
         "type": "string",
         "default": "A",
         "options": [
-          {
-            "label": "A",
-            "value": "A"
-          },
-          {
-            "label": "B",
-            "value": "B"
-          },
-          {
-            "label": "C",
-            "value": "C"
-          },
-          {
-            "label": "D",
-            "value": "D"
-          }
+          { "label": { "es": "A", "en": "A" }, "value": "A" },
+          { "label": { "es": "B", "en": "B" }, "value": "B" },
+          { "label": { "es": "C", "en": "C" }, "value": "C" },
+          { "label": { "es": "D", "en": "D" }, "value": "D" }
         ]
       }
     ],
-    "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 50
-      }
-    ],
-    "tooltip": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 50 }],
+    "tooltip": {
+      "es": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+      "en": "From -100 (reverse) to 100 (forward); larger values are clamped. 0 makes it coast. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -135,9 +98,7 @@
         "globals": [
           "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
         ],
-        "hardware": {
-          "features": ["pwm"]
-        },
+        "hardware": { "features": ["pwm"] },
         "statement": "motores_velocidad({MOTOR}, {SPEED}, {BLOCK_ID});"
       }
     }
@@ -146,7 +107,10 @@
     "id": "org.robotblocks.motores:pair",
     "operation": "org.robotblocks.motores:pair",
     "category": "org.robotblocks.motores:motores",
-    "label": "motores %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED",
+    "label": {
+      "es": "motores %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED",
+      "en": "motors %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED"
+    },
     "kind": "command",
     "requiredCapabilities": ["pwm", "digitalOutput"],
     "fields": [
@@ -155,22 +119,10 @@
         "type": "string",
         "default": "B",
         "options": [
-          {
-            "label": "A",
-            "value": "A"
-          },
-          {
-            "label": "B",
-            "value": "B"
-          },
-          {
-            "label": "C",
-            "value": "C"
-          },
-          {
-            "label": "D",
-            "value": "D"
-          }
+          { "label": { "es": "A", "en": "A" }, "value": "A" },
+          { "label": { "es": "B", "en": "B" }, "value": "B" },
+          { "label": { "es": "C", "en": "C" }, "value": "C" },
+          { "label": { "es": "D", "en": "D" }, "value": "D" }
         ]
       },
       {
@@ -178,38 +130,21 @@
         "type": "string",
         "default": "C",
         "options": [
-          {
-            "label": "A",
-            "value": "A"
-          },
-          {
-            "label": "B",
-            "value": "B"
-          },
-          {
-            "label": "C",
-            "value": "C"
-          },
-          {
-            "label": "D",
-            "value": "D"
-          }
+          { "label": { "es": "A", "en": "A" }, "value": "A" },
+          { "label": { "es": "B", "en": "B" }, "value": "B" },
+          { "label": { "es": "C", "en": "C" }, "value": "C" },
+          { "label": { "es": "D", "en": "D" }, "value": "D" }
         ]
       }
     ],
     "inputs": [
-      {
-        "name": "LEFT_SPEED",
-        "type": "number",
-        "default": 50
-      },
-      {
-        "name": "RIGHT_SPEED",
-        "type": "number",
-        "default": 50
-      }
+      { "name": "LEFT_SPEED", "type": "number", "default": 50 },
+      { "name": "RIGHT_SPEED", "type": "number", "default": 50 }
     ],
-    "tooltip": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+    "tooltip": {
+      "es": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+      "en": "Moves two motors at once, for example left and right. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -224,9 +159,7 @@
         "globals": [
           "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
         ],
-        "hardware": {
-          "features": ["pwm"]
-        },
+        "hardware": { "features": ["pwm"] },
         "statement": "motores_velocidad({LEFT}, {LEFT_SPEED}, {BLOCK_ID});\nmotores_velocidad({RIGHT}, {RIGHT_SPEED}, {BLOCK_ID});"
       }
     }
@@ -235,7 +168,7 @@
     "id": "org.robotblocks.motores:stop",
     "operation": "org.robotblocks.motores:stop",
     "category": "org.robotblocks.motores:motores",
-    "label": "detener %MOTOR %MODE",
+    "label": { "es": "detener %MOTOR %MODE", "en": "stop %MOTOR %MODE" },
     "kind": "command",
     "requiredCapabilities": ["pwm", "digitalOutput"],
     "fields": [
@@ -244,26 +177,11 @@
         "type": "string",
         "default": "todos",
         "options": [
-          {
-            "label": "todos los motores",
-            "value": "todos"
-          },
-          {
-            "label": "motor A",
-            "value": "A"
-          },
-          {
-            "label": "motor B",
-            "value": "B"
-          },
-          {
-            "label": "motor C",
-            "value": "C"
-          },
-          {
-            "label": "motor D",
-            "value": "D"
-          }
+          { "label": { "es": "todos los motores", "en": "all motors" }, "value": "todos" },
+          { "label": { "es": "motor A", "en": "motor A" }, "value": "A" },
+          { "label": { "es": "motor B", "en": "motor B" }, "value": "B" },
+          { "label": { "es": "motor C", "en": "motor C" }, "value": "C" },
+          { "label": { "es": "motor D", "en": "motor D" }, "value": "D" }
         ]
       },
       {
@@ -271,19 +189,16 @@
         "type": "string",
         "default": "frenar",
         "options": [
-          {
-            "label": "frenando",
-            "value": "frenar"
-          },
-          {
-            "label": "en libre",
-            "value": "libre"
-          }
+          { "label": { "es": "frenando", "en": "brake" }, "value": "frenar" },
+          { "label": { "es": "en libre", "en": "coast" }, "value": "libre" }
         ]
       }
     ],
     "inputs": [],
-    "tooltip": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+    "tooltip": {
+      "es": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+      "en": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+    },
     "generators": {
       "micropython": {
         "imports": ["from machine import Pin, PWM"],
@@ -299,9 +214,7 @@
         "globals": [
           "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
         ],
-        "hardware": {
-          "features": ["pwm"]
-        },
+        "hardware": { "features": ["pwm"] },
         "statement": "motores_detener({MOTOR}, {MODE});"
       }
     }
@@ -309,22 +222,22 @@
   {
     "id": "org.robotblocks.motores:enable-vnh5019",
     "category": "org.robotblocks.motores:motores",
-    "label": "habilitar VNH5019 EN/DIAG %EN",
+    "label": { "es": "habilitar VNH5019 EN/DIAG %EN", "en": "enable VNH5019 EN/DIAG %EN" },
     "kind": "command",
     "fields": [
       {
         "name": "EN",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalInput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
       }
     ],
     "inputs": [],
     "operation": "org.robotblocks.motores:enable-vnh5019",
-    "tooltip": "Libera EN/DIAG con pull-up. El shield ya tiene pull-up: no fuerces HIGH contra una falla. M1 D6, M2 D12 en GIGA.",
+    "tooltip": {
+      "es": "Libera EN/DIAG con pull-up. El shield ya tiene pull-up: no fuerces HIGH contra una falla. M1 D6, M2 D12 en GIGA.",
+      "en": "Release EN/DIAG with a pull-up. The shield already has pull-ups: do not force HIGH against a fault. M1 D6, M2 D12 on GIGA."
+    },
     "requiredCapabilities": ["digitalInput"],
     "generators": {
       "micropython": {
@@ -332,10 +245,7 @@
         "globals": ["def motores_habilitar_vnh(en):\n    Pin(en, Pin.IN, Pin.PULL_UP)"],
         "statement": "motores_habilitar_vnh({EN})"
       },
-      "arduino": {
-        "statement": "pinMode({EN}, INPUT_PULLUP);",
-        "canFail": false
-      }
+      "arduino": { "statement": "pinMode({EN}, INPUT_PULLUP);", "canFail": false }
     }
   }
 ]

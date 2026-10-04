@@ -19,7 +19,7 @@ for (const pkg of [r4, xiao]) {
         : 'wiki.seeedstudio.com/xiao_esp32s3_getting_started/',
     ),
   );
-  for (const resource of board.resources) assert(readme.includes(resource.label));
+  for (const resource of board.resources) assert(readme.includes(resource.label.es));
 }
 const a = r4.contributes.boards[0],
   b = xiao.contributes.boards[0];

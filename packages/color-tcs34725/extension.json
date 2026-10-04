@@ -3,9 +3,7 @@
   "id": "org.robotblocks.color-tcs34725",
   "name": "Sensor de color TCS34725",
   "version": "1.1.0",
-  "author": {
-    "name": "Los Grises · RobotBlocks"
-  },
+  "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Tono, saturación, brillo y nombre aproximado del color con el TCS34725 por I2C.",
   "requiredCapabilities": ["digitalOutput"],
@@ -13,13 +11,7 @@
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [
-      {
-        "id": "org.robotblocks.color-tcs34725:color",
-        "name": "Color",
-        "colour": "#D65CD6"
-      }
-    ],
+    "categories": [{ "id": "org.robotblocks.color-tcs34725:color", "name": "Color", "colour": "#D65CD6" }],
     "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],
@@ -29,6 +21,12 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "sensors"
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Sensor de color TCS34725": "TCS34725 color sensor",
+        "Tono, saturación, brillo y nombre aproximado del color con el TCS34725 por I2C.": "Hue, saturation, brightness and approximate color name with the TCS34725 over I2C."
+      }
+    }
   }
 }
