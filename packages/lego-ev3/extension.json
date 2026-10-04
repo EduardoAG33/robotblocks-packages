@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.lego-ev3",
+  "name": "EV3 / microSD Pybricks 2.0 · experimental",
+  "version": "0.1.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "boards"
+  },
+  "contributes": {
+    "categories": [],
+    "blocks": [],
+    "devices": [],
+    "boards": [
+      {
+        "id": "org.robotblocks.lego-ev3:board",
+        "name": "EV3 / microSD Pybricks 2.0 · experimental",
+        "family": "pybricks-ev3dev",
+        "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
+        "experimental": true,
+        "targets": {
+          "pybricks": {
+            "upload": "ev3dev-manual"
+          }
+        },
+        "capabilities": ["ev3MotorPort", "ev3SensorPort", "hubButtons", "hubDisplay", "hubSpeaker", "hubLight"],
+        "resources": [
+          {
+            "id": "a",
+            "label": "A",
+            "capabilities": ["ev3MotorPort"],
+            "symbol": {
+              "pybricks": "Port.A"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "b",
+            "label": "B",
+            "capabilities": ["ev3MotorPort"],
+            "symbol": {
+              "pybricks": "Port.B"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "c",
+            "label": "C",
+            "capabilities": ["ev3MotorPort"],
+            "symbol": {
+              "pybricks": "Port.C"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "d",
+            "label": "D",
+            "capabilities": ["ev3MotorPort"],
+            "symbol": {
+              "pybricks": "Port.D"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "s1",
+            "label": "S1",
+            "capabilities": ["ev3SensorPort"],
+            "symbol": {
+              "pybricks": "Port.S1"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "s2",
+            "label": "S2",
+            "capabilities": ["ev3SensorPort"],
+            "symbol": {
+              "pybricks": "Port.S2"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "s3",
+            "label": "S3",
+            "capabilities": ["ev3SensorPort"],
+            "symbol": {
+              "pybricks": "Port.S3"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "s4",
+            "label": "S4",
+            "capabilities": ["ev3SensorPort"],
+            "symbol": {
+              "pybricks": "Port.S4"
+            },
+            "shared": true,
+            "notes": "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO."
+          },
+          {
+            "id": "left",
+            "label": "Botón LEFT",
+            "capabilities": ["hubButtons"],
+            "symbol": {
+              "pybricks": "Button.LEFT"
+            },
+            "shared": true
+          },
+          {
+            "id": "right",
+            "label": "Botón RIGHT",
+            "capabilities": ["hubButtons"],
+            "symbol": {
+              "pybricks": "Button.RIGHT"
+            },
+            "shared": true
+          },
+          {
+            "id": "up",
+            "label": "Botón UP",
+            "capabilities": ["hubButtons"],
+            "symbol": {
+              "pybricks": "Button.UP"
+            },
+            "shared": true
+          },
+          {
+            "id": "down",
+            "label": "Botón DOWN",
+            "capabilities": ["hubButtons"],
+            "symbol": {
+              "pybricks": "Button.DOWN"
+            },
+            "shared": true
+          },
+          {
+            "id": "center",
+            "label": "Botón CENTER",
+            "capabilities": ["hubButtons"],
+            "symbol": {
+              "pybricks": "Button.CENTER"
+            },
+            "shared": true
+          },
+          {
+            "id": "back",
+            "label": "Botón Atrás",
+            "capabilities": [],
+            "shared": true,
+            "notes": "Detiene el programa desde el sistema del ladrillo; no está en Button de Pybricks 2.0."
+          },
+          {
+            "id": "screen",
+            "label": "Pantalla",
+            "capabilities": ["hubDisplay"],
+            "symbol": {
+              "pybricks": "rb_hub.screen"
+            },
+            "shared": true
+          },
+          {
+            "id": "speaker",
+            "label": "Altavoz",
+            "capabilities": ["hubSpeaker"],
+            "symbol": {
+              "pybricks": "rb_hub.speaker"
+            },
+            "shared": true
+          },
+          {
+            "id": "light",
+            "label": "Luz de estado",
+            "capabilities": ["hubLight"],
+            "symbol": {
+              "pybricks": "rb_hub.light"
+            },
+            "shared": true
+          }
+        ]
+      }
+    ],
+    "generators": [],
+    "monitors": []
+  }
+}
