@@ -127,6 +127,18 @@
       "description": "Plantillas Pybricks declarativas para SPIKE Prime. Motor, base motriz, sensores y hub; sin ejecución de código de paquetes en el navegador.",
       "kind": "module",
       "path": "packages/lego-spike"
+    },
+    {
+      "name": "EV3 / microSD Pybricks 2.0 · experimental",
+      "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
+      "kind": "board",
+      "path": "packages/lego-ev3"
+    },
+    {
+      "name": "EV3: motores, sensores y ladrillo · experimental",
+      "description": "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.",
+      "kind": "module",
+      "path": "packages/lego-ev3-devices"
     }
   ]
 }

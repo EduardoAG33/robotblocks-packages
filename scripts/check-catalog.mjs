@@ -87,3 +87,4 @@ await import('./check-arduino-boards.mjs');
 await import('./check-arduino-extensions.mjs');
 await import('./check-r4-xiao.mjs');
 await import('./check-spike.mjs');
+await import('./check-ev3.mjs');
