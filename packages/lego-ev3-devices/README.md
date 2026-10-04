@@ -34,7 +34,16 @@ Fallos de maniobras se trasladan al proceso; en fallo/interrupción se detienen
 los motores y se espera la salida de los hilos. Una llamada atascada en el sistema
 requiere el botón Atrás / terminar el proceso en el EV3.
 
+## UART en los puertos de sensor (fase 11)
+
+Categoría **EV3 · UART**: configurar, ¿llegó un mensaje?, dato n, cantidad de datos, tipo y los dos bloques de envío
+con + y −. Mismo formato de mensajes que la extensión UART (`[tipo:]d1,d2,…[*CC]`) y las mismas funciones de Python;
+la lectura usa `UARTDevice.waiting()` y `read_all()` sin bloquear. El EV3 trabaja a 3.3 V: con un Arduino de 5 V,
+baja su TX con un divisor (1 kΩ en serie y 2 kΩ a GND).
+
 Fuentes oficiales de nombres, firmas y unidades:
+
+- [UARTDevice e iodevices v2.0](https://docs.pybricks.com/en/v2.0/iodevices.html).
 
 - [Motores y cinco sensores EV3](https://docs.pybricks.com/en/v2.0/ev3devices.html).
 - [DriveBase v2.0](https://docs.pybricks.com/en/v2.0/robotics.html).

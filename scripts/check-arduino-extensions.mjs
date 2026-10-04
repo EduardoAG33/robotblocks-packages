@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const uartCounts = { 'arduino-uno': 1, 'arduino-nano': 1, 'arduino-giga-r1': 4, 'teensy-40': 7, 'teensy-41': 8 };
+// UNO/Nano: Serial reservado para USB y un puerto SoftwareSerial (port 1).
+const uartCounts = { 'arduino-uno': 2, 'arduino-nano': 2, 'arduino-giga-r1': 4, 'teensy-40': 7, 'teensy-41': 8 };
 for (const [slug, count] of Object.entries(uartCounts)) {
   const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
   const board = manifest.contributes.boards[0];
@@ -9,9 +10,14 @@ for (const [slug, count] of Object.entries(uartCounts)) {
   assert.equal(board.arduinoApis.servo, true);
   assert.equal(new Set(board.uart.map((p) => p.port)).size, count);
   for (const port of board.uart) {
-    assert.match(port.symbol, /^Serial[1-8]?$/);
     assert(board.resources.some((r) => r.id === port.rx));
     assert(board.resources.some((r) => r.id === port.tx));
+    if (port.software) {
+      assert.equal(port.symbol, 'SoftwareSerial');
+      assert(slug === 'arduino-uno' || slug === 'arduino-nano');
+      continue;
+    }
+    assert.match(port.symbol, /^Serial[1-8]?$/);
     assert.equal(!!port.reserved, slug === 'arduino-uno' || slug === 'arduino-nano');
   }
   for (const bus of board.i2c) for (const pin of [bus.sda, bus.scl]) assert(board.resources.some((r) => r.id === pin));

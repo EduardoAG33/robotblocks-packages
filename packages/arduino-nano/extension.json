@@ -199,7 +199,15 @@
             "rx": "d0",
             "tx": "d1",
             "reserved": true,
-            "notes": "Compartido con USB; reservado para la consola. La extensión UART requiere un puerto independiente."
+            "notes": "Compartido con USB; reservado para la consola. La extensión UART usa el puerto 1 (SoftwareSerial)."
+          },
+          {
+            "port": 1,
+            "symbol": "SoftwareSerial",
+            "rx": "d10",
+            "tx": "d11",
+            "software": true,
+            "notes": "SoftwareSerial en cualquier par de pines digitales (sugeridos D10 RX y D11 TX). Fiable hasta 57600 baudios; solo un puerto escucha a la vez."
           }
         ],
         "i2c": [{ "symbol": "Wire", "sda": "a4", "scl": "a5" }]

@@ -619,5 +619,369 @@
       "en": "EV3 microSD / Pybricks 2.0 · experimental."
     },
     "generators": { "pybricks": { "statement": "rb_hub.light.off()" } }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-configure",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-configure",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "configurar UART en el puerto %PORT a %BAUD baudios",
+      "en": "configure UART on port %PORT at %BAUD baud"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "BAUD",
+        "type": "number",
+        "default": 9600,
+        "min": 300,
+        "max": 115200,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Prepara el puerto para recibir y enviar mensajes por UART, por ejemplo con un Arduino. Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Prepares the port to send and receive UART messages, for example with an Arduino. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_configurar_ev3(puerto, baudios, bloque):\n    # Pybricks 2.0: UARTDevice usa los pines 5 y 6 del puerto de sensor (3.3 V).\n    try:\n        dispositivo = UARTDevice(puerto, int(baudios), timeout=0)\n    except (OSError, ValueError, TypeError) as error:\n        rb_fail(bloque, \"No se pudo iniciar UART en %s: %s\" % (puerto, error))\n    uart_puertos[puerto] = [dispositivo, b\"\", \"\", False]  # dispositivo, búfer, último mensaje, mensaje nuevo\n"
+        ],
+        "statement": "uart_configurar_ev3({PORT}, {BAUD}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-received",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-received",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "¿llegó un mensaje por UART %PORT?",
+      "en": "new message on UART %PORT?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero una vez por cada mensaje nuevo y válido (los que tienen checksum incorrecto se descartan). Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "True once for each new valid message (messages with a wrong checksum are discarded). Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_hay_linea(puerto, bloque):\n    datos = uart_puerto(puerto, bloque)\n    nueva, datos[3] = datos[3], False\n    return nueva\n"
+        ],
+        "expression": "uart_hay_linea({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-field",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-field",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "dato %NUMBER del mensaje de UART %PORT",
+      "en": "value %NUMBER from UART %PORT message"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "El dato número n del último mensaje («120,-30» → dato 2 = -30), sin contar el tipo. 0 si no existe. Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Value number n of the last message (“120,-30” → value 2 = -30), not counting the type. 0 if missing. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_dato(numero, puerto, bloque):\n    partes = uart_partes(puerto, bloque)[1]\n    try:\n        indice = int(numero) - 1\n        valor = float(partes[indice]) if indice >= 0 else 0\n        # Sin decimales se muestra como entero: 120 en vez de 120.0.\n        return int(valor) if valor == int(valor) else valor\n    except (IndexError, ValueError, OverflowError):\n        return 0\n"
+        ],
+        "expression": "uart_dato({NUMBER}, {PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-count",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-count",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "cantidad de datos de UART %PORT",
+      "en": "number of values on UART %PORT"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Cuántos datos trae el último mensaje. Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "How many values the last message has. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_cantidad(puerto, bloque):\n    return len(uart_partes(puerto, bloque)[1])\n"
+        ],
+        "expression": "uart_cantidad({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-type",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-type",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "tipo del mensaje de UART %PORT",
+      "en": "message type on UART %PORT"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "El número antes de «:» («2:120,-30» → 2). 0 si el mensaje no trae tipo. Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "The number before “:” (“2:120,-30” → 2). 0 if the message has no type. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_tipo(puerto, bloque):\n    return uart_partes(puerto, bloque)[0]\n"
+        ],
+        "expression": "uart_tipo({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-send-data",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-send-data",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "enviar por UART %PORT %VERIFY los datos %DATA",
+      "en": "send on UART %PORT %VERIFY data %DATA"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      },
+      {
+        "name": "VERIFY",
+        "type": "string",
+        "default": "no",
+        "options": [
+          {
+            "label": {
+              "es": "sin verificación",
+              "en": "without checksum"
+            },
+            "value": "no"
+          },
+          {
+            "label": {
+              "es": "con verificación",
+              "en": "with checksum"
+            },
+            "value": "si"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "variadic": {
+      "input": {
+        "name": "DATA",
+        "type": "number",
+        "default": 0
+      },
+      "min": 1,
+      "max": 8
+    },
+    "tooltip": {
+      "es": "Envía varios números separados por comas. Usa + y − para cambiar cuántos. Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Sends several comma-separated numbers. Use + and − to change how many. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_numero(valor):\n    # 2.0 → «2» y 1.5 → «1.5», con hasta 3 decimales.\n    if valor == int(valor):\n        return str(int(valor))\n    return (\"%.3f\" % valor).rstrip(\"0\").rstrip(\".\")\ndef uart_enviar_datos(puerto, tipo, verificar, datos, bloque):\n    texto = \",\".join(uart_numero(dato) for dato in datos)\n    if tipo is not None:\n        texto = \"%d:%s\" % (int(tipo), texto)\n    if verificar:\n        texto += \"*%02X\" % uart_suma(texto)\n    # Bytes: sirve para el UART de MicroPython y para UARTDevice de Pybricks.\n    uart_puerto(puerto, bloque)[0].write((texto + \"\\n\").encode())\n"
+        ],
+        "statement": "uart_enviar_datos({PORT}, None, {VERIFY} == \"si\", [{DATA}], {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:uart-send-message",
+    "operation": "org.robotblocks.lego-ev3-devices:uart-send-message",
+    "category": "org.robotblocks.lego-ev3-devices:uart",
+    "label": {
+      "es": "enviar por UART %PORT %VERIFY mensaje tipo %TYPE con datos %DATA",
+      "en": "send on UART %PORT %VERIFY message type %TYPE with data %DATA"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      },
+      {
+        "name": "VERIFY",
+        "type": "string",
+        "default": "no",
+        "options": [
+          {
+            "label": {
+              "es": "sin verificación",
+              "en": "without checksum"
+            },
+            "value": "no"
+          },
+          {
+            "label": {
+              "es": "con verificación",
+              "en": "with checksum"
+            },
+            "value": "si"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "TYPE",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 9999,
+        "integer": true
+      }
+    ],
+    "variadic": {
+      "input": {
+        "name": "DATA",
+        "type": "number",
+        "default": 0
+      },
+      "min": 1,
+      "max": 8
+    },
+    "tooltip": {
+      "es": "Envía «tipo:datos», por ejemplo «2:120,-30». Puertos de sensor S1–S4 con Pybricks 2.0 (microSD); el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Sends “type:values”, for example “2:120,-30”. Sensor ports S1–S4 with Pybricks 2.0 (microSD); the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_numero(valor):\n    # 2.0 → «2» y 1.5 → «1.5», con hasta 3 decimales.\n    if valor == int(valor):\n        return str(int(valor))\n    return (\"%.3f\" % valor).rstrip(\"0\").rstrip(\".\")\ndef uart_enviar_datos(puerto, tipo, verificar, datos, bloque):\n    texto = \",\".join(uart_numero(dato) for dato in datos)\n    if tipo is not None:\n        texto = \"%d:%s\" % (int(tipo), texto)\n    if verificar:\n        texto += \"*%02X\" % uart_suma(texto)\n    # Bytes: sirve para el UART de MicroPython y para UARTDevice de Pybricks.\n    uart_puerto(puerto, bloque)[0].write((texto + \"\\n\").encode())\n"
+        ],
+        "statement": "uart_enviar_datos({PORT}, {TYPE}, {VERIFY} == \"si\", [{DATA}], {BLOCK_ID})"
+      }
+    }
   }
 ]

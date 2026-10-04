@@ -65,7 +65,9 @@ for (const item of catalog.packages) {
     for (const block of JSON.parse(await readFile(root + path, 'utf8'))) {
       ownedId(block.id);
       assert(block.operation.startsWith(`${manifest.id}:`));
-      const names = [...block.fields, ...block.inputs].map((input) => input.name);
+      const names = [...block.fields, ...block.inputs, ...(block.variadic ? [block.variadic.input] : [])].map(
+        (input) => input.name,
+      );
       assert.equal(new Set(names).size, names.length);
       assert.deepEqual(Object.keys(block.label).sort(), ['en', 'es']);
       assert.deepEqual(Object.keys(block.tooltip).sort(), ['en', 'es']);
