@@ -97,7 +97,7 @@
             "tx": "TX"
           }
         },
-        "statement": "{UART_PORT}.begin(uint32_t({BAUD}));\nuart_configurar(uart_{UART_PORT}, {UART_PORT});"
+        "statement": "{UART_PORT}.begin(uint32_t({BAUD}){UART_PIN_ARGS});\nuart_configurar(uart_{UART_PORT}, {UART_PORT});"
       }
     }
   },

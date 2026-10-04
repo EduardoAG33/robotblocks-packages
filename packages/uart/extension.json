@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.uart",
   "name": "UART: OpenMV y otras placas",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Los Grises · RobotBlocks"
   },

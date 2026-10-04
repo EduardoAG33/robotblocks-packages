@@ -103,6 +103,18 @@
       "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
       "kind": "board",
       "path": "packages/teensy-41"
+    },
+    {
+      "name": "Arduino UNO R4 Minima · experimental",
+      "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "kind": "board",
+      "path": "packages/arduino-uno-r4-minima"
+    },
+    {
+      "name": "Seeed Studio XIAO ESP32-S3 · experimental",
+      "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. Experimental, pendiente de prueba física.",
+      "kind": "board",
+      "path": "packages/seeed-xiao-esp32s3"
     }
   ]
 }
