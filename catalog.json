@@ -115,6 +115,18 @@
       "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. Experimental, pendiente de prueba física.",
       "kind": "board",
       "path": "packages/seeed-xiao-esp32s3"
+    },
+    {
+      "name": "SPIKE Prime / Pybricks · experimental",
+      "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
+      "kind": "board",
+      "path": "packages/lego-spike-prime"
+    },
+    {
+      "name": "SPIKE: motores, sensores y hub · experimental",
+      "description": "Plantillas Pybricks declarativas para SPIKE Prime. Motor, base motriz, sensores y hub; sin ejecución de código de paquetes en el navegador.",
+      "kind": "module",
+      "path": "packages/lego-spike"
     }
   ]
 }
