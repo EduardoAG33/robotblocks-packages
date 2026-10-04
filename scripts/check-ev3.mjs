@@ -24,7 +24,8 @@ assert.deepEqual(
 );
 assert.deepEqual(board.resources.find((r) => r.id === 'back').capabilities, []);
 const blocks = await read('packages/lego-ev3-devices/blocks/index.json');
-assert.equal(blocks.length, 27);
+// 27 de motores, sensores y ladrillo, más 7 de UART en los puertos de sensor (fase 11).
+assert.equal(blocks.length, 34);
 for (const block of blocks) {
   assert.deepEqual(Object.keys(block.generators), ['pybricks']);
   const template = block.generators.pybricks;
@@ -40,4 +41,4 @@ for (const pkg of ['lego-ev3', 'lego-ev3-devices']) {
 const sources = await readFile('packages/lego-ev3-devices/README.md', 'utf8');
 for (const page of ['ev3devices', 'robotics', 'tools'])
   assert(sources.includes(`https://docs.pybricks.com/en/v2.0/${page}.html`));
-console.log('EV3: puertos separados, 27 plantillas v2.0 y fuentes oficiales aprobados.');
+console.log('EV3: puertos separados, 34 plantillas v2.0 y fuentes oficiales aprobados.');

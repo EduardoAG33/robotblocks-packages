@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.uart",
   "name": "UART: OpenMV y otras placas",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Comunicación por UART con líneas de texto separadas por comas, por ejemplo «160,2400,2» desde una cámara OpenMV.",
+  "description": "Comunicación por UART con mensajes de varios números separados por comas, con tipo y checksum opcionales; por ejemplo «160,2400,2» desde una cámara OpenMV o «2:120,-30*39» entre tarjetas.",
   "requiredCapabilities": ["digitalInput", "digitalOutput"],
   "supportedBoards": [],
   "dependencies": [],
@@ -25,7 +25,7 @@
     "translations": {
       "en": {
         "UART: OpenMV y otras placas": "UART: OpenMV and other boards",
-        "Comunicación por UART con líneas de texto separadas por comas, por ejemplo «160,2400,2» desde una cámara OpenMV.": "UART communication with comma-separated text lines, for example “160,2400,2” from an OpenMV camera."
+        "Comunicación por UART con mensajes de varios números separados por comas, con tipo y checksum opcionales; por ejemplo «160,2400,2» desde una cámara OpenMV o «2:120,-30*39» entre tarjetas.": "UART communication with messages of several comma-separated numbers, with optional type and checksum; for example “160,2400,2” from an OpenMV camera or “2:120,-30*39” between boards."
       }
     }
   }
