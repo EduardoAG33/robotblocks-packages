@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.lego-spike",
+  "name": "SPIKE: motores, sensores y hub · experimental",
+  "version": "0.1.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Plantillas Pybricks declarativas para SPIKE Prime. Motor, base motriz, sensores y hub; sin ejecución de código de paquetes en el navegador.",
+  "requiredCapabilities": ["poweredUpPort"],
+  "supportedBoards": ["org.robotblocks.lego-spike-prime:board"],
+  "dependencies": [],
+  "permissions": [],
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "actuators"
+  },
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.lego-spike:motors",
+        "name": "SPIKE · Motores",
+        "colour": "#4C97FF"
+      },
+      {
+        "id": "org.robotblocks.lego-spike:sensors",
+        "name": "SPIKE · Sensores",
+        "colour": "#59BFA8"
+      },
+      {
+        "id": "org.robotblocks.lego-spike:hub",
+        "name": "SPIKE · Hub",
+        "colour": "#9966FF"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  }
+}
