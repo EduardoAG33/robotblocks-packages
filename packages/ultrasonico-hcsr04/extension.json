@@ -3,9 +3,7 @@
   "id": "org.robotblocks.ultrasonico",
   "name": "Ultrasónico HC-SR04",
   "version": "1.1.0",
-  "author": {
-    "name": "Los Grises · RobotBlocks"
-  },
+  "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Distancia en centímetros con sensores ultrasónicos de 4 pines (TRIG y ECHO).",
   "requiredCapabilities": ["digitalOutput", "digitalInput"],
@@ -13,13 +11,7 @@
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [
-      {
-        "id": "org.robotblocks.ultrasonico:ultrasonico",
-        "name": "Ultrasónico",
-        "colour": "#0FBD8C"
-      }
-    ],
+    "categories": [{ "id": "org.robotblocks.ultrasonico:ultrasonico", "name": "Ultrasónico", "colour": "#0FBD8C" }],
     "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],
@@ -29,6 +21,13 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "sensors"
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Ultrasónico HC-SR04": "HC-SR04 ultrasonic",
+        "Distancia en centímetros con sensores ultrasónicos de 4 pines (TRIG y ECHO).": "Distance in centimeters with four-pin ultrasonic sensors (TRIG and ECHO).",
+        "Ultrasónico": "Ultrasonic"
+      }
+    }
   }
 }

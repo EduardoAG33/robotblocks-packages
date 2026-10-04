@@ -2,7 +2,7 @@
   {
     "id": "org.robotblocks.demo-distance-sensor:read",
     "category": "org.robotblocks.demo-distance-sensor:distance",
-    "label": "distancia del sensor %DEVICE en cm",
+    "label": { "es": "distancia del sensor %DEVICE en cm", "en": "sensor %DEVICE distance in cm" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -10,15 +10,15 @@
         "name": "DEVICE",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "device",
-          "capabilities": ["distance"]
-        }
+        "reference": { "kind": "device", "capabilities": ["distance"] }
       }
     ],
     "inputs": [],
     "operation": "org.robotblocks.demo-distance-sensor:read",
-    "tooltip": "Bloque de demostración. No lee un sensor real.",
+    "tooltip": {
+      "es": "Bloque de demostración. No lee un sensor real.",
+      "en": "Demonstration block. Does not read a real sensor."
+    },
     "requiredCapabilities": []
   }
 ]

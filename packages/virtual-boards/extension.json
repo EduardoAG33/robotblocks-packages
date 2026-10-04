@@ -4,9 +4,7 @@
   "name": "Tarjetas virtuales",
   "description": "Descriptores ficticios para practicar; no representan Teensy ni Arduino GIGA.",
   "version": "1.1.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "requiredCapabilities": [],
   "supportedBoards": [],
@@ -24,33 +22,25 @@
         "resources": [
           {
             "id": "port-a",
-            "label": "P1 · digital / PWM",
+            "label": { "es": "P1 · digital / PWM", "en": "P1 · digital / PWM" },
             "capabilities": ["pwm", "digitalInput", "digitalOutput"]
           },
           {
             "id": "port-b",
-            "label": "Bus I2C 0 · SDA / SCL",
+            "label": { "es": "Bus I2C 0 · SDA / SCL", "en": "I2C bus 0 · SDA / SCL" },
             "capabilities": ["i2c"],
             "shared": true
           },
-          {
-            "id": "port-c",
-            "label": "Puerto UART",
-            "capabilities": ["uart"]
-          },
+          { "id": "port-c", "label": { "es": "Puerto UART", "en": "UART port" }, "capabilities": ["uart"] },
           {
             "id": "port-d",
-            "label": "P2 · digital / PWM",
+            "label": { "es": "P2 · digital / PWM", "en": "P2 · digital / PWM" },
             "capabilities": ["pwm", "digitalInput", "digitalOutput"]
           },
-          {
-            "id": "port-e",
-            "label": "A0 · analógico",
-            "capabilities": ["analogInput"]
-          },
+          { "id": "port-e", "label": { "es": "A0 · analógico", "en": "A0 · analog" }, "capabilities": ["analogInput"] },
           {
             "id": "port-f",
-            "label": "P3 · solo entrada",
+            "label": { "es": "P3 · solo entrada", "en": "P3 · input only" },
             "capabilities": ["digitalInput"],
             "notes": "Pin ficticio de solo entrada para practicar la selección por capacidades."
           }
@@ -58,10 +48,7 @@
         "family": "virtual",
         "logicLevel": 3.3,
         "adcBits": 12,
-        "pwm": {
-          "bits": 8,
-          "defaultFrequency": 5000
-        },
+        "pwm": { "bits": 8, "defaultFrequency": 5000 },
         "targets": {}
       },
       {
@@ -70,24 +57,13 @@
         "description": "Descriptor ficticio reducido para comprobar reasignaciones.",
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "resources": [
-          {
-            "id": "port-a",
-            "label": "P1 · PWM",
-            "capabilities": ["pwm"]
-          },
-          {
-            "id": "port-b",
-            "label": "A0 · analógico",
-            "capabilities": ["analogInput"]
-          }
+          { "id": "port-a", "label": { "es": "P1 · PWM", "en": "P1 · PWM" }, "capabilities": ["pwm"] },
+          { "id": "port-b", "label": { "es": "A0 · analógico", "en": "A0 · analog" }, "capabilities": ["analogInput"] }
         ],
         "family": "virtual",
         "logicLevel": 3.3,
         "adcBits": 12,
-        "pwm": {
-          "bits": 8,
-          "defaultFrequency": 5000
-        },
+        "pwm": { "bits": 8, "defaultFrequency": 5000 },
         "targets": {}
       }
     ],
@@ -95,5 +71,18 @@
     "generators": [],
     "monitors": []
   },
-  "assets": []
+  "assets": [],
+  "metadata": {
+    "translations": {
+      "en": {
+        "Tarjetas virtuales": "Virtual boards",
+        "Descriptores ficticios para practicar; no representan Teensy ni Arduino GIGA.": "Fictional descriptors for practice; they do not represent Teensy or Arduino GIGA.",
+        "Tarjeta virtual · completa": "Virtual board · full",
+        "Descriptor ficticio para explorar capacidades. No representa hardware ni ejecuta programas.": "Fictional descriptor for exploring capabilities. Does not represent hardware or execute programs.",
+        "Pin ficticio de solo entrada para practicar la selección por capacidades.": "Fictional input-only pin for practicing selection by capabilities.",
+        "Tarjeta virtual · básica": "Virtual board · basic",
+        "Descriptor ficticio reducido para comprobar reasignaciones.": "Reduced fictional descriptor for checking remapping."
+      }
+    }
+  }
 }

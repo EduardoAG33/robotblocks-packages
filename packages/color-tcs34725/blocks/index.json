@@ -3,30 +3,27 @@
     "id": "org.robotblocks.color-tcs34725:configure",
     "operation": "org.robotblocks.color-tcs34725:configure",
     "category": "org.robotblocks.color-tcs34725:color",
-    "label": "configurar sensor de color SDA %SDA SCL %SCL",
+    "label": { "es": "configurar sensor de color SDA %SDA SCL %SCL", "en": "configure color sensor SDA %SDA SCL %SCL" },
     "kind": "command",
     "fields": [
       {
         "name": "SDA",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       },
       {
         "name": "SCL",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "tooltip": {
+      "es": "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+      "en": "In “when started”. Use the same SDA/SCL as your other I2C sensors. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -45,12 +42,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* color_bus = nullptr;\nstatic uint32_t color_started;\ninline void color_configurar(TwoWire& bus, const char* bloque) {\n    uint8_t id = 0;\n    if (!rb_i2c_read(bus, 0x29, 0x92, &id, 1) || (id != 0x44 && id != 0x4D)) { rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\"); return; }\n    if (!rb_i2c_write(bus, 0x29, 0x81, 0xD5) || !rb_i2c_write(bus, 0x29, 0x8F, 0x01) || !rb_i2c_write(bus, 0x29, 0x80, 0x01)) { rb_fail(bloque, \"No responde TCS34725\"); return; }\n    color_bus = &bus; color_started = millis();\n}\ninline bool color_encender(const char* bloque) {\n    if (rb_failed) return true;\n    if (uint32_t(millis() - color_started) < 3) return false;\n    if (!color_bus || !rb_i2c_write(*color_bus, 0x29, 0x80, 0x03)) rb_fail(bloque, \"No responde TCS34725\"); return true;\n}\ninline bool color_leer(uint16_t* valores, const char* bloque) {\n    uint8_t data[8];\n    if (!color_bus) { rb_fail(bloque, \"Configura el sensor de color al iniciar\"); return false; }\n    if (!rb_i2c_read(*color_bus, 0x29, 0xB4, data, 8)) { rb_fail(bloque, \"No responde TCS34725\"); return false; }\n    for (int i = 0; i < 4; i++) valores[i] = uint16_t(data[2*i]) | uint16_t(data[2*i+1]) << 8; return true;\n}\ninline float color_crudo(const String& canal, const char* bloque) { uint16_t v[4] = {}; color_leer(v, bloque); return v[canal[0]-'0']; }\ninline void color_hsv(float* hsv, const char* bloque) {\n    uint16_t v[4] = {}; if (!color_leer(v, bloque)) return;\n    float r = v[1], g = v[2], b = v[3], mayor = fmaxf(r, fmaxf(g,b)), menor = fminf(r, fminf(g,b)), delta = mayor - menor;\n    float tono = delta == 0 ? 0 : mayor == r ? 60 * fmodf((g-b)/delta + 6, 6) : mayor == g ? 60 * ((b-r)/delta + 2) : 60 * ((r-g)/delta + 4);\n    hsv[0] = roundf(tono*10)/10; hsv[1] = mayor == 0 ? 0 : roundf(delta*1000/mayor)/10; hsv[2] = roundf(fminf(100, v[0]*100.0f/44032)*10)/10;\n}\ninline float color_componente(const String& parte, const char* bloque) { float hsv[3] = {}; color_hsv(hsv, bloque); return hsv[parte[0]-'0']; }\ninline String color_nombre(const char* bloque) {\n    float h[3] = {}; color_hsv(h, bloque);\n    if (h[2] < 3) return String(\"negro\"); if (h[1] < 20) return String(h[2] > 20 ? \"blanco\" : \"gris\");\n    return String(h[0] < 20 ? \"rojo\" : h[0] < 45 ? \"naranja\" : h[0] < 70 ? \"amarillo\" : h[0] < 170 ? \"verde\" : h[0] < 260 ? \"azul\" : h[0] < 330 ? \"morado\" : \"rojo\");\n}"
         ],
-        "hardware": {
-          "i2c": {
-            "sda": "SDA",
-            "scl": "SCL"
-          }
-        },
+        "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
         "includes": ["#include <Wire.h>"],
         "statement": "color_configurar({I2C_BUS}, {BLOCK_ID});",
         "setup": ["{I2C_BUS}.begin();", "{I2C_BUS}.setClock(400000);"],
@@ -62,12 +54,15 @@
     "id": "org.robotblocks.color-tcs34725:name",
     "operation": "org.robotblocks.color-tcs34725:name",
     "category": "org.robotblocks.color-tcs34725:color",
-    "label": "color detectado",
+    "label": { "es": "color detectado", "en": "detected color" },
     "kind": "reporter",
     "output": "string",
     "fields": [],
     "inputs": [],
-    "tooltip": "negro, blanco, gris, rojo, naranja, amarillo, verde, azul o morado (aproximado). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "tooltip": {
+      "es": "negro, blanco, gris, rojo, naranja, amarillo, verde, azul o morado (aproximado). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+      "en": "black, white, gray, red, orange, yellow, green, blue or purple (approximate). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -88,9 +83,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* color_bus = nullptr;\nstatic uint32_t color_started;\ninline void color_configurar(TwoWire& bus, const char* bloque) {\n    uint8_t id = 0;\n    if (!rb_i2c_read(bus, 0x29, 0x92, &id, 1) || (id != 0x44 && id != 0x4D)) { rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\"); return; }\n    if (!rb_i2c_write(bus, 0x29, 0x81, 0xD5) || !rb_i2c_write(bus, 0x29, 0x8F, 0x01) || !rb_i2c_write(bus, 0x29, 0x80, 0x01)) { rb_fail(bloque, \"No responde TCS34725\"); return; }\n    color_bus = &bus; color_started = millis();\n}\ninline bool color_encender(const char* bloque) {\n    if (rb_failed) return true;\n    if (uint32_t(millis() - color_started) < 3) return false;\n    if (!color_bus || !rb_i2c_write(*color_bus, 0x29, 0x80, 0x03)) rb_fail(bloque, \"No responde TCS34725\"); return true;\n}\ninline bool color_leer(uint16_t* valores, const char* bloque) {\n    uint8_t data[8];\n    if (!color_bus) { rb_fail(bloque, \"Configura el sensor de color al iniciar\"); return false; }\n    if (!rb_i2c_read(*color_bus, 0x29, 0xB4, data, 8)) { rb_fail(bloque, \"No responde TCS34725\"); return false; }\n    for (int i = 0; i < 4; i++) valores[i] = uint16_t(data[2*i]) | uint16_t(data[2*i+1]) << 8; return true;\n}\ninline float color_crudo(const String& canal, const char* bloque) { uint16_t v[4] = {}; color_leer(v, bloque); return v[canal[0]-'0']; }\ninline void color_hsv(float* hsv, const char* bloque) {\n    uint16_t v[4] = {}; if (!color_leer(v, bloque)) return;\n    float r = v[1], g = v[2], b = v[3], mayor = fmaxf(r, fmaxf(g,b)), menor = fminf(r, fminf(g,b)), delta = mayor - menor;\n    float tono = delta == 0 ? 0 : mayor == r ? 60 * fmodf((g-b)/delta + 6, 6) : mayor == g ? 60 * ((b-r)/delta + 2) : 60 * ((r-g)/delta + 4);\n    hsv[0] = roundf(tono*10)/10; hsv[1] = mayor == 0 ? 0 : roundf(delta*1000/mayor)/10; hsv[2] = roundf(fminf(100, v[0]*100.0f/44032)*10)/10;\n}\ninline float color_componente(const String& parte, const char* bloque) { float hsv[3] = {}; color_hsv(hsv, bloque); return hsv[parte[0]-'0']; }\ninline String color_nombre(const char* bloque) {\n    float h[3] = {}; color_hsv(h, bloque);\n    if (h[2] < 3) return String(\"negro\"); if (h[1] < 20) return String(h[2] > 20 ? \"blanco\" : \"gris\");\n    return String(h[0] < 20 ? \"rojo\" : h[0] < 45 ? \"naranja\" : h[0] < 70 ? \"amarillo\" : h[0] < 170 ? \"verde\" : h[0] < 260 ? \"azul\" : h[0] < 330 ? \"morado\" : \"rojo\");\n}"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "expression": "color_nombre({BLOCK_ID})"
       }
@@ -100,7 +93,7 @@
     "id": "org.robotblocks.color-tcs34725:component",
     "operation": "org.robotblocks.color-tcs34725:component",
     "category": "org.robotblocks.color-tcs34725:color",
-    "label": "%PART del color",
+    "label": { "es": "%PART del color", "en": "color %PART" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -109,23 +102,17 @@
         "type": "string",
         "default": "0",
         "options": [
-          {
-            "label": "tono (0–360)",
-            "value": "0"
-          },
-          {
-            "label": "saturación (0–100)",
-            "value": "1"
-          },
-          {
-            "label": "brillo (0–100)",
-            "value": "2"
-          }
+          { "label": { "es": "tono (0–360)", "en": "hue (0–360)" }, "value": "0" },
+          { "label": { "es": "saturación (0–100)", "en": "saturation (0–100)" }, "value": "1" },
+          { "label": { "es": "brillo (0–100)", "en": "brightness (0–100)" }, "value": "2" }
         ]
       }
     ],
     "inputs": [],
-    "tooltip": "Tono en grados: rojo ≈ 0, amarillo ≈ 60, verde ≈ 120, azul ≈ 240. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "tooltip": {
+      "es": "Tono en grados: rojo ≈ 0, amarillo ≈ 60, verde ≈ 120, azul ≈ 240. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+      "en": "Hue in degrees: red ≈ 0, yellow ≈ 60, green ≈ 120, blue ≈ 240. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -145,9 +132,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* color_bus = nullptr;\nstatic uint32_t color_started;\ninline void color_configurar(TwoWire& bus, const char* bloque) {\n    uint8_t id = 0;\n    if (!rb_i2c_read(bus, 0x29, 0x92, &id, 1) || (id != 0x44 && id != 0x4D)) { rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\"); return; }\n    if (!rb_i2c_write(bus, 0x29, 0x81, 0xD5) || !rb_i2c_write(bus, 0x29, 0x8F, 0x01) || !rb_i2c_write(bus, 0x29, 0x80, 0x01)) { rb_fail(bloque, \"No responde TCS34725\"); return; }\n    color_bus = &bus; color_started = millis();\n}\ninline bool color_encender(const char* bloque) {\n    if (rb_failed) return true;\n    if (uint32_t(millis() - color_started) < 3) return false;\n    if (!color_bus || !rb_i2c_write(*color_bus, 0x29, 0x80, 0x03)) rb_fail(bloque, \"No responde TCS34725\"); return true;\n}\ninline bool color_leer(uint16_t* valores, const char* bloque) {\n    uint8_t data[8];\n    if (!color_bus) { rb_fail(bloque, \"Configura el sensor de color al iniciar\"); return false; }\n    if (!rb_i2c_read(*color_bus, 0x29, 0xB4, data, 8)) { rb_fail(bloque, \"No responde TCS34725\"); return false; }\n    for (int i = 0; i < 4; i++) valores[i] = uint16_t(data[2*i]) | uint16_t(data[2*i+1]) << 8; return true;\n}\ninline float color_crudo(const String& canal, const char* bloque) { uint16_t v[4] = {}; color_leer(v, bloque); return v[canal[0]-'0']; }\ninline void color_hsv(float* hsv, const char* bloque) {\n    uint16_t v[4] = {}; if (!color_leer(v, bloque)) return;\n    float r = v[1], g = v[2], b = v[3], mayor = fmaxf(r, fmaxf(g,b)), menor = fminf(r, fminf(g,b)), delta = mayor - menor;\n    float tono = delta == 0 ? 0 : mayor == r ? 60 * fmodf((g-b)/delta + 6, 6) : mayor == g ? 60 * ((b-r)/delta + 2) : 60 * ((r-g)/delta + 4);\n    hsv[0] = roundf(tono*10)/10; hsv[1] = mayor == 0 ? 0 : roundf(delta*1000/mayor)/10; hsv[2] = roundf(fminf(100, v[0]*100.0f/44032)*10)/10;\n}\ninline float color_componente(const String& parte, const char* bloque) { float hsv[3] = {}; color_hsv(hsv, bloque); return hsv[parte[0]-'0']; }\ninline String color_nombre(const char* bloque) {\n    float h[3] = {}; color_hsv(h, bloque);\n    if (h[2] < 3) return String(\"negro\"); if (h[1] < 20) return String(h[2] > 20 ? \"blanco\" : \"gris\");\n    return String(h[0] < 20 ? \"rojo\" : h[0] < 45 ? \"naranja\" : h[0] < 70 ? \"amarillo\" : h[0] < 170 ? \"verde\" : h[0] < 260 ? \"azul\" : h[0] < 330 ? \"morado\" : \"rojo\");\n}"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "expression": "color_componente({PART}, {BLOCK_ID})"
       }
@@ -157,7 +142,7 @@
     "id": "org.robotblocks.color-tcs34725:raw",
     "operation": "org.robotblocks.color-tcs34725:raw",
     "category": "org.robotblocks.color-tcs34725:color",
-    "label": "valor crudo %CHANNEL del sensor de color",
+    "label": { "es": "valor crudo %CHANNEL del sensor de color", "en": "color sensor raw %CHANNEL value" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -166,27 +151,18 @@
         "type": "string",
         "default": "1",
         "options": [
-          {
-            "label": "rojo",
-            "value": "1"
-          },
-          {
-            "label": "verde",
-            "value": "2"
-          },
-          {
-            "label": "azul",
-            "value": "3"
-          },
-          {
-            "label": "claridad",
-            "value": "0"
-          }
+          { "label": { "es": "rojo", "en": "red" }, "value": "1" },
+          { "label": { "es": "verde", "en": "green" }, "value": "2" },
+          { "label": { "es": "azul", "en": "blue" }, "value": "3" },
+          { "label": { "es": "claridad", "en": "clear" }, "value": "0" }
         ]
       }
     ],
     "inputs": [],
-    "tooltip": "Cuentas del sensor (0 a unas 44000). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+    "tooltip": {
+      "es": "Cuentas del sensor (0 a unas 44000). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
+      "en": "Sensor counts (0 to approximately 44000). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -205,9 +181,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* color_bus = nullptr;\nstatic uint32_t color_started;\ninline void color_configurar(TwoWire& bus, const char* bloque) {\n    uint8_t id = 0;\n    if (!rb_i2c_read(bus, 0x29, 0x92, &id, 1) || (id != 0x44 && id != 0x4D)) { rb_fail(bloque, \"El dispositivo en 0x29 no es un TCS34725\"); return; }\n    if (!rb_i2c_write(bus, 0x29, 0x81, 0xD5) || !rb_i2c_write(bus, 0x29, 0x8F, 0x01) || !rb_i2c_write(bus, 0x29, 0x80, 0x01)) { rb_fail(bloque, \"No responde TCS34725\"); return; }\n    color_bus = &bus; color_started = millis();\n}\ninline bool color_encender(const char* bloque) {\n    if (rb_failed) return true;\n    if (uint32_t(millis() - color_started) < 3) return false;\n    if (!color_bus || !rb_i2c_write(*color_bus, 0x29, 0x80, 0x03)) rb_fail(bloque, \"No responde TCS34725\"); return true;\n}\ninline bool color_leer(uint16_t* valores, const char* bloque) {\n    uint8_t data[8];\n    if (!color_bus) { rb_fail(bloque, \"Configura el sensor de color al iniciar\"); return false; }\n    if (!rb_i2c_read(*color_bus, 0x29, 0xB4, data, 8)) { rb_fail(bloque, \"No responde TCS34725\"); return false; }\n    for (int i = 0; i < 4; i++) valores[i] = uint16_t(data[2*i]) | uint16_t(data[2*i+1]) << 8; return true;\n}\ninline float color_crudo(const String& canal, const char* bloque) { uint16_t v[4] = {}; color_leer(v, bloque); return v[canal[0]-'0']; }\ninline void color_hsv(float* hsv, const char* bloque) {\n    uint16_t v[4] = {}; if (!color_leer(v, bloque)) return;\n    float r = v[1], g = v[2], b = v[3], mayor = fmaxf(r, fmaxf(g,b)), menor = fminf(r, fminf(g,b)), delta = mayor - menor;\n    float tono = delta == 0 ? 0 : mayor == r ? 60 * fmodf((g-b)/delta + 6, 6) : mayor == g ? 60 * ((b-r)/delta + 2) : 60 * ((r-g)/delta + 4);\n    hsv[0] = roundf(tono*10)/10; hsv[1] = mayor == 0 ? 0 : roundf(delta*1000/mayor)/10; hsv[2] = roundf(fminf(100, v[0]*100.0f/44032)*10)/10;\n}\ninline float color_componente(const String& parte, const char* bloque) { float hsv[3] = {}; color_hsv(hsv, bloque); return hsv[parte[0]-'0']; }\ninline String color_nombre(const char* bloque) {\n    float h[3] = {}; color_hsv(h, bloque);\n    if (h[2] < 3) return String(\"negro\"); if (h[1] < 20) return String(h[2] > 20 ? \"blanco\" : \"gris\");\n    return String(h[0] < 20 ? \"rojo\" : h[0] < 45 ? \"naranja\" : h[0] < 70 ? \"amarillo\" : h[0] < 170 ? \"verde\" : h[0] < 260 ? \"azul\" : h[0] < 330 ? \"morado\" : \"rojo\");\n}"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "expression": "color_crudo({CHANNEL}, {BLOCK_ID})"
       }

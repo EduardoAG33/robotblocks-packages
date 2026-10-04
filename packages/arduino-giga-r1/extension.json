@@ -3,9 +3,7 @@
   "id": "org.robotblocks.arduino-giga-r1",
   "name": "Arduino GIGA R1 WiFi · experimental",
   "version": "0.2.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
   "requiredCapabilities": [],
@@ -15,7 +13,25 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "boards"
+    "group": "boards",
+    "translations": {
+      "en": {
+        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default. Experimental C++ generation; upload pending Phase 8 and physical validation.",
+        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default.",
+        "UART hardware; la serie USB usa un puerto independiente.": "Hardware UART; USB serial uses a separate port.",
+        "Conector de cámara; no usar como GPIO mientras se utiliza la cámara.": "Camera connector; do not use as GPIO while the camera is active.",
+        "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo.": "Display/camera connector; do not use as GPIO with that peripheral active.",
+        "Compartido con entrada de micrófono del jack de audio.": "Shared with the audio jack microphone input.",
+        "Solo analógico; sin GPIO digital.": "Analog only; no digital GPIO.",
+        "DAC real (no PWM), compartido con el jack de audio. Arduino usa A12.": "True DAC (not PWM), shared with the audio jack. Arduino uses A12.",
+        "DAC real (no PWM), compartido con el jack de audio. Arduino usa A13.": "True DAC (not PWM), shared with the audio jack. Arduino uses A13.",
+        "Compartido con CAN; requiere transceptor externo.": "Shared with CAN; requires an external transceiver.",
+        "I2C Wire1; duplicado en el conector de cámara.": "I2C Wire1; duplicated on the camera connector.",
+        "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D86.": "Built-in common-anode RGB LED: low turns it on, high turns it off. D86.",
+        "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D87.": "Built-in common-anode RGB LED: low turns it on, high turns it off. D87.",
+        "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D88.": "Built-in common-anode RGB LED: low turns it on, high turns it off. D88."
+      }
+    }
   },
   "contributes": {
     "categories": [],
@@ -33,884 +49,645 @@
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 3.3,
         "adcBits": 10,
-        "pwm": {
-          "bits": 8,
-          "defaultFrequency": 500
-        },
-        "targets": {
-          "arduino": {
-            "upload": "arduino-cli",
-            "fqbn": "arduino:mbed_giga:giga"
-          }
-        },
+        "pwm": { "bits": 8, "defaultFrequency": 500 },
+        "targets": { "arduino": { "upload": "arduino-cli", "fqbn": "arduino:mbed_giga:giga" } },
         "resources": [
           {
             "id": "d0",
-            "label": "D0",
+            "label": { "es": "D0", "en": "D0" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "0"
-            },
+            "symbol": { "arduino": "0" },
             "notes": "UART hardware; la serie USB usa un puerto independiente."
           },
           {
             "id": "d1",
-            "label": "D1",
+            "label": { "es": "D1", "en": "D1" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "1"
-            },
+            "symbol": { "arduino": "1" },
             "notes": "UART hardware; la serie USB usa un puerto independiente."
           },
           {
             "id": "d2",
-            "label": "D2",
+            "label": { "es": "D2", "en": "D2" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "2"
-            }
+            "symbol": { "arduino": "2" }
           },
           {
             "id": "d3",
-            "label": "D3",
+            "label": { "es": "D3", "en": "D3" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "3"
-            }
+            "symbol": { "arduino": "3" }
           },
           {
             "id": "d4",
-            "label": "D4",
+            "label": { "es": "D4", "en": "D4" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "4"
-            }
+            "symbol": { "arduino": "4" }
           },
           {
             "id": "d5",
-            "label": "D5",
+            "label": { "es": "D5", "en": "D5" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "5"
-            }
+            "symbol": { "arduino": "5" }
           },
           {
             "id": "d6",
-            "label": "D6",
+            "label": { "es": "D6", "en": "D6" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "6"
-            }
+            "symbol": { "arduino": "6" }
           },
           {
             "id": "d7",
-            "label": "D7",
+            "label": { "es": "D7", "en": "D7" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "7"
-            }
+            "symbol": { "arduino": "7" }
           },
           {
             "id": "d8",
-            "label": "D8",
+            "label": { "es": "D8", "en": "D8" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "8"
-            },
+            "symbol": { "arduino": "8" },
             "notes": "I2C Wire2: SCL"
           },
           {
             "id": "d9",
-            "label": "D9",
+            "label": { "es": "D9", "en": "D9" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "9"
-            },
+            "symbol": { "arduino": "9" },
             "notes": "I2C Wire2: SDA"
           },
           {
             "id": "d10",
-            "label": "D10",
+            "label": { "es": "D10", "en": "D10" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "10"
-            }
+            "symbol": { "arduino": "10" }
           },
           {
             "id": "d11",
-            "label": "D11",
+            "label": { "es": "D11", "en": "D11" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "11"
-            }
+            "symbol": { "arduino": "11" }
           },
           {
             "id": "d12",
-            "label": "D12",
+            "label": { "es": "D12", "en": "D12" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "12"
-            }
+            "symbol": { "arduino": "12" }
           },
           {
             "id": "d13",
-            "label": "D13",
+            "label": { "es": "D13", "en": "D13" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "13"
-            }
+            "symbol": { "arduino": "13" }
           },
           {
             "id": "d14",
-            "label": "D14",
+            "label": { "es": "D14", "en": "D14" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "14"
-            }
+            "symbol": { "arduino": "14" }
           },
           {
             "id": "d15",
-            "label": "D15",
+            "label": { "es": "D15", "en": "D15" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "15"
-            }
+            "symbol": { "arduino": "15" }
           },
           {
             "id": "d16",
-            "label": "D16",
+            "label": { "es": "D16", "en": "D16" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "16"
-            }
+            "symbol": { "arduino": "16" }
           },
           {
             "id": "d17",
-            "label": "D17",
+            "label": { "es": "D17", "en": "D17" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "17"
-            }
+            "symbol": { "arduino": "17" }
           },
           {
             "id": "d18",
-            "label": "D18",
+            "label": { "es": "D18", "en": "D18" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "18"
-            }
+            "symbol": { "arduino": "18" }
           },
           {
             "id": "d19",
-            "label": "D19",
+            "label": { "es": "D19", "en": "D19" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "19"
-            }
+            "symbol": { "arduino": "19" }
           },
           {
             "id": "d20",
-            "label": "D20",
+            "label": { "es": "D20", "en": "D20" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "20"
-            },
+            "symbol": { "arduino": "20" },
             "notes": "I2C Wire: SDA"
           },
           {
             "id": "d21",
-            "label": "D21",
+            "label": { "es": "D21", "en": "D21" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "21"
-            },
+            "symbol": { "arduino": "21" },
             "notes": "I2C Wire: SCL"
           },
           {
             "id": "d22",
-            "label": "D22",
+            "label": { "es": "D22", "en": "D22" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "22"
-            }
+            "symbol": { "arduino": "22" }
           },
           {
             "id": "d23",
-            "label": "D23",
+            "label": { "es": "D23", "en": "D23" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "23"
-            }
+            "symbol": { "arduino": "23" }
           },
           {
             "id": "d24",
-            "label": "D24",
+            "label": { "es": "D24", "en": "D24" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "24"
-            }
+            "symbol": { "arduino": "24" }
           },
           {
             "id": "d25",
-            "label": "D25",
+            "label": { "es": "D25", "en": "D25" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "25"
-            }
+            "symbol": { "arduino": "25" }
           },
           {
             "id": "d26",
-            "label": "D26",
+            "label": { "es": "D26", "en": "D26" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "26"
-            }
+            "symbol": { "arduino": "26" }
           },
           {
             "id": "d27",
-            "label": "D27",
+            "label": { "es": "D27", "en": "D27" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "27"
-            }
+            "symbol": { "arduino": "27" }
           },
           {
             "id": "d28",
-            "label": "D28",
+            "label": { "es": "D28", "en": "D28" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "28"
-            }
+            "symbol": { "arduino": "28" }
           },
           {
             "id": "d29",
-            "label": "D29",
+            "label": { "es": "D29", "en": "D29" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "29"
-            }
+            "symbol": { "arduino": "29" }
           },
           {
             "id": "d30",
-            "label": "D30",
+            "label": { "es": "D30", "en": "D30" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "30"
-            }
+            "symbol": { "arduino": "30" }
           },
           {
             "id": "d31",
-            "label": "D31",
+            "label": { "es": "D31", "en": "D31" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "31"
-            }
+            "symbol": { "arduino": "31" }
           },
           {
             "id": "d32",
-            "label": "D32",
+            "label": { "es": "D32", "en": "D32" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "32"
-            }
+            "symbol": { "arduino": "32" }
           },
           {
             "id": "d33",
-            "label": "D33",
+            "label": { "es": "D33", "en": "D33" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "33"
-            }
+            "symbol": { "arduino": "33" }
           },
           {
             "id": "d34",
-            "label": "D34",
+            "label": { "es": "D34", "en": "D34" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "34"
-            }
+            "symbol": { "arduino": "34" }
           },
           {
             "id": "d35",
-            "label": "D35",
+            "label": { "es": "D35", "en": "D35" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "35"
-            }
+            "symbol": { "arduino": "35" }
           },
           {
             "id": "d36",
-            "label": "D36",
+            "label": { "es": "D36", "en": "D36" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "36"
-            }
+            "symbol": { "arduino": "36" }
           },
           {
             "id": "d37",
-            "label": "D37",
+            "label": { "es": "D37", "en": "D37" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "37"
-            }
+            "symbol": { "arduino": "37" }
           },
           {
             "id": "d38",
-            "label": "D38",
+            "label": { "es": "D38", "en": "D38" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "38"
-            }
+            "symbol": { "arduino": "38" }
           },
           {
             "id": "d39",
-            "label": "D39",
+            "label": { "es": "D39", "en": "D39" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "39"
-            }
+            "symbol": { "arduino": "39" }
           },
           {
             "id": "d40",
-            "label": "D40",
+            "label": { "es": "D40", "en": "D40" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "40"
-            }
+            "symbol": { "arduino": "40" }
           },
           {
             "id": "d41",
-            "label": "D41",
+            "label": { "es": "D41", "en": "D41" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "41"
-            }
+            "symbol": { "arduino": "41" }
           },
           {
             "id": "d42",
-            "label": "D42",
+            "label": { "es": "D42", "en": "D42" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "42"
-            }
+            "symbol": { "arduino": "42" }
           },
           {
             "id": "d43",
-            "label": "D43",
+            "label": { "es": "D43", "en": "D43" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "43"
-            }
+            "symbol": { "arduino": "43" }
           },
           {
             "id": "d44",
-            "label": "D44",
+            "label": { "es": "D44", "en": "D44" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "44"
-            }
+            "symbol": { "arduino": "44" }
           },
           {
             "id": "d45",
-            "label": "D45",
+            "label": { "es": "D45", "en": "D45" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "45"
-            }
+            "symbol": { "arduino": "45" }
           },
           {
             "id": "d46",
-            "label": "D46",
+            "label": { "es": "D46", "en": "D46" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "46"
-            }
+            "symbol": { "arduino": "46" }
           },
           {
             "id": "d47",
-            "label": "D47",
+            "label": { "es": "D47", "en": "D47" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "47"
-            }
+            "symbol": { "arduino": "47" }
           },
           {
             "id": "d48",
-            "label": "D48",
+            "label": { "es": "D48", "en": "D48" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "48"
-            }
+            "symbol": { "arduino": "48" }
           },
           {
             "id": "d49",
-            "label": "D49",
+            "label": { "es": "D49", "en": "D49" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "49"
-            }
+            "symbol": { "arduino": "49" }
           },
           {
             "id": "d50",
-            "label": "D50",
+            "label": { "es": "D50", "en": "D50" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "50"
-            }
+            "symbol": { "arduino": "50" }
           },
           {
             "id": "d51",
-            "label": "D51",
+            "label": { "es": "D51", "en": "D51" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "51"
-            }
+            "symbol": { "arduino": "51" }
           },
           {
             "id": "d52",
-            "label": "D52",
+            "label": { "es": "D52", "en": "D52" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "52"
-            }
+            "symbol": { "arduino": "52" }
           },
           {
             "id": "d53",
-            "label": "D53",
+            "label": { "es": "D53", "en": "D53" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "53"
-            }
+            "symbol": { "arduino": "53" }
           },
           {
             "id": "d54",
-            "label": "D54",
+            "label": { "es": "D54", "en": "D54" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "54"
-            },
+            "symbol": { "arduino": "54" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d55",
-            "label": "D55",
+            "label": { "es": "D55", "en": "D55" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "55"
-            },
+            "symbol": { "arduino": "55" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d56",
-            "label": "D56",
+            "label": { "es": "D56", "en": "D56" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "56"
-            },
+            "symbol": { "arduino": "56" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d57",
-            "label": "D57",
+            "label": { "es": "D57", "en": "D57" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "57"
-            },
+            "symbol": { "arduino": "57" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d58",
-            "label": "D58",
+            "label": { "es": "D58", "en": "D58" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "58"
-            },
+            "symbol": { "arduino": "58" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d59",
-            "label": "D59",
+            "label": { "es": "D59", "en": "D59" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "59"
-            },
+            "symbol": { "arduino": "59" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d60",
-            "label": "D60",
+            "label": { "es": "D60", "en": "D60" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "60"
-            },
+            "symbol": { "arduino": "60" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d61",
-            "label": "D61",
+            "label": { "es": "D61", "en": "D61" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "61"
-            },
+            "symbol": { "arduino": "61" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d62",
-            "label": "D62",
+            "label": { "es": "D62", "en": "D62" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "62"
-            },
+            "symbol": { "arduino": "62" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d63",
-            "label": "D63",
+            "label": { "es": "D63", "en": "D63" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "63"
-            },
+            "symbol": { "arduino": "63" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d64",
-            "label": "D64",
+            "label": { "es": "D64", "en": "D64" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "64"
-            },
+            "symbol": { "arduino": "64" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d65",
-            "label": "D65",
+            "label": { "es": "D65", "en": "D65" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "65"
-            },
+            "symbol": { "arduino": "65" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d66",
-            "label": "D66",
+            "label": { "es": "D66", "en": "D66" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "66"
-            },
+            "symbol": { "arduino": "66" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d67",
-            "label": "D67",
+            "label": { "es": "D67", "en": "D67" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "67"
-            },
+            "symbol": { "arduino": "67" },
             "notes": "Conector de cámara; no usar como GPIO mientras se utiliza la cámara."
           },
           {
             "id": "d68",
-            "label": "D68",
+            "label": { "es": "D68", "en": "D68" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "68"
-            },
+            "symbol": { "arduino": "68" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d69",
-            "label": "D69",
+            "label": { "es": "D69", "en": "D69" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "69"
-            },
+            "symbol": { "arduino": "69" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d70",
-            "label": "D70",
+            "label": { "es": "D70", "en": "D70" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "70"
-            },
+            "symbol": { "arduino": "70" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d71",
-            "label": "D71",
+            "label": { "es": "D71", "en": "D71" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "71"
-            },
+            "symbol": { "arduino": "71" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d72",
-            "label": "D72",
+            "label": { "es": "D72", "en": "D72" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "72"
-            },
+            "symbol": { "arduino": "72" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d73",
-            "label": "D73",
+            "label": { "es": "D73", "en": "D73" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "73"
-            },
+            "symbol": { "arduino": "73" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d74",
-            "label": "D74",
+            "label": { "es": "D74", "en": "D74" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "74"
-            },
+            "symbol": { "arduino": "74" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "d75",
-            "label": "D75",
+            "label": { "es": "D75", "en": "D75" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "75"
-            },
+            "symbol": { "arduino": "75" },
             "notes": "Conector de pantalla/cámara; no usar como GPIO con ese periférico activo."
           },
           {
             "id": "a0",
-            "label": "A0",
+            "label": { "es": "A0", "en": "A0" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A0"
-            }
+            "symbol": { "arduino": "A0" }
           },
           {
             "id": "a1",
-            "label": "A1",
+            "label": { "es": "A1", "en": "A1" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A1"
-            }
+            "symbol": { "arduino": "A1" }
           },
           {
             "id": "a2",
-            "label": "A2",
+            "label": { "es": "A2", "en": "A2" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A2"
-            }
+            "symbol": { "arduino": "A2" }
           },
           {
             "id": "a3",
-            "label": "A3",
+            "label": { "es": "A3", "en": "A3" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A3"
-            }
+            "symbol": { "arduino": "A3" }
           },
           {
             "id": "a4",
-            "label": "A4",
+            "label": { "es": "A4", "en": "A4" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A4"
-            }
+            "symbol": { "arduino": "A4" }
           },
           {
             "id": "a5",
-            "label": "A5",
+            "label": { "es": "A5", "en": "A5" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A5"
-            }
+            "symbol": { "arduino": "A5" }
           },
           {
             "id": "a6",
-            "label": "A6",
+            "label": { "es": "A6", "en": "A6" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A6"
-            }
+            "symbol": { "arduino": "A6" }
           },
           {
             "id": "a7",
-            "label": "A7",
+            "label": { "es": "A7", "en": "A7" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A7"
-            },
+            "symbol": { "arduino": "A7" },
             "notes": "Compartido con entrada de micrófono del jack de audio."
           },
           {
             "id": "a8",
-            "label": "A8",
+            "label": { "es": "A8", "en": "A8" },
             "capabilities": ["analogInput"],
-            "symbol": {
-              "arduino": "A8"
-            },
+            "symbol": { "arduino": "A8" },
             "notes": "Solo analógico; sin GPIO digital."
           },
           {
             "id": "a9",
-            "label": "A9",
+            "label": { "es": "A9", "en": "A9" },
             "capabilities": ["analogInput"],
-            "symbol": {
-              "arduino": "A9"
-            },
+            "symbol": { "arduino": "A9" },
             "notes": "Solo analógico; sin GPIO digital."
           },
           {
             "id": "a10",
-            "label": "A10",
+            "label": { "es": "A10", "en": "A10" },
             "capabilities": ["analogInput"],
-            "symbol": {
-              "arduino": "A10"
-            },
+            "symbol": { "arduino": "A10" },
             "notes": "Solo analógico; sin GPIO digital."
           },
           {
             "id": "a11",
-            "label": "A11",
+            "label": { "es": "A11", "en": "A11" },
             "capabilities": ["analogInput"],
-            "symbol": {
-              "arduino": "A11"
-            },
+            "symbol": { "arduino": "A11" },
             "notes": "Solo analógico; sin GPIO digital."
           },
           {
             "id": "dac0",
-            "label": "DAC0",
+            "label": { "es": "DAC0", "en": "DAC0" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A12"
-            },
+            "symbol": { "arduino": "A12" },
             "notes": "DAC real (no PWM), compartido con el jack de audio. Arduino usa A12."
           },
           {
             "id": "dac1",
-            "label": "DAC1",
+            "label": { "es": "DAC1", "en": "DAC1" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A13"
-            },
+            "symbol": { "arduino": "A13" },
             "notes": "DAC real (no PWM), compartido con el jack de audio. Arduino usa A13."
           },
           {
             "id": "d93",
-            "label": "CAN RX",
+            "label": { "es": "CAN RX", "en": "CAN RX" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "93"
-            },
+            "symbol": { "arduino": "93" },
             "notes": "Compartido con CAN; requiere transceptor externo."
           },
           {
             "id": "d94",
-            "label": "CAN TX",
+            "label": { "es": "CAN TX", "en": "CAN TX" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "94"
-            },
+            "symbol": { "arduino": "94" },
             "notes": "Compartido con CAN; requiere transceptor externo."
           },
           {
             "id": "d101",
-            "label": "D101 / SCL1",
+            "label": { "es": "D101 / SCL1", "en": "D101 / SCL1" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "101"
-            },
+            "symbol": { "arduino": "101" },
             "notes": "I2C Wire1; duplicado en el conector de cámara."
           },
           {
             "id": "d102",
-            "label": "D102 / SDA1",
+            "label": { "es": "D102 / SDA1", "en": "D102 / SDA1" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "102"
-            },
+            "symbol": { "arduino": "102" },
             "notes": "I2C Wire1; duplicado en el conector de cámara."
           },
           {
             "id": "led-red",
-            "label": "RED / LED RGB",
+            "label": { "es": "RED / LED RGB", "en": "RED / LED RGB" },
             "capabilities": ["digitalOutput"],
-            "symbol": {
-              "arduino": "LEDR"
-            },
+            "symbol": { "arduino": "LEDR" },
             "notes": "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D86."
           },
           {
             "id": "led-green",
-            "label": "GREEN / LED RGB",
+            "label": { "es": "GREEN / LED RGB", "en": "GREEN / LED RGB" },
             "capabilities": ["digitalOutput"],
-            "symbol": {
-              "arduino": "LEDG"
-            },
+            "symbol": { "arduino": "LEDG" },
             "notes": "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D87."
           },
           {
             "id": "led-blue",
-            "label": "BLUE / LED RGB",
+            "label": { "es": "BLUE / LED RGB", "en": "BLUE / LED RGB" },
             "capabilities": ["digitalOutput"],
-            "symbol": {
-              "arduino": "LEDB"
-            },
+            "symbol": { "arduino": "LEDB" },
             "notes": "LED RGB integrado de ánodo común: bajo enciende, alto apaga. D88."
           }
         ],
-        "arduinoApis": {
-          "adcResolution": true,
-          "pwmResolution": true,
-          "servo": true,
-          "servoPwmConflicts": []
-        },
+        "arduinoApis": { "adcResolution": true, "pwmResolution": true, "servo": true, "servoPwmConflicts": [] },
         "uart": [
-          {
-            "port": 1,
-            "symbol": "Serial1",
-            "rx": "d0",
-            "tx": "d1"
-          },
-          {
-            "port": 2,
-            "symbol": "Serial2",
-            "rx": "d19",
-            "tx": "d18"
-          },
-          {
-            "port": 3,
-            "symbol": "Serial3",
-            "rx": "d17",
-            "tx": "d16"
-          },
-          {
-            "port": 4,
-            "symbol": "Serial4",
-            "rx": "d15",
-            "tx": "d14"
-          }
+          { "port": 1, "symbol": "Serial1", "rx": "d0", "tx": "d1" },
+          { "port": 2, "symbol": "Serial2", "rx": "d19", "tx": "d18" },
+          { "port": 3, "symbol": "Serial3", "rx": "d17", "tx": "d16" },
+          { "port": 4, "symbol": "Serial4", "rx": "d15", "tx": "d14" }
         ],
         "i2c": [
-          {
-            "symbol": "Wire",
-            "sda": "d20",
-            "scl": "d21"
-          },
-          {
-            "symbol": "Wire1",
-            "sda": "d102",
-            "scl": "d101"
-          },
-          {
-            "symbol": "Wire2",
-            "sda": "d9",
-            "scl": "d8"
-          }
+          { "symbol": "Wire", "sda": "d20", "scl": "d21" },
+          { "symbol": "Wire1", "sda": "d102", "scl": "d101" },
+          { "symbol": "Wire2", "sda": "d9", "scl": "d8" }
         ]
       }
     ]

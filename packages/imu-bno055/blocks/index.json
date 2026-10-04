@@ -3,30 +3,27 @@
     "id": "org.robotblocks.imu-bno055:configure",
     "operation": "org.robotblocks.imu-bno055:configure",
     "category": "org.robotblocks.imu-bno055:imu",
-    "label": "configurar IMU BNO055 SDA %SDA SCL %SCL",
+    "label": { "es": "configurar IMU BNO055 SDA %SDA SCL %SCL", "en": "configure BNO055 IMU SDA %SDA SCL %SCL" },
     "kind": "command",
     "fields": [
       {
         "name": "SDA",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       },
       {
         "name": "SCL",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "tooltip": {
+      "es": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+      "en": "In “when started”, with the robot still. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -45,12 +42,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
         ],
-        "hardware": {
-          "i2c": {
-            "sda": "SDA",
-            "scl": "SCL"
-          }
-        },
+        "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
         "includes": ["#include <Wire.h>"],
         "statement": "imu_configurar({I2C_BUS});",
         "setup": ["{I2C_BUS}.begin();", "{I2C_BUS}.setClock(400000);"],
@@ -62,12 +54,15 @@
     "id": "org.robotblocks.imu-bno055:turn",
     "operation": "org.robotblocks.imu-bno055:turn",
     "category": "org.robotblocks.imu-bno055:imu",
-    "label": "ángulo de giro",
+    "label": { "es": "ángulo de giro", "en": "heading angle" },
     "kind": "reporter",
     "output": "number",
     "fields": [],
     "inputs": [],
-    "tooltip": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "tooltip": {
+      "es": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+      "en": "From -180 to 180 degrees relative to the last “reset heading angle”; positive to the right. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -87,9 +82,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "expression": "imu_giro({BLOCK_ID})"
       }
@@ -99,11 +92,14 @@
     "id": "org.robotblocks.imu-bno055:reset",
     "operation": "org.robotblocks.imu-bno055:reset",
     "category": "org.robotblocks.imu-bno055:imu",
-    "label": "reiniciar ángulo de giro",
+    "label": { "es": "reiniciar ángulo de giro", "en": "reset heading angle" },
     "kind": "command",
     "fields": [],
     "inputs": [],
-    "tooltip": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "tooltip": {
+      "es": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+      "en": "The current heading becomes 0. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -123,9 +119,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "statement": "imu_reiniciar({BLOCK_ID});"
       }
@@ -135,7 +129,7 @@
     "id": "org.robotblocks.imu-bno055:tilt",
     "operation": "org.robotblocks.imu-bno055:tilt",
     "category": "org.robotblocks.imu-bno055:imu",
-    "label": "inclinación %AXIS",
+    "label": { "es": "inclinación %AXIS", "en": "tilt %AXIS" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -144,19 +138,16 @@
         "type": "string",
         "default": "2",
         "options": [
-          {
-            "label": "adelante/atrás",
-            "value": "2"
-          },
-          {
-            "label": "izquierda/derecha",
-            "value": "1"
-          }
+          { "label": { "es": "adelante/atrás", "en": "forward/backward" }, "value": "2" },
+          { "label": { "es": "izquierda/derecha", "en": "left/right" }, "value": "1" }
         ]
       }
     ],
     "inputs": [],
-    "tooltip": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+    "tooltip": {
+      "es": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+      "en": "In degrees. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "micropython": {
@@ -175,9 +166,7 @@
           "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
           "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0;\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; }\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0]-'0', bloque); }"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "includes": ["#include <Wire.h>"],
         "expression": "imu_inclinacion({AXIS}, {BLOCK_ID})"
       }

@@ -12,7 +12,7 @@ assert.equal(board.metadata.group, 'boards');
 const hub = board.contributes.boards[0];
 assert.deepEqual(hub.targets, { pybricks: { upload: 'webbluetooth-pybricks' } });
 assert.deepEqual(
-  hub.resources.slice(0, 6).map((r) => [r.label, r.symbol.pybricks]),
+  hub.resources.slice(0, 6).map((r) => [r.label.es, r.symbol.pybricks]),
   [...'ABCDEF'].map((p) => [p, `Port.${p}`]),
 );
 assert(hub.resources.every((r) => !r.symbol?.micropython && !r.symbol?.arduino));

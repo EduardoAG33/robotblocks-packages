@@ -3,170 +3,118 @@
     "id": "org.robotblocks.lego-spike:motor-run",
     "operation": "org.robotblocks.lego-spike:motor-run",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "motor %PORT girar a %SPEED grados/s",
+    "label": { "es": "motor %PORT girar a %SPEED grados/s", "en": "motor %PORT run at %SPEED degrees/s" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 500, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:motor-angle",
     "operation": "org.robotblocks.lego-spike:motor-angle",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "motor %PORT girar %ANGLE grados a %SPEED grados/s",
+    "label": {
+      "es": "motor %PORT girar %ANGLE grados a %SPEED grados/s",
+      "en": "motor %PORT run %ANGLE degrees at %SPEED degrees/s"
+    },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90,
-        "min": -2147483648,
-        "max": 2147483647
-      },
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": 1,
-        "max": 2147483647
-      }
+      { "name": "ANGLE", "type": "number", "default": 90, "min": -2147483648, "max": 2147483647 },
+      { "name": "SPEED", "type": "number", "default": 500, "min": 1, "max": 2147483647 }
     ],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle({SPEED}, {ANGLE})"
-      }
+      "pybricks": { "cooperative": true, "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle({SPEED}, {ANGLE})" }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:motor-time",
     "operation": "org.robotblocks.lego-spike:motor-time",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "motor %PORT girar %MS ms a %SPEED grados/s",
+    "label": { "es": "motor %PORT girar %MS ms a %SPEED grados/s", "en": "motor %PORT run %MS ms at %SPEED degrees/s" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [
-      {
-        "name": "MS",
-        "type": "number",
-        "default": 1000,
-        "min": 0,
-        "max": 2147483647
-      },
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 500,
-        "min": -2147483648,
-        "max": 2147483647
-      }
+      { "name": "MS", "type": "number", "default": 1000, "min": 0, "max": 2147483647 },
+      { "name": "SPEED", "type": "number", "default": 500, "min": -2147483648, "max": 2147483647 }
     ],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_time({SPEED}, {MS})"
-      }
+      "pybricks": { "cooperative": true, "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_time({SPEED}, {MS})" }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:motor-stop",
     "operation": "org.robotblocks.lego-spike:motor-stop",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "motor %PORT detener %MODE",
+    "label": { "es": "motor %PORT detener %MODE", "en": "motor %PORT stop %MODE" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       },
       {
         "name": "MODE",
         "type": "string",
         "default": "brake",
         "options": [
-          {
-            "label": "frenar",
-            "value": "brake"
-          },
-          {
-            "label": "mantener",
-            "value": "hold"
-          },
-          {
-            "label": "libre",
-            "value": "coast"
-          }
+          { "label": { "es": "frenar", "en": "brake" }, "value": "brake" },
+          { "label": { "es": "mantener", "en": "hold" }, "value": "hold" },
+          { "label": { "es": "libre", "en": "coast" }, "value": "coast" }
         ]
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:motor-position",
     "operation": "org.robotblocks.lego-spike:motor-position",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "ángulo del motor %PORT en grados",
+    "label": { "es": "ángulo del motor %PORT en grados", "en": "motor %PORT angle in degrees" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -174,134 +122,90 @@
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()" } }
   },
   {
     "id": "org.robotblocks.lego-spike:motor-reset",
     "operation": "org.robotblocks.lego-spike:motor-reset",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "motor %PORT reiniciar ángulo a %ANGLE",
+    "label": { "es": "motor %PORT reiniciar ángulo a %ANGLE", "en": "motor %PORT reset angle to %ANGLE" },
     "kind": "command",
     "fields": [
       {
         "name": "PORT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:drive-config",
     "operation": "org.robotblocks.lego-spike:drive-config",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "configurar base izq %LEFT sentido %LEFT_DIRECTION der %RIGHT sentido %RIGHT_DIRECTION rueda %DIAMETER mm eje %TRACK mm giroscopio %GYRO",
+    "label": {
+      "es": "configurar base izq %LEFT sentido %LEFT_DIRECTION der %RIGHT sentido %RIGHT_DIRECTION rueda %DIAMETER mm eje %TRACK mm giroscopio %GYRO",
+      "en": "configure drive base left %LEFT direction %LEFT_DIRECTION right %RIGHT direction %RIGHT_DIRECTION wheel %DIAMETER mm track %TRACK mm gyroscope %GYRO"
+    },
     "kind": "command",
     "fields": [
       {
         "name": "LEFT",
         "type": "string",
         "default": "a",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       },
       {
         "name": "LEFT_DIRECTION",
         "type": "string",
         "default": "counterclockwise",
         "options": [
-          {
-            "label": "antihorario",
-            "value": "counterclockwise"
-          },
-          {
-            "label": "horario",
-            "value": "clockwise"
-          }
+          { "label": { "es": "antihorario", "en": "counterclockwise" }, "value": "counterclockwise" },
+          { "label": { "es": "horario", "en": "clockwise" }, "value": "clockwise" }
         ]
       },
       {
         "name": "RIGHT",
         "type": "string",
         "default": "b",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       },
       {
         "name": "RIGHT_DIRECTION",
         "type": "string",
         "default": "clockwise",
         "options": [
-          {
-            "label": "horario",
-            "value": "clockwise"
-          },
-          {
-            "label": "antihorario",
-            "value": "counterclockwise"
-          }
+          { "label": { "es": "horario", "en": "clockwise" }, "value": "clockwise" },
+          { "label": { "es": "antihorario", "en": "counterclockwise" }, "value": "counterclockwise" }
         ]
       }
     ],
     "inputs": [
-      {
-        "name": "DIAMETER",
-        "type": "number",
-        "default": 56,
-        "min": 1,
-        "max": 1000
-      },
-      {
-        "name": "TRACK",
-        "type": "number",
-        "default": 114,
-        "min": 1,
-        "max": 2000
-      },
-      {
-        "name": "GYRO",
-        "type": "boolean",
-        "default": false
-      }
+      { "name": "DIAMETER", "type": "number", "default": 56, "min": 1, "max": 1000 },
+      { "name": "TRACK", "type": "number", "default": 114, "min": 1, "max": 2000 },
+      { "name": "GYRO", "type": "boolean", "default": false }
     ],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
       "pybricks": {
         "statement": "rb_drive_config({LEFT}, {RIGHT}, {DIAMETER}, {TRACK}, {GYRO}, {LEFT_DIRECTION}, {RIGHT_DIRECTION}, {BLOCK_ID})"
@@ -312,104 +216,73 @@
     "id": "org.robotblocks.lego-spike:drive-straight",
     "operation": "org.robotblocks.lego-spike:drive-straight",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "base avanzar %MM mm",
+    "label": { "es": "base avanzar %MM mm", "en": "drive base straight %MM mm" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "MM",
-        "type": "number",
-        "default": 100,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "MM", "type": "number", "default": 100, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_drive({BLOCK_ID}).straight({MM})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "cooperative": true, "statement": "await rb_drive({BLOCK_ID}).straight({MM})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:drive-turn",
     "operation": "org.robotblocks.lego-spike:drive-turn",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "base girar %ANGLE grados",
+    "label": { "es": "base girar %ANGLE grados", "en": "drive base turn %ANGLE degrees" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 90,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 90, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_drive({BLOCK_ID}).turn({ANGLE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "cooperative": true, "statement": "await rb_drive({BLOCK_ID}).turn({ANGLE})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:drive-drive",
     "operation": "org.robotblocks.lego-spike:drive-drive",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "base conducir %SPEED mm/s giro %TURN grados/s",
+    "label": {
+      "es": "base conducir %SPEED mm/s giro %TURN grados/s",
+      "en": "drive base drive %SPEED mm/s turn rate %TURN degrees/s"
+    },
     "kind": "command",
     "fields": [],
     "inputs": [
-      {
-        "name": "SPEED",
-        "type": "number",
-        "default": 100,
-        "min": -2147483648,
-        "max": 2147483647
-      },
-      {
-        "name": "TURN",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
+      { "name": "SPEED", "type": "number", "default": 100, "min": -2147483648, "max": 2147483647 },
+      { "name": "TURN", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }
     ],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_drive({BLOCK_ID}).drive({SPEED}, {TURN})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_drive({BLOCK_ID}).drive({SPEED}, {TURN})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:drive-stop",
     "operation": "org.robotblocks.lego-spike:drive-stop",
     "category": "org.robotblocks.lego-spike:motors",
-    "label": "base detener",
+    "label": { "es": "base detener", "en": "drive base stop" },
     "kind": "command",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_drive({BLOCK_ID}).stop()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_drive({BLOCK_ID}).stop()" } }
   },
   {
     "id": "org.robotblocks.lego-spike:color",
     "operation": "org.robotblocks.lego-spike:color",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "color del sensor %PORT",
+    "label": { "es": "color del sensor %PORT", "en": "color sensor %PORT color" },
     "kind": "reporter",
     "output": "string",
     "fields": [
@@ -417,27 +290,24 @@
         "name": "PORT",
         "type": "string",
         "default": "c",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "expression": "str(await rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())"
-      }
+      "pybricks": { "cooperative": true, "expression": "str(await rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())" }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:reflection",
     "operation": "org.robotblocks.lego-spike:reflection",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "reflexión del sensor %PORT (%)",
+    "label": { "es": "reflexión del sensor %PORT (%)", "en": "sensor %PORT reflection (%)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -445,27 +315,24 @@
         "name": "PORT",
         "type": "string",
         "default": "c",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()"
-      }
+      "pybricks": { "cooperative": true, "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()" }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:ambient",
     "operation": "org.robotblocks.lego-spike:ambient",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "luz ambiente del sensor %PORT (%)",
+    "label": { "es": "luz ambiente del sensor %PORT (%)", "en": "sensor %PORT ambient light (%)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -473,27 +340,24 @@
         "name": "PORT",
         "type": "string",
         "default": "c",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()"
-      }
+      "pybricks": { "cooperative": true, "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()" }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:distance",
     "operation": "org.robotblocks.lego-spike:distance",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "distancia del sensor %PORT (mm)",
+    "label": { "es": "distancia del sensor %PORT (mm)", "en": "sensor %PORT distance (mm)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -501,15 +365,15 @@
         "name": "PORT",
         "type": "string",
         "default": "d",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
       "pybricks": {
         "cooperative": true,
@@ -521,7 +385,7 @@
     "id": "org.robotblocks.lego-spike:force",
     "operation": "org.robotblocks.lego-spike:force",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "fuerza del sensor %PORT (N)",
+    "label": { "es": "fuerza del sensor %PORT (N)", "en": "sensor %PORT force (N)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -529,27 +393,24 @@
         "name": "PORT",
         "type": "string",
         "default": "e",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "expression": "await rb_device({PORT}, ForceSensor, {BLOCK_ID}).force()",
-        "cooperative": true
-      }
+      "pybricks": { "expression": "await rb_device({PORT}, ForceSensor, {BLOCK_ID}).force()", "cooperative": true }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:force-pressed",
     "operation": "org.robotblocks.lego-spike:force-pressed",
     "category": "org.robotblocks.lego-spike:sensors",
-    "label": "sensor de fuerza %PORT presionado",
+    "label": { "es": "sensor de fuerza %PORT presionado", "en": "force sensor %PORT pressed" },
     "kind": "boolean",
     "output": "boolean",
     "fields": [
@@ -557,44 +418,40 @@
         "name": "PORT",
         "type": "string",
         "default": "e",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["poweredUpPort"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["poweredUpPort"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["poweredUpPort"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
     "generators": {
-      "pybricks": {
-        "expression": "await rb_device({PORT}, ForceSensor, {BLOCK_ID}).pressed()",
-        "cooperative": true
-      }
+      "pybricks": { "expression": "await rb_device({PORT}, ForceSensor, {BLOCK_ID}).pressed()", "cooperative": true }
     }
   },
   {
     "id": "org.robotblocks.lego-spike:heading",
     "operation": "org.robotblocks.lego-spike:heading",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "rumbo IMU (grados)",
+    "label": { "es": "rumbo IMU (grados)", "en": "IMU heading (degrees)" },
     "kind": "reporter",
     "output": "number",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["hubImu"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_hub.imu.heading()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "expression": "rb_hub.imu.heading()" } }
   },
   {
     "id": "org.robotblocks.lego-spike:tilt",
     "operation": "org.robotblocks.lego-spike:tilt",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "inclinación IMU %AXIS (grados)",
+    "label": { "es": "inclinación IMU %AXIS (grados)", "en": "IMU tilt %AXIS (degrees)" },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -603,55 +460,39 @@
         "type": "string",
         "default": "pitch",
         "options": [
-          {
-            "label": "cabeceo",
-            "value": "pitch"
-          },
-          {
-            "label": "balanceo",
-            "value": "roll"
-          }
+          { "label": { "es": "cabeceo", "en": "pitch" }, "value": "pitch" },
+          { "label": { "es": "balanceo", "en": "roll" }, "value": "roll" }
         ]
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["hubImu"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "expression": "rb_hub.imu.tilt()[0 if {AXIS} == \"pitch\" else 1]"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "expression": "rb_hub.imu.tilt()[0 if {AXIS} == \"pitch\" else 1]" } }
   },
   {
     "id": "org.robotblocks.lego-spike:heading-reset",
     "operation": "org.robotblocks.lego-spike:heading-reset",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "reiniciar rumbo IMU a %ANGLE grados",
+    "label": { "es": "reiniciar rumbo IMU a %ANGLE grados", "en": "reset IMU heading to %ANGLE degrees" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "ANGLE",
-        "type": "number",
-        "default": 0,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 0, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["hubImu"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.imu.reset_heading({ANGLE})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.imu.reset_heading({ANGLE})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:button",
     "operation": "org.robotblocks.lego-spike:button",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "botón %BUTTON presionado",
+    "label": { "es": "botón %BUTTON presionado", "en": "button %BUTTON pressed" },
     "kind": "boolean",
     "output": "boolean",
     "fields": [
@@ -659,114 +500,78 @@
         "name": "BUTTON",
         "type": "string",
         "default": "left",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["hubButtons"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["hubButtons"] }
       }
     ],
     "inputs": [],
     "requiredCapabilities": ["hubButtons"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "expression": "{BUTTON} in rb_hub.buttons.pressed()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "expression": "{BUTTON} in rb_hub.buttons.pressed()" } }
   },
   {
     "id": "org.robotblocks.lego-spike:display-number",
     "operation": "org.robotblocks.lego-spike:display-number",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "matriz mostrar número %NUMBER",
+    "label": { "es": "matriz mostrar número %NUMBER", "en": "matrix display number %NUMBER" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "NUMBER",
-        "type": "number",
-        "default": 1,
-        "min": -2147483648,
-        "max": 2147483647
-      }
-    ],
+    "inputs": [{ "name": "NUMBER", "type": "number", "default": 1, "min": -2147483648, "max": 2147483647 }],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.display.number(int({NUMBER}))"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.display.number(int({NUMBER}))" } }
   },
   {
     "id": "org.robotblocks.lego-spike:display-text",
     "operation": "org.robotblocks.lego-spike:display-text",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "matriz mostrar texto %TEXT",
+    "label": { "es": "matriz mostrar texto %TEXT", "en": "matrix display text %TEXT" },
     "kind": "command",
     "fields": [],
-    "inputs": [
-      {
-        "name": "TEXT",
-        "type": "string",
-        "default": "Hola"
-      }
-    ],
+    "inputs": [{ "name": "TEXT", "type": "string", "default": "Hola" }],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_display_text({TEXT})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "cooperative": true, "statement": "await rb_display_text({TEXT})" } }
   },
   {
     "id": "org.robotblocks.lego-spike:display-off",
     "operation": "org.robotblocks.lego-spike:display-off",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "matriz apagar",
+    "label": { "es": "matriz apagar", "en": "matrix off" },
     "kind": "command",
     "fields": [],
     "inputs": [],
     "requiredCapabilities": ["hubDisplay"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "statement": "rb_hub.display.off()"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "statement": "rb_hub.display.off()" } }
   },
   {
     "id": "org.robotblocks.lego-spike:beep",
     "operation": "org.robotblocks.lego-spike:beep",
     "category": "org.robotblocks.lego-spike:hub",
-    "label": "altavoz beep %HZ Hz por %MS ms",
+    "label": { "es": "altavoz beep %HZ Hz por %MS ms", "en": "speaker beep %HZ Hz for %MS ms" },
     "kind": "command",
     "fields": [],
     "inputs": [
-      {
-        "name": "HZ",
-        "type": "number",
-        "default": 500,
-        "min": 64,
-        "max": 24000
-      },
-      {
-        "name": "MS",
-        "type": "number",
-        "default": 100,
-        "min": 0,
-        "max": 2147483647
-      }
+      { "name": "HZ", "type": "number", "default": 500, "min": 64, "max": 24000 },
+      { "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647 }
     ],
     "requiredCapabilities": ["hubSpeaker"],
-    "tooltip": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
-    "generators": {
-      "pybricks": {
-        "cooperative": true,
-        "statement": "await rb_hub.speaker.beep({HZ}, {MS})"
-      }
-    }
+    "tooltip": {
+      "es": "Pybricks 3.6.1+ / 4.0 experimental. Unidades indicadas en el bloque. Comprueba conexiones y calibración antes de ejecutar.",
+      "en": "Experimental Pybricks 3.6.1+ / 4.0. Units shown in the block. Check connections and calibration before running."
+    },
+    "generators": { "pybricks": { "cooperative": true, "statement": "await rb_hub.speaker.beep({HZ}, {MS})" } }
   }
 ]

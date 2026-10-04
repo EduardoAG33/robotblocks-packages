@@ -3,7 +3,10 @@
     "id": "org.robotblocks.ultrasonico:distance",
     "operation": "org.robotblocks.ultrasonico:distance",
     "category": "org.robotblocks.ultrasonico:ultrasonico",
-    "label": "distancia ultrasónica en cm TRIG %TRIG ECHO %ECHO",
+    "label": {
+      "es": "distancia ultrasónica en cm TRIG %TRIG ECHO %ECHO",
+      "en": "ultrasonic distance in cm TRIG %TRIG ECHO %ECHO"
+    },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -11,23 +14,20 @@
         "name": "TRIG",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalOutput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
       },
       {
         "name": "ECHO",
         "type": "string",
         "default": "",
-        "reference": {
-          "kind": "resource",
-          "capabilities": ["digitalInput"]
-        }
+        "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
       }
     ],
     "inputs": [],
-    "tooltip": "De 2 a 400 cm; devuelve 400 si no hay eco. En placas de 3.3 V usa un divisor de voltaje en ECHO o un HC-SR04P. MicroPython experimental.",
+    "tooltip": {
+      "es": "De 2 a 400 cm; devuelve 400 si no hay eco. En placas de 3.3 V usa un divisor de voltaje en ECHO o un HC-SR04P. MicroPython experimental.",
+      "en": "From 2 to 400 cm; returns 400 if there is no echo. On 3.3 V boards use a voltage divider on ECHO or an HC-SR04P. Experimental MicroPython."
+    },
     "requiredCapabilities": ["digitalOutput", "digitalInput"],
     "generators": {
       "micropython": {
@@ -43,9 +43,7 @@
         "globals": [
           "inline float ultrasonico_cm(int trig, int echo) {\n    pinMode(trig, OUTPUT); pinMode(echo, INPUT);\n    digitalWrite(trig, LOW); delayMicroseconds(2); digitalWrite(trig, HIGH); delayMicroseconds(10); digitalWrite(trig, LOW);\n    unsigned long duracion = pulseIn(echo, HIGH, 30000UL);\n    return duracion == 0 ? 400 : roundf(duracion / 5.8f) / 10;\n}"
         ],
-        "hardware": {
-          "features": []
-        },
+        "hardware": { "features": [] },
         "expression": "ultrasonico_cm({TRIG}, {ECHO})"
       }
     }

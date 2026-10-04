@@ -3,9 +3,7 @@
   "id": "org.robotblocks.teensy-41",
   "name": "Teensy 4.1 · experimental",
   "version": "0.2.0",
-  "author": {
-    "name": "RobotBlocks"
-  },
+  "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
   "requiredCapabilities": [],
@@ -15,7 +13,20 @@
   "assets": [],
   "metadata": {
     "experimental": true,
-    "group": "boards"
+    "group": "boards",
+    "translations": {
+      "en": {
+        "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.": "i.MX RT1062. 3.3 V logic; NOT 5 V tolerant. ADC read at 10 bits (12-bit hardware), 8-bit PWM by default. Built-in LED on pin 13. Experimental C++ generation; upload pending Phase 8 and physical validation.",
+        "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13.": "i.MX RT1062. 3.3 V logic; NOT 5 V tolerant. ADC read at 10 bits (12-bit hardware), 8-bit PWM by default. Built-in LED on pin 13.",
+        "PWM por defecto: 4482 Hz (aprox.).": "Default PWM: 4482 Hz (approx.).",
+        "PWM por defecto: 3611 Hz (aprox.).": "Default PWM: 3611 Hz (approx.).",
+        "LED integrado; alto enciende, bajo apaga. No usar INPUT_PULLUP; comparte SPI SCK. PWM por defecto: 3611 Hz (aprox.).": "Built-in LED; high turns it on, low turns it off. Do not use INPUT_PULLUP; shared with SPI SCK. Default PWM: 3611 Hz (approx.).",
+        "I2C Wire: SDA. PWM por defecto: 3611 Hz (aprox.).": "I2C Wire: SDA. Default PWM: 3611 Hz (approx.).",
+        "I2C Wire: SCL. PWM por defecto: 3611 Hz (aprox.).": "I2C Wire: SCL. Default PWM: 3611 Hz (approx.).",
+        "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos.": "Reserved for built-in microSD / SDIO. No GPIO selection to avoid conflicts.",
+        "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos.": "Reserved for PSRAM/flash QSPI pads; soldering required. No GPIO selection to avoid conflicts."
+      }
+    }
   },
   "contributes": {
     "categories": [],
@@ -33,570 +44,395 @@
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 3.3,
         "adcBits": 10,
-        "pwm": {
-          "bits": 8,
-          "defaultFrequency": 4482
-        },
-        "targets": {
-          "arduino": {
-            "upload": "arduino-cli",
-            "fqbn": "teensy:avr:teensy41"
-          }
-        },
+        "pwm": { "bits": 8, "defaultFrequency": 4482 },
+        "targets": { "arduino": { "upload": "arduino-cli", "fqbn": "teensy:avr:teensy41" } },
         "resources": [
           {
             "id": "d0",
-            "label": "0",
+            "label": { "es": "0", "en": "0" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "0"
-            },
+            "symbol": { "arduino": "0" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d1",
-            "label": "1",
+            "label": { "es": "1", "en": "1" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "1"
-            },
+            "symbol": { "arduino": "1" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d2",
-            "label": "2",
+            "label": { "es": "2", "en": "2" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "2"
-            },
+            "symbol": { "arduino": "2" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d3",
-            "label": "3",
+            "label": { "es": "3", "en": "3" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "3"
-            },
+            "symbol": { "arduino": "3" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d4",
-            "label": "4",
+            "label": { "es": "4", "en": "4" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "4"
-            },
+            "symbol": { "arduino": "4" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d5",
-            "label": "5",
+            "label": { "es": "5", "en": "5" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "5"
-            },
+            "symbol": { "arduino": "5" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d6",
-            "label": "6",
+            "label": { "es": "6", "en": "6" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "6"
-            },
+            "symbol": { "arduino": "6" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d7",
-            "label": "7",
+            "label": { "es": "7", "en": "7" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "7"
-            },
+            "symbol": { "arduino": "7" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d8",
-            "label": "8",
+            "label": { "es": "8", "en": "8" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "8"
-            },
+            "symbol": { "arduino": "8" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d9",
-            "label": "9",
+            "label": { "es": "9", "en": "9" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "9"
-            },
+            "symbol": { "arduino": "9" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d10",
-            "label": "10",
+            "label": { "es": "10", "en": "10" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "10"
-            },
+            "symbol": { "arduino": "10" },
             "notes": "PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d11",
-            "label": "11",
+            "label": { "es": "11", "en": "11" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "11"
-            },
+            "symbol": { "arduino": "11" },
             "notes": "PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d12",
-            "label": "12",
+            "label": { "es": "12", "en": "12" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "12"
-            },
+            "symbol": { "arduino": "12" },
             "notes": "PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d13",
-            "label": "13",
+            "label": { "es": "13", "en": "13" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "13"
-            },
+            "symbol": { "arduino": "13" },
             "notes": "LED integrado; alto enciende, bajo apaga. No usar INPUT_PULLUP; comparte SPI SCK. PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d14",
-            "label": "14 / A0",
+            "label": { "es": "14 / A0", "en": "14 / A0" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A0"
-            },
+            "symbol": { "arduino": "A0" },
             "notes": "PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d15",
-            "label": "15 / A1",
+            "label": { "es": "15 / A1", "en": "15 / A1" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A1"
-            },
+            "symbol": { "arduino": "A1" },
             "notes": "PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d16",
-            "label": "16 / A2",
+            "label": { "es": "16 / A2", "en": "16 / A2" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A2"
-            }
+            "symbol": { "arduino": "A2" }
           },
           {
             "id": "d17",
-            "label": "17 / A3",
+            "label": { "es": "17 / A3", "en": "17 / A3" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A3"
-            }
+            "symbol": { "arduino": "A3" }
           },
           {
             "id": "d18",
-            "label": "18 / A4",
+            "label": { "es": "18 / A4", "en": "18 / A4" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A4"
-            },
+            "symbol": { "arduino": "A4" },
             "notes": "I2C Wire: SDA. PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d19",
-            "label": "19 / A5",
+            "label": { "es": "19 / A5", "en": "19 / A5" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A5"
-            },
+            "symbol": { "arduino": "A5" },
             "notes": "I2C Wire: SCL. PWM por defecto: 3611 Hz (aprox.)."
           },
           {
             "id": "d20",
-            "label": "20 / A6",
+            "label": { "es": "20 / A6", "en": "20 / A6" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A6"
-            }
+            "symbol": { "arduino": "A6" }
           },
           {
             "id": "d21",
-            "label": "21 / A7",
+            "label": { "es": "21 / A7", "en": "21 / A7" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A7"
-            }
+            "symbol": { "arduino": "A7" }
           },
           {
             "id": "d22",
-            "label": "22 / A8",
+            "label": { "es": "22 / A8", "en": "22 / A8" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A8"
-            },
+            "symbol": { "arduino": "A8" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d23",
-            "label": "23 / A9",
+            "label": { "es": "23 / A9", "en": "23 / A9" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A9"
-            },
+            "symbol": { "arduino": "A9" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d24",
-            "label": "24 / A10",
+            "label": { "es": "24 / A10", "en": "24 / A10" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A10"
-            },
+            "symbol": { "arduino": "A10" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d25",
-            "label": "25 / A11",
+            "label": { "es": "25 / A11", "en": "25 / A11" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
-            "symbol": {
-              "arduino": "A11"
-            },
+            "symbol": { "arduino": "A11" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d26",
-            "label": "26 / A12",
+            "label": { "es": "26 / A12", "en": "26 / A12" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A12"
-            }
+            "symbol": { "arduino": "A12" }
           },
           {
             "id": "d27",
-            "label": "27 / A13",
+            "label": { "es": "27 / A13", "en": "27 / A13" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A13"
-            }
+            "symbol": { "arduino": "A13" }
           },
           {
             "id": "d28",
-            "label": "28",
+            "label": { "es": "28", "en": "28" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "28"
-            },
+            "symbol": { "arduino": "28" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d29",
-            "label": "29",
+            "label": { "es": "29", "en": "29" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "29"
-            },
+            "symbol": { "arduino": "29" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d30",
-            "label": "30",
+            "label": { "es": "30", "en": "30" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "30"
-            }
+            "symbol": { "arduino": "30" }
           },
           {
             "id": "d31",
-            "label": "31",
+            "label": { "es": "31", "en": "31" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "31"
-            }
+            "symbol": { "arduino": "31" }
           },
           {
             "id": "d32",
-            "label": "32",
+            "label": { "es": "32", "en": "32" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "32"
-            }
+            "symbol": { "arduino": "32" }
           },
           {
             "id": "d33",
-            "label": "33",
+            "label": { "es": "33", "en": "33" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "33"
-            },
+            "symbol": { "arduino": "33" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d34",
-            "label": "34",
+            "label": { "es": "34", "en": "34" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "34"
-            }
+            "symbol": { "arduino": "34" }
           },
           {
             "id": "d35",
-            "label": "35",
+            "label": { "es": "35", "en": "35" },
             "capabilities": ["digitalInput", "digitalOutput"],
-            "symbol": {
-              "arduino": "35"
-            }
+            "symbol": { "arduino": "35" }
           },
           {
             "id": "d36",
-            "label": "36",
+            "label": { "es": "36", "en": "36" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "36"
-            },
+            "symbol": { "arduino": "36" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d37",
-            "label": "37",
+            "label": { "es": "37", "en": "37" },
             "capabilities": ["digitalInput", "digitalOutput", "pwm"],
-            "symbol": {
-              "arduino": "37"
-            },
+            "symbol": { "arduino": "37" },
             "notes": "PWM por defecto: 4482 Hz (aprox.)."
           },
           {
             "id": "d38",
-            "label": "38 / A14",
+            "label": { "es": "38 / A14", "en": "38 / A14" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A14"
-            }
+            "symbol": { "arduino": "A14" }
           },
           {
             "id": "d39",
-            "label": "39 / A15",
+            "label": { "es": "39 / A15", "en": "39 / A15" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A15"
-            }
+            "symbol": { "arduino": "A15" }
           },
           {
             "id": "d40",
-            "label": "40 / A16",
+            "label": { "es": "40 / A16", "en": "40 / A16" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A16"
-            }
+            "symbol": { "arduino": "A16" }
           },
           {
             "id": "d41",
-            "label": "41 / A17",
+            "label": { "es": "41 / A17", "en": "41 / A17" },
             "capabilities": ["digitalInput", "digitalOutput", "analogInput"],
-            "symbol": {
-              "arduino": "A17"
-            }
+            "symbol": { "arduino": "A17" }
           },
           {
             "id": "d42",
-            "label": "42",
+            "label": { "es": "42", "en": "42" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "42"
-            },
+            "symbol": { "arduino": "42" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d43",
-            "label": "43",
+            "label": { "es": "43", "en": "43" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "43"
-            },
+            "symbol": { "arduino": "43" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d44",
-            "label": "44",
+            "label": { "es": "44", "en": "44" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "44"
-            },
+            "symbol": { "arduino": "44" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d45",
-            "label": "45",
+            "label": { "es": "45", "en": "45" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "45"
-            },
+            "symbol": { "arduino": "45" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d46",
-            "label": "46",
+            "label": { "es": "46", "en": "46" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "46"
-            },
+            "symbol": { "arduino": "46" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d47",
-            "label": "47",
+            "label": { "es": "47", "en": "47" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "47"
-            },
+            "symbol": { "arduino": "47" },
             "notes": "Reservado para microSD / SDIO integrado. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d48",
-            "label": "48",
+            "label": { "es": "48", "en": "48" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "48"
-            },
+            "symbol": { "arduino": "48" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d49",
-            "label": "49",
+            "label": { "es": "49", "en": "49" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "49"
-            },
+            "symbol": { "arduino": "49" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d50",
-            "label": "50",
+            "label": { "es": "50", "en": "50" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "50"
-            },
+            "symbol": { "arduino": "50" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d51",
-            "label": "51",
+            "label": { "es": "51", "en": "51" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "51"
-            },
+            "symbol": { "arduino": "51" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d52",
-            "label": "52",
+            "label": { "es": "52", "en": "52" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "52"
-            },
+            "symbol": { "arduino": "52" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d53",
-            "label": "53",
+            "label": { "es": "53", "en": "53" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "53"
-            },
+            "symbol": { "arduino": "53" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           },
           {
             "id": "d54",
-            "label": "54",
+            "label": { "es": "54", "en": "54" },
             "capabilities": [],
-            "symbol": {
-              "arduino": "54"
-            },
+            "symbol": { "arduino": "54" },
             "notes": "Reservado para pads de PSRAM/flash QSPI; requiere soldar. Sin selección GPIO para evitar conflictos."
           }
         ],
-        "arduinoApis": {
-          "adcResolution": true,
-          "pwmResolution": true,
-          "servo": true,
-          "servoPwmConflicts": []
-        },
+        "arduinoApis": { "adcResolution": true, "pwmResolution": true, "servo": true, "servoPwmConflicts": [] },
         "uart": [
-          {
-            "port": 1,
-            "symbol": "Serial1",
-            "rx": "d0",
-            "tx": "d1"
-          },
-          {
-            "port": 2,
-            "symbol": "Serial2",
-            "rx": "d7",
-            "tx": "d8"
-          },
-          {
-            "port": 3,
-            "symbol": "Serial3",
-            "rx": "d15",
-            "tx": "d14"
-          },
-          {
-            "port": 4,
-            "symbol": "Serial4",
-            "rx": "d16",
-            "tx": "d17"
-          },
-          {
-            "port": 5,
-            "symbol": "Serial5",
-            "rx": "d21",
-            "tx": "d20"
-          },
-          {
-            "port": 6,
-            "symbol": "Serial6",
-            "rx": "d25",
-            "tx": "d24"
-          },
-          {
-            "port": 7,
-            "symbol": "Serial7",
-            "rx": "d28",
-            "tx": "d29"
-          },
-          {
-            "port": 8,
-            "symbol": "Serial8",
-            "rx": "d34",
-            "tx": "d35"
-          }
+          { "port": 1, "symbol": "Serial1", "rx": "d0", "tx": "d1" },
+          { "port": 2, "symbol": "Serial2", "rx": "d7", "tx": "d8" },
+          { "port": 3, "symbol": "Serial3", "rx": "d15", "tx": "d14" },
+          { "port": 4, "symbol": "Serial4", "rx": "d16", "tx": "d17" },
+          { "port": 5, "symbol": "Serial5", "rx": "d21", "tx": "d20" },
+          { "port": 6, "symbol": "Serial6", "rx": "d25", "tx": "d24" },
+          { "port": 7, "symbol": "Serial7", "rx": "d28", "tx": "d29" },
+          { "port": 8, "symbol": "Serial8", "rx": "d34", "tx": "d35" }
         ],
         "i2c": [
-          {
-            "symbol": "Wire",
-            "sda": "d18",
-            "scl": "d19"
-          },
-          {
-            "symbol": "Wire1",
-            "sda": "d17",
-            "scl": "d16"
-          },
-          {
-            "symbol": "Wire2",
-            "sda": "d25",
-            "scl": "d24"
-          }
+          { "symbol": "Wire", "sda": "d18", "scl": "d19" },
+          { "symbol": "Wire1", "sda": "d17", "scl": "d16" },
+          { "symbol": "Wire2", "sda": "d25", "scl": "d24" }
         ]
       }
     ]

@@ -1,4 +1,14 @@
 {
-  "name": "robotblocks-packages", "version": "0.1.0", "private": true, "type": "module",
-  "scripts": { "test": "node scripts/check-catalog.mjs" }
+  "name": "robotblocks-packages",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/check-catalog.mjs",
+    "format": "node scripts/format.mjs",
+    "localize": "node scripts/localize-catalog.mjs"
+  },
+  "devDependencies": {
+    "prettier": "3.9.9"
+  }
 }
