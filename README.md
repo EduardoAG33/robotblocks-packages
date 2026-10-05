@@ -17,6 +17,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/color-tcs34725`     | Color con TCS34725 (DFRobot SEN0212)        | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)     | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/uart`               | Líneas de texto por UART (OpenMV)           | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/i2c`                | Registros entre tarjetas por I2C            | Arduino maestro/esclavo y MicroPython maestro; experimental        |
 | `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |
 | `packages/arduino-nano`       | Arduino Nano ATmega328P                     | Arduino experimental, sin carga                                    |
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |

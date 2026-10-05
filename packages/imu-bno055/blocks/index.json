@@ -45,7 +45,7 @@
         "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
         "includes": ["#include <Wire.h>"],
         "statement": "imu_configurar({I2C_BUS});",
-        "setup": ["{I2C_BUS}.begin();", "{I2C_BUS}.setClock(400000);"],
+        "setup": ["rb_wire_begin({I2C_BUS});", "{I2C_BUS}.setClock(400000);"],
         "waitUntil": "imu_iniciar({BLOCK_ID})"
       }
     }

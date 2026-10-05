@@ -45,7 +45,7 @@
         "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
         "includes": ["#include <Wire.h>"],
         "statement": "color_configurar({I2C_BUS}, {BLOCK_ID});",
-        "setup": ["{I2C_BUS}.begin();", "{I2C_BUS}.setClock(400000);"],
+        "setup": ["rb_wire_begin({I2C_BUS});", "{I2C_BUS}.setClock(400000);"],
         "waitUntil": "color_encender({BLOCK_ID})"
       }
     }

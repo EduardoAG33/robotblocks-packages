@@ -1,5 +1,19 @@
 # EV3: motores, sensores y ladrillo · experimental
 
+## I2C entre tarjetas (fase 11b)
+
+La categoría **EV3 · I2C** permite leer registros, escribir valores y consultar el
+resultado de la última operación con un dispositivo en S1..S4. Pybricks 2.0 usa
+un `I2CDevice` por puerto/dirección; la dirección es de 7 bits (Nano 8 = 0x08).
+Los registros 1..16 contienen dos bytes little-endian con signo; se decodifican
+manualmente, restando 65536 cuando el valor es mayor o igual que 32768.
+OSError o una lectura incompleta conserva el último valor bueno y marca falso el
+estado, sin llamar a rb_fail. No hay reintentos ni bucles de espera propios.
+
+Nano A4 SDA → EV3 pin 6; Nano A5 SCL → EV3 pin 5; GND común. **No conectar el pin 4
+de 4.3 V al Nano.** Pull-up y tensión pendientes de confirmación física.
+Ver `docs/COMUNICACION.md` de la app y `packages/i2c/README.md` para el protocolo.
+
 27 bloques declarativos para `lego-ev3` con microSD Pybricks **2.0**.
 Grupo de catálogo `actuators`, categorías de paleta Motores, Sensores y Ladrillo
 (igual que SPIKE: el esquema tiene un único grupo por paquete).
