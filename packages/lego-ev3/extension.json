@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.lego-ev3",
   "name": "EV3 / microSD Pybricks 2.0 · experimental",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
@@ -18,7 +18,14 @@
       "en": {
         "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.": "EV3 with LEGO Education EV3 MicroPython microSD (ev3dev + Pybricks 2.0). Manual main.py transfer; original firmware preserved. Experimental.",
         "Un dispositivo físico por puerto. Las referencias reutilizan el mismo dispositivo; no es GPIO.": "One physical device per port. References reuse the same device; this is not GPIO.",
-        "Detiene el programa desde el sistema del ladrillo; no está en Button de Pybricks 2.0.": "Stops the program from the brick system; not part of Button in Pybricks 2.0."
+        "Detiene el programa desde el sistema del ladrillo; no está en Button de Pybricks 2.0.": "Stops the program from the brick system; not part of Button in Pybricks 2.0.",
+        "Descarga la imagen oficial EV3 MicroPython siguiendo la guía de instalación.": "Download the official EV3 MicroPython image following the installation guide.",
+        "Graba la imagen en una microSD de al menos 4 GB con balenaEtcher.": "Write the image to a microSD card of at least 4 GB with balenaEtcher.",
+        "Con el EV3 apagado, coloca la microSD y enciéndelo.": "With the EV3 turned off, insert the microSD card and turn it on.",
+        "Descarga main.py desde RobotBlocks y cópialo al EV3. Consulta la Guía detallada para transferirlo.": "Download main.py from RobotBlocks and copy it to the EV3. See the Detailed guide for transfer instructions.",
+        "Apaga el EV3 y saca la microSD. Al encenderlo, vuelve al firmware original de LEGO (EV3-G); la microSD no lo modifica.": "Turn off the EV3 and remove the microSD card. When turned on, it returns to the original LEGO firmware (EV3-G); the microSD does not modify it.",
+        "Instalación oficial de EV3 MicroPython": "Official EV3 MicroPython installation",
+        "Inicio rápido de EV3 con Pybricks 2.0": "EV3 quick start with Pybricks 2.0"
       }
     }
   },
@@ -31,6 +38,28 @@
         "id": "org.robotblocks.lego-ev3:board",
         "name": "EV3 / microSD Pybricks 2.0 · experimental",
         "family": "pybricks-ev3dev",
+        "setupGuide": {
+          "steps": [
+            "Descarga la imagen oficial EV3 MicroPython siguiendo la guía de instalación.",
+            "Graba la imagen en una microSD de al menos 4 GB con balenaEtcher.",
+            "Con el EV3 apagado, coloca la microSD y enciéndelo.",
+            "Descarga main.py desde RobotBlocks y cópialo al EV3. Consulta la Guía detallada para transferirlo."
+          ],
+          "links": [
+            {
+              "label": "Instalación oficial de EV3 MicroPython",
+              "url": "https://pybricks.com/install/mindstorms-ev3/installation/"
+            },
+            {
+              "label": "Inicio rápido de EV3 con Pybricks 2.0",
+              "url": "https://docs.pybricks.com/en/v2.0/start_ev3.html"
+            }
+          ],
+          "revert": [
+            "Apaga el EV3 y saca la microSD. Al encenderlo, vuelve al firmware original de LEGO (EV3-G); la microSD no lo modifica."
+          ],
+          "detailsUrl": "/guia-ev3.txt"
+        },
         "companionExtensions": ["org.robotblocks.lego-ev3-devices"],
         "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
         "experimental": true,
