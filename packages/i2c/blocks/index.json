@@ -1,0 +1,429 @@
+[
+  {
+    "id": "org.robotblocks.i2c:slave-configure",
+    "operation": "org.robotblocks.i2c:slave-configure",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "configurar I2C como esclavo con dirección %ADDR",
+      "en": "configure I2C as slave at address %ADDR"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Solo Arduino; al iniciar configura dirección 8..119. Dos bytes little-endian con signo, registros 1..16; publicar redondea y recorta a −32768..32767. El flag nuevo se consume una vez.",
+      "en": "Arduino only; configure address 8..119 when started. Two signed little-endian bytes, registers 1..16; publishing rounds and clamps to −32768..32767. The new flag is consumed once."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "slave"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static volatile uint8_t rb_i2c_published[16][2] = {};\nstatic volatile uint8_t rb_i2c_received[16][2] = {};\nstatic volatile bool rb_i2c_new[16] = {};\nstatic volatile uint8_t rb_i2c_register = 0;\ninline void rb_i2c_on_receive(int count) {\n    if (count < 1 || !Wire.available()) return;\n    uint8_t reg = uint8_t(Wire.read());\n    rb_i2c_register = reg;\n    if (count >= 3 && Wire.available() >= 2) {\n        uint8_t low = uint8_t(Wire.read());\n        uint8_t high = uint8_t(Wire.read());\n        if (reg >= 1 && reg <= 16) {\n            rb_i2c_received[reg - 1][0] = low;\n            rb_i2c_received[reg - 1][1] = high;\n            rb_i2c_new[reg - 1] = true;\n        }\n    }\n    // Drain only the finite Wire buffer. Extra bytes never become registers.\n    for (uint16_t i = 0; i < 256 && Wire.available(); i++) Wire.read();\n}\ninline void rb_i2c_on_request() {\n    uint8_t reg = rb_i2c_register;\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][0] : 0));\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][1] : 0));\n}\ninline void rb_i2c_slave(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    if (!addr || !rb_wire_claim(Wire)) return;\n    Wire.onReceive(rb_i2c_on_receive);\n    Wire.onRequest(rb_i2c_on_request);\n    Wire.begin(addr);\n}\ninline void rb_i2c_publish(float reg, float value) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    uint8_t low = uint8_t(bits), high = uint8_t(bits >> 8);\n    noInterrupts();\n    rb_i2c_published[index - 1][0] = low;\n    rb_i2c_published[index - 1][1] = high;\n    interrupts();\n}\ninline int16_t rb_i2c_received_value(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return 0;\n    noInterrupts();\n    uint8_t low = rb_i2c_received[index - 1][0], high = rb_i2c_received[index - 1][1];\n    interrupts();\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    return int16_t(bits >= 32768 ? bits - 65536 : bits);\n}\ninline bool rb_i2c_arrived(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return false;\n    noInterrupts();\n    bool result = rb_i2c_new[index - 1];\n    rb_i2c_new[index - 1] = false;\n    interrupts();\n    return result;\n}"
+        ],
+        "statement": "rb_i2c_slave({ADDR});",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.i2c:publish",
+    "operation": "org.robotblocks.i2c:publish",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "publicar en registro %REG el valor %VALUE",
+      "en": "publish value %VALUE in register %REG"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 0
+      }
+    ],
+    "tooltip": {
+      "es": "Solo Arduino; al iniciar configura dirección 8..119. Dos bytes little-endian con signo, registros 1..16; publicar redondea y recorta a −32768..32767. El flag nuevo se consume una vez.",
+      "en": "Arduino only; configure address 8..119 when started. Two signed little-endian bytes, registers 1..16; publishing rounds and clamps to −32768..32767. The new flag is consumed once."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "slave"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static volatile uint8_t rb_i2c_published[16][2] = {};\nstatic volatile uint8_t rb_i2c_received[16][2] = {};\nstatic volatile bool rb_i2c_new[16] = {};\nstatic volatile uint8_t rb_i2c_register = 0;\ninline void rb_i2c_on_receive(int count) {\n    if (count < 1 || !Wire.available()) return;\n    uint8_t reg = uint8_t(Wire.read());\n    rb_i2c_register = reg;\n    if (count >= 3 && Wire.available() >= 2) {\n        uint8_t low = uint8_t(Wire.read());\n        uint8_t high = uint8_t(Wire.read());\n        if (reg >= 1 && reg <= 16) {\n            rb_i2c_received[reg - 1][0] = low;\n            rb_i2c_received[reg - 1][1] = high;\n            rb_i2c_new[reg - 1] = true;\n        }\n    }\n    // Drain only the finite Wire buffer. Extra bytes never become registers.\n    for (uint16_t i = 0; i < 256 && Wire.available(); i++) Wire.read();\n}\ninline void rb_i2c_on_request() {\n    uint8_t reg = rb_i2c_register;\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][0] : 0));\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][1] : 0));\n}\ninline void rb_i2c_slave(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    if (!addr || !rb_wire_claim(Wire)) return;\n    Wire.onReceive(rb_i2c_on_receive);\n    Wire.onRequest(rb_i2c_on_request);\n    Wire.begin(addr);\n}\ninline void rb_i2c_publish(float reg, float value) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    uint8_t low = uint8_t(bits), high = uint8_t(bits >> 8);\n    noInterrupts();\n    rb_i2c_published[index - 1][0] = low;\n    rb_i2c_published[index - 1][1] = high;\n    interrupts();\n}\ninline int16_t rb_i2c_received_value(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return 0;\n    noInterrupts();\n    uint8_t low = rb_i2c_received[index - 1][0], high = rb_i2c_received[index - 1][1];\n    interrupts();\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    return int16_t(bits >= 32768 ? bits - 65536 : bits);\n}\ninline bool rb_i2c_arrived(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return false;\n    noInterrupts();\n    bool result = rb_i2c_new[index - 1];\n    rb_i2c_new[index - 1] = false;\n    interrupts();\n    return result;\n}"
+        ],
+        "statement": "rb_i2c_publish({REG}, {VALUE});",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.i2c:received",
+    "operation": "org.robotblocks.i2c:received",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "valor recibido del maestro en registro %REG",
+      "en": "value received from master in register %REG"
+    },
+    "kind": "reporter",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      }
+    ],
+    "tooltip": {
+      "es": "Solo Arduino; al iniciar configura dirección 8..119. Dos bytes little-endian con signo, registros 1..16; publicar redondea y recorta a −32768..32767. El flag nuevo se consume una vez.",
+      "en": "Arduino only; configure address 8..119 when started. Two signed little-endian bytes, registers 1..16; publishing rounds and clamps to −32768..32767. The new flag is consumed once."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "slave"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static volatile uint8_t rb_i2c_published[16][2] = {};\nstatic volatile uint8_t rb_i2c_received[16][2] = {};\nstatic volatile bool rb_i2c_new[16] = {};\nstatic volatile uint8_t rb_i2c_register = 0;\ninline void rb_i2c_on_receive(int count) {\n    if (count < 1 || !Wire.available()) return;\n    uint8_t reg = uint8_t(Wire.read());\n    rb_i2c_register = reg;\n    if (count >= 3 && Wire.available() >= 2) {\n        uint8_t low = uint8_t(Wire.read());\n        uint8_t high = uint8_t(Wire.read());\n        if (reg >= 1 && reg <= 16) {\n            rb_i2c_received[reg - 1][0] = low;\n            rb_i2c_received[reg - 1][1] = high;\n            rb_i2c_new[reg - 1] = true;\n        }\n    }\n    // Drain only the finite Wire buffer. Extra bytes never become registers.\n    for (uint16_t i = 0; i < 256 && Wire.available(); i++) Wire.read();\n}\ninline void rb_i2c_on_request() {\n    uint8_t reg = rb_i2c_register;\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][0] : 0));\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][1] : 0));\n}\ninline void rb_i2c_slave(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    if (!addr || !rb_wire_claim(Wire)) return;\n    Wire.onReceive(rb_i2c_on_receive);\n    Wire.onRequest(rb_i2c_on_request);\n    Wire.begin(addr);\n}\ninline void rb_i2c_publish(float reg, float value) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    uint8_t low = uint8_t(bits), high = uint8_t(bits >> 8);\n    noInterrupts();\n    rb_i2c_published[index - 1][0] = low;\n    rb_i2c_published[index - 1][1] = high;\n    interrupts();\n}\ninline int16_t rb_i2c_received_value(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return 0;\n    noInterrupts();\n    uint8_t low = rb_i2c_received[index - 1][0], high = rb_i2c_received[index - 1][1];\n    interrupts();\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    return int16_t(bits >= 32768 ? bits - 65536 : bits);\n}\ninline bool rb_i2c_arrived(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return false;\n    noInterrupts();\n    bool result = rb_i2c_new[index - 1];\n    rb_i2c_new[index - 1] = false;\n    interrupts();\n    return result;\n}"
+        ],
+        "expression": "rb_i2c_received_value({REG})",
+        "canFail": false
+      }
+    },
+    "output": "number"
+  },
+  {
+    "id": "org.robotblocks.i2c:arrived",
+    "operation": "org.robotblocks.i2c:arrived",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "¿llegó un valor nuevo al registro %REG?",
+      "en": "did a new value arrive in register %REG?"
+    },
+    "kind": "boolean",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      }
+    ],
+    "tooltip": {
+      "es": "Solo Arduino; al iniciar configura dirección 8..119. Dos bytes little-endian con signo, registros 1..16; publicar redondea y recorta a −32768..32767. El flag nuevo se consume una vez.",
+      "en": "Arduino only; configure address 8..119 when started. Two signed little-endian bytes, registers 1..16; publishing rounds and clamps to −32768..32767. The new flag is consumed once."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "slave"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static volatile uint8_t rb_i2c_published[16][2] = {};\nstatic volatile uint8_t rb_i2c_received[16][2] = {};\nstatic volatile bool rb_i2c_new[16] = {};\nstatic volatile uint8_t rb_i2c_register = 0;\ninline void rb_i2c_on_receive(int count) {\n    if (count < 1 || !Wire.available()) return;\n    uint8_t reg = uint8_t(Wire.read());\n    rb_i2c_register = reg;\n    if (count >= 3 && Wire.available() >= 2) {\n        uint8_t low = uint8_t(Wire.read());\n        uint8_t high = uint8_t(Wire.read());\n        if (reg >= 1 && reg <= 16) {\n            rb_i2c_received[reg - 1][0] = low;\n            rb_i2c_received[reg - 1][1] = high;\n            rb_i2c_new[reg - 1] = true;\n        }\n    }\n    // Drain only the finite Wire buffer. Extra bytes never become registers.\n    for (uint16_t i = 0; i < 256 && Wire.available(); i++) Wire.read();\n}\ninline void rb_i2c_on_request() {\n    uint8_t reg = rb_i2c_register;\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][0] : 0));\n    Wire.write(uint8_t(reg >= 1 && reg <= 16 ? rb_i2c_published[reg - 1][1] : 0));\n}\ninline void rb_i2c_slave(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    if (!addr || !rb_wire_claim(Wire)) return;\n    Wire.onReceive(rb_i2c_on_receive);\n    Wire.onRequest(rb_i2c_on_request);\n    Wire.begin(addr);\n}\ninline void rb_i2c_publish(float reg, float value) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    uint8_t low = uint8_t(bits), high = uint8_t(bits >> 8);\n    noInterrupts();\n    rb_i2c_published[index - 1][0] = low;\n    rb_i2c_published[index - 1][1] = high;\n    interrupts();\n}\ninline int16_t rb_i2c_received_value(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return 0;\n    noInterrupts();\n    uint8_t low = rb_i2c_received[index - 1][0], high = rb_i2c_received[index - 1][1];\n    interrupts();\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    return int16_t(bits >= 32768 ? bits - 65536 : bits);\n}\ninline bool rb_i2c_arrived(float reg) {\n    uint8_t index = rb_i2c_index(reg, 1, 16);\n    if (!index) return false;\n    noInterrupts();\n    bool result = rb_i2c_new[index - 1];\n    rb_i2c_new[index - 1] = false;\n    interrupts();\n    return result;\n}"
+        ],
+        "expression": "rb_i2c_arrived({REG})",
+        "canFail": false
+      }
+    },
+    "output": "boolean"
+  },
+  {
+    "id": "org.robotblocks.i2c:master-configure",
+    "operation": "org.robotblocks.i2c:master-configure",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "configurar I2C como maestro",
+      "en": "configure I2C as master"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "I2C experimental, registros 1..16, dirección de 7 bits (8 = 0x08). Entero con signo de 16 bits little-endian. Sin respuesta conserva el último valor bueno (0 inicialmente); respondió indica la última operación. Al iniciar configura el maestro.",
+      "en": "Experimental I2C, registers 1..16, 7-bit address (8 = 0x08). Signed 16-bit little-endian integer. No response preserves the last good value (initially 0); responded shows the last operation. Configure the master when started."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "master"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static bool rb_i2c_ok[120] = {};\n// Fixed storage keeps AVR RAM bounded. Filled entries are never evicted.\nstatic uint16_t rb_i2c_keys[64] = {};\nstatic int16_t rb_i2c_last[64] = {};\ninline int rb_i2c_slot(uint8_t address, uint8_t reg) {\n    uint16_t key = (uint16_t(address) << 4) | uint16_t(reg - 1);\n    int freeSlot = -1;\n    for (uint8_t i = 0; i < 64; i++) {\n        if (rb_i2c_keys[i] == key) return i;\n        if (!rb_i2c_keys[i] && freeSlot < 0) freeSlot = i;\n    }\n    return freeSlot;\n}\ninline int16_t rb_i2c_read_register(float address, float reg) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return 0;\n    rb_i2c_ok[addr] = false;\n    if (!index) return 0;\n    int slot = rb_i2c_slot(addr, index);\n    if (slot < 0) return 0;\n    int16_t last = rb_i2c_keys[slot] ? rb_i2c_last[slot] : 0;\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    if (Wire.endTransmission() != 0) return last;\n    if (Wire.requestFrom(addr, uint8_t(2)) != 2) return last;\n    int low = Wire.read(), high = Wire.read();\n    if (low < 0 || high < 0) return last;\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    rb_i2c_last[slot] = int16_t(bits >= 32768 ? bits - 65536 : bits);\n    rb_i2c_keys[slot] = (uint16_t(addr) << 4) | uint16_t(index - 1);\n    rb_i2c_ok[addr] = true;\n    return rb_i2c_last[slot];\n}\ninline void rb_i2c_write_register(float address, float reg, float value) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return;\n    rb_i2c_ok[addr] = false;\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    Wire.write(uint8_t(bits));\n    Wire.write(uint8_t(bits >> 8));\n    rb_i2c_ok[addr] = Wire.endTransmission() == 0;\n}\ninline bool rb_i2c_responded(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    return addr && rb_i2c_ok[addr];\n}"
+        ],
+        "statement": "rb_wire_begin(Wire);",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.i2c:master-configure-pins",
+    "operation": "org.robotblocks.i2c:master-configure-pins",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "configurar I2C como maestro SDA %SDA SCL %SCL",
+      "en": "configure I2C as master SDA %SDA SCL %SCL"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "I2C experimental, registros 1..16, dirección de 7 bits (8 = 0x08). Entero con signo de 16 bits little-endian. Sin respuesta conserva el último valor bueno (0 inicialmente); respondió indica la última operación. Al iniciar configura el maestro.",
+      "en": "Experimental I2C, registers 1..16, 7-bit address (8 = 0x08). Signed 16-bit little-endian integer. No response preserves the last good value (initially 0); responded shows the last operation. Configure the master when started."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "i2c_buses = {}\n",
+          "rb_i2c_bus = None\nrb_i2c_last = {}\nrb_i2c_ok = {}\n\ndef rb_i2c_master(sda, scl):\n    global rb_i2c_bus\n    key = (sda, scl)\n    try:\n        if key not in i2c_buses:\n            if len(i2c_buses) < 2:\n                i2c_buses[key] = I2C(len(i2c_buses), sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n            else:\n                i2c_buses[key] = SoftI2C(sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n        rb_i2c_bus = i2c_buses[key]\n    except (OSError, ValueError):\n        rb_i2c_bus = None\n\ndef rb_i2c_read_register(address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg:\n        return 0\n    key = (address, reg)\n    last = rb_i2c_last.get(key, 0)\n    if rb_i2c_bus is None:\n        return last\n    try:\n        if rb_i2c_bus.writeto(address, bytes((reg,))) != 1:\n            return last\n        data = rb_i2c_bus.readfrom(address, 2)\n        if len(data) != 2:\n            return last\n        rb_i2c_last[key] = rb_i2c_decode(data)\n        rb_i2c_ok[address] = True\n    except OSError:\n        return last\n    return rb_i2c_last[key]\n\ndef rb_i2c_write_register(address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg or rb_i2c_bus is None:\n        return\n    try:\n        data = bytes((reg,)) + rb_i2c_encode(value)\n        rb_i2c_ok[address] = rb_i2c_bus.writeto(address, data) == 3\n    except OSError:\n        pass\n\ndef rb_i2c_responded(address):\n    return rb_i2c_ok.get(rb_i2c_index(address, 8, 119), False)\n"
+        ],
+        "statement": "rb_i2c_master({SDA}, {SCL})",
+        "canFail": false,
+        "hardware": {
+          "i2c": {
+            "mode": "master",
+            "sda": "SDA",
+            "scl": "SCL"
+          }
+        }
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.i2c:read",
+    "operation": "org.robotblocks.i2c:read",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "leer registro %REG del dispositivo I2C %ADDR",
+      "en": "read register %REG from I2C device %ADDR"
+    },
+    "kind": "reporter",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "I2C experimental, registros 1..16, dirección de 7 bits (8 = 0x08). Entero con signo de 16 bits little-endian. Sin respuesta conserva el último valor bueno (0 inicialmente); respondió indica la última operación. Al iniciar configura el maestro.",
+      "en": "Experimental I2C, registers 1..16, 7-bit address (8 = 0x08). Signed 16-bit little-endian integer. No response preserves the last good value (initially 0); responded shows the last operation. Configure the master when started."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "master"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static bool rb_i2c_ok[120] = {};\n// Fixed storage keeps AVR RAM bounded. Filled entries are never evicted.\nstatic uint16_t rb_i2c_keys[64] = {};\nstatic int16_t rb_i2c_last[64] = {};\ninline int rb_i2c_slot(uint8_t address, uint8_t reg) {\n    uint16_t key = (uint16_t(address) << 4) | uint16_t(reg - 1);\n    int freeSlot = -1;\n    for (uint8_t i = 0; i < 64; i++) {\n        if (rb_i2c_keys[i] == key) return i;\n        if (!rb_i2c_keys[i] && freeSlot < 0) freeSlot = i;\n    }\n    return freeSlot;\n}\ninline int16_t rb_i2c_read_register(float address, float reg) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return 0;\n    rb_i2c_ok[addr] = false;\n    if (!index) return 0;\n    int slot = rb_i2c_slot(addr, index);\n    if (slot < 0) return 0;\n    int16_t last = rb_i2c_keys[slot] ? rb_i2c_last[slot] : 0;\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    if (Wire.endTransmission() != 0) return last;\n    if (Wire.requestFrom(addr, uint8_t(2)) != 2) return last;\n    int low = Wire.read(), high = Wire.read();\n    if (low < 0 || high < 0) return last;\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    rb_i2c_last[slot] = int16_t(bits >= 32768 ? bits - 65536 : bits);\n    rb_i2c_keys[slot] = (uint16_t(addr) << 4) | uint16_t(index - 1);\n    rb_i2c_ok[addr] = true;\n    return rb_i2c_last[slot];\n}\ninline void rb_i2c_write_register(float address, float reg, float value) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return;\n    rb_i2c_ok[addr] = false;\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    Wire.write(uint8_t(bits));\n    Wire.write(uint8_t(bits >> 8));\n    rb_i2c_ok[addr] = Wire.endTransmission() == 0;\n}\ninline bool rb_i2c_responded(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    return addr && rb_i2c_ok[addr];\n}"
+        ],
+        "expression": "rb_i2c_read_register({ADDR}, {REG})",
+        "canFail": false
+      },
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "i2c_buses = {}\n",
+          "rb_i2c_bus = None\nrb_i2c_last = {}\nrb_i2c_ok = {}\n\ndef rb_i2c_master(sda, scl):\n    global rb_i2c_bus\n    key = (sda, scl)\n    try:\n        if key not in i2c_buses:\n            if len(i2c_buses) < 2:\n                i2c_buses[key] = I2C(len(i2c_buses), sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n            else:\n                i2c_buses[key] = SoftI2C(sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n        rb_i2c_bus = i2c_buses[key]\n    except (OSError, ValueError):\n        rb_i2c_bus = None\n\ndef rb_i2c_read_register(address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg:\n        return 0\n    key = (address, reg)\n    last = rb_i2c_last.get(key, 0)\n    if rb_i2c_bus is None:\n        return last\n    try:\n        if rb_i2c_bus.writeto(address, bytes((reg,))) != 1:\n            return last\n        data = rb_i2c_bus.readfrom(address, 2)\n        if len(data) != 2:\n            return last\n        rb_i2c_last[key] = rb_i2c_decode(data)\n        rb_i2c_ok[address] = True\n    except OSError:\n        return last\n    return rb_i2c_last[key]\n\ndef rb_i2c_write_register(address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg or rb_i2c_bus is None:\n        return\n    try:\n        data = bytes((reg,)) + rb_i2c_encode(value)\n        rb_i2c_ok[address] = rb_i2c_bus.writeto(address, data) == 3\n    except OSError:\n        pass\n\ndef rb_i2c_responded(address):\n    return rb_i2c_ok.get(rb_i2c_index(address, 8, 119), False)\n"
+        ],
+        "expression": "rb_i2c_read_register({ADDR}, {REG})",
+        "canFail": false
+      }
+    },
+    "output": "number"
+  },
+  {
+    "id": "org.robotblocks.i2c:write",
+    "operation": "org.robotblocks.i2c:write",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "escribir %VALUE en registro %REG del dispositivo I2C %ADDR",
+      "en": "write %VALUE to register %REG of I2C device %ADDR"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "I2C experimental, registros 1..16, dirección de 7 bits (8 = 0x08). Entero con signo de 16 bits little-endian. Sin respuesta conserva el último valor bueno (0 inicialmente); respondió indica la última operación. Al iniciar configura el maestro.",
+      "en": "Experimental I2C, registers 1..16, 7-bit address (8 = 0x08). Signed 16-bit little-endian integer. No response preserves the last good value (initially 0); responded shows the last operation. Configure the master when started."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "master"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static bool rb_i2c_ok[120] = {};\n// Fixed storage keeps AVR RAM bounded. Filled entries are never evicted.\nstatic uint16_t rb_i2c_keys[64] = {};\nstatic int16_t rb_i2c_last[64] = {};\ninline int rb_i2c_slot(uint8_t address, uint8_t reg) {\n    uint16_t key = (uint16_t(address) << 4) | uint16_t(reg - 1);\n    int freeSlot = -1;\n    for (uint8_t i = 0; i < 64; i++) {\n        if (rb_i2c_keys[i] == key) return i;\n        if (!rb_i2c_keys[i] && freeSlot < 0) freeSlot = i;\n    }\n    return freeSlot;\n}\ninline int16_t rb_i2c_read_register(float address, float reg) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return 0;\n    rb_i2c_ok[addr] = false;\n    if (!index) return 0;\n    int slot = rb_i2c_slot(addr, index);\n    if (slot < 0) return 0;\n    int16_t last = rb_i2c_keys[slot] ? rb_i2c_last[slot] : 0;\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    if (Wire.endTransmission() != 0) return last;\n    if (Wire.requestFrom(addr, uint8_t(2)) != 2) return last;\n    int low = Wire.read(), high = Wire.read();\n    if (low < 0 || high < 0) return last;\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    rb_i2c_last[slot] = int16_t(bits >= 32768 ? bits - 65536 : bits);\n    rb_i2c_keys[slot] = (uint16_t(addr) << 4) | uint16_t(index - 1);\n    rb_i2c_ok[addr] = true;\n    return rb_i2c_last[slot];\n}\ninline void rb_i2c_write_register(float address, float reg, float value) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return;\n    rb_i2c_ok[addr] = false;\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    Wire.write(uint8_t(bits));\n    Wire.write(uint8_t(bits >> 8));\n    rb_i2c_ok[addr] = Wire.endTransmission() == 0;\n}\ninline bool rb_i2c_responded(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    return addr && rb_i2c_ok[addr];\n}"
+        ],
+        "statement": "rb_i2c_write_register({ADDR}, {REG}, {VALUE});",
+        "canFail": false
+      },
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "i2c_buses = {}\n",
+          "rb_i2c_bus = None\nrb_i2c_last = {}\nrb_i2c_ok = {}\n\ndef rb_i2c_master(sda, scl):\n    global rb_i2c_bus\n    key = (sda, scl)\n    try:\n        if key not in i2c_buses:\n            if len(i2c_buses) < 2:\n                i2c_buses[key] = I2C(len(i2c_buses), sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n            else:\n                i2c_buses[key] = SoftI2C(sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n        rb_i2c_bus = i2c_buses[key]\n    except (OSError, ValueError):\n        rb_i2c_bus = None\n\ndef rb_i2c_read_register(address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg:\n        return 0\n    key = (address, reg)\n    last = rb_i2c_last.get(key, 0)\n    if rb_i2c_bus is None:\n        return last\n    try:\n        if rb_i2c_bus.writeto(address, bytes((reg,))) != 1:\n            return last\n        data = rb_i2c_bus.readfrom(address, 2)\n        if len(data) != 2:\n            return last\n        rb_i2c_last[key] = rb_i2c_decode(data)\n        rb_i2c_ok[address] = True\n    except OSError:\n        return last\n    return rb_i2c_last[key]\n\ndef rb_i2c_write_register(address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg or rb_i2c_bus is None:\n        return\n    try:\n        data = bytes((reg,)) + rb_i2c_encode(value)\n        rb_i2c_ok[address] = rb_i2c_bus.writeto(address, data) == 3\n    except OSError:\n        pass\n\ndef rb_i2c_responded(address):\n    return rb_i2c_ok.get(rb_i2c_index(address, 8, 119), False)\n"
+        ],
+        "statement": "rb_i2c_write_register({ADDR}, {REG}, {VALUE})",
+        "canFail": false
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.i2c:responded",
+    "operation": "org.robotblocks.i2c:responded",
+    "category": "org.robotblocks.i2c:i2c",
+    "label": {
+      "es": "¿respondió el dispositivo I2C %ADDR?",
+      "en": "did I2C device %ADDR respond?"
+    },
+    "kind": "boolean",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "I2C experimental, registros 1..16, dirección de 7 bits (8 = 0x08). Entero con signo de 16 bits little-endian. Sin respuesta conserva el último valor bueno (0 inicialmente); respondió indica la última operación. Al iniciar configura el maestro.",
+      "en": "Experimental I2C, registers 1..16, 7-bit address (8 = 0x08). Signed 16-bit little-endian integer. No response preserves the last good value (initially 0); responded shows the last operation. Configure the master when started."
+    },
+    "requiredCapabilities": ["digitalInput", "digitalOutput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "mode": "master"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "inline int16_t rb_i2c_value(float value) {\n    if (isnan(value)) return 0;\n    if (value >= 32767) return 32767;\n    if (value <= -32768) return -32768;\n    return int16_t(roundf(value));\n}\ninline uint8_t rb_i2c_index(float value, uint8_t low, uint8_t high) {\n    return isfinite(value) && value >= low && value <= high && value == floorf(value) ? uint8_t(value) : 0;\n}",
+          "static bool rb_i2c_ok[120] = {};\n// Fixed storage keeps AVR RAM bounded. Filled entries are never evicted.\nstatic uint16_t rb_i2c_keys[64] = {};\nstatic int16_t rb_i2c_last[64] = {};\ninline int rb_i2c_slot(uint8_t address, uint8_t reg) {\n    uint16_t key = (uint16_t(address) << 4) | uint16_t(reg - 1);\n    int freeSlot = -1;\n    for (uint8_t i = 0; i < 64; i++) {\n        if (rb_i2c_keys[i] == key) return i;\n        if (!rb_i2c_keys[i] && freeSlot < 0) freeSlot = i;\n    }\n    return freeSlot;\n}\ninline int16_t rb_i2c_read_register(float address, float reg) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return 0;\n    rb_i2c_ok[addr] = false;\n    if (!index) return 0;\n    int slot = rb_i2c_slot(addr, index);\n    if (slot < 0) return 0;\n    int16_t last = rb_i2c_keys[slot] ? rb_i2c_last[slot] : 0;\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    if (Wire.endTransmission() != 0) return last;\n    if (Wire.requestFrom(addr, uint8_t(2)) != 2) return last;\n    int low = Wire.read(), high = Wire.read();\n    if (low < 0 || high < 0) return last;\n    int32_t bits = uint16_t(low) | (uint16_t(high) << 8);\n    rb_i2c_last[slot] = int16_t(bits >= 32768 ? bits - 65536 : bits);\n    rb_i2c_keys[slot] = (uint16_t(addr) << 4) | uint16_t(index - 1);\n    rb_i2c_ok[addr] = true;\n    return rb_i2c_last[slot];\n}\ninline void rb_i2c_write_register(float address, float reg, float value) {\n    uint8_t addr = rb_i2c_index(address, 8, 119), index = rb_i2c_index(reg, 1, 16);\n    if (!addr) return;\n    rb_i2c_ok[addr] = false;\n    if (!index) return;\n    uint16_t bits = uint16_t(rb_i2c_value(value));\n    rb_wire_begin(Wire);\n    Wire.beginTransmission(addr);\n    Wire.write(index);\n    Wire.write(uint8_t(bits));\n    Wire.write(uint8_t(bits >> 8));\n    rb_i2c_ok[addr] = Wire.endTransmission() == 0;\n}\ninline bool rb_i2c_responded(float address) {\n    uint8_t addr = rb_i2c_index(address, 8, 119);\n    return addr && rb_i2c_ok[addr];\n}"
+        ],
+        "expression": "rb_i2c_responded({ADDR})",
+        "canFail": false
+      },
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "i2c_buses = {}\n",
+          "rb_i2c_bus = None\nrb_i2c_last = {}\nrb_i2c_ok = {}\n\ndef rb_i2c_master(sda, scl):\n    global rb_i2c_bus\n    key = (sda, scl)\n    try:\n        if key not in i2c_buses:\n            if len(i2c_buses) < 2:\n                i2c_buses[key] = I2C(len(i2c_buses), sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n            else:\n                i2c_buses[key] = SoftI2C(sda=Pin(sda), scl=Pin(scl), freq=100000, timeout=25000)\n        rb_i2c_bus = i2c_buses[key]\n    except (OSError, ValueError):\n        rb_i2c_bus = None\n\ndef rb_i2c_read_register(address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg:\n        return 0\n    key = (address, reg)\n    last = rb_i2c_last.get(key, 0)\n    if rb_i2c_bus is None:\n        return last\n    try:\n        if rb_i2c_bus.writeto(address, bytes((reg,))) != 1:\n            return last\n        data = rb_i2c_bus.readfrom(address, 2)\n        if len(data) != 2:\n            return last\n        rb_i2c_last[key] = rb_i2c_decode(data)\n        rb_i2c_ok[address] = True\n    except OSError:\n        return last\n    return rb_i2c_last[key]\n\ndef rb_i2c_write_register(address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    rb_i2c_ok[address] = False\n    if not address or not reg or rb_i2c_bus is None:\n        return\n    try:\n        data = bytes((reg,)) + rb_i2c_encode(value)\n        rb_i2c_ok[address] = rb_i2c_bus.writeto(address, data) == 3\n    except OSError:\n        pass\n\ndef rb_i2c_responded(address):\n    return rb_i2c_ok.get(rb_i2c_index(address, 8, 119), False)\n"
+        ],
+        "expression": "rb_i2c_responded({ADDR})",
+        "canFail": false
+      }
+    },
+    "output": "boolean"
+  }
+]

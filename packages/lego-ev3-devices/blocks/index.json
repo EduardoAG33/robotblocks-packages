@@ -983,5 +983,163 @@
         "statement": "uart_enviar_datos({PORT}, {TYPE}, {VERIFY} == \"si\", [{DATA}], {BLOCK_ID})"
       }
     }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:i2c-read",
+    "operation": "org.robotblocks.lego-ev3-devices:i2c-read",
+    "category": "org.robotblocks.lego-ev3-devices:i2c",
+    "label": {
+      "es": "leer registro %REG del I2C %ADDR en puerto %PORT",
+      "en": "read register %REG from I2C %ADDR on port %PORT"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 microSD / Pybricks 2.0. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\ndef rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
+        ],
+        "canFail": false,
+        "expression": "rb_ev3_i2c_read({PORT}, {ADDR}, {REG})"
+      }
+    },
+    "output": "number"
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:i2c-write",
+    "operation": "org.robotblocks.lego-ev3-devices:i2c-write",
+    "category": "org.robotblocks.lego-ev3-devices:i2c",
+    "label": {
+      "es": "escribir %VALUE en registro %REG del I2C %ADDR en puerto %PORT",
+      "en": "write %VALUE to register %REG of I2C %ADDR on port %PORT"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 microSD / Pybricks 2.0. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\ndef rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
+        ],
+        "canFail": false,
+        "statement": "rb_ev3_i2c_write({PORT}, {ADDR}, {REG}, {VALUE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-devices:i2c-responded",
+    "operation": "org.robotblocks.lego-ev3-devices:i2c-responded",
+    "category": "org.robotblocks.lego-ev3-devices:i2c",
+    "label": {
+      "es": "¿respondió el I2C %ADDR en puerto %PORT?",
+      "en": "did I2C %ADDR on port %PORT respond?"
+    },
+    "kind": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 microSD / Pybricks 2.0 experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 microSD / Pybricks 2.0. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\ndef rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
+        ],
+        "canFail": false,
+        "expression": "rb_ev3_i2c_responded({PORT}, {ADDR})"
+      }
+    },
+    "output": "boolean"
   }
 ]

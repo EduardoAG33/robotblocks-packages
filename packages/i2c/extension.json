@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.i2c",
+  "name": "I2C entre tarjetas · experimental",
+  "version": "0.1.0",
+  "author": {
+    "name": "RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",
+  "requiredCapabilities": ["digitalInput", "digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "assets": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.i2c:i2c",
+        "name": "I2C",
+        "colour": "#4D97FF"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "metadata": {
+    "experimental": true,
+    "group": "communication",
+    "translations": {
+      "en": {
+        "I2C entre tarjetas · experimental": "I2C between boards · experimental",
+        "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.": "16-bit registers between Arduino, ESP32 and EV3; Nano slave with five HC-SR04 sensors."
+      }
+    }
+  }
+}

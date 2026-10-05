@@ -139,6 +139,12 @@
       "description": "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.",
       "kind": "module",
       "path": "packages/lego-ev3-devices"
+    },
+    {
+      "name": "I2C entre tarjetas · experimental",
+      "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",
+      "kind": "module",
+      "path": "packages/i2c"
     }
   ]
 }
