@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.imu-bno085",
   "name": "IMU BNO085 (UART-RVC)",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": {
     "name": "Los Grises · RobotBlocks"
   },
