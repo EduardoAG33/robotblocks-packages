@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.laser-vl53l0x",
+  "name": "Láser VL53L0X",
+  "version": "1.1.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Varios láseres VL53L0X con XSHUT y distancia continua sin bloquear, solo Arduino.",
+  "requiredCapabilities": ["digitalInput", "digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.laser-vl53l0x:laser",
+        "name": "Láser",
+        "colour": "#B8860B"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [
+    {
+      "id": "readme",
+      "path": "README.md",
+      "kind": "documentation"
+    },
+    {
+      "id": "license",
+      "path": "LICENSE.txt",
+      "kind": "documentation"
+    }
+  ],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Láser VL53L0X": "VL53L0X laser",
+        "Varios láseres VL53L0X con XSHUT y distancia continua sin bloquear, solo Arduino.": "Multiple VL53L0X lasers with XSHUT and non-blocking continuous distance, Arduino only."
+      }
+    }
+  }
+}

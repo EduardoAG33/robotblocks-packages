@@ -1,0 +1,246 @@
+[
+  {
+    "id": "org.robotblocks.laser-vl53l0x:configure",
+    "operation": "org.robotblocks.laser-vl53l0x:configure",
+    "category": "org.robotblocks.laser-vl53l0x:laser",
+    "label": {
+      "es": "configurar láseres VL53L0X SDA %SDA SCL %SCL modo %MODE %LASERS",
+      "en": "configure VL53L0X lasers SDA %SDA SCL %SCL mode %MODE %LASERS"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "@i2c.sda",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalInput", "digitalOutput"]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "@i2c.scl",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalInput", "digitalOutput"]
+        }
+      },
+      {
+        "name": "MODE",
+        "type": "string",
+        "default": "normal",
+        "options": [
+          {
+            "label": {
+              "es": "rápido",
+              "en": "fast"
+            },
+            "value": "rapido"
+          },
+          {
+            "label": {
+              "es": "normal",
+              "en": "normal"
+            },
+            "value": "normal"
+          },
+          {
+            "label": {
+              "es": "preciso",
+              "en": "precise"
+            },
+            "value": "preciso"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "variadic": {
+      "input": {
+        "name": "LASERS",
+        "type": "value"
+      },
+      "min": 1,
+      "max": 12,
+      "row": {
+        "label": {
+          "es": "XSHUT %XSHUT dirección %ADDRESS nombre %NAME",
+          "en": "XSHUT %XSHUT address %ADDRESS name %NAME"
+        },
+        "fields": [
+          {
+            "name": "XSHUT",
+            "type": "string",
+            "default": "",
+            "reference": {
+              "kind": "resource",
+              "capabilities": ["digitalInput", "digitalOutput"]
+            }
+          },
+          {
+            "name": "ADDRESS",
+            "type": "string",
+            "default": "0x30",
+            "options": [
+              {
+                "label": "0x30",
+                "value": "0x30"
+              },
+              {
+                "label": "0x31",
+                "value": "0x31"
+              },
+              {
+                "label": "0x32",
+                "value": "0x32"
+              },
+              {
+                "label": "0x33",
+                "value": "0x33"
+              },
+              {
+                "label": "0x34",
+                "value": "0x34"
+              },
+              {
+                "label": "0x35",
+                "value": "0x35"
+              },
+              {
+                "label": "0x36",
+                "value": "0x36"
+              },
+              {
+                "label": "0x37",
+                "value": "0x37"
+              },
+              {
+                "label": "0x38",
+                "value": "0x38"
+              },
+              {
+                "label": "0x39",
+                "value": "0x39"
+              },
+              {
+                "label": "0x3A",
+                "value": "0x3A"
+              },
+              {
+                "label": "0x3B",
+                "value": "0x3B"
+              }
+            ]
+          },
+          {
+            "name": "NAME",
+            "type": "string",
+            "default": "láser {N}"
+          }
+        ],
+        "template": "{ {XSHUT}, {ADDRESS} }"
+      }
+    },
+    "tooltip": {
+      "es": "En «al iniciar», fuera de bucles. + y − añaden/quitan filas (1–12). Todos los XSHUT se apagan antes de liberar uno a uno como INPUT. Los números continúan entre bloques. Solo Arduino; modo continuo a 20/33/200 ms.",
+      "en": "In “when started”, outside loops. + and − add/remove rows (1–12). All XSHUT pins go low before releasing each as INPUT. Numbers continue across blocks. Arduino only; continuous mode at 20/33/200 ms."
+    },
+    "requiredCapabilities": ["digitalOutput", "digitalInput"],
+    "generators": {
+      "arduino": {
+        "hardware": {
+          "i2c": {
+            "sda": "SDA",
+            "scl": "SCL"
+          }
+        },
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "/*\nCopyright (c) 2017-2022 Pololu Corporation.  For more information, see\n\nhttps://www.pololu.com/\nhttps://forum.pololu.com/\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.\n=================================================================\n\nMost of the functionality of this library is based on the VL53L0X\nAPI provided by ST (STSW-IMG005), and some of the explanatory\ncomments are quoted or paraphrased from the API source code, API\nuser manual (UM2039), and the VL53L0X datasheet.\n\nThe following applies to source code reproduced or derived from\nthe API:\n\n-----------------------------------------------------------------\nCopyright © 2016, STMicroelectronics International N.V.  All\nrights reserved.\nRedistribution and use in source and binary forms, with or\nwithout modification, are permitted provided that the following\nconditions are met:\n* Redistributions of source code must retain the above copyright\nnotice, this list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above\ncopyright notice, this list of conditions and the following\ndisclaimer in the documentation and/or other materials provided\nwith the distribution.\n* Neither the name of STMicroelectronics nor the\nnames of its contributors may be used to endorse or promote\nproducts derived from this software without specific prior\nwritten permission.\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND\nCONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES,\nINCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND\nNON-INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS ARE DISCLAIMED.\nIN NO EVENT SHALL STMICROELECTRONICS INTERNATIONAL N.V. BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\nCONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT\nOF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;\nOR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\nLIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE\nUSE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH\nDAMAGE.\n-----------------------------------------------------------------\n*/\n// Port de Pololu: Wire directo, errores I2C persistentes y lecturas no bloqueantes.\nclass RbVL53L0X\n{\n  public:\n    enum regAddr\n    {\n      SYSRANGE_START                              = 0x00,\n      SYSTEM_THRESH_HIGH                          = 0x0C,\n      SYSTEM_THRESH_LOW                           = 0x0E,\n      SYSTEM_SEQUENCE_CONFIG                      = 0x01,\n      SYSTEM_RANGE_CONFIG                         = 0x09,\n      SYSTEM_INTERMEASUREMENT_PERIOD              = 0x04,\n      SYSTEM_INTERRUPT_CONFIG_GPIO                = 0x0A,\n      GPIO_HV_MUX_ACTIVE_HIGH                     = 0x84,\n      SYSTEM_INTERRUPT_CLEAR                      = 0x0B,\n      RESULT_INTERRUPT_STATUS                     = 0x13,\n      RESULT_RANGE_STATUS                         = 0x14,\n      RESULT_CORE_AMBIENT_WINDOW_EVENTS_RTN       = 0xBC,\n      RESULT_CORE_RANGING_TOTAL_EVENTS_RTN        = 0xC0,\n      RESULT_CORE_AMBIENT_WINDOW_EVENTS_REF       = 0xD0,\n      RESULT_CORE_RANGING_TOTAL_EVENTS_REF        = 0xD4,\n      RESULT_PEAK_SIGNAL_RATE_REF                 = 0xB6,\n      ALGO_PART_TO_PART_RANGE_OFFSET_MM           = 0x28,\n      I2C_SLAVE_DEVICE_ADDRESS                    = 0x8A,\n      MSRC_CONFIG_CONTROL                         = 0x60,\n      PRE_RANGE_CONFIG_MIN_SNR                    = 0x27,\n      PRE_RANGE_CONFIG_VALID_PHASE_LOW            = 0x56,\n      PRE_RANGE_CONFIG_VALID_PHASE_HIGH           = 0x57,\n      PRE_RANGE_MIN_COUNT_RATE_RTN_LIMIT          = 0x64,\n      FINAL_RANGE_CONFIG_MIN_SNR                  = 0x67,\n      FINAL_RANGE_CONFIG_VALID_PHASE_LOW          = 0x47,\n      FINAL_RANGE_CONFIG_VALID_PHASE_HIGH         = 0x48,\n      FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT = 0x44,\n      PRE_RANGE_CONFIG_SIGMA_THRESH_HI            = 0x61,\n      PRE_RANGE_CONFIG_SIGMA_THRESH_LO            = 0x62,\n      PRE_RANGE_CONFIG_VCSEL_PERIOD               = 0x50,\n      PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI          = 0x51,\n      PRE_RANGE_CONFIG_TIMEOUT_MACROP_LO          = 0x52,\n      SYSTEM_HISTOGRAM_BIN                        = 0x81,\n      HISTOGRAM_CONFIG_INITIAL_PHASE_SELECT       = 0x33,\n      HISTOGRAM_CONFIG_READOUT_CTRL               = 0x55,\n      FINAL_RANGE_CONFIG_VCSEL_PERIOD             = 0x70,\n      FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI        = 0x71,\n      FINAL_RANGE_CONFIG_TIMEOUT_MACROP_LO        = 0x72,\n      CROSSTALK_COMPENSATION_PEAK_RATE_MCPS       = 0x20,\n      MSRC_CONFIG_TIMEOUT_MACROP                  = 0x46,\n      SOFT_RESET_GO2_SOFT_RESET_N                 = 0xBF,\n      IDENTIFICATION_MODEL_ID                     = 0xC0,\n      IDENTIFICATION_REVISION_ID                  = 0xC2,\n      OSC_CALIBRATE_VAL                           = 0xF8,\n      GLOBAL_CONFIG_VCSEL_WIDTH                   = 0x32,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_0            = 0xB0,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_1            = 0xB1,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_2            = 0xB2,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_3            = 0xB3,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_4            = 0xB4,\n      GLOBAL_CONFIG_SPAD_ENABLES_REF_5            = 0xB5,\n      GLOBAL_CONFIG_REF_EN_START_SELECT           = 0xB6,\n      DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD         = 0x4E,\n      DYNAMIC_SPAD_REF_EN_START_OFFSET            = 0x4F,\n      POWER_MANAGEMENT_GO1_POWER_FORCE            = 0x80,\n      VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV           = 0x89,\n      ALGO_PHASECAL_LIM                           = 0x30,\n      ALGO_PHASECAL_CONFIG_TIMEOUT                = 0x30,\n    };\n    enum vcselPeriodType { VcselPeriodPreRange, VcselPeriodFinalRange };\n    uint8_t last_status = 0;\n    bool io_ok = true;\n    RbVL53L0X();\n    void setBus(TwoWire * bus) { this->bus = bus; }\n    TwoWire * getBus() { return bus; }\n    void setAddress(uint8_t new_addr);\n    inline uint8_t getAddress() { return address; }\n    bool init(bool io_2v8 = true);\n    void writeReg(uint8_t reg, uint8_t value);\n    void writeReg16Bit(uint8_t reg, uint16_t value);\n    void writeReg32Bit(uint8_t reg, uint32_t value);\n    uint8_t readReg(uint8_t reg);\n    uint16_t readReg16Bit(uint8_t reg);\n    uint32_t readReg32Bit(uint8_t reg);\n    void writeMulti(uint8_t reg, uint8_t const * src, uint8_t count);\n    void readMulti(uint8_t reg, uint8_t * dst, uint8_t count);\n    bool setSignalRateLimit(float limit_Mcps);\n    bool setMeasurementTimingBudget(uint32_t budget_us);\n    uint32_t getMeasurementTimingBudget();\n    uint8_t getVcselPulsePeriod(vcselPeriodType type);\n    void startContinuous(uint32_t period_ms = 0);\n    inline void setTimeout(uint16_t timeout) { io_timeout = timeout; }\n    inline uint16_t getTimeout() { return io_timeout; }\n    // Variante no bloqueante: false si todavía no hay un resultado listo.\n    bool readRangeContinuousMillimeters(uint16_t& mm, bool& valid) {\n      uint8_t ready = readReg(RESULT_INTERRUPT_STATUS);\n      if (!io_ok || !(ready & 0x07)) return false;\n      uint8_t result[12] = {};\n      readMulti(RESULT_RANGE_STATUS, result, 12);\n      writeReg(SYSTEM_INTERRUPT_CLEAR, 0x01);\n      mm = uint16_t(result[10]) << 8 | result[11];\n      // Estado interno 11 = RangeComplete (RangeStatus de la API = 0).\n      valid = io_ok && ((result[0] & 0x78) >> 3) == 11 && mm < 8190;\n      return true;\n    }\n  private:\n    struct SequenceStepEnables\n    {\n      bool tcc, msrc, dss, pre_range, final_range;\n    };\n    struct SequenceStepTimeouts\n    {\n      uint16_t pre_range_vcsel_period_pclks, final_range_vcsel_period_pclks;\n      uint16_t msrc_dss_tcc_mclks, pre_range_mclks, final_range_mclks;\n      uint32_t msrc_dss_tcc_us,    pre_range_us,    final_range_us;\n    };\n    TwoWire * bus;\n    uint8_t address;\n    uint8_t readByte() { int value = bus->read(); if (value < 0) { io_ok = false; return 0; } return uint8_t(value); }\n    uint16_t io_timeout;\n    bool did_timeout;\n    uint16_t timeout_start_ms;\n    uint8_t stop_variable;\n    uint32_t measurement_timing_budget_us;\n    bool getSpadInfo(uint8_t * count, bool * type_is_aperture);\n    void getSequenceStepEnables(SequenceStepEnables * enables);\n    void getSequenceStepTimeouts(SequenceStepEnables const * enables, SequenceStepTimeouts * timeouts);\n    bool performSingleRefCalibration(uint8_t vhv_init_byte);\n    static uint16_t decodeTimeout(uint16_t value);\n    static uint16_t encodeTimeout(uint32_t timeout_mclks);\n    static uint32_t timeoutMclksToMicroseconds(uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks);\n    static uint32_t timeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t vcsel_period_pclks);\n};",
+          "#define ADDRESS_DEFAULT 0b0101001\n#define startTimeout() (timeout_start_ms = millis())\n#define checkTimeoutExpired() (!io_ok || (io_timeout > 0 && ((uint16_t)(millis() - timeout_start_ms) > io_timeout)))\n#define decodeVcselPeriod(reg_val)      (((reg_val) + 1) << 1)\n#define encodeVcselPeriod(period_pclks) (((period_pclks) >> 1) - 1)\n#define calcMacroPeriod(vcsel_period_pclks) ((((uint32_t)2304 * (vcsel_period_pclks) * 1655) + 500) / 1000)\nRbVL53L0X::RbVL53L0X()\n  : bus(&Wire)\n  , address(ADDRESS_DEFAULT)\n  , io_timeout(500)\n  , did_timeout(false)\n{\n}\nvoid RbVL53L0X::setAddress(uint8_t new_addr)\n{\n  writeReg(I2C_SLAVE_DEVICE_ADDRESS, new_addr & 0x7F);\n  address = new_addr;\n}\nbool RbVL53L0X::init(bool io_2v8)\n{\n  if (readReg(IDENTIFICATION_MODEL_ID) != 0xEE || !io_ok) { return false; }\n  if (io_2v8)\n  {\n    writeReg(VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV,\n      readReg(VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV) | 0x01);\n  }\n  writeReg(0x88, 0x00);\n  writeReg(0x80, 0x01);\n  writeReg(0xFF, 0x01);\n  writeReg(0x00, 0x00);\n  stop_variable = readReg(0x91);\n  writeReg(0x00, 0x01);\n  writeReg(0xFF, 0x00);\n  writeReg(0x80, 0x00);\n  writeReg(MSRC_CONFIG_CONTROL, readReg(MSRC_CONFIG_CONTROL) | 0x12);\n  setSignalRateLimit(0.25);\n  writeReg(SYSTEM_SEQUENCE_CONFIG, 0xFF);\n  uint8_t spad_count;\n  bool spad_type_is_aperture;\n  if (!getSpadInfo(&spad_count, &spad_type_is_aperture)) { return false; }\n  uint8_t ref_spad_map[6];\n  readMulti(GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map, 6);\n  writeReg(0xFF, 0x01);\n  writeReg(DYNAMIC_SPAD_REF_EN_START_OFFSET, 0x00);\n  writeReg(DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C);\n  writeReg(0xFF, 0x00);\n  writeReg(GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4);\n  uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0;\n  uint8_t spads_enabled = 0;\n  for (uint8_t i = 0; i < 48; i++)\n  {\n    if (i < first_spad_to_enable || spads_enabled == spad_count)\n    {\n      ref_spad_map[i / 8] &= ~(1 << (i % 8));\n    }\n    else if ((ref_spad_map[i / 8] >> (i % 8)) & 0x1)\n    {\n      spads_enabled++;\n    }\n  }\n  writeMulti(GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map, 6);\n  writeReg(0xFF, 0x01);\n  writeReg(0x00, 0x00);\n  writeReg(0xFF, 0x00);\n  writeReg(0x09, 0x00);\n  writeReg(0x10, 0x00);\n  writeReg(0x11, 0x00);\n  writeReg(0x24, 0x01);\n  writeReg(0x25, 0xFF);\n  writeReg(0x75, 0x00);\n  writeReg(0xFF, 0x01);\n  writeReg(0x4E, 0x2C);\n  writeReg(0x48, 0x00);\n  writeReg(0x30, 0x20);\n  writeReg(0xFF, 0x00);\n  writeReg(0x30, 0x09);\n  writeReg(0x54, 0x00);\n  writeReg(0x31, 0x04);\n  writeReg(0x32, 0x03);\n  writeReg(0x40, 0x83);\n  writeReg(0x46, 0x25);\n  writeReg(0x60, 0x00);\n  writeReg(0x27, 0x00);\n  writeReg(0x50, 0x06);\n  writeReg(0x51, 0x00);\n  writeReg(0x52, 0x96);\n  writeReg(0x56, 0x08);\n  writeReg(0x57, 0x30);\n  writeReg(0x61, 0x00);\n  writeReg(0x62, 0x00);\n  writeReg(0x64, 0x00);\n  writeReg(0x65, 0x00);\n  writeReg(0x66, 0xA0);\n  writeReg(0xFF, 0x01);\n  writeReg(0x22, 0x32);\n  writeReg(0x47, 0x14);\n  writeReg(0x49, 0xFF);\n  writeReg(0x4A, 0x00);\n  writeReg(0xFF, 0x00);\n  writeReg(0x7A, 0x0A);\n  writeReg(0x7B, 0x00);\n  writeReg(0x78, 0x21);\n  writeReg(0xFF, 0x01);\n  writeReg(0x23, 0x34);\n  writeReg(0x42, 0x00);\n  writeReg(0x44, 0xFF);\n  writeReg(0x45, 0x26);\n  writeReg(0x46, 0x05);\n  writeReg(0x40, 0x40);\n  writeReg(0x0E, 0x06);\n  writeReg(0x20, 0x1A);\n  writeReg(0x43, 0x40);\n  writeReg(0xFF, 0x00);\n  writeReg(0x34, 0x03);\n  writeReg(0x35, 0x44);\n  writeReg(0xFF, 0x01);\n  writeReg(0x31, 0x04);\n  writeReg(0x4B, 0x09);\n  writeReg(0x4C, 0x05);\n  writeReg(0x4D, 0x04);\n  writeReg(0xFF, 0x00);\n  writeReg(0x44, 0x00);\n  writeReg(0x45, 0x20);\n  writeReg(0x47, 0x08);\n  writeReg(0x48, 0x28);\n  writeReg(0x67, 0x00);\n  writeReg(0x70, 0x04);\n  writeReg(0x71, 0x01);\n  writeReg(0x72, 0xFE);\n  writeReg(0x76, 0x00);\n  writeReg(0x77, 0x00);\n  writeReg(0xFF, 0x01);\n  writeReg(0x0D, 0x01);\n  writeReg(0xFF, 0x00);\n  writeReg(0x80, 0x01);\n  writeReg(0x01, 0xF8);\n  writeReg(0xFF, 0x01);\n  writeReg(0x8E, 0x01);\n  writeReg(0x00, 0x01);\n  writeReg(0xFF, 0x00);\n  writeReg(0x80, 0x00);\n  writeReg(SYSTEM_INTERRUPT_CONFIG_GPIO, 0x04);\n  writeReg(GPIO_HV_MUX_ACTIVE_HIGH, readReg(GPIO_HV_MUX_ACTIVE_HIGH) & ~0x10);\n  writeReg(SYSTEM_INTERRUPT_CLEAR, 0x01);\n  measurement_timing_budget_us = getMeasurementTimingBudget();\n  writeReg(SYSTEM_SEQUENCE_CONFIG, 0xE8);\n  setMeasurementTimingBudget(measurement_timing_budget_us);\n  writeReg(SYSTEM_SEQUENCE_CONFIG, 0x01);\n  if (!performSingleRefCalibration(0x40)) { return false; }\n  writeReg(SYSTEM_SEQUENCE_CONFIG, 0x02);\n  if (!performSingleRefCalibration(0x00)) { return false; }\n  writeReg(SYSTEM_SEQUENCE_CONFIG, 0xE8);\n  return io_ok;\n}\nvoid RbVL53L0X::writeReg(uint8_t reg, uint8_t value)\n{\n  bus->beginTransmission(address);\n  bus->write(reg);\n  bus->write(value);\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n}\nvoid RbVL53L0X::writeReg16Bit(uint8_t reg, uint16_t value)\n{\n  bus->beginTransmission(address);\n  bus->write(reg);\n  bus->write((uint8_t)(value >> 8));\n  bus->write((uint8_t)(value));\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n}\nvoid RbVL53L0X::writeReg32Bit(uint8_t reg, uint32_t value)\n{\n  bus->beginTransmission(address);\n  bus->write(reg);\n  bus->write((uint8_t)(value >> 24));\n  bus->write((uint8_t)(value >> 16));\n  bus->write((uint8_t)(value >>  8));\n  bus->write((uint8_t)(value));\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n}\nuint8_t RbVL53L0X::readReg(uint8_t reg)\n{\n  uint8_t value = 0;\n  bus->beginTransmission(address);\n  bus->write(reg);\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n  if (bus->requestFrom(address, uint8_t(1)) != 1) io_ok = false;\n  value = readByte();\n  return value;\n}\nuint16_t RbVL53L0X::readReg16Bit(uint8_t reg)\n{\n  uint16_t value;\n  bus->beginTransmission(address);\n  bus->write(reg);\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n  if (bus->requestFrom(address, uint8_t(2)) != 2) io_ok = false;\n  value  = (uint16_t)readByte() << 8;\n  value |=           readByte();\n  return value;\n}\nuint32_t RbVL53L0X::readReg32Bit(uint8_t reg)\n{\n  uint32_t value;\n  bus->beginTransmission(address);\n  bus->write(reg);\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n  if (bus->requestFrom(address, uint8_t(4)) != 4) io_ok = false;\n  value  = (uint32_t)readByte() << 24;\n  value |= (uint32_t)readByte() << 16;\n  value |= (uint16_t)readByte() <<  8;\n  value |=           readByte();\n  return value;\n}\nvoid RbVL53L0X::writeMulti(uint8_t reg, uint8_t const * src, uint8_t count)\n{\n  bus->beginTransmission(address);\n  bus->write(reg);\n  while (count-- > 0)\n  {\n    bus->write(*(src++));\n  }\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n}\nvoid RbVL53L0X::readMulti(uint8_t reg, uint8_t * dst, uint8_t count)\n{\n  bus->beginTransmission(address);\n  bus->write(reg);\n  last_status = bus->endTransmission();\n  if (last_status != 0) io_ok = false;\n  if (bus->requestFrom(address, uint8_t(count)) != count) io_ok = false;\n  while (count-- > 0)\n  {\n    *(dst++) = readByte();\n  }\n}\nbool RbVL53L0X::setSignalRateLimit(float limit_Mcps)\n{\n  if (limit_Mcps < 0 || limit_Mcps > 511.99) { return false; }\n  writeReg16Bit(FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT, limit_Mcps * (1 << 7));\n  return true;\n}\nbool RbVL53L0X::setMeasurementTimingBudget(uint32_t budget_us)\n{\n  SequenceStepEnables enables;\n  SequenceStepTimeouts timeouts;\n  uint16_t const StartOverhead     = 1910;\n  uint16_t const EndOverhead        = 960;\n  uint16_t const MsrcOverhead       = 660;\n  uint16_t const TccOverhead        = 590;\n  uint16_t const DssOverhead        = 690;\n  uint16_t const PreRangeOverhead   = 660;\n  uint16_t const FinalRangeOverhead = 550;\n  uint32_t used_budget_us = StartOverhead + EndOverhead;\n  getSequenceStepEnables(&enables);\n  getSequenceStepTimeouts(&enables, &timeouts);\n  if (enables.tcc)\n  {\n    used_budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);\n  }\n  if (enables.dss)\n  {\n    used_budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);\n  }\n  else if (enables.msrc)\n  {\n    used_budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);\n  }\n  if (enables.pre_range)\n  {\n    used_budget_us += (timeouts.pre_range_us + PreRangeOverhead);\n  }\n  if (enables.final_range)\n  {\n    used_budget_us += FinalRangeOverhead;\n    if (used_budget_us > budget_us)\n    {\n      return false;\n    }\n    uint32_t final_range_timeout_us = budget_us - used_budget_us;\n    uint32_t final_range_timeout_mclks =\n      timeoutMicrosecondsToMclks(final_range_timeout_us,\n                                 timeouts.final_range_vcsel_period_pclks);\n    if (enables.pre_range)\n    {\n      final_range_timeout_mclks += timeouts.pre_range_mclks;\n    }\n    writeReg16Bit(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI,\n      encodeTimeout(final_range_timeout_mclks));\n    measurement_timing_budget_us = budget_us;\n  }\n  return true;\n}\nuint32_t RbVL53L0X::getMeasurementTimingBudget()\n{\n  SequenceStepEnables enables;\n  SequenceStepTimeouts timeouts;\n  uint16_t const StartOverhead     = 1910;\n  uint16_t const EndOverhead        = 960;\n  uint16_t const MsrcOverhead       = 660;\n  uint16_t const TccOverhead        = 590;\n  uint16_t const DssOverhead        = 690;\n  uint16_t const PreRangeOverhead   = 660;\n  uint16_t const FinalRangeOverhead = 550;\n  uint32_t budget_us = StartOverhead + EndOverhead;\n  getSequenceStepEnables(&enables);\n  getSequenceStepTimeouts(&enables, &timeouts);\n  if (enables.tcc)\n  {\n    budget_us += (timeouts.msrc_dss_tcc_us + TccOverhead);\n  }\n  if (enables.dss)\n  {\n    budget_us += 2 * (timeouts.msrc_dss_tcc_us + DssOverhead);\n  }\n  else if (enables.msrc)\n  {\n    budget_us += (timeouts.msrc_dss_tcc_us + MsrcOverhead);\n  }\n  if (enables.pre_range)\n  {\n    budget_us += (timeouts.pre_range_us + PreRangeOverhead);\n  }\n  if (enables.final_range)\n  {\n    budget_us += (timeouts.final_range_us + FinalRangeOverhead);\n  }\n  measurement_timing_budget_us = budget_us;\n  return budget_us;\n}\nuint8_t RbVL53L0X::getVcselPulsePeriod(vcselPeriodType type)\n{\n  if (type == VcselPeriodPreRange)\n  {\n    return decodeVcselPeriod(readReg(PRE_RANGE_CONFIG_VCSEL_PERIOD));\n  }\n  else if (type == VcselPeriodFinalRange)\n  {\n    return decodeVcselPeriod(readReg(FINAL_RANGE_CONFIG_VCSEL_PERIOD));\n  }\n  else { return 255; }\n}\nvoid RbVL53L0X::startContinuous(uint32_t period_ms)\n{\n  writeReg(0x80, 0x01);\n  writeReg(0xFF, 0x01);\n  writeReg(0x00, 0x00);\n  writeReg(0x91, stop_variable);\n  writeReg(0x00, 0x01);\n  writeReg(0xFF, 0x00);\n  writeReg(0x80, 0x00);\n  if (period_ms != 0)\n  {\n    uint16_t osc_calibrate_val = readReg16Bit(OSC_CALIBRATE_VAL);\n    if (osc_calibrate_val != 0)\n    {\n      period_ms *= osc_calibrate_val;\n    }\n    writeReg32Bit(SYSTEM_INTERMEASUREMENT_PERIOD, period_ms);\n    writeReg(SYSRANGE_START, 0x04);\n  }\n  else\n  {\n    writeReg(SYSRANGE_START, 0x02);\n  }\n}",
+          "bool RbVL53L0X::getSpadInfo(uint8_t * count, bool * type_is_aperture)\n{\n  uint8_t tmp;\n  writeReg(0x80, 0x01);\n  writeReg(0xFF, 0x01);\n  writeReg(0x00, 0x00);\n  writeReg(0xFF, 0x06);\n  writeReg(0x83, readReg(0x83) | 0x04);\n  writeReg(0xFF, 0x07);\n  writeReg(0x81, 0x01);\n  writeReg(0x80, 0x01);\n  writeReg(0x94, 0x6b);\n  writeReg(0x83, 0x00);\n  startTimeout();\n  while (readReg(0x83) == 0x00)\n  {\n    if (checkTimeoutExpired()) { return false; }\n  }\n  writeReg(0x83, 0x01);\n  tmp = readReg(0x92);\n  *count = tmp & 0x7f;\n  *type_is_aperture = (tmp >> 7) & 0x01;\n  writeReg(0x81, 0x00);\n  writeReg(0xFF, 0x06);\n  writeReg(0x83, readReg(0x83)  & ~0x04);\n  writeReg(0xFF, 0x01);\n  writeReg(0x00, 0x01);\n  writeReg(0xFF, 0x00);\n  writeReg(0x80, 0x00);\n  return true;\n}\nvoid RbVL53L0X::getSequenceStepEnables(SequenceStepEnables * enables)\n{\n  uint8_t sequence_config = readReg(SYSTEM_SEQUENCE_CONFIG);\n  enables->tcc          = (sequence_config >> 4) & 0x1;\n  enables->dss          = (sequence_config >> 3) & 0x1;\n  enables->msrc         = (sequence_config >> 2) & 0x1;\n  enables->pre_range    = (sequence_config >> 6) & 0x1;\n  enables->final_range  = (sequence_config >> 7) & 0x1;\n}\nvoid RbVL53L0X::getSequenceStepTimeouts(SequenceStepEnables const * enables, SequenceStepTimeouts * timeouts)\n{\n  timeouts->pre_range_vcsel_period_pclks = getVcselPulsePeriod(VcselPeriodPreRange);\n  timeouts->msrc_dss_tcc_mclks = readReg(MSRC_CONFIG_TIMEOUT_MACROP) + 1;\n  timeouts->msrc_dss_tcc_us =\n    timeoutMclksToMicroseconds(timeouts->msrc_dss_tcc_mclks,\n                               timeouts->pre_range_vcsel_period_pclks);\n  timeouts->pre_range_mclks =\n    decodeTimeout(readReg16Bit(PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI));\n  timeouts->pre_range_us =\n    timeoutMclksToMicroseconds(timeouts->pre_range_mclks,\n                               timeouts->pre_range_vcsel_period_pclks);\n  timeouts->final_range_vcsel_period_pclks = getVcselPulsePeriod(VcselPeriodFinalRange);\n  timeouts->final_range_mclks =\n    decodeTimeout(readReg16Bit(FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI));\n  if (enables->pre_range)\n  {\n    timeouts->final_range_mclks -= timeouts->pre_range_mclks;\n  }\n  timeouts->final_range_us =\n    timeoutMclksToMicroseconds(timeouts->final_range_mclks,\n                               timeouts->final_range_vcsel_period_pclks);\n}\nuint16_t RbVL53L0X::decodeTimeout(uint16_t reg_val)\n{\n  return (uint16_t)((reg_val & 0x00FF) <<\n         (uint16_t)((reg_val & 0xFF00) >> 8)) + 1;\n}\nuint16_t RbVL53L0X::encodeTimeout(uint32_t timeout_mclks)\n{\n  uint32_t ls_byte = 0;\n  uint16_t ms_byte = 0;\n  if (timeout_mclks > 0)\n  {\n    ls_byte = timeout_mclks - 1;\n    while ((ls_byte & 0xFFFFFF00) > 0)\n    {\n      ls_byte >>= 1;\n      ms_byte++;\n    }\n    return (ms_byte << 8) | (ls_byte & 0xFF);\n  }\n  else { return 0; }\n}\nuint32_t RbVL53L0X::timeoutMclksToMicroseconds(uint16_t timeout_period_mclks, uint8_t vcsel_period_pclks)\n{\n  uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);\n  return ((timeout_period_mclks * macro_period_ns) + 500) / 1000;\n}\nuint32_t RbVL53L0X::timeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t vcsel_period_pclks)\n{\n  uint32_t macro_period_ns = calcMacroPeriod(vcsel_period_pclks);\n  return (((timeout_period_us * 1000) + (macro_period_ns / 2)) / macro_period_ns);\n}\nbool RbVL53L0X::performSingleRefCalibration(uint8_t vhv_init_byte)\n{\n  writeReg(SYSRANGE_START, 0x01 | vhv_init_byte);\n  startTimeout();\n  while ((readReg(RESULT_INTERRUPT_STATUS) & 0x07) == 0)\n  {\n    if (checkTimeoutExpired()) { return false; }\n  }\n  writeReg(SYSTEM_INTERRUPT_CLEAR, 0x01);\n  writeReg(SYSRANGE_START, 0x00);\n  return true;\n}",
+          "#undef ADDRESS_DEFAULT\n#undef startTimeout\n#undef checkTimeoutExpired\n#undef decodeVcselPeriod\n#undef encodeVcselPeriod\n#undef calcMacroPeriod",
+          "struct RbLaserConfig { int xshut; const char* address; };\nstruct RbLaser {\n    RbVL53L0X sensor;\n    uint16_t latest = 8190;\n    uint32_t sampled = 0, timeout = 500;\n    bool configured = false, valid = false;\n};\nstatic const uint8_t RB_LASER_COUNT = {LASERS_TOTAL};\nstatic RbLaser rb_lasers[RB_LASER_COUNT];\nstatic int rb_laser_active = -1;\nstruct RbLaserGroup {\n    uint32_t started = 0;\n    uint8_t index = 0, stage = 0;\n};\ninline void laser_apagar(const RbLaserConfig* pins, uint8_t count) {\n    for (uint8_t i = 0; i < count; i++) {\n        digitalWrite(pins[i].xshut, LOW);\n        pinMode(pins[i].xshut, OUTPUT);\n    }\n}\ninline void laser_preparar(RbLaserGroup& group, const RbLaserConfig* pins, uint8_t count) {\n    laser_apagar(pins, count);\n    group.index = 0; group.stage = 0; group.started = millis();\n}\ninline void laser_error(uint8_t number, const char* bloque) {\n    static char message[96];\n    snprintf(message, sizeof message, \"No responde el láser VL53L0X %u durante la configuración\", unsigned(number));\n    rb_fail(bloque, message);\n}\ninline bool laser_configurar(RbLaserGroup& group, TwoWire& bus, const RbLaserConfig* pins, uint8_t offset, uint8_t count, const String& mode, const char* bloque) {\n    if (rb_failed || group.index >= count) return true;\n    if (rb_laser_active >= 0 && rb_laser_active != offset) return false;\n    rb_laser_active = offset;\n    if (uint32_t(millis() - group.started) < 10) return false;\n    if (group.stage == 0) {\n        // Alta impedancia: el pull-up del módulo lleva XSHUT a 2.8 V; nunca HIGH.\n        pinMode(pins[group.index].xshut, INPUT);\n        group.stage = 1; group.started = millis(); return false;\n    }\n    uint8_t number = offset + group.index + 1;\n    RbLaser& laser = rb_lasers[number - 1];\n    laser.sensor = RbVL53L0X();\n    laser.sensor.setBus(&bus);\n    laser.sensor.setTimeout(500);\n    if (!laser.sensor.init()) { laser_error(number, bloque); return true; }\n    laser.sensor.setAddress(uint8_t(strtoul(pins[group.index].address, nullptr, 0)));\n    uint32_t budget = mode == \"rapido\" ? 20000UL : mode == \"preciso\" ? 200000UL : 33000UL;\n    if (!laser.sensor.setMeasurementTimingBudget(budget)) { laser_error(number, bloque); return true; }\n    laser.sensor.startContinuous();\n    if (!laser.sensor.io_ok || laser.sensor.readReg(RbVL53L0X::IDENTIFICATION_MODEL_ID) != 0xEE || !laser.sensor.io_ok) { laser_error(number, bloque); return true; }\n    laser.configured = true; laser.valid = false; laser.latest = 8190;\n    laser.sampled = millis(); laser.timeout = budget / 1000UL * 3 + 100;\n    group.index++; group.stage = 0;\n    group.started = millis() - 10;\n    if (group.index >= count) rb_laser_active = -1;\n    return group.index >= count;\n}\ninline RbLaser* laser_leer(float number, const char* bloque) {\n    if (!isfinite(number) || number != floorf(number) || number < 1 || number > RB_LASER_COUNT) {\n        rb_fail(bloque, \"Número de láser no configurado\"); return nullptr;\n    }\n    RbLaser& laser = rb_lasers[uint8_t(number) - 1];\n    if (!laser.configured) return &laser;\n    laser.sensor.io_ok = true;\n    uint16_t mm = 8190;\n    bool valid = false;\n    if (laser.sensor.readRangeContinuousMillimeters(mm, valid)) {\n        laser.valid = valid; laser.latest = valid ? mm : 8190; laser.sampled = millis();\n    } else if (!laser.sensor.io_ok || uint32_t(millis() - laser.sampled) >= laser.timeout) {\n        laser.valid = false; laser.latest = 8190;\n    }\n    return &laser;\n}\ninline float laser_distancia(float number, const char* bloque) {\n    RbLaser* laser = laser_leer(number, bloque); return laser ? laser->latest : 8190;\n}\ninline bool laser_valido(float number, const char* bloque) {\n    RbLaser* laser = laser_leer(number, bloque); return laser && laser->valid;\n}",
+          "static const RbLaserConfig laser_pins_{LASERS_OFFSET}[] = { {LASERS} };\nstatic RbLaserGroup laser_group_{LASERS_OFFSET};"
+        ],
+        "setup": [
+          "rb_wire_begin({I2C_BUS});",
+          "{I2C_BUS}.setClock(100000);",
+          "laser_apagar(laser_pins_{LASERS_OFFSET}, {LASERS_COUNT});"
+        ],
+        "statement": "laser_preparar(laser_group_{LASERS_OFFSET}, laser_pins_{LASERS_OFFSET}, {LASERS_COUNT});",
+        "waitUntil": "laser_configurar(laser_group_{LASERS_OFFSET}, {I2C_BUS}, laser_pins_{LASERS_OFFSET}, {LASERS_OFFSET}, {LASERS_COUNT}, {MODE}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.laser-vl53l0x:distance",
+    "operation": "org.robotblocks.laser-vl53l0x:distance",
+    "category": "org.robotblocks.laser-vl53l0x:laser",
+    "label": {
+      "es": "distancia del láser %N en mm",
+      "en": "distance of laser %N in mm"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "láser 1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.laser-vl53l0x:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Elige el láser por el nombre que le diste en «configurar láseres». Solo Arduino.",
+      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Choose the laser by the name you gave it in “configure lasers”. Arduino only."
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "arduino": {
+        "expression": "laser_distancia({N}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.laser-vl53l0x:valid",
+    "operation": "org.robotblocks.laser-vl53l0x:valid",
+    "category": "org.robotblocks.laser-vl53l0x:laser",
+    "label": {
+      "es": "¿el láser %N tiene lectura?",
+      "en": "does laser %N have a reading?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "láser 1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.laser-vl53l0x:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Elige el láser por el nombre que le diste en «configurar láseres». Solo Arduino.",
+      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Choose the laser by the name you gave it in “configure lasers”. Arduino only."
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "arduino": {
+        "expression": "laser_valido({N}, {BLOCK_ID})"
+      }
+    }
+  }
+]

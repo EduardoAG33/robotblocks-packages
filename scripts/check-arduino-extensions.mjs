@@ -38,7 +38,16 @@ for (const [slug, count] of Object.entries(uartCounts)) {
     );
   }
 }
-for (const slug of ['motores', 'linea-qtr', 'ultrasonico-hcsr04', 'servos', 'uart', 'color-tcs34725', 'imu-bno055']) {
+for (const slug of [
+  'motores',
+  'linea-qtr',
+  'ultrasonico-hcsr04',
+  'servos',
+  'uart',
+  'color-tcs34725',
+  'imu-bno055',
+  'imu-mpu6050',
+]) {
   const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
   for (const path of manifest.contributes.blocks)
     for (const block of JSON.parse(await readFile(`packages/${slug}/${path}`, 'utf8'))) {
@@ -50,4 +59,16 @@ for (const slug of ['motores', 'linea-qtr', 'ultrasonico-hcsr04', 'servos', 'uar
     }
   assert((await readFile(`packages/${slug}/README.md`, 'utf8')).includes('Arduino/C++'));
 }
-console.log('Siete extensiones Arduino y cinco mapas UART/I2C: aprobados. Sin Adafruit ni código ejecutable.');
+// Solo Arduino/C++: sin plantilla MicroPython.
+for (const slug of ['imu-bno085', 'laser-vl53l0x', 'huskylens']) {
+  const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
+  for (const path of manifest.contributes.blocks)
+    for (const block of JSON.parse(await readFile(`packages/${slug}/${path}`, 'utf8'))) {
+      assert(block.generators.arduino && !block.generators.micropython);
+      const source = JSON.stringify(block.generators.arduino);
+      assert(!source.includes('Adafruit'));
+      assert(!source.includes('eval('));
+    }
+  assert((await readFile(`packages/${slug}/README.md`, 'utf8')).includes('Arduino/C++'));
+}
+console.log('Once extensiones Arduino y cinco mapas UART/I2C: aprobados. Sin Adafruit ni código ejecutable.');

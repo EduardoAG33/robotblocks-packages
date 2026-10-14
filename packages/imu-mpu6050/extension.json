@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.imu-mpu6050",
+  "name": "IMU MPU6050",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Giro acumulado, inclinación, aceleración y velocidad de giro con MPU6050 por I2C.",
+  "requiredCapabilities": ["digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.imu-mpu6050:imu",
+        "name": "IMU MPU6050",
+        "colour": "#2C7BE5"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "IMU MPU6050": "MPU6050 IMU",
+        "Giro acumulado, inclinación, aceleración y velocidad de giro con MPU6050 por I2C.": "Accumulated heading, tilt, acceleration and angular velocity with MPU6050 over I2C."
+      }
+    }
+  }
+}
