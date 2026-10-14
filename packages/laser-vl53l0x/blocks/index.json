@@ -12,7 +12,7 @@
       {
         "name": "SDA",
         "type": "string",
-        "default": "",
+        "default": "@i2c.sda",
         "reference": {
           "kind": "resource",
           "capabilities": ["digitalInput", "digitalOutput"]
@@ -21,7 +21,7 @@
       {
         "name": "SCL",
         "type": "string",
-        "default": "",
+        "default": "@i2c.scl",
         "reference": {
           "kind": "resource",
           "capabilities": ["digitalInput", "digitalOutput"]
@@ -66,8 +66,8 @@
       "max": 12,
       "row": {
         "label": {
-          "es": "XSHUT %XSHUT dirección %ADDRESS",
-          "en": "XSHUT %XSHUT address %ADDRESS"
+          "es": "XSHUT %XSHUT dirección %ADDRESS nombre %NAME",
+          "en": "XSHUT %XSHUT address %ADDRESS name %NAME"
         },
         "fields": [
           {
@@ -133,6 +133,11 @@
                 "value": "0x3B"
               }
             ]
+          },
+          {
+            "name": "NAME",
+            "type": "string",
+            "default": "láser {N}"
           }
         ],
         "template": "{ {XSHUT}, {ADDRESS} }"
@@ -184,116 +189,23 @@
       {
         "name": "N",
         "type": "string",
-        "default": "1",
-        "options": [
-          {
-            "label": "1",
-            "value": "1"
-          },
-          {
-            "label": "2",
-            "value": "2"
-          },
-          {
-            "label": "3",
-            "value": "3"
-          },
-          {
-            "label": "4",
-            "value": "4"
-          },
-          {
-            "label": "5",
-            "value": "5"
-          },
-          {
-            "label": "6",
-            "value": "6"
-          },
-          {
-            "label": "7",
-            "value": "7"
-          },
-          {
-            "label": "8",
-            "value": "8"
-          },
-          {
-            "label": "9",
-            "value": "9"
-          },
-          {
-            "label": "10",
-            "value": "10"
-          },
-          {
-            "label": "11",
-            "value": "11"
-          },
-          {
-            "label": "12",
-            "value": "12"
-          },
-          {
-            "label": "13",
-            "value": "13"
-          },
-          {
-            "label": "14",
-            "value": "14"
-          },
-          {
-            "label": "15",
-            "value": "15"
-          },
-          {
-            "label": "16",
-            "value": "16"
-          },
-          {
-            "label": "17",
-            "value": "17"
-          },
-          {
-            "label": "18",
-            "value": "18"
-          },
-          {
-            "label": "19",
-            "value": "19"
-          },
-          {
-            "label": "20",
-            "value": "20"
-          },
-          {
-            "label": "21",
-            "value": "21"
-          },
-          {
-            "label": "22",
-            "value": "22"
-          },
-          {
-            "label": "23",
-            "value": "23"
-          },
-          {
-            "label": "24",
-            "value": "24"
-          }
-        ]
+        "default": "láser 1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.laser-vl53l0x:configure",
+          "field": "NAME"
+        }
       }
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Numeración 1–24 en orden de configuración. Solo Arduino.",
-      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Numbers 1–24 in configuration order. Arduino only."
+      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Elige el láser por el nombre que le diste en «configurar láseres». Solo Arduino.",
+      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Choose the laser by the name you gave it in “configure lasers”. Arduino only."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "arduino": {
-        "expression": "laser_distancia(atoi({N}.c_str()), {BLOCK_ID})"
+        "expression": "laser_distancia({N}, {BLOCK_ID})"
       }
     }
   },
@@ -311,116 +223,23 @@
       {
         "name": "N",
         "type": "string",
-        "default": "1",
-        "options": [
-          {
-            "label": "1",
-            "value": "1"
-          },
-          {
-            "label": "2",
-            "value": "2"
-          },
-          {
-            "label": "3",
-            "value": "3"
-          },
-          {
-            "label": "4",
-            "value": "4"
-          },
-          {
-            "label": "5",
-            "value": "5"
-          },
-          {
-            "label": "6",
-            "value": "6"
-          },
-          {
-            "label": "7",
-            "value": "7"
-          },
-          {
-            "label": "8",
-            "value": "8"
-          },
-          {
-            "label": "9",
-            "value": "9"
-          },
-          {
-            "label": "10",
-            "value": "10"
-          },
-          {
-            "label": "11",
-            "value": "11"
-          },
-          {
-            "label": "12",
-            "value": "12"
-          },
-          {
-            "label": "13",
-            "value": "13"
-          },
-          {
-            "label": "14",
-            "value": "14"
-          },
-          {
-            "label": "15",
-            "value": "15"
-          },
-          {
-            "label": "16",
-            "value": "16"
-          },
-          {
-            "label": "17",
-            "value": "17"
-          },
-          {
-            "label": "18",
-            "value": "18"
-          },
-          {
-            "label": "19",
-            "value": "19"
-          },
-          {
-            "label": "20",
-            "value": "20"
-          },
-          {
-            "label": "21",
-            "value": "21"
-          },
-          {
-            "label": "22",
-            "value": "22"
-          },
-          {
-            "label": "23",
-            "value": "23"
-          },
-          {
-            "label": "24",
-            "value": "24"
-          }
-        ]
+        "default": "láser 1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.laser-vl53l0x:configure",
+          "field": "NAME"
+        }
       }
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Numeración 1–24 en orden de configuración. Solo Arduino.",
-      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Numbers 1–24 in configuration order. Arduino only."
+      "es": "Última lectura continua sin esperar: 8190 si no hay eco, está fuera de rango o vence el timeout. Lectura válida solo con estado OK y menos de 8190 mm. Elige el láser por el nombre que le diste en «configurar láseres». Solo Arduino.",
+      "en": "Latest continuous reading without waiting: 8190 for no echo, out of range or timeout. Valid only with OK status and below 8190 mm. Choose the laser by the name you gave it in “configure lasers”. Arduino only."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
       "arduino": {
-        "expression": "laser_valido(atoi({N}.c_str()), {BLOCK_ID})"
+        "expression": "laser_valido({N}, {BLOCK_ID})"
       }
     }
   }
