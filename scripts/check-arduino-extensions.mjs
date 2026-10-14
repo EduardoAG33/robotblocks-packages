@@ -60,7 +60,7 @@ for (const slug of [
   assert((await readFile(`packages/${slug}/README.md`, 'utf8')).includes('Arduino/C++'));
 }
 // Solo Arduino/C++: sin plantilla MicroPython.
-for (const slug of ['imu-bno085']) {
+for (const slug of ['imu-bno085', 'laser-vl53l0x', 'huskylens']) {
   const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
   for (const path of manifest.contributes.blocks)
     for (const block of JSON.parse(await readFile(`packages/${slug}/${path}`, 'utf8'))) {
@@ -71,4 +71,4 @@ for (const slug of ['imu-bno085']) {
     }
   assert((await readFile(`packages/${slug}/README.md`, 'utf8')).includes('Arduino/C++'));
 }
-console.log('Nueve extensiones Arduino y cinco mapas UART/I2C: aprobados. Sin Adafruit ni código ejecutable.');
+console.log('Once extensiones Arduino y cinco mapas UART/I2C: aprobados. Sin Adafruit ni código ejecutable.');

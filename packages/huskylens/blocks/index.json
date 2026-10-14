@@ -1,0 +1,564 @@
+[
+  {
+    "id": "org.robotblocks.huskylens:configure-i2c",
+    "operation": "org.robotblocks.huskylens:configure-i2c",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "configurar HuskyLens por I2C SDA %SDA SCL %SCL",
+      "en": "configure HuskyLens over I2C SDA %SDA SCL %SCL"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "En «al iniciar». T→SDA, R→SCL; selecciona I2C en Ajustes → Protocolo. Espera cooperativamente hasta 2 s.",
+      "en": "In “when started”. T→SDA, R→SCL; select I2C in Settings → Protocol. Cooperatively waits up to 2 s."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "hardware": {
+          "i2c": {
+            "sda": "SDA",
+            "scl": "SCL"
+          }
+        },
+        "setup": ["rb_wire_begin({I2C_BUS});", "{I2C_BUS}.setClock(100000);"],
+        "statement": "husky_i2c({I2C_BUS}, {BLOCK_ID});",
+        "waitUntil": "husky_start({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:configure-uart",
+    "operation": "org.robotblocks.huskylens:configure-uart",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "configurar HuskyLens por UART %PORT RX %RX TX %TX",
+      "en": "configure HuskyLens over UART %PORT RX %RX TX %TX"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "1",
+        "options": [
+          {
+            "label": {
+              "es": "1",
+              "en": "1"
+            },
+            "value": "1"
+          },
+          {
+            "label": {
+              "es": "2",
+              "en": "2"
+            },
+            "value": "2"
+          },
+          {
+            "label": {
+              "es": "UART 3",
+              "en": "UART 3"
+            },
+            "value": "3"
+          },
+          {
+            "label": {
+              "es": "UART 4",
+              "en": "UART 4"
+            },
+            "value": "4"
+          },
+          {
+            "label": {
+              "es": "UART 5",
+              "en": "UART 5"
+            },
+            "value": "5"
+          },
+          {
+            "label": {
+              "es": "UART 6",
+              "en": "UART 6"
+            },
+            "value": "6"
+          },
+          {
+            "label": {
+              "es": "UART 7",
+              "en": "UART 7"
+            },
+            "value": "7"
+          },
+          {
+            "label": {
+              "es": "UART 8",
+              "en": "UART 8"
+            },
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "name": "RX",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalInput"]
+        }
+      },
+      {
+        "name": "TX",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "En «al iniciar». UART de hardware a 9600 8N1; T→RX, R→TX y tierra común. UNO/Nano: usa I2C. Selecciona Serial 9600 en la cámara.",
+      "en": "In “when started”. Hardware UART at 9600 8N1; T→RX, R→TX and common ground. UNO/Nano: use I2C. Select Serial 9600 on the camera."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "hardware": {
+          "uart": {
+            "port": "PORT",
+            "rx": "RX",
+            "tx": "TX",
+            "hardwareOnly": true
+          }
+        },
+        "statement": "{UART_PORT}.begin(9600{UART_PIN_ARGS});\nhusky_uart({UART_PORT}, {BLOCK_ID});",
+        "waitUntil": "husky_start({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:algorithm",
+    "operation": "org.robotblocks.huskylens:algorithm",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "cambiar algoritmo de HuskyLens a %ALGORITHM",
+      "en": "change HuskyLens algorithm to %ALGORITHM"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "ALGORITHM",
+        "type": "string",
+        "default": "4",
+        "options": [
+          {
+            "label": {
+              "es": "reconocimiento de color",
+              "en": "color recognition"
+            },
+            "value": "4"
+          },
+          {
+            "label": {
+              "es": "seguimiento de líneas",
+              "en": "line tracking"
+            },
+            "value": "3"
+          },
+          {
+            "label": {
+              "es": "reconocimiento de etiquetas",
+              "en": "tag recognition"
+            },
+            "value": "5"
+          },
+          {
+            "label": {
+              "es": "reconocimiento de objetos",
+              "en": "object recognition"
+            },
+            "value": "2"
+          },
+          {
+            "label": {
+              "es": "seguimiento de objetos",
+              "en": "object tracking"
+            },
+            "value": "1"
+          },
+          {
+            "label": {
+              "es": "reconocimiento facial",
+              "en": "face recognition"
+            },
+            "value": "0"
+          },
+          {
+            "label": {
+              "es": "clasificación de objetos",
+              "en": "object classification"
+            },
+            "value": "6"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "HUSKYLENS v1 (SEN0305). Solo Arduino/C++; experimental.",
+      "en": "HUSKYLENS v1 (SEN0305). Arduino/C++ only; experimental."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "statement": "husky_algorithm({ALGORITHM}, {BLOCK_ID});",
+        "waitUntil": "husky_wait({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:update",
+    "operation": "org.robotblocks.huskylens:update",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "actualizar HuskyLens",
+      "en": "update HuskyLens"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "Una petición captura bloques y flechas; guarda los primeros 10 resultados del fotograma. Espera cooperativamente hasta 500 ms. Usa un solo proceso para comunicar.",
+      "en": "One request captures blocks and arrows; stores the first 10 results of the frame. Cooperatively waits up to 500 ms. Use one process for communication."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "statement": "husky_request(0x20, nullptr, 0, {BLOCK_ID});",
+        "waitUntil": "husky_wait({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:seen",
+    "operation": "org.robotblocks.huskylens:seen",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "¿HuskyLens ve el ID %ID?",
+      "en": "does HuskyLens see ID %ID?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "ID",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 65535,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Usa el último fotograma de «actualizar HuskyLens»; antes de actualizar está vacío. ID 0 significa cualquier objeto aprendido (ID ≥ 1). Si hay varios, usa el primero; máximo 10 resultados. Las coordenadas devuelven −1 si no se ve.",
+      "en": "Uses the last frame from “update HuskyLens”; empty before the first update. ID 0 means any learned object (ID ≥ 1). If several match, uses the first; maximum 10 results. Coordinates return −1 when unseen."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "expression": "husky_seen({ID}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:block",
+    "operation": "org.robotblocks.huskylens:block",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "%AXIS del ID %ID",
+      "en": "%AXIS of ID %ID"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "AXIS",
+        "type": "string",
+        "default": "0",
+        "options": [
+          {
+            "label": {
+              "es": "x centro",
+              "en": "x center"
+            },
+            "value": "0"
+          },
+          {
+            "label": {
+              "es": "y centro",
+              "en": "y center"
+            },
+            "value": "1"
+          },
+          {
+            "label": {
+              "es": "ancho",
+              "en": "width"
+            },
+            "value": "2"
+          },
+          {
+            "label": {
+              "es": "alto",
+              "en": "height"
+            },
+            "value": "3"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ID",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 65535,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Usa el último fotograma de «actualizar HuskyLens»; antes de actualizar está vacío. ID 0 significa cualquier objeto aprendido (ID ≥ 1). Si hay varios, usa el primero; máximo 10 resultados. Las coordenadas devuelven −1 si no se ve.",
+      "en": "Uses the last frame from “update HuskyLens”; empty before the first update. ID 0 means any learned object (ID ≥ 1). If several match, uses the first; maximum 10 results. Coordinates return −1 when unseen."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "expression": "husky_value({ID}, {AXIS}, 0x2A, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:count",
+    "operation": "org.robotblocks.huskylens:count",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "cantidad de objetos detectados",
+      "en": "number of detected objects"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "Cantidad total de bloques y flechas detectados en el último «actualizar HuskyLens»; 0 antes de actualizar. Incluye objetos sin aprender. Los lectores de ID solo conservan los primeros 10 resultados.",
+      "en": "Total blocks and arrows detected in the last “update HuskyLens”; 0 before updating. Includes unlearned objects. ID readers only store the first 10 results."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "expression": "husky_objects({BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:arrow",
+    "operation": "org.robotblocks.huskylens:arrow",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "%AXIS de la flecha ID %ID",
+      "en": "%AXIS of arrow ID %ID"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "AXIS",
+        "type": "string",
+        "default": "0",
+        "options": [
+          {
+            "label": {
+              "es": "x origen",
+              "en": "x origin"
+            },
+            "value": "0"
+          },
+          {
+            "label": {
+              "es": "y origen",
+              "en": "y origin"
+            },
+            "value": "1"
+          },
+          {
+            "label": {
+              "es": "x destino",
+              "en": "x target"
+            },
+            "value": "2"
+          },
+          {
+            "label": {
+              "es": "y destino",
+              "en": "y target"
+            },
+            "value": "3"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ID",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 65535,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Usa el último fotograma de «actualizar HuskyLens»; antes de actualizar está vacío. ID 0 significa cualquier objeto aprendido (ID ≥ 1). Si hay varios, usa el primero; máximo 10 resultados. Las coordenadas devuelven −1 si no se ve.",
+      "en": "Uses the last frame from “update HuskyLens”; empty before the first update. ID 0 means any learned object (ID ≥ 1). If several match, uses the first; maximum 10 results. Coordinates return −1 when unseen."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "expression": "husky_value({ID}, {AXIS}, 0x2B, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:text",
+    "operation": "org.robotblocks.huskylens:text",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "escribir %TEXT en la pantalla de HuskyLens en x %X y %Y",
+      "en": "write %TEXT on the HuskyLens screen at x %X y %Y"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "TEXT",
+        "type": "string",
+        "default": "hola"
+      },
+      {
+        "name": "X",
+        "type": "number",
+        "default": 20,
+        "min": 0,
+        "max": 320,
+        "integer": true
+      },
+      {
+        "name": "Y",
+        "type": "number",
+        "default": 20,
+        "min": 0,
+        "max": 240,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Máximo 19 bytes de texto; x 0..320, y 0..240, enteros. La cámara conserva hasta 10 textos; repetir posición reemplaza el texto.",
+      "en": "Maximum 19 text bytes; integer x 0..320, y 0..240. The camera stores up to 10 texts; reusing a position replaces its text."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "statement": "husky_text({TEXT}, {X}, {Y}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.huskylens:clear-text",
+    "operation": "org.robotblocks.huskylens:clear-text",
+    "category": "org.robotblocks.huskylens:camera",
+    "label": {
+      "es": "borrar textos de la pantalla de HuskyLens",
+      "en": "clear texts from the HuskyLens screen"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "HUSKYLENS v1 (SEN0305). Solo Arduino/C++; experimental.",
+      "en": "HUSKYLENS v1 (SEN0305). Arduino/C++ only; experimental."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Wire.h>"],
+        "globals": [
+          "// HUSKYLENS v1 protocol implementation; no external camera library.\nstruct HuskyResult { uint16_t value[5]; uint8_t kind; };\nstatic HuskyResult husky_results[10], husky_pending[10];\nstatic TwoWire* husky_wire = nullptr;\nstatic HardwareSerial* husky_serial = nullptr;\nstatic uint8_t husky_rx[16], husky_pos = 0, husky_count = 0, husky_saved = 0;\nstatic uint16_t husky_detected = 0, husky_total = 0, husky_remaining = 0, husky_learned = 0, husky_frame = 0;\nstatic uint32_t husky_started = 0, husky_sent = 0;\nstatic bool husky_ready = false, husky_busy = false, husky_info = false, husky_done = false;\nstatic uint8_t husky_command = 0;\ninline uint16_t husky_u16(const uint8_t* data) {\n    return uint16_t(data[0]) | (uint16_t(data[1]) << 8);\n}\ninline uint8_t husky_build(uint8_t command, const uint8_t* data, uint8_t length, uint8_t* frame) {\n    if (length > 23) return 0;\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = 0x11; frame[3] = length; frame[4] = command;\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length; i++) frame[5+i] = data[i];\n    for (uint8_t i = 0; i < length+5; i++) sum += frame[i];\n    frame[length+5] = sum;\n    return length+6;\n}\ninline bool husky_send(uint8_t command, const uint8_t* data, uint8_t length) {\n    uint8_t frame[29]; uint8_t size = husky_build(command, data, length, frame);\n    if (!size) return false;\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->beginTransmission(0x32);\n        for (uint8_t i = 0; i < size; i++) husky_wire->write(frame[i]);\n        return husky_wire->endTransmission() == 0;\n    }\n    if (husky_serial) {\n        for (uint8_t i = 0; i < size; i++) if (husky_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\ninline void husky_accept(const char* block) {\n    uint8_t length = husky_rx[3], command = husky_rx[4], sum = 0;\n    for (uint8_t i = 0; i < length+5; i++) sum += husky_rx[i];\n    if (sum != husky_rx[length+5]) return; // Corruption is discarded; the transaction has a deadline.\n    if (command == 0x2E && length == 0 && husky_command != 0x20) { husky_done = true; return; }\n    if (husky_command != 0x20) return;\n    if (command == 0x29 && length == 10 && !husky_info) {\n        husky_remaining = husky_u16(husky_rx+5); husky_total = husky_remaining;\n        husky_learned = husky_u16(husky_rx+7); husky_frame = husky_u16(husky_rx+9);\n        husky_info = true; husky_saved = 0; husky_done = husky_remaining == 0; return;\n    }\n    if ((command == 0x2A || command == 0x2B) && length == 10 && husky_info && husky_remaining) {\n        if (husky_saved < 10) {\n            HuskyResult& result = husky_pending[husky_saved++]; result.kind = command;\n            for (uint8_t i = 0; i < 5; i++) result.value[i] = husky_u16(husky_rx+5+2*i);\n        }\n        husky_done = --husky_remaining == 0;\n    }\n}\ninline void husky_byte(uint8_t value, const char* block) {\n    if (husky_pos == 0) { if (value == 0x55) husky_rx[husky_pos++] = value; return; }\n    if ((husky_pos == 1 && value != 0xAA) || (husky_pos == 2 && value != 0x11)) {\n        husky_pos = value == 0x55 ? 1 : 0; return;\n    }\n    // Only INFO/BLOCK/ARROW (10 bytes) and OK (0 bytes) fit the receive buffer.\n    if (husky_pos == 3 && value != 0 && value != 10) { husky_pos = 0; return; }\n    husky_rx[husky_pos++] = value;\n    if (husky_pos >= 5 && husky_pos == husky_rx[3]+6) { husky_accept(block); husky_pos = 0; }\n}\ninline void husky_poll(const char* block) {\n    if (husky_wire) {\n        husky_wire->setClock(100000);\n        husky_wire->requestFrom(uint8_t(0x32), uint8_t(16));\n        for (uint8_t i = 0; i < 16 && husky_wire->available(); i++) {\n            int value = husky_wire->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    } else if (husky_serial) {\n        for (uint8_t i = 0; i < 64 && husky_serial->available(); i++) {\n            int value = husky_serial->read(); if (value < 0) break; husky_byte(uint8_t(value), block);\n        }\n    }\n}\ninline void husky_reset() {\n    husky_ready = false; husky_count = 0; husky_detected = 0; husky_busy = true; husky_command = 0x2C;\n    husky_started = millis(); husky_sent = millis()-100; husky_pos = 0; husky_done = false;\n}\ninline void husky_i2c(TwoWire& bus, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = &bus; husky_serial = nullptr; husky_reset();\n}\ninline void husky_uart(HardwareSerial& serial, const char* block) {\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_wire = nullptr; husky_serial = &serial; husky_reset();\n}\ninline bool husky_start(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) { husky_ready = true; husky_busy = false; return true; }\n    if (uint32_t(millis()-husky_started) >= 2000) {\n        rb_fail(block, husky_wire ? \"No responde la HuskyLens: revisa el modo I2C en Ajustes → Protocolo\" : \"No responde la HuskyLens: revisa Serial 9600 en Ajustes → Protocolo\");\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_sent) >= 100) {\n        husky_pos = 0; husky_send(0x2C, nullptr, 0); husky_sent = millis();\n    }\n    return false;\n}\ninline bool husky_available(const char* block) {\n    if (!husky_ready) { rb_fail(block, \"Configura HuskyLens al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void husky_request(uint8_t command, const uint8_t* data, uint8_t length, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    husky_busy = true; husky_command = command; husky_pos = 0; husky_done = false; husky_info = false;\n    husky_started = millis();\n    if (!husky_send(command, data, length)) { husky_busy = false; rb_fail(block, \"No se pudo enviar la trama a HuskyLens\"); }\n}\ninline bool husky_wait(const char* block) {\n    if (rb_failed) return true;\n    husky_poll(block);\n    if (husky_done) {\n        if (husky_command == 0x20) {\n            for (uint8_t i = 0; i < husky_saved; i++) husky_results[i] = husky_pending[i];\n            husky_count = husky_saved; husky_detected = husky_total;\n        } else { husky_count = 0; husky_detected = 0; } // Algorithm changes invalidate the cached frame.\n        husky_busy = false; return true;\n    }\n    if (uint32_t(millis()-husky_started) >= (husky_command == 0x2D ? 2000U : 500U)) {\n        husky_busy = false; rb_fail(block, \"No responde HuskyLens: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void husky_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[2] = { uint8_t(algorithm[0]-'0'), 0 };\n    husky_request(0x2D, data, 2, block);\n}\ninline int husky_find(float id, uint8_t kind, const char* block) {\n    if (!husky_available(block)) return -1;\n    if (!isfinite(id) || id < 0 || id > 65535 || id != floorf(id)) { rb_fail(block, \"El ID de HuskyLens debe ser un entero de 0 a 65535\"); return -1; }\n    for (uint8_t i = 0; i < husky_count; i++) {\n        const HuskyResult& result = husky_results[i];\n        if ((!kind || result.kind == kind) && (id == 0 ? result.value[4] > 0 : result.value[4] == uint16_t(id))) return i;\n    }\n    return -1;\n}\ninline bool husky_seen(float id, const char* block) {\n    return husky_find(id, 0, block) >= 0;\n}\ninline float husky_value(float id, const String& axis, uint8_t kind, const char* block) {\n    int index = husky_find(id, kind, block);\n    return index < 0 ? -1 : husky_results[index].value[axis[0]-'0'];\n}\ninline float husky_objects(const char* block) {\n    return husky_available(block) ? husky_detected : 0;\n}\ninline void husky_text(const String& text, float x, float y, const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!isfinite(x) || !isfinite(y) || x < 0 || x > 320 || y < 0 || y > 240 || x != floorf(x) || y != floorf(y)) {\n        rb_fail(block, \"Texto HuskyLens: x debe ser 0..320 e y 0..240, enteros\"); return;\n    }\n    if (text.length() > 19) { rb_fail(block, \"Texto HuskyLens: máximo 19 bytes\"); return; }\n    uint8_t data[23]; data[0] = uint8_t(text.length()); data[1] = x >= 255 ? 0xFF : 0;\n    data[2] = uint16_t(x) % 255; data[3] = uint8_t(y);\n    for (uint8_t i = 0; i < data[0]; i++) data[4+i] = uint8_t(text[i]);\n    if (!husky_send(0x34, data, data[0]+4)) rb_fail(block, \"No se pudo enviar el texto a HuskyLens\");\n}\ninline void husky_clear(const char* block) {\n    if (!husky_available(block)) return;\n    if (husky_busy) { rb_fail(block, \"HuskyLens está ocupada: usa un solo proceso para comunicar\"); return; }\n    if (!husky_send(0x35, nullptr, 0)) rb_fail(block, \"No se pudieron borrar los textos de HuskyLens\");\n}"
+        ],
+        "statement": "husky_clear({BLOCK_ID});"
+      }
+    }
+  }
+]

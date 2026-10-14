@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.huskylens",
+  "name": "HuskyLens",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Cámara AI HUSKYLENS v1 (DFRobot SEN0305) por I2C o UART de hardware. Solo Arduino/C++; experimental.",
+  "requiredCapabilities": ["digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.huskylens:camera",
+        "name": "HuskyLens",
+        "colour": "#247BA0"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Cámara AI HUSKYLENS v1 (DFRobot SEN0305) por I2C o UART de hardware. Solo Arduino/C++; experimental.": "HUSKYLENS v1 AI camera (DFRobot SEN0305) over I2C or hardware UART. Arduino/C++ only; experimental."
+      }
+    }
+  }
+}
