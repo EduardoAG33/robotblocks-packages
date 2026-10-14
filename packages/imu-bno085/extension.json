@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.imu-bno085",
+  "name": "IMU BNO085 (UART-RVC)",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · RobotBlocks" },
+  "minAppVersion": "0.4.0",
+  "description": "Ángulo de giro, inclinación y aceleración con la IMU BNO085 en modo UART-RVC, sin I2C ni librerías.",
+  "requiredCapabilities": ["digitalInput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.imu-bno085:imu", "name": "IMU BNO085", "colour": "#D9893B" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "IMU BNO085 (UART-RVC)": "BNO085 IMU (UART-RVC)",
+        "IMU BNO085": "BNO085 IMU",
+        "Ángulo de giro, inclinación y aceleración con la IMU BNO085 en modo UART-RVC, sin I2C ni librerías.": "Heading angle, tilt and acceleration with the BNO085 IMU in UART-RVC mode, without I2C or libraries."
+      }
+    }
+  }
+}

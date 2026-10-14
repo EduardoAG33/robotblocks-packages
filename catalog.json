@@ -69,6 +69,12 @@
       "path": "packages/imu-bno055"
     },
     {
+      "name": "IMU BNO085 (UART-RVC)",
+      "description": "Ángulo de giro, inclinación y aceleración con BNO085 (GY-BNO085) en modo UART-RVC, sin I2C.",
+      "kind": "module",
+      "path": "packages/imu-bno085"
+    },
+    {
       "name": "UART: OpenMV y otras placas",
       "description": "Recibe y envía líneas de texto por UART; lee datos separados por comas (OpenMV).",
       "kind": "module",
@@ -145,6 +151,12 @@
       "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",
       "kind": "module",
       "path": "packages/i2c"
+    },
+    {
+      "name": "Láser VL53L0X · experimental",
+      "description": "Varios láseres VL53L0X con XSHUT y distancia continua sin bloquear, solo Arduino.",
+      "kind": "module",
+      "path": "packages/laser-vl53l0x"
     },
     {
       "name": "HuskyLens",

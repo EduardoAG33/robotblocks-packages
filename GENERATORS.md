@@ -50,3 +50,19 @@ JS del paquete. Una plantilla ausente da error, sin programa parcial ni lecturas
 ficticias. Los cuatro paquetes actuales siguen sin controladores reales; añadir
 metadatos no equivale a soporte físico. FireBeetle, Teensy y GIGA requieren pinouts
 oficiales y prueba física en sus fases correspondientes.
+
+## Filas variádicas de campos (Fase 14)
+
+Además de `variadic.input` para valores repetidos (UART), `variadic.row` permite
+filas literales de campos con +/−. `input.name` nombra el grupo (no crea conexiones
+cuando existe row); la etiqueta principal termina con `%GRUPO`. La fila declara
+`label` localizada, `fields` (menús/referencias como campos fijos) y `template`.
+Cada `%CAMPO` aparece una vez en la etiqueta de fila y `{CAMPO}` en la plantilla.
+La IR guarda campos `CAMPO1…CAMPOn`, sin nodos adicionales.
+
+En las plantillas, `{GRUPO}` reúne filas expandidas separadas por comas;
+`{GRUPO_COUNT}` cuenta filas de ese bloque, `{GRUPO_TOTAL}` cuenta filas conectadas
+de la misma definición y `{GRUPO_OFFSET}` cuenta las anteriores en orden del
+programa. Son literales disponibles también en globals/setup. Las cadenas de
+fila se escapan como texto y las referencias se resuelven a símbolos de recursos.
+Véase `packages/laser-vl53l0x/blocks/index.json` del catálogo.
