@@ -2,8 +2,10 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.imu-bno055",
   "name": "IMU BNO055",
-  "version": "1.1.1",
-  "author": { "name": "Los Grises · RobotBlocks" },
+  "version": "1.2.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
   "minAppVersion": "0.4.0",
   "description": "Ángulo de giro e inclinación con la IMU BNO055 por I2C, con la fusión de sensores del propio chip.",
   "requiredCapabilities": ["digitalOutput"],
@@ -11,7 +13,13 @@
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [{ "id": "org.robotblocks.imu-bno055:imu", "name": "IMU", "colour": "#E6A23C" }],
+    "categories": [
+      {
+        "id": "org.robotblocks.imu-bno055:imu",
+        "name": "IMU",
+        "colour": "#E6A23C"
+      }
+    ],
     "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],
