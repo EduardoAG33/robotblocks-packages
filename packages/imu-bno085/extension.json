@@ -2,8 +2,10 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.imu-bno085",
   "name": "IMU BNO085 (UART-RVC)",
-  "version": "1.0.0",
-  "author": { "name": "Los Grises · RobotBlocks" },
+  "version": "1.1.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
   "minAppVersion": "0.4.0",
   "description": "Ángulo de giro, inclinación y aceleración con la IMU BNO085 en modo UART-RVC, sin I2C ni librerías.",
   "requiredCapabilities": ["digitalInput"],
@@ -11,7 +13,13 @@
   "dependencies": [],
   "permissions": [],
   "contributes": {
-    "categories": [{ "id": "org.robotblocks.imu-bno085:imu", "name": "IMU BNO085", "colour": "#D9893B" }],
+    "categories": [
+      {
+        "id": "org.robotblocks.imu-bno085:imu",
+        "name": "IMU BNO085",
+        "colour": "#D9893B"
+      }
+    ],
     "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],

@@ -10,7 +10,8 @@ El I2C del BNO08x no respeta del todo el protocolo: falla con ESP32, con chips N
 
 - **configurar IMU BNO085 en UART [n] RX [pin] TX [pin]**: en «al iniciar». Espera hasta 1 s el primer paquete; si no llega, el programa se detiene con un mensaje claro.
 - **ángulo de giro**: de -180 a 180 grados respecto al último «reiniciar»; positivo hacia la derecha, igual que la IMU BNO055.
-- **reiniciar ángulo de giro**: la dirección actual pasa a ser 0.
+- **ángulo de giro acumulado**: sin límite de vueltas; derecha positiva, +1080° para tres vueltas a la derecha y −1080° a la izquierda.
+- **reiniciar ángulo de giro**: la dirección actual pasa a ser 0 y el giro acumulado se reinicia también.
 - **inclinación [adelante/atrás · izquierda/derecha]**: grados; útil para detectar rampas.
 - **aceleración [x · y · z] en m/s²**: gravedad incluida (en reposo, z ≈ 9.8).
 
@@ -33,8 +34,14 @@ Los bloques de giro e inclinación tienen los mismos nombres que los de la IMU B
 ## Detalles
 
 - Paquete de 19 bytes: `0xAA 0xAA`, índice, yaw, pitch y roll en centésimas de grado, aceleración x/y/z en mg, tres bytes reservados y una suma de comprobación (8 bits de los 16 bytes después del encabezado). Los paquetes con suma incorrecta se descartan.
-- Si el programa pasa más de 30 ms sin leer la IMU (por ejemplo, durante un «esperar»), el búfer serie se llena de paquetes viejos: se descartan y se usa el siguiente paquete nuevo. La primera lectura después de una espera larga puede repetir el último valor.
+- El generador llama a imu_rvc_leer desde el sondeo cooperativo antes de los procesos en cada vuelta de loop(), incluso durante «esperar» y aunque el reporter se consulte rara vez. Cada paquete con checksum válido actualiza el giro acumulado (≈100 Hz); ya no se descarta la cola tras 30 ms. Las lecturas de inclinación/aceleración también drenan paquetes.
 - Si dejan de llegar paquetes durante más de 500 ms mientras se lee, el programa se detiene con «El BNO085 dejó de enviar datos».
 - El signo del giro (positivo a la derecha) sigue la convención de la BNO055 y debe confirmarse en la prueba física.
 
 Fuentes: [código de Adafruit_BNO08x_RVC (formato y suma del paquete)](https://github.com/adafruit/Adafruit_BNO08x_RVC) y [ficha del GY-BNO085 de uElectronics (pines y modos PS0/PS1)](https://uelectronics.com/producto/gy-bno085-sensor-imu-de-9dof/).
+
+## Giro acumulado (1.1.0)
+
+Cada paquete RVC válido integra el delta normalizado a −180…180; se invierte yaw como en «ángulo de giro» para derecha positiva. La primera muestra fija la base. Se ignoran valores no finitos y saltos mayores de 90°; un salto vuelve a fijar la base para continuar sin arrastrar el error. Reiniciar pone ambos giros a 0 después de procesar los paquetes pendientes.
+
+El sondeo es declarativo y no usa timers, interrupciones ni una librería externa. Requiere que los procesos cooperen: una operación bloqueante larga puede desbordar el búfer UART y perder paquetes; el driver no puede recuperar esos giros. Mantén cada vuelta del planificador suficientemente corta para vaciar el búfer (normalmente <30 ms). Una espera cooperativa puede durar segundos sin detener el sondeo.

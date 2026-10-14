@@ -6,7 +6,8 @@ Extensión **experimental** para MicroPython y Arduino/C++, probada en simulaci�
 
 - **configurar IMU BNO055 SDA [pin] SCL [pin]**: en «al iniciar», con el robot quieto. Busca la IMU en 0x28 y 0x29.
 - **ángulo de giro**: de -180 a 180 grados respecto al último reinicio; positivo hacia la derecha. Perfecto para girar 90° o avanzar recto con un PID.
-- **reiniciar ángulo de giro**: la dirección actual pasa a ser 0.
+- **ángulo de giro acumulado**: sin límite de vueltas; derecha positiva, +1080° para tres vueltas a la derecha y −1080° a la izquierda.
+- **reiniciar ángulo de giro**: la dirección actual pasa a ser 0 y el giro acumulado se reinicia también.
 - **inclinación [adelante/atrás / izquierda/derecha]**: en grados, útil para rampas.
 
 Usa el modo **IMU** del chip (acelerómetro + giroscopio, sin brújula), así que los motores y las estructuras metálicas no alteran el giro. A cambio, puede desviarse lentamente con el tiempo: reinicia el ángulo al empezar cada recorrido.
@@ -26,3 +27,9 @@ Wire directo, sin Adafruit ni otra dependencia. Busca CHIP_ID 0xA0 en 0x28/0x29 
 Euler signed little-endian en 1/16 grados, giro relativo −180…180 con redondeo de 0.1°, reinicio de rumbo y selección de inclinación como MicroPython. Los sensores que comparten SDA/SCL usan el mismo Wire sin repetir begin ni helpers. Registros I2C comprobados; no ofrece calibración avanzada ni perfil de magnetómetro.
 
 Fuente: [datasheet oficial Bosch BNO055](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bno055-ds000.pdf).
+
+## Giro acumulado (1.2.0)
+
+En Arduino/C++ y MicroPython, cada lectura de cualquier bloque IMU lee Euler y acumula el delta de rumbo normalizado a −180…180. Ignora valores no finitos y saltos mayores de 90°; después de un salto se toma el nuevo rumbo como referencia para la siguiente lectura. La primera lectura establece la base.
+
+**Lee algún bloque IMU al menos cada ~0.5 s mientras gira**, y más rápido si el robot puede girar más de 90° en ese tiempo. Recomendado: 10–50 ms. No hay timers ni interrupciones; no puede reconstruir vueltas entre dos lecturas. Usa el acumulado sin reiniciarlo en cada esquina: «si giro acumulado ≥ 90 · esquinas» permite contar 12 esquinas = 3 vueltas. Reinicia al comenzar el recorrido.

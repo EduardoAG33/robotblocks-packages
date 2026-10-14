@@ -75,6 +75,12 @@
       "path": "packages/imu-bno085"
     },
     {
+      "name": "IMU MPU6050",
+      "description": "Giro acumulado, inclinación, aceleración y velocidad de giro con MPU6050 por I2C.",
+      "kind": "module",
+      "path": "packages/imu-mpu6050"
+    },
+    {
       "name": "UART: OpenMV y otras placas",
       "description": "Recibe y envía líneas de texto por UART; lee datos separados por comas (OpenMV).",
       "kind": "module",
