@@ -23,7 +23,7 @@ Cada lector llama a una actualización pequeña: una ráfaga de 14 bytes actuali
 
 **Lee cualquier bloque IMU al menos cada ~0.5 s mientras gira; se recomiendan 10–50 ms.** No hay timers ni interrupciones: una lectura espaciada estima todo el intervalo con la velocidad actual y no puede reconstruir cambios de velocidad o vueltas ocurridas íntegramente entre lecturas. No introduzcas esperas largas durante el recorrido; mide dentro del bucle. La IMU no tiene magnetómetro ni fusión de yaw: deriva, y calibrarla quieta al comenzar es esencial. No se promete precisión de 1080° sin prueba física.
 
-Configuración y calibración son **cooperativas en ambos destinos**: espera 100 ms tras despertar; la calibración espera 300 ms para asentarse y recoge una muestra cada al menos 3 ms. Otros procesos continúan. No hay delay(), sleep ni bucles bloqueantes; las instrucciones terminan cuando están listas y no se permiten en funciones síncronas. Durante calibración se suspende la acumulación y al finalizar se reinicia.
+Configuración y calibración: espera 100 ms tras despertar; la calibración espera 300 ms para asentarse y recoge una muestra cada al menos 3 ms. En **Arduino** son cooperativas: otros procesos continúan y las instrucciones terminan cuando están listas (no se permiten en funciones). En **MicroPython** esperan en el mismo bloque (como la BNO055): los otros procesos se detienen mientras calibra. Durante calibración se suspende la acumulación y al finalizar se reinicia.
 
 ## Conexiones y ejemplo
 
