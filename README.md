@@ -16,6 +16,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/ultrasonico-hcsr04` | Distancia con HC-SR04                       | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/color-tcs34725`     | Color con TCS34725 (DFRobot SEN0212)        | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)     | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/huskylens`          | Cámara AI DFRobot SEN0305                   | Arduino/C++ por I2C o UART de hardware; experimental               |
 | `packages/uart`               | Líneas de texto por UART (OpenMV)           | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/i2c`                | Registros entre tarjetas por I2C            | Arduino maestro/esclavo y MicroPython maestro; experimental        |
 | `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |

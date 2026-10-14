@@ -145,6 +145,12 @@
       "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",
       "kind": "module",
       "path": "packages/i2c"
+    },
+    {
+      "name": "HuskyLens",
+      "description": "Cámara AI HUSKYLENS v1 (DFRobot SEN0305) por I2C o UART de hardware. Solo Arduino/C++; experimental.",
+      "kind": "module",
+      "path": "packages/huskylens"
     }
   ]
 }

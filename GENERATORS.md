@@ -13,6 +13,9 @@ cada bloque. Los descriptores del manifiesto no sustituyen estas plantillas.
 ```
 
 Este ejemplo solo transforma una entrada numérica; no describe hardware.
+Arduino admite `hardware.uart.hardwareOnly: true` para exigir un UART de hardware;
+si el mapa de la tarjeta ofrece SoftwareSerial, da un diagnóstico genérico.
+
 Los valores usan `expression`; las instrucciones, `statement`. Los arrays
 `imports`, `includes`, `globals`, `setup` se deduplican. `{CAMPO}` se escapa o
 resuelve a símbolo/identificador; `{ENTRADA}` conserva paréntesis solo cuando protege precedencia.
