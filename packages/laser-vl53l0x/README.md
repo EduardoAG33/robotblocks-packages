@@ -11,13 +11,19 @@ MicroPython/Pybricks ocultan los bloques y diagnostican un IR importado.
 ## Bloques — categoría «Láser», color #B8860B
 
 - **«configurar láseres VL53L0X SDA [pin] SCL [pin] modo [modo]»**: botones +/−,
-  de 1 a 12 filas **«XSHUT [pin] dirección [0x30…0x3B]»**. Directamente en
-  «al iniciar», fuera de bucles y funciones.
-- **«distancia del láser [n] en mm»**: reporter, n = 1…24.
-- **«¿el láser [n] tiene lectura?»**: booleano, n = 1…24.
+  de 1 a 12 filas **«XSHUT [pin] dirección [0x30…0x3B] nombre [texto]»**, una por
+  renglón. Directamente en «al iniciar», fuera de bucles y funciones. SDA/SCL
+  empiezan en el bus I2C principal de la tarjeta (Teensy 4.x: 18/19).
+- **«distancia del láser [nombre] en mm»**: reporter.
+- **«¿el láser [nombre] tiene lectura?»**: booleano.
 
-Numeración desde 1 según filas y bloques en orden del programa. Si el primer
-bloque tiene cinco filas, el segundo configura 6…10. SDA/SCL seleccionan
+Cada fila tiene un **nombre** que dice dónde está el sensor («frontal derecho»,
+«lateral izquierdo»…); empieza como «láser 1», «láser 2»… sin repetirse. Los bloques
+de lectura eligen el láser por ese nombre en un menú con los láseres configurados, sin
+importar en qué bloque o bus esté. Renombrar una fila renombra sus lecturas. «Revisar»
+avisa si dos láseres tienen el mismo nombre o si una lectura usa un nombre que ya no
+existe. Internamente los láseres se numeran según filas y bloques en orden del programa
+(1…24). SDA/SCL seleccionan
 Wire/Wire1/Wire2 mediante los pares oficiales. Usa dos bloques para dividir
 sensores entre buses; las direcciones pueden repetirse en buses distintos.
 En un mismo bus deben ser únicas. XSHUT no se repite, ni comparte SDA/SCL.
@@ -83,11 +89,11 @@ Las lecturas de distancia no hacen esa calibración ni esperan una medida.
 
 Sensor ausente o fallo I2C/calibración invoca rb_fail. Serial a 115200 baudios
 emite: `RB_ERROR <id-bloque> No responde el láser VL53L0X <n> durante la configuración`.
-El número es global, también en el segundo bloque; se aplica el mecanismo de
+El nombre identifica al láser en cualquier bloque; se aplica el mecanismo de
 fallo existente. No se usan lecturas single-shot.
 
 Ejemplo de la aplicación: **examples/teensy-41-laberinto-10-laseres.blocks.json**.
-Diez XSHUT en 2…11, Wire 18/19 y direcciones 0x30…0x39. Imprime diez distancias y
+Cinco láseres en Wire (18/19, XSHUT 2…6) y cinco en Wire1 (17/16, XSHUT 7…11). Imprime diez distancias y
 espera 100 ms entre conjuntos. Sin OLED ni otro módulo en 0x29.
 
 ## Verificación y licencia
