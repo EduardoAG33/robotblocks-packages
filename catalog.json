@@ -145,6 +145,12 @@
       "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",
       "kind": "module",
       "path": "packages/i2c"
+    },
+    {
+      "name": "Láser VL53L0X · experimental",
+      "description": "Varios láseres VL53L0X con XSHUT y distancia continua sin bloquear, solo Arduino.",
+      "kind": "module",
+      "path": "packages/laser-vl53l0x"
     }
   ]
 }
