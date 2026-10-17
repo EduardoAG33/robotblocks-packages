@@ -1,10 +1,10 @@
-# Arduino UNO R3 — experimental
+# Arduino UNO R3
 
 Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB.
 
 Destino C++/Arduino: `arduino:avr:uno`. No instala cores ni carga firmware.
 Usa **Copiar código** o **Descargar archivo** en la vista Código: obtienes un único `.ino`
-con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Pendiente de compilación con el core y prueba física.
+con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Probada en hardware (ver al final).
 
 Las capacidades corresponden a pines del pinout oficial y funciones accesibles por el core.
 Un alias analógico comparte el pin físico: no se duplica como recurso digital.
@@ -66,3 +66,8 @@ Solo se admiten estos pares de pines predeterminados del core. No se remapean pi
 Servo usa `Servo.h`; en AVR comparte Timer1 y deshabilita PWM en D9/D10 mientras está activo.
 
 Fuentes adicionales: [Servo oficial y Timer1](https://github.com/arduino-libraries/Servo/blob/master/src/avr/ServoTimers.h). El pinout oficial citado arriba identifica RX/TX y SDA/SCL.
+
+## Prueba en hardware
+
+- 2026-10-10: sketch subido desde la app con arduino-cli (COM4); HC-SR04 en TRIG D7 / ECHO D8 y LED D13
+  bajo 10 cm, con la distancia por el Monitor serie.

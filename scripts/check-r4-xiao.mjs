@@ -7,9 +7,11 @@ const r4 = await load('arduino-uno-r4-minima'),
 for (const pkg of [r4, xiao]) {
   const board = pkg.contributes.boards[0];
   assert.equal(pkg.metadata.group, 'boards');
-  assert.equal(pkg.metadata.experimental, true);
-  assert.equal(board.experimental, true);
-  assert(pkg.name.endsWith('· experimental'));
+  // R4 Minima ya se probó en hardware; XIAO sigue experimental.
+  const experimental = pkg === xiao;
+  assert.equal(pkg.metadata.experimental, experimental || undefined);
+  assert.equal(board.experimental, experimental || undefined);
+  assert.equal(pkg.name.endsWith('· experimental'), experimental);
   const slug = pkg.id.replace('org.robotblocks.', '');
   const readme = await readFile(`packages/${slug}/README.md`, 'utf8');
   assert(

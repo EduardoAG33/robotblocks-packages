@@ -1,4 +1,4 @@
-# Arduino UNO R4 Minima · experimental
+# Arduino UNO R4 Minima
 
 Paquete declarativo, sin permisos ni código ejecutable. FQBN `arduino:renesas_uno:minima`, confirmado en el core oficial. Lógica de **5 V**. ADC configurado a **10 bits** para mantener la escala del generador QTR; el silicio admite hasta **14 bits**. PWM de **8 bits** en D3/D5/D6/D9/D10/D11. DAC A0 de **12 bits**, descrito como `analogOutput`; esta tarea no agrega un bloque DAC.
 
@@ -48,3 +48,11 @@ El informe y las salidas están en docs/TARJETAS_R4_XIAO.md del repo de la app.
 - [Resolución ADC UNO R4 Minima](https://docs.arduino.cc/tutorials/uno-r4-minima/adc-resolution/)
 - [Core Renesas: boards.txt (minima)](https://github.com/arduino/ArduinoCore-renesas/blob/main/boards.txt)
 - [Servo 1.3.0: arquitecturas Renesas](https://github.com/arduino-libraries/Servo/blob/1.3.0/library.properties)
+
+## Prueba en hardware
+
+- 2026-10-10: carga por DFU desde la app y desde arduino-cli; HC-SR04 (TRIG D7 / ECHO D8) funcionando.
+- 2026-10-17: servo + HC-SR04 cargado desde la app. Si arduino-cli dice «Lost device after RESET?»,
+  presiona RESET dos veces rápido (LED «respira») y vuelve a cargar.
+- En Windows, el Monitor necesita el driver del puerto CDC: «Dispositivo serie USB» de Microsoft o
+  `post_install.bat` del core como administrador. Sin él la carga por DFU funciona igual.

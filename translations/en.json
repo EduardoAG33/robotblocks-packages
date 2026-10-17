@@ -38,9 +38,9 @@
   "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.": "ADC2: unavailable with WiFi active. Strapping pin: do not force its level during startup.",
   "Altavoz": "Speaker",
   "Arduino GIGA R1 WiFi · experimental": "Arduino GIGA R1 WiFi · experimental",
-  "Arduino Nano (ATmega328P) · experimental": "Arduino Nano (ATmega328P) · experimental",
-  "Arduino UNO R3 · experimental": "Arduino UNO R3 · experimental",
-  "Arduino UNO R4 Minima · experimental": "Arduino UNO R4 Minima · experimental",
+  "Arduino Nano (ATmega328P)": "Arduino Nano (ATmega328P)",
+  "Arduino UNO R3": "Arduino UNO R3",
+  "Arduino UNO R4 Minima": "Arduino UNO R4 Minima",
   "BCLK · GPIO14": "BCLK · GPIO14",
   "BLUE / LED RGB": "BLUE / LED RGB",
   "Bloque de demostración. No lee un sensor real.": "Demonstration block. Does not read a real sensor.",
@@ -123,7 +123,7 @@
   "En «al iniciar». RX de la placa va al TX del otro equipo y viceversa; une las tierras. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.": "In “when started”. Board RX connects to the other device’s TX and vice versa; connect the grounds. For cameras such as OpenMV or any board sending text lines. Experimental MicroPython.",
   "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.": "In “when started”. Use the same SDA/SCL as your other I2C sensors. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython.",
   "Envía el texto con salto de línea al final. Para cámaras como OpenMV o cualquier placa que envíe líneas de texto. MicroPython experimental.": "Sends the text with a trailing newline. For cameras such as OpenMV or any board sending text lines. Experimental MicroPython.",
-  "FireBeetle ESP32 DFR0478 · experimental": "FireBeetle ESP32 DFR0478 · experimental",
+  "FireBeetle ESP32 DFR0478": "FireBeetle ESP32 DFR0478",
   "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython.",
   "GREEN / LED RGB": "GREEN / LED RGB",
   "Hasta cuatro motores (A–D) con TB6612FNG o L298N: PWM + IN1 + IN2. Plantillas MicroPython experimentales; Arduino pendiente.": "Up to four motors (A–D) with TB6612FNG or L298N: PWM + IN1 + IN2. Experimental MicroPython templates; Arduino pending.",
@@ -364,5 +364,8 @@
   "Ángulo de giro e inclinación con la IMU BNO055 por I2C, con la fusión de sensores del propio chip.": "Heading angle and tilt with the BNO055 IMU over I2C, using the chip’s sensor fusion.",
   "ángulo de giro": "heading angle",
   "ángulo del motor %PORT en grados": "motor %PORT angle in degrees",
-  "última línea de UART %PORT": "UART %PORT last line"
+  "última línea de UART %PORT": "UART %PORT last line",
+  "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Tested on hardware with RobotBlocks.",
+  "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. Probada en hardware con RobotBlocks.": "5 V logic. Default 10-bit ADC (up to 14); 8-bit PWM and 12-bit A0 DAC. Native USB, Serial1 free on D0/D1. Tested on hardware with RobotBlocks.",
+  "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con RobotBlocks.": "DFRobot DFR0478, ESP-WROOM-32 and CH340. MicroPython over Web Serial. Tested on hardware with RobotBlocks."
 }
