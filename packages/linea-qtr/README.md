@@ -27,7 +27,7 @@ Sin calibración usa el rango completo del ADC: 0–4095 en MicroPython ESP32; e
 
 Plantillas declarativas experimentales, sin código ejecutable en el paquete. Se mantienen las plantillas MicroPython. Copiar código y Descargar archivo dan un único `.ino` con el runtime integrado. Generación verificada; compilación del core y prueba física pendientes.
 
-Lee cada canal con analogRead, sin biblioteca QTR. Rango sin calibración: 0…`(2 ** adcBits) − 1` (1023 en las cinco tarjetas actuales). GIGA/Teensy emiten analogReadResolution(adcBits) al iniciar; AVR conserva su ADC fijo de 10 bits. Hasta 16 canales, cada uno elegido entre los recursos ADC oficiales; puedes usar un subconjunto de las 13 salidas QTRX-MD-13A.
+Lee cada canal con analogRead, sin biblioteca QTR. Cada canal guarda su propia función lectora, así también sirven A8–A11 de la GIGA (`PureAnalogPin`, que no se convierten a número). Rango sin calibración: 0…`(2 ** adcBits) − 1` (1023 en las cinco tarjetas actuales). GIGA/Teensy emiten analogReadResolution(adcBits) al iniciar; AVR conserva su ADC fijo de 10 bits. Hasta 16 canales, cada uno elegido entre los recursos ADC oficiales; puedes usar un subconjunto de las 13 salidas QTRX-MD-13A.
 
 Conserva posición −100…100, inversión blanca/negra, calibración mínimo/máximo por canal, umbral de contraste de 50 cuentas ADC, detección >50 % y último lado cuando se pierde la línea. No admite sensores RC. Alimenta las salidas analógicas a tensión compatible con la tarjeta.
 
