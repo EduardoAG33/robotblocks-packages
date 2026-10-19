@@ -1,22 +1,21 @@
 {
   "schemaVersion": 2,
   "id": "org.robotblocks.arduino-giga-r1",
-  "name": "Arduino GIGA R1 WiFi · experimental",
-  "version": "0.2.0",
+  "name": "Arduino GIGA R1 WiFi",
+  "version": "0.3.0",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+  "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "boards",
     "translations": {
       "en": {
-        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default. Experimental C++ generation; upload pending Phase 8 and physical validation.",
+        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default. Tested on hardware with RobotBlocks.",
         "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default.",
         "UART hardware; la serie USB usa un puerto independiente.": "Hardware UART; USB serial uses a separate port.",
         "Conector de cámara; no usar como GPIO mientras se utiliza la cámara.": "Camera connector; do not use as GPIO while the camera is active.",
@@ -42,9 +41,8 @@
     "boards": [
       {
         "id": "org.robotblocks.arduino-giga-r1:board",
-        "name": "Arduino GIGA R1 WiFi · experimental",
+        "name": "Arduino GIGA R1 WiFi",
         "family": "mbed_giga",
-        "experimental": true,
         "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.",
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 3.3,

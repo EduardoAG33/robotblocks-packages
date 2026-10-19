@@ -1,4 +1,4 @@
-# Seeed Studio XIAO ESP32-S3 · experimental
+# Seeed Studio XIAO ESP32-S3
 
 Modelo **base**, no Sense ni Plus. Lógica de **3.3 V, NO tolerante a 5 V**. 8 MB flash y 8 MB PSRAM octal. FQBN confirmado: `esp32:esp32:XIAO_ESP32S3`; mantén USB CDC On Boot habilitado. Recursos de los once contactos laterales y USER_LED, sin pines del conector de cámara Sense. D11/D12, cámara, micrófono, flash y PSRAM no se ofrecen como GPIO seleccionables. Los GPIO19/20 del USB se declaran reservados.
 
@@ -59,3 +59,9 @@ El informe y las salidas están en docs/TARJETAS_R4_XIAO.md del repo de la app.
 - [Core ESP32: boards.txt (XIAO_ESP32S3)](https://github.com/espressif/arduino-esp32/blob/master/boards.txt)
 - [Migración ESP32 2.x a 3.0: LEDC retirado](https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html)
 - [Servo 1.3.0: implementación ESP32 con ledcSetup/ledcAttachPin](https://github.com/arduino-libraries/Servo/blob/1.3.0/src/esp32/Servo.cpp)
+
+## Prueba en hardware
+
+- 2026-10-18: dos XIAO del robot Rescue Line cargadas en C++ desde la app con arduino-cli (COM9 y COM10):
+  QTR en GPIO1, TCS34725 en D4/D5 y mensajes por UART1 (D6/D7) que el GIGA recibe. La carga MicroPython en
+  una placa física sigue pendiente.

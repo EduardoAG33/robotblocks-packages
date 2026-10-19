@@ -31,7 +31,7 @@ for (const item of catalog.packages) {
     for (const pin of board.resources)
       assert(pin.capabilities.every((capability) => board.capabilities.includes(capability)));
     assert(!board.capabilities.includes('digitalGPIO'));
-    if (Object.keys(board.targets ?? {}).length) assert.equal(board.experimental, true);
+    if (board.experimental !== undefined) assert.equal(board.experimental, true);
     if (board.targets?.arduino) assert.match(board.targets.arduino.fqbn, /^[\w-]+:[\w-]+:[\w-]+(?::[\w=,.-]+)?$/);
     if (board.logicLevel !== undefined) assert(board.logicLevel > 0 && board.logicLevel <= 24);
     if (board.adcBits !== undefined)

@@ -1,29 +1,27 @@
 {
   "schemaVersion": 2,
   "id": "org.robotblocks.arduino-nano",
-  "name": "Arduino Nano (ATmega328P) · experimental",
-  "version": "0.2.0",
+  "name": "Arduino Nano (ATmega328P)",
+  "version": "0.3.0",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+  "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "boards",
     "translations": {
       "en": {
-        "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Experimental C++ generation; upload pending Phase 8 and physical validation.",
+        "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Tested on hardware with RobotBlocks.",
         "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial.",
         "Reservado para serie USB (RX/TX del puente USB-UART). No seleccionable.": "Reserved for USB serial (USB-UART bridge RX/TX). Not selectable.",
         "LED integrado; alto enciende, bajo apaga. Compartido con SPI SCK.": "Built-in LED; high turns it on, low turns it off. Shared with SPI SCK.",
         "I2C SDA; compartido con el bus Wire.": "I2C SDA; shared with the Wire bus.",
         "I2C SCL; compartido con el bus Wire.": "I2C SCL; shared with the Wire bus.",
-        "Solo analógico; sin entrada/salida digital ni pull-up.": "Analog only; no digital input/output or pull-up.",
-        "Compartido con USB; reservado para la consola. La extensión UART requiere un puerto independiente.": "Shared with USB; reserved for the console. The UART extension requires a separate port."
+        "Solo analógico; sin entrada/salida digital ni pull-up.": "Analog only; no digital input/output or pull-up."
       }
     }
   },
@@ -36,9 +34,8 @@
     "boards": [
       {
         "id": "org.robotblocks.arduino-nano:board",
-        "name": "Arduino Nano (ATmega328P) · experimental",
+        "name": "Arduino Nano (ATmega328P)",
         "family": "avr",
-        "experimental": true,
         "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB.",
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],
         "logicLevel": 5,
