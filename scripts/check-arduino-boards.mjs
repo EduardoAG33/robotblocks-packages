@@ -14,8 +14,8 @@ for (const [slug, fqbn, logicLevel, count] of expectations) {
   const [board] = manifest.contributes.boards;
   assert.equal(manifest.contributes.boards.length, 1);
   assert.equal(manifest.metadata.group, 'boards');
-  // UNO y Nano ya se probaron en hardware; GIGA y Teensy siguen experimentales.
-  const experimental = !['arduino-uno', 'arduino-nano'].includes(slug);
+  // UNO, Nano y GIGA ya se probaron en hardware; Teensy sigue experimental.
+  const experimental = slug.startsWith('teensy');
   assert.equal(manifest.metadata.experimental, experimental || undefined);
   assert.equal(manifest.name.endsWith('· experimental'), experimental);
   assert.equal(board.experimental, experimental || undefined);

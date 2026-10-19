@@ -88,31 +88,31 @@
     },
     {
       "name": "Arduino UNO R3",
-      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/arduino-uno"
     },
     {
       "name": "Arduino Nano (ATmega328P)",
-      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/arduino-nano"
     },
     {
-      "name": "Arduino GIGA R1 WiFi · experimental",
-      "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "name": "Arduino GIGA R1 WiFi",
+      "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/arduino-giga-r1"
     },
     {
       "name": "Teensy 4.0 · experimental",
-      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/teensy-40"
     },
     {
       "name": "Teensy 4.1 · experimental",
-      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Generación C++ experimental; carga pendiente de Fase 8 y validación física.",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/teensy-41"
     },
@@ -123,8 +123,8 @@
       "path": "packages/arduino-uno-r4-minima"
     },
     {
-      "name": "Seeed Studio XIAO ESP32-S3 · experimental",
-      "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. Experimental, pendiente de prueba física.",
+      "name": "Seeed Studio XIAO ESP32-S3",
+      "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. C++ probado en hardware con RobotBlocks; MicroPython pendiente de prueba física.",
       "kind": "board",
       "path": "packages/seeed-xiao-esp32s3"
     },
