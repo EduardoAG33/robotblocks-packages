@@ -169,6 +169,12 @@
       "description": "Cámara AI HUSKYLENS v1 (DFRobot SEN0305) por I2C o UART de hardware. Solo Arduino/C++; experimental.",
       "kind": "module",
       "path": "packages/huskylens"
+    },
+    {
+      "name": "Luz RGB WS2812",
+      "description": "Tabletas y tiras WS2812 (NeoPixel): colores, brillo, arcoíris, movimiento y barras. Experimental hasta probar en hardware.",
+      "kind": "module",
+      "path": "packages/ws2812"
     }
   ]
 }
