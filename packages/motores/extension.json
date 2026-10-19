@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.motores",
   "name": "Motores DC (puente H)",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Hasta cuatro motores (A–D) con TB6612FNG o L298N: PWM + IN1 + IN2. Plantillas MicroPython experimentales; Arduino pendiente.",
