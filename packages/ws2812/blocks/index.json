@@ -1,0 +1,500 @@
+[
+  {
+    "id": "org.robotblocks.ws2812:initialize",
+    "operation": "org.robotblocks.ws2812:initialize",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "inicializar luz RGB en pin %PIN con %COUNT LEDs",
+      "en": "initialize RGB light on pin %PIN with %COUNT LEDs"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "COUNT",
+        "type": "number",
+        "default": 8
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_inicializar(tira_{PIN}, {COUNT}, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_{PIN}_inicializar({COUNT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:brightness",
+    "operation": "org.robotblocks.ws2812:brightness",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN brillo %BRIGHTNESS",
+      "en": "RGB light pin %PIN brightness %BRIGHTNESS"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "BRIGHTNESS",
+        "type": "number",
+        "default": 60
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_brillo(tira_{PIN}, {BRIGHTNESS}, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_{PIN}_brillo({BRIGHTNESS}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:color",
+    "operation": "org.robotblocks.ws2812:color",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN LEDs %FROM a %TO color rojo %R verde %G azul %B",
+      "en": "RGB light pin %PIN LEDs %FROM to %TO color red %R green %G blue %B"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "FROM",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "TO",
+        "type": "number",
+        "default": 7
+      },
+      {
+        "name": "R",
+        "type": "number",
+        "default": 40
+      },
+      {
+        "name": "G",
+        "type": "number",
+        "default": 40
+      },
+      {
+        "name": "B",
+        "type": "number",
+        "default": 40
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_rango(tira_{PIN}, {FROM}, {TO}, {R}, {G}, {B}, 0, 0, 1, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_rango(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {FROM}, {TO}, {R}, {G}, {B}, 0, 0, 1, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:off-range",
+    "operation": "org.robotblocks.ws2812:off-range",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN apagar LEDs %FROM a %TO",
+      "en": "RGB light pin %PIN turn off LEDs %FROM to %TO"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "FROM",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "TO",
+        "type": "number",
+        "default": 7
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_rango(tira_{PIN}, {FROM}, {TO}, 0, 0, 0, 0, 0, 1, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_rango(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {FROM}, {TO}, 0, 0, 0, 0, 0, 1, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:off",
+    "operation": "org.robotblocks.ws2812:off",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN apagar todo",
+      "en": "RGB light pin %PIN turn off all"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_rango(tira_{PIN}, 0, 21844, 0, 0, 0, 0, 0, 1, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_rango(tira_{PIN}, colores_{PIN}, brillo_{PIN}, 0, 21844, 0, 0, 0, 0, 0, 1, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:rainbow",
+    "operation": "org.robotblocks.ws2812:rainbow",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN LEDs %FROM a %TO arcoíris",
+      "en": "RGB light pin %PIN LEDs %FROM to %TO rainbow"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "FROM",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "TO",
+        "type": "number",
+        "default": 7
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_rango(tira_{PIN}, {FROM}, {TO}, 0, 0, 0, 1, 0, 1, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_rango(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {FROM}, {TO}, 0, 0, 0, 1, 0, 1, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:shift",
+    "operation": "org.robotblocks.ws2812:shift",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN desplazar %N",
+      "en": "RGB light pin %PIN shift %N"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "N",
+        "type": "number",
+        "default": 1
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_mover(tira_{PIN}, {N}, false, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_mover(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {N}, False, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:rotate",
+    "operation": "org.robotblocks.ws2812:rotate",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN girar %N",
+      "en": "RGB light pin %PIN rotate %N"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "N",
+        "type": "number",
+        "default": 1
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_mover(tira_{PIN}, {N}, true, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_mover(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {N}, True, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ws2812:bar",
+    "operation": "org.robotblocks.ws2812:bar",
+    "category": "org.robotblocks.ws2812:rgb",
+    "label": {
+      "es": "luz RGB pin %PIN LEDs %FROM a %TO barra con valor %VALUE de máximo %MAX",
+      "en": "RGB light pin %PIN LEDs %FROM to %TO bar with value %VALUE out of maximum %MAX"
+    },
+    "kind": "command",
+    "requiredCapabilities": ["digitalOutput"],
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "FROM",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "TO",
+        "type": "number",
+        "default": 7
+      },
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 4
+      },
+      {
+        "name": "MAX",
+        "type": "number",
+        "default": 8
+      }
+    ],
+    "tooltip": {
+      "es": "Inicializa al iniciar. Índices desde 0 e inclusivos; fuera de la tira se ignoran. RGB y brillo se limitan a 0–255. N positivo mueve hacia índices mayores; negativo hacia menores. Cada cambio se muestra automáticamente. Experimental.",
+      "en": "Initialize at start. Indices start at 0 and are inclusive; indices outside the strip are ignored. RGB and brightness are clamped to 0–255. Positive N moves toward higher indices; negative toward lower indices. Every change is displayed automatically. Experimental."
+    },
+    "generators": {
+      "arduino": {
+        "includes": ["#include <Adafruit_NeoPixel.h>"],
+        "globals": [
+          "inline int luz_numero(float valor, int minimo, int maximo, const char* bloque) {\n    return int(fmaxf(minimo, fminf(maximo, rb_finite(valor, bloque))));\n}\ninline bool luz_lista(Adafruit_NeoPixel& tira, const char* bloque) {\n    if (!tira.numPixels()) { rb_fail(bloque, \"Inicializa la luz RGB al iniciar\"); return false; }\n    return !rb_failed;\n}\ninline void luz_inicializar(Adafruit_NeoPixel& tira, float cantidad, const char* bloque) {\n    int n = luz_numero(cantidad, 1, 21845, bloque);\n    if (rb_failed) return;\n    tira.updateLength(n);\n    if (tira.numPixels() != n || !tira.begin()) { rb_fail(bloque, \"No se pudo inicializar la luz RGB\"); return; }\n    tira.setBrightness(255); tira.clear(); tira.show();\n}\ninline void luz_brillo(Adafruit_NeoPixel& tira, float brillo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    tira.setBrightness(luz_numero(brillo, 0, 255, bloque)); tira.show();\n}\ninline uint32_t luz_tono(float tono) {\n    float h = tono / 60; int sector = int(h) % 6;\n    int x = int(255 * (1 - fabsf(fmodf(h, 2) - 1)));\n    switch (sector) {\n        case 0: return Adafruit_NeoPixel::Color(255, x, 0);\n        case 1: return Adafruit_NeoPixel::Color(x, 255, 0);\n        case 2: return Adafruit_NeoPixel::Color(0, 255, x);\n        case 3: return Adafruit_NeoPixel::Color(0, x, 255);\n        case 4: return Adafruit_NeoPixel::Color(x, 0, 255);\n        default: return Adafruit_NeoPixel::Color(255, 0, x);\n    }\n}\ninline void luz_rango(Adafruit_NeoPixel& tira, float desde, float hasta, float rojo, float verde, float azul, int modo, float valor, float maximo, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int inicio = luz_numero(desde, -32767, 32767, bloque), fin = luz_numero(hasta, -32767, 32767, bloque);\n    if (inicio < 0) inicio = 0;\n    if (fin >= tira.numPixels()) fin = tira.numPixels() - 1;\n    uint32_t color = Adafruit_NeoPixel::Color(luz_numero(rojo, 0, 255, bloque), luz_numero(verde, 0, 255, bloque), luz_numero(azul, 0, 255, bloque));\n    float proporcion = maximo > 0 ? fmaxf(0, fminf(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) : 0;\n    int encendidos = int((fin - inicio + 1) * proporcion);\n    if (rb_failed) return;\n    for (int i = inicio; i <= fin; i++) {\n        uint32_t c = modo == 1 ? luz_tono(fin == inicio ? 0 : 360.0f * (i - inicio) / (fin - inicio)) : modo == 2 ? (i - inicio < encendidos ? Adafruit_NeoPixel::Color(0, 255, 0) : 0) : color;\n        tira.setPixelColor(i, c);\n    }\n    tira.show();\n}\ninline void luz_invertir(Adafruit_NeoPixel& tira, int inicio, int fin) {\n    uint8_t* datos = tira.getPixels();\n    while (inicio < fin) {\n        for (int c = 0; c < 3; c++) {\n            uint8_t color = datos[inicio * 3 + c];\n            datos[inicio * 3 + c] = datos[fin * 3 + c]; datos[fin * 3 + c] = color;\n        }\n        inicio++; fin--;\n    }\n}\ninline void luz_mover(Adafruit_NeoPixel& tira, float lugares, bool circular, const char* bloque) {\n    if (!luz_lista(tira, bloque)) return;\n    int n = tira.numPixels();\n    int paso = circular ? int(fmodf(rb_finite(lugares, bloque), n)) : luz_numero(lugares, -n, n, bloque);\n    if (rb_failed) return;\n    // Copia bytes sin volver a aplicar brillo. / Copy bytes without rescaling brightness.\n    uint8_t* datos = tira.getPixels();\n    if (circular) {\n        if (paso < 0) paso += n;\n        luz_invertir(tira, 0, n - 1); luz_invertir(tira, 0, paso - 1); luz_invertir(tira, paso, n - 1);\n    } else if (paso >= 0) {\n        for (int i = n - 1; i >= 0; i--) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i >= paso ? datos[(i - paso) * 3 + c] : 0;\n    } else {\n        for (int i = 0; i < n; i++) for (int c = 0; c < 3; c++) datos[i * 3 + c] = i - paso < n ? datos[(i - paso) * 3 + c] : 0;\n    }\n    tira.show();\n}",
+          "static Adafruit_NeoPixel tira_{PIN}(0, {PIN}, NEO_GRB + NEO_KHZ800);"
+        ],
+        "statement": "luz_rango(tira_{PIN}, {FROM}, {TO}, 0, 0, 0, 2, {VALUE}, {MAX}, {BLOCK_ID});"
+      },
+      "micropython": {
+        "imports": ["from machine import Pin", "import neopixel"],
+        "globals": [
+          "def luz_numero(valor, minimo, maximo, bloque):\n    return int(max(minimo, min(maximo, rb_finite(valor, bloque))))\n\ndef luz_lista(tira, bloque):\n    if tira is None:\n        rb_fail(bloque, \"Inicializa la luz RGB al iniciar\")\n\ndef luz_inicializar(pin, cantidad, colores, bloque):\n    n = luz_numero(cantidad, 1, 21845, bloque)\n    tira = neopixel.NeoPixel(Pin(pin), n)\n    colores[:] = [(0, 0, 0)] * n\n    tira.fill((0, 0, 0))\n    tira.write()\n    return tira\n\ndef luz_mostrar(tira, colores, brillo, bloque):\n    luz_lista(tira, bloque)\n    for i, color in enumerate(colores):\n        tira[i] = tuple(c * brillo // 255 for c in color)\n    tira.write()\n\ndef luz_tono(tono):\n    h = tono / 60\n    sector = int(h) % 6\n    x = int(255 * (1 - abs(h % 2 - 1)))\n    return ((255, x, 0), (x, 255, 0), (0, 255, x), (0, x, 255), (x, 0, 255), (255, 0, x))[sector]\n\ndef luz_rango(tira, colores, brillo, desde, hasta, rojo, verde, azul, modo, valor, maximo, bloque):\n    luz_lista(tira, bloque)\n    inicio = max(0, luz_numero(desde, -32767, 32767, bloque))\n    fin = min(len(colores) - 1, luz_numero(hasta, -32767, 32767, bloque))\n    color = tuple(luz_numero(c, 0, 255, bloque) for c in (rojo, verde, azul))\n    proporcion = max(0, min(1, rb_finite(valor, bloque) / rb_finite(maximo, bloque))) if maximo > 0 else 0\n    encendidos = int((fin - inicio + 1) * proporcion)\n    for i in range(inicio, fin + 1):\n        colores[i] = luz_tono(0 if fin == inicio else 360 * (i - inicio) / (fin - inicio)) if modo == 1 else ((0, 255, 0) if i - inicio < encendidos else (0, 0, 0)) if modo == 2 else color\n    luz_mostrar(tira, colores, brillo, bloque)\n\ndef luz_mover(tira, colores, brillo, lugares, circular, bloque):\n    luz_lista(tira, bloque)\n    n = len(colores)\n    paso = int(rb_finite(lugares, bloque)) % n if circular else luz_numero(lugares, -n, n, bloque)\n    if circular:\n        if paso:\n            colores[:] = colores[-paso:] + colores[:-paso]\n    elif paso > 0:\n        colores[:] = [(0, 0, 0)] * paso + colores[:n - paso]\n    elif paso < 0:\n        colores[:] = colores[-paso:] + [(0, 0, 0)] * -paso\n    luz_mostrar(tira, colores, brillo, bloque)\n",
+          "tira_{PIN} = None\nbrillo_{PIN} = 255\ncolores_{PIN} = []\n\ndef luz_{PIN}_inicializar(cantidad, bloque):\n    global tira_{PIN}, brillo_{PIN}\n    tira_{PIN} = luz_inicializar({PIN}, cantidad, colores_{PIN}, bloque)\n    brillo_{PIN} = 255\n\ndef luz_{PIN}_brillo(valor, bloque):\n    global brillo_{PIN}\n    luz_lista(tira_{PIN}, bloque)\n    brillo_{PIN} = luz_numero(valor, 0, 255, bloque)\n    luz_mostrar(tira_{PIN}, colores_{PIN}, brillo_{PIN}, bloque)\n"
+        ],
+        "statement": "luz_rango(tira_{PIN}, colores_{PIN}, brillo_{PIN}, {FROM}, {TO}, 0, 0, 0, 2, {VALUE}, {MAX}, {BLOCK_ID})"
+      }
+    }
+  }
+]
