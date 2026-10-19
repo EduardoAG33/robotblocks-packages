@@ -79,7 +79,7 @@
         ]
       }
     ],
-    "inputs": [{ "name": "SPEED", "type": "number", "default": 50 }],
+    "inputs": [{ "name": "SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }],
     "tooltip": {
       "es": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
       "en": "From -100 (reverse) to 100 (forward); larger values are clamped. 0 makes it coast. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
@@ -138,8 +138,8 @@
       }
     ],
     "inputs": [
-      { "name": "LEFT_SPEED", "type": "number", "default": 50 },
-      { "name": "RIGHT_SPEED", "type": "number", "default": 50 }
+      { "name": "LEFT_SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } },
+      { "name": "RIGHT_SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }
     ],
     "tooltip": {
       "es": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
