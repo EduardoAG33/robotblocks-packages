@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.dfrobot-firebeetle-esp32",
   "name": "FireBeetle ESP32 DFR0478 · experimental",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Pendiente de validación física.",
@@ -24,7 +24,14 @@
         "Pin de strapping: no forzar su nivel durante arranque.": "Strapping pin: do not force its level during startup.",
         "ADC2: no disponible con WiFi activo. LED integrado; alto enciende, bajo apaga.": "ADC2: unavailable with WiFi active. Built-in LED; high turns it on, low turns it off.",
         "Solo entrada; sin pull-up/pull-down internos. ADC1.": "Input only; no internal pull-up/pull-down. ADC1.",
-        "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.": "ADC2: unavailable with WiFi active. Strapping pin: do not force its level during startup."
+        "ADC2: no disponible con WiFi activo. Pin de strapping: no forzar su nivel durante arranque.": "ADC2: unavailable with WiFi active. Strapping pin: do not force its level during startup.",
+        "Si Windows no detecta la placa, instala el driver USB CH340/CH341 de WCH y vuelve a conectarla.": "If Windows does not detect the board, install the WCH CH340/CH341 USB driver and reconnect it.",
+        "Instala MicroPython ESP32_GENERIC con Thonny. Respalda tus archivos antes de instalar el firmware.": "Install MicroPython ESP32_GENERIC with Thonny. Back up your files before installing the firmware.",
+        "Cierra Thonny para liberar el puerto, vuelve a RobotBlocks y conecta la placa por USB.": "Close Thonny to release the port, return to RobotBlocks and connect the board by USB.",
+        "Para usar la placa con Arduino otra vez, carga un programa desde Arduino IDE.": "To use the board with Arduino again, upload a program from Arduino IDE.",
+        "Firmware MicroPython ESP32_GENERIC": "MicroPython ESP32_GENERIC firmware",
+        "Instalar o actualizar firmware con Thonny": "Install or upgrade firmware with Thonny",
+        "Driver USB oficial CH340/CH341 de WCH": "Official WCH CH340/CH341 USB driver"
       }
     }
   },
@@ -39,6 +46,29 @@
         "id": "org.robotblocks.dfrobot-firebeetle-esp32:board",
         "name": "FireBeetle ESP32 DFR0478 · experimental",
         "family": "esp32",
+        "setupGuide": {
+          "steps": [
+            "Si Windows no detecta la placa, instala el driver USB CH340/CH341 de WCH y vuelve a conectarla.",
+            "Instala MicroPython ESP32_GENERIC con Thonny. Respalda tus archivos antes de instalar el firmware.",
+            "Cierra Thonny para liberar el puerto, vuelve a RobotBlocks y conecta la placa por USB."
+          ],
+          "links": [
+            {
+              "label": "Firmware MicroPython ESP32_GENERIC",
+              "url": "https://micropython.org/download/ESP32_GENERIC/"
+            },
+            {
+              "label": "Instalar o actualizar firmware con Thonny",
+              "url": "https://github.com/thonny/thonny/wiki/MicroPython#firmware-installation--upgrade"
+            },
+            {
+              "label": "Driver USB oficial CH340/CH341 de WCH",
+              "url": "https://www.wch.cn/downloads/CH341SER_EXE.html"
+            }
+          ],
+          "revert": ["Para usar la placa con Arduino otra vez, carga un programa desde Arduino IDE."],
+          "detailsUrl": "/guia-firebeetle.txt"
+        },
         "experimental": true,
         "description": "Lógica de 3.3 V. LED D9/GPIO2. USB CH340. Pines flash y UART0 excluidos de selección.",
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm"],

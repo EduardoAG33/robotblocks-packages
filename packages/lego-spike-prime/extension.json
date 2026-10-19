@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.lego-spike-prime",
   "name": "SPIKE Prime / Pybricks · experimental",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
@@ -19,7 +19,14 @@
         "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.": "Hub with Pybricks 3.6.1+ firmware (compatible with 4.0). The app only uploads programs over Bluetooth; it does not install firmware. Physical testing pending.",
         "Un motor o sensor Powered Up por puerto; no son GPIO. Las referencias de bloques comparten el dispositivo, no permiten conectar dos dispositivos físicos.": "One Powered Up motor or sensor per port; these are not GPIO. Block references share the device, not two physical devices.",
         "Botón integrado.": "Built-in button.",
-        "También detiene el programa por defecto.": "Also stops the program by default."
+        "También detiene el programa por defecto.": "Also stops the program by default.",
+        "Abre code.pybricks.com en Chrome o Edge.": "Open code.pybricks.com in Chrome or Edge.",
+        "Conecta el hub por USB y sigue el asistente para instalar el firmware Pybricks.": "Connect the hub by USB and follow the wizard to install the Pybricks firmware.",
+        "Vuelve a RobotBlocks y conecta el hub por Bluetooth.": "Return to RobotBlocks and connect the hub by Bluetooth.",
+        "Para volver al firmware de LEGO, conecta el hub a la app oficial LEGO Education SPIKE y acepta la actualización de firmware.": "To return to the LEGO firmware, connect the hub to the official LEGO Education SPIKE app and accept the firmware update.",
+        "También puedes abrir Pybricks Code y elegir Restore official LEGO firmware en el menú de herramientas.": "You can also open Pybricks Code and choose Restore official LEGO firmware in the tools menu.",
+        "Pybricks Code: instalar o restaurar firmware": "Pybricks Code: install or restore firmware",
+        "Documentación del hub SPIKE Prime": "SPIKE Prime hub documentation"
       }
     }
   },
@@ -32,6 +39,27 @@
         "id": "org.robotblocks.lego-spike-prime:board",
         "name": "SPIKE Prime / Pybricks · experimental",
         "family": "pybricks-prime",
+        "setupGuide": {
+          "steps": [
+            "Abre code.pybricks.com en Chrome o Edge.",
+            "Conecta el hub por USB y sigue el asistente para instalar el firmware Pybricks.",
+            "Vuelve a RobotBlocks y conecta el hub por Bluetooth."
+          ],
+          "links": [
+            {
+              "label": "Pybricks Code: instalar o restaurar firmware",
+              "url": "https://code.pybricks.com/"
+            },
+            {
+              "label": "Documentación del hub SPIKE Prime",
+              "url": "https://docs.pybricks.com/en/stable/hubs/primehub.html"
+            }
+          ],
+          "revert": [
+            "Para volver al firmware de LEGO, conecta el hub a la app oficial LEGO Education SPIKE y acepta la actualización de firmware.",
+            "También puedes abrir Pybricks Code y elegir Restore official LEGO firmware en el menú de herramientas."
+          ]
+        },
         "companionExtensions": ["org.robotblocks.lego-spike"],
         "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
         "experimental": true,
