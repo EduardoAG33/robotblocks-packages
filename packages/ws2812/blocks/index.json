@@ -24,7 +24,8 @@
       {
         "name": "COUNT",
         "type": "number",
-        "default": 8
+        "default": 8,
+        "slider": { "min": 1, "max": 300 }
       }
     ],
     "tooltip": {
@@ -75,7 +76,8 @@
       {
         "name": "BRIGHTNESS",
         "type": "number",
-        "default": 60
+        "default": 60,
+        "slider": { "min": 0, "max": 255 }
       }
     ],
     "tooltip": {
@@ -126,27 +128,32 @@
       {
         "name": "FROM",
         "type": "number",
-        "default": 0
+        "default": 0,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "TO",
         "type": "number",
-        "default": 7
+        "default": 7,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "R",
         "type": "number",
-        "default": 40
+        "default": 40,
+        "slider": { "min": 0, "max": 255 }
       },
       {
         "name": "G",
         "type": "number",
-        "default": 40
+        "default": 40,
+        "slider": { "min": 0, "max": 255 }
       },
       {
         "name": "B",
         "type": "number",
-        "default": 40
+        "default": 40,
+        "slider": { "min": 0, "max": 255 }
       }
     ],
     "tooltip": {
@@ -197,12 +204,14 @@
       {
         "name": "FROM",
         "type": "number",
-        "default": 0
+        "default": 0,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "TO",
         "type": "number",
-        "default": 7
+        "default": 7,
+        "slider": { "min": 0, "max": 299 }
       }
     ],
     "tooltip": {
@@ -298,12 +307,14 @@
       {
         "name": "FROM",
         "type": "number",
-        "default": 0
+        "default": 0,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "TO",
         "type": "number",
-        "default": 7
+        "default": 7,
+        "slider": { "min": 0, "max": 299 }
       }
     ],
     "tooltip": {
@@ -354,7 +365,8 @@
       {
         "name": "N",
         "type": "number",
-        "default": 1
+        "default": 1,
+        "slider": { "min": -299, "max": 299 }
       }
     ],
     "tooltip": {
@@ -405,7 +417,8 @@
       {
         "name": "N",
         "type": "number",
-        "default": 1
+        "default": 1,
+        "slider": { "min": -299, "max": 299 }
       }
     ],
     "tooltip": {
@@ -456,12 +469,14 @@
       {
         "name": "FROM",
         "type": "number",
-        "default": 0
+        "default": 0,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "TO",
         "type": "number",
-        "default": 7
+        "default": 7,
+        "slider": { "min": 0, "max": 299 }
       },
       {
         "name": "VALUE",

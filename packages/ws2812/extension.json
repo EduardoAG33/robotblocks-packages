@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.ws2812",
   "name": "Luz RGB WS2812",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Los Grises · RobotBlocks"
   },
