@@ -105,13 +105,13 @@
       "path": "packages/arduino-giga-r1"
     },
     {
-      "name": "Teensy 4.0 · experimental",
+      "name": "Teensy 4.0",
       "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/teensy-40"
     },
     {
-      "name": "Teensy 4.1 · experimental",
+      "name": "Teensy 4.1",
       "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
       "kind": "board",
       "path": "packages/teensy-41"
