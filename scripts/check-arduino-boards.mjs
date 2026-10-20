@@ -14,11 +14,10 @@ for (const [slug, fqbn, logicLevel, count] of expectations) {
   const [board] = manifest.contributes.boards;
   assert.equal(manifest.contributes.boards.length, 1);
   assert.equal(manifest.metadata.group, 'boards');
-  // UNO, Nano y GIGA ya se probaron en hardware; Teensy sigue experimental.
-  const experimental = slug.startsWith('teensy');
-  assert.equal(manifest.metadata.experimental, experimental || undefined);
-  assert.equal(manifest.name.endsWith('· experimental'), experimental);
-  assert.equal(board.experimental, experimental || undefined);
+  // Todas estas tarjetas ya se probaron en hardware.
+  assert.equal(manifest.metadata.experimental, undefined);
+  assert(!manifest.name.endsWith('· experimental'));
+  assert.equal(board.experimental, undefined);
   assert.equal(board.logicLevel, logicLevel);
   assert.equal(board.adcBits, 10);
   assert.equal(board.pwm.bits, 8);

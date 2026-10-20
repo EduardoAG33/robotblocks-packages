@@ -1,10 +1,10 @@
-# Teensy 4.0 — experimental
+# Teensy 4.0
 
 i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13.
 
 Destino C++/Arduino: `teensy:avr:teensy40`. No instala cores ni carga firmware.
 Usa **Copiar código** o **Descargar archivo** en la vista Código: obtienes un único `.ino`
-con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Pendiente de compilación con el core y prueba física.
+con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Probada en hardware (ver al final).
 
 Las capacidades corresponden a pines del pinout oficial y funciones accesibles por el core.
 Un alias analógico comparte el pin físico: no se duplica como recurso digital.
@@ -26,7 +26,7 @@ No se copia el pinout de la 4.1: 34–39 en la 4.0 no son analógicos.
 
 Pines básicos, Motores, QTR, HC-SR04, TCS34725 y BNO055 tienen plantillas Arduino con APIs del core. Servos usa Servo.h (biblioteca oficial Arduino en AVR/GIGA; incluida en Teensyduino). UART usa los puertos independientes oficiales: no disponible en UNO/Nano, donde Serial comparte USB.
 
-En UNO/Nano, Servos junto con PWM D9/D10 produce diagnóstico por Timer1. GIGA selecciona la implementación mbed de Servo, aunque la biblioteca puede advertir por arquitectura. Todas las tarjetas siguen experimentales, pendientes de compilación del core y prueba física.
+En UNO/Nano, Servos junto con PWM D9/D10 produce diagnóstico por Timer1. GIGA selecciona la implementación mbed de Servo, aunque la biblioteca puede advertir por arquitectura.
 
 ## Fuentes oficiales
 
@@ -103,3 +103,9 @@ Solo se admiten estos pares de pines predeterminados del core. No se remapean pi
 Servo usa `Servo.h`; Teensyduino incluye su versión para 4.x.
 
 Fuentes adicionales: [PJRC UART](https://www.pjrc.com/teensy/td_uart.html), [PJRC Wire](https://www.pjrc.com/teensy/td_libs_Wire.html), [PJRC Servo: 4.0 y 4.1](https://www.pjrc.com/teensy/td_libs_Servo.html).
+
+## Prueba en hardware
+
+- 2026-10-19: Teensy 4.0 nueva (modo RawHID de fábrica) detectada por la app en Windows como
+  `Port_#0004.Hub_#0001` y cargada con «Cargar» (arduino-cli, sin apretar el botón): parpadeo en el LED 13 y
+  texto UTF-8 con «ñ» en el Monitor serie (COM12). Segunda carga desde modo serie también sin botón.
