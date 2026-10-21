@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.ev3-absolute-imu",
+  "name": "EV3 · AbsoluteIMU de mindsensors · experimental",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.",
+  "requiredCapabilities": [
+    "ev3SensorPort"
+  ],
+  "supportedBoards": [
+    "org.robotblocks.lego-ev3:board"
+  ],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.ev3-absolute-imu:imu",
+        "name": "EV3 · AbsoluteIMU",
+        "colour": "#5CB1D6"
+      }
+    ],
+    "blocks": [
+      "blocks/index.json"
+    ],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "EV3 · AbsoluteIMU de mindsensors · experimental": "EV3 · mindsensors AbsoluteIMU · experimental",
+        "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.": "mindsensors AbsoluteIMU gyro on the EV3 with Pybricks 2.0: accumulated Z angle, calibration and turn rate."
+      }
+    }
+  }
+}

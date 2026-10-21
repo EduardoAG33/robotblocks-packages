@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.ev3-huskylens-ofdl",
+  "name": "EV3 · HuskyLens (adaptador OFDL) · experimental",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.",
+  "requiredCapabilities": [
+    "ev3SensorPort"
+  ],
+  "supportedBoards": [
+    "org.robotblocks.lego-ev3:board"
+  ],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.ev3-huskylens-ofdl:camera",
+        "name": "EV3 · HuskyLens",
+        "colour": "#247BA0"
+      }
+    ],
+    "blocks": [
+      "blocks/index.json"
+    ],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "EV3 · HuskyLens (adaptador OFDL) · experimental": "EV3 · HuskyLens (OFDL adapter) · experimental",
+        "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.": "HuskyLens 1 on an EV3 sensor port with the OFDL adapter and Pybricks 2.0: state, seen ID, X, Y, width and height."
+      }
+    }
+  }
+}

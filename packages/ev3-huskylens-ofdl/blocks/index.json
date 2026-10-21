@@ -1,0 +1,374 @@
+[
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:update",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:update",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "HuskyLens %PORT actualizar",
+      "en": "HuskyLens %PORT update"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Lee de una vez el objeto que ve la cámara (X, Y, ancho, alto, ID y estado). Los demás bloques usan esta lectura. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "Reads at once the object the camera sees (X, Y, width, height, ID and state). The other blocks use this reading. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "statement": "husky_ev3({PORT}, {BLOCK_ID}).actualizar()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:sees-id",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:sees-id",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "¿HuskyLens %PORT ve el ID %ID?",
+      "en": "does HuskyLens %PORT see ID %ID?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ID",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "max": 255,
+        "integer": true
+      }
+    ],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Verdadero si el objeto de la última lectura tiene ese ID. El adaptador entrega un solo objeto. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "True if the object from the last reading has that ID. The adapter reports a single object. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "husky_ev3_ve_id({PORT}, {ID}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:sees-object",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:sees-object",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "¿HuskyLens %PORT ve un objeto?",
+      "en": "does HuskyLens %PORT see an object?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Verdadero si la última lectura tiene estado 1 (objeto aprendido a la vista). HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "True if the last reading has state 1 (a learned object in view). HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "(husky_ev3({PORT}, {BLOCK_ID}).estado == 1)"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:position",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:position",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "HuskyLens %PORT %AXIS del objeto %ORIGIN",
+      "en": "HuskyLens %PORT object %AXIS %ORIGIN"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      },
+      {
+        "name": "AXIS",
+        "type": "string",
+        "default": "x",
+        "options": [
+          {
+            "label": {
+              "es": "X",
+              "en": "X"
+            },
+            "value": "x"
+          },
+          {
+            "label": {
+              "es": "Y",
+              "en": "Y"
+            },
+            "value": "y"
+          }
+        ]
+      },
+      {
+        "name": "ORIGIN",
+        "type": "string",
+        "default": "centro",
+        "options": [
+          {
+            "label": {
+              "es": "con centro en 0",
+              "en": "with center at 0"
+            },
+            "value": "centro"
+          },
+          {
+            "label": {
+              "es": "desde la esquina",
+              "en": "from the corner"
+            },
+            "value": "esquina"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Centro del recuadro en píxeles (imagen 320 × 240). «Centro en 0» da X de −160 a 160 y Y de −120 a 120. Usa el último «actualizar»; sin objeto devuelve 0. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "Box center in pixels (320 × 240 image). “Center at 0” gives X from −160 to 160 and Y from −120 to 120. Uses the last “update”; returns 0 without an object. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "husky_ev3_posicion({PORT}, {AXIS}, {ORIGIN} == \"centro\", {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:size",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:size",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "HuskyLens %PORT %SIZE del objeto",
+      "en": "HuskyLens %PORT object %SIZE"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      },
+      {
+        "name": "SIZE",
+        "type": "string",
+        "default": "ancho",
+        "options": [
+          {
+            "label": {
+              "es": "ancho",
+              "en": "width"
+            },
+            "value": "ancho"
+          },
+          {
+            "label": {
+              "es": "alto",
+              "en": "height"
+            },
+            "value": "alto"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Tamaño del recuadro en píxeles. Usa el último «actualizar»; sin objeto devuelve 0. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "Box size in pixels. Uses the last “update”; returns 0 without an object. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "getattr(husky_ev3({PORT}, {BLOCK_ID}), {SIZE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:id",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:id",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "HuskyLens %PORT ID del objeto",
+      "en": "HuskyLens %PORT object ID"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "ID aprendido del objeto visto. Usa el último «actualizar»; sin objeto devuelve 0. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "Learned ID of the object in view. Uses the last “update”; returns 0 without an object. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "husky_ev3({PORT}, {BLOCK_ID}).id"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.ev3-huskylens-ofdl:state",
+    "operation": "org.robotblocks.ev3-huskylens-ofdl:state",
+    "category": "org.robotblocks.ev3-huskylens-ofdl:camera",
+    "label": {
+      "es": "HuskyLens %PORT estado",
+      "en": "HuskyLens %PORT state"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": [
+            "ev3SensorPort"
+          ]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": [
+      "ev3SensorPort"
+    ],
+    "tooltip": {
+      "es": "Código del adaptador: 1 objeto a la vista, 7 sin detección, 8 sin objetos aprendidos, 9 adaptador sin cámara, 0 sin datos. HuskyLens 1 por el adaptador OFDL en EV3 microSD / Pybricks 2.0 · experimental.",
+      "en": "Adapter code: 1 object in view, 7 no detection, 8 nothing learned, 9 adapter without camera, 0 no data. HuskyLens 1 through the OFDL adapter on EV3 microSD / Pybricks 2.0 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "imports": [
+          "from pybricks.iodevices import Ev3devSensor"
+        ],
+        "globals": [
+          "# HuskyLens 1 por el adaptador OFDL: ev3dev lo ve como ev3-uart-84.\n# Modo Data-EV3HSK, ocho enteros s32 medidos en el robot (no el orden del README):\n# X, Y, W, H, ID, estado, 0, 0. Estado 1 = objeto, 7 = sin detección,\n# 8 = sin aprendizaje, 9 = sin cámara, 0 = sin puerto o datos perdidos.\nHUSKY_EV3_SYSFS = \"/sys/class/\"\nHUSKY_EV3_MODO = \"Data-EV3HSK\"\nhusky_ev3_camaras = {}\n\n\ndef husky_ev3_leer_texto(ruta):\n    with open(ruta) as archivo:\n        return archivo.read().strip()\n\n\ndef husky_ev3_s32(datos, indice):\n    valor = datos[4 * indice] | datos[4 * indice + 1] << 8 | datos[4 * indice + 2] << 16 | datos[4 * indice + 3] << 24\n    return valor - 4294967296 if valor >= 2147483648 else valor\n\n\nclass HuskyEv3:\n    def __init__(self, sensor):\n        self.ruta = HUSKY_EV3_SYSFS + \"lego-sensor/sensor%d/\" % sensor.sensor_index\n        if HUSKY_EV3_MODO not in husky_ev3_leer_texto(self.ruta + \"modes\").split():\n            raise ValueError(\"no es el adaptador OFDL\")\n        if husky_ev3_leer_texto(self.ruta + \"mode\") != HUSKY_EV3_MODO:\n            with open(self.ruta + \"mode\", \"w\") as archivo:\n                archivo.write(HUSKY_EV3_MODO)\n        self.bytes = 4 * int(husky_ev3_leer_texto(self.ruta + \"num_values\"))\n        if self.bytes < 24:\n            raise ValueError(\"faltan valores\")\n        self.estado = self.id = self.x = self.y = self.ancho = self.alto = 0\n\n    def actualizar(self):\n        # bin_data es una sola lectura de los ocho valores: no mezcla fotogramas.\n        try:\n            with open(self.ruta + \"bin_data\", \"rb\") as archivo:\n                datos = archivo.read(self.bytes)\n            valores = [husky_ev3_s32(datos, i) for i in range(6)]\n        except (OSError, IndexError):\n            valores = [0] * 6\n        self.estado = valores[5]\n        if self.estado == 1:\n            self.x, self.y, self.ancho, self.alto, self.id = valores[:5]\n        else:\n            self.id = self.x = self.y = self.ancho = self.alto = 0\n\n\ndef husky_ev3(puerto, bloque):\n    if puerto not in husky_ev3_camaras:\n        sensor = rb_device(puerto, Ev3devSensor, bloque)\n        try:\n            husky_ev3_camaras[puerto] = HuskyEv3(sensor)\n        except (OSError, ValueError):\n            rb_fail(bloque, \"No hay un adaptador HuskyLens OFDL en el puerto\")\n    return husky_ev3_camaras[puerto]\n\n\ndef husky_ev3_ve_id(puerto, numero, bloque):\n    camara = husky_ev3(puerto, bloque)\n    return camara.estado == 1 and camara.id == numero\n\n\ndef husky_ev3_posicion(puerto, eje, centro, bloque):\n    # Origen en el centro: 320 x 240 píxeles, X de -160 a 160 y Y de -120 a 120.\n    camara = husky_ev3(puerto, bloque)\n    if camara.estado != 1:\n        return 0\n    if eje == \"x\":\n        return camara.x - 160 if centro else camara.x\n    return camara.y - 120 if centro else camara.y\n"
+        ],
+        "expression": "husky_ev3({PORT}, {BLOCK_ID}).estado"
+      }
+    }
+  }
+]
