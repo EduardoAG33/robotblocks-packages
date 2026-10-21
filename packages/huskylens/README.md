@@ -1,7 +1,7 @@
 # HuskyLens · Arduino/C++ experimental
 
 Cámara **DFRobot HUSKYLENS v1, SEN0305**, pantalla 320 × 240. Paquete
-`org.robotblocks.huskylens` v1.0.0, categoría HuskyLens (`#247BA0`).
+`org.robotblocks.huskylens` v1.1.0, categoría HuskyLens (`#247BA0`).
 Implementación propia del protocolo binario documentado; solo Wire y HardwareSerial,
 sin bibliotecas de DFRobot o Adafruit. No incluye plantillas MicroPython/Pybricks.
 Sin prueba física; no se anuncia compatibilidad con HuskyLens 2.
@@ -36,16 +36,49 @@ Los IDs pertenecen al algoritmo elegido. Cambiar algoritmo vacía la caché loca
 
 ## Bloques
 
+La paleta sigue la de Mind+ para HuskyLens. «Cuadro» es lo que la cámara marca
+con un rectángulo (color, objetos, caras, etiquetas) y «flecha» lo de seguimiento
+de líneas.
+
+Conexión y algoritmo:
+
 - «configurar HuskyLens por I2C SDA [pin] SCL [pin]»
 - «configurar HuskyLens por UART [n] RX [pin] TX [pin]»
 - «cambiar algoritmo de HuskyLens a [algoritmo]»
 - «actualizar HuskyLens»
-- «¿HuskyLens ve el ID [n]?»
-- «[x centro / y centro / ancho / alto] del ID [n]»
+
+Lecturas del último fotograma:
+
+- «total de IDs aprendidos»
 - «cantidad de objetos detectados»
-- «[x origen / y origen / x destino / y destino] de la flecha ID [n]»
+- «¿hay [cuadro/flecha] en pantalla?»
+- «[propiedad] del [cuadro/flecha] más cercano al centro»
+- «¿el ID [n] está aprendido?»
+- «¿el ID [n] ([cuadro/flecha]) está en pantalla?»
+- «[propiedad] del ID [n] ([cuadro/flecha])»
+- «cantidad de [cuadro/flecha]»
+- «[propiedad] del [cuadro/flecha] número [n]»
+- «cantidad del ID [n] ([cuadro/flecha])»
+- «[propiedad] del ID [n] ([cuadro/flecha]) número [n]»
+
+Propiedades: ID, X centro / X origen, Y centro / Y origen, ancho / X destino y
+alto / Y destino; la segunda opción vale para flechas. En «más cercano al centro»
+la distancia se mide a (160, 120) y, para flechas, desde el punto medio.
+
+Acciones en la cámara:
+
+- «aprender el ID [n] una vez» y «olvidar lo aprendido del algoritmo actual»
+  (esperan OK hasta 2 s y descartan el fotograma guardado)
+- «nombrar el ID [n] como [texto]»
 - «escribir [texto] en la pantalla de HuskyLens en x [n] y [n]»
 - «borrar textos de la pantalla de HuskyLens»
+- «guardar [foto/captura de pantalla] en la tarjeta SD» (espera OK hasta 5 s)
+- «[guardar/cargar] los datos del algoritmo como modelo [n] de la SD»
+  (espera OK hasta 5 s; cargar descarta el fotograma guardado)
+
+Los tres bloques de la v1.0.0 («¿HuskyLens ve el ID [n]?», «[eje] del ID [n]» y
+«[eje] de la flecha ID [n]») ya no aparecen en la paleta, pero los proyectos que
+los usan se siguen abriendo y generan el mismo código.
 
 Algoritmos: reconocimiento de color (4), seguimiento de líneas (3), reconocimiento
 de etiquetas (5), reconocimiento de objetos (2), seguimiento de objetos (1),
