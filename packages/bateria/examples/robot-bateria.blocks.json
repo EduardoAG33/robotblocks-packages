@@ -1,0 +1,620 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "robot-bateria",
+  "name": "Batería · aviso de batería baja",
+  "board": { "definitionId": "org.robotblocks.arduino-giga-r1:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "robot-bateria-arduino-giga-r1-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "robot-bateria-arduino-giga-r1-1",
+            "blockId": "org.robotblocks.bateria:configure",
+            "operation": "org.robotblocks.bateria:configure",
+            "fields": { "PIN": "a0", "R1": 20, "R2": 10, "VREF": 3.3 },
+            "inputs": {},
+            "next": {
+              "id": "robot-bateria-arduino-giga-r1-2",
+              "blockId": "org.robotblocks.bateria:ina-configure",
+              "operation": "org.robotblocks.bateria:ina-configure",
+              "fields": { "ADDR": "0x40", "SDA": "d102", "SCL": "d101" },
+              "inputs": {},
+              "next": {
+                "id": "robot-bateria-arduino-giga-r1-23",
+                "blockId": "core:forever",
+                "operation": "core:forever",
+                "fields": {},
+                "inputs": {
+                  "BODY": {
+                    "id": "robot-bateria-arduino-giga-r1-4",
+                    "blockId": "core:set",
+                    "operation": "core:set",
+                    "fields": { "VARIABLE": "voltaje" },
+                    "inputs": {
+                      "VALUE": {
+                        "id": "robot-bateria-arduino-giga-r1-3",
+                        "blockId": "org.robotblocks.bateria:voltage",
+                        "operation": "org.robotblocks.bateria:voltage",
+                        "fields": {},
+                        "inputs": {},
+                        "next": null
+                      }
+                    },
+                    "next": {
+                      "id": "robot-bateria-arduino-giga-r1-8",
+                      "blockId": "core:set",
+                      "operation": "core:set",
+                      "fields": { "VARIABLE": "porcentaje" },
+                      "inputs": {
+                        "VALUE": {
+                          "id": "robot-bateria-arduino-giga-r1-7",
+                          "blockId": "org.robotblocks.bateria:percent",
+                          "operation": "org.robotblocks.bateria:percent",
+                          "fields": {},
+                          "inputs": {
+                            "MIN": {
+                              "id": "robot-bateria-arduino-giga-r1-5",
+                              "blockId": "core:number",
+                              "operation": "core:number",
+                              "fields": { "NUMBER": 6.4 },
+                              "inputs": {},
+                              "next": null
+                            },
+                            "MAX": {
+                              "id": "robot-bateria-arduino-giga-r1-6",
+                              "blockId": "core:number",
+                              "operation": "core:number",
+                              "fields": { "NUMBER": 8.4 },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "next": null
+                        }
+                      },
+                      "next": {
+                        "id": "robot-bateria-arduino-giga-r1-10",
+                        "blockId": "core:set",
+                        "operation": "core:set",
+                        "fields": { "VARIABLE": "corriente" },
+                        "inputs": {
+                          "VALUE": {
+                            "id": "robot-bateria-arduino-giga-r1-9",
+                            "blockId": "org.robotblocks.bateria:ina-current",
+                            "operation": "org.robotblocks.bateria:ina-current",
+                            "fields": {},
+                            "inputs": {},
+                            "next": null
+                          }
+                        },
+                        "next": {
+                          "id": "robot-bateria-arduino-giga-r1-15",
+                          "blockId": "core:if",
+                          "operation": "core:if",
+                          "fields": {},
+                          "inputs": {
+                            "CONDITION": {
+                              "id": "robot-bateria-arduino-giga-r1-12",
+                              "blockId": "org.robotblocks.bateria:low",
+                              "operation": "org.robotblocks.bateria:low",
+                              "fields": {},
+                              "inputs": {
+                                "V": {
+                                  "id": "robot-bateria-arduino-giga-r1-11",
+                                  "blockId": "core:number",
+                                  "operation": "core:number",
+                                  "fields": { "NUMBER": 6.8 },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            },
+                            "BODY": {
+                              "id": "robot-bateria-arduino-giga-r1-14",
+                              "blockId": "core:serial-println",
+                              "operation": "core:serial-println",
+                              "fields": {},
+                              "inputs": {
+                                "VALUE": {
+                                  "id": "robot-bateria-arduino-giga-r1-13",
+                                  "blockId": "core:text",
+                                  "operation": "core:text",
+                                  "fields": { "TEXT": "¡Batería baja! Cárgala." },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "robot-bateria-arduino-giga-r1-20",
+                            "blockId": "core:serial-println",
+                            "operation": "core:serial-println",
+                            "fields": {},
+                            "inputs": {
+                              "VALUE": {
+                                "id": "robot-bateria-arduino-giga-r1-19",
+                                "blockId": "core:join",
+                                "operation": "core:join",
+                                "fields": {},
+                                "inputs": {
+                                  "LEFT": {
+                                    "id": "robot-bateria-arduino-giga-r1-16",
+                                    "blockId": "core:text",
+                                    "operation": "core:text",
+                                    "fields": { "TEXT": "mA: " },
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "RIGHT": {
+                                    "id": "robot-bateria-arduino-giga-r1-18",
+                                    "blockId": "core:to-text",
+                                    "operation": "core:to-text",
+                                    "fields": {},
+                                    "inputs": {
+                                      "VALUE": {
+                                        "id": "robot-bateria-arduino-giga-r1-17",
+                                        "blockId": "core:variable",
+                                        "operation": "core:variable",
+                                        "fields": { "VARIABLE": "corriente" },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "robot-bateria-arduino-giga-r1-22",
+                              "blockId": "core:wait-ms",
+                              "operation": "core:wait-ms",
+                              "fields": {},
+                              "inputs": {
+                                "MS": {
+                                  "id": "robot-bateria-arduino-giga-r1-21",
+                                  "blockId": "core:number",
+                                  "operation": "core:number",
+                                  "fields": { "NUMBER": 1000 },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": null
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [
+    { "id": "voltaje", "name": "voltaje", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "porcentaje", "name": "porcentaje", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "corriente", "name": "corriente", "type": "number", "scope": "project", "initialValue": 0 }
+  ],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-giga-r1", "version": "0.3.0" },
+    { "id": "org.robotblocks.bateria", "version": "1.0.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "robot-bateria-arduino-giga-r1-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:if",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %BODY", "en": "if %CONDITION then %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "operation": "core:if",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:join",
+        "operation": "core:join",
+        "category": "core:operators",
+        "label": { "es": "unir %LEFT con %RIGHT", "en": "join %LEFT with %RIGHT" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [
+          { "name": "LEFT", "type": "string", "default": "hola" },
+          { "name": "RIGHT", "type": "string", "default": "mundo" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:to-text",
+        "operation": "core:to-text",
+        "category": "core:operators",
+        "label": { "es": "convertir %VALUE a texto", "en": "convert %VALUE to text" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [{ "name": "VALUE", "type": "value", "default": 123 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "core:wait-ms",
+        "operation": "core:wait-ms",
+        "category": "core:time",
+        "label": { "es": "esperar %MS ms", "en": "wait %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647, "integer": true }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:configure",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": {
+          "es": "configurar batería en pin %PIN R1 %R1 kΩ R2 %R2 kΩ referencia %VREF V",
+          "en": "configure battery on pin %PIN R1 %R1 kΩ R2 %R2 kΩ reference %VREF V"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["analogInput"] }
+          },
+          { "name": "R1", "type": "number", "default": 20 },
+          { "name": "R2", "type": "number", "default": 10 },
+          { "name": "VREF", "type": "number", "default": 3.3 }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.bateria:configure",
+        "tooltip": {
+          "es": "Divisor: R1 arriba y R2 a GND. Promedia 8 lecturas. Referencia 5 V en UNO/Nano y 3.3 V en las demás. No excedas VREF ni el rango medible del ADC.",
+          "en": "Divider: R1 above and R2 to GND. Averages 8 readings. Reference 5 V on UNO/Nano and 3.3 V on other boards. Do not exceed VREF or the ADC measurable range."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import ADC, Pin"],
+            "globals": [
+              "bat_estado = []\n\ndef bat_configurar(pin, r1, r2, referencia, bloque):\n    if not (r1 > 0 and r2 > 0 and referencia > 0):\n        rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\")\n    adc = ADC(Pin(pin))\n    if hasattr(adc, \"atten\"):\n        adc.atten(ADC.ATTN_11DB)\n    if hasattr(adc, \"width\"):\n        adc.width(ADC.WIDTH_12BIT)\n    bat_estado[:] = [adc, r1, r2, referencia]\n\ndef bat_voltaje(bloque):\n    if not bat_estado:\n        rb_fail(bloque, \"Configura la batería al iniciar\")\n    adc, r1, r2, referencia = bat_estado\n    total = 0\n    for indice in range(8):\n        if hasattr(adc, \"read_uv\"):\n            total += adc.read_uv() / 1000000\n        else:\n            total += adc.read() / 4095 * referencia\n    return total / 8 * (r1 + r2) / r2\n\ndef bat_porcentaje(minimo, maximo, bloque):\n    minimo = rb_finite(minimo, bloque)\n    maximo = rb_finite(maximo, bloque)\n    if not maximo > minimo:\n        rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\")\n    return max(0, min(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)))\n"
+            ],
+            "statement": "bat_configurar({PIN}, {R1}, {R2}, {VREF}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "static int bat_pin = -1;\nstatic float bat_r1 = 0, bat_r2 = 0, bat_referencia = 0;\ninline void bat_configurar(int pin, float r1, float r2, float referencia, const char* bloque) {\n    if (!(r1 > 0 && r2 > 0 && referencia > 0)) { rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\"); return; }\n    bat_pin = pin;\n    bat_r1 = r1;\n    bat_r2 = r2;\n    bat_referencia = referencia;\n    pinMode(pin, INPUT);\n}\ninline float bat_voltaje(const char* bloque) {\n    if (bat_pin < 0) { rb_fail(bloque, \"Configura la batería al iniciar\"); return 0; }\n    float suma = 0;\n    for (int indice = 0; indice < 8; indice++) suma += analogRead(bat_pin);\n    return suma / 8 / {ADC_MAX} * bat_referencia * (bat_r1 + bat_r2) / bat_r2;\n}\ninline float bat_porcentaje(float minimo, float maximo, const char* bloque) {\n    minimo = rb_finite(minimo, bloque);\n    maximo = rb_finite(maximo, bloque);\n    if (!(maximo > minimo)) { rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\"); return 0; }\n    return fmaxf(0, fminf(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)));\n}\n"
+            ],
+            "statement": "bat_configurar({PIN}, {R1}, {R2}, {VREF}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:voltage",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": { "es": "voltaje de la batería", "en": "battery voltage" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.bateria:voltage",
+        "tooltip": {
+          "es": "Divisor: R1 arriba y R2 a GND. Promedia 8 lecturas. Referencia 5 V en UNO/Nano y 3.3 V en las demás. No excedas VREF ni el rango medible del ADC.",
+          "en": "Divider: R1 above and R2 to GND. Averages 8 readings. Reference 5 V on UNO/Nano and 3.3 V on other boards. Do not exceed VREF or the ADC measurable range."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import ADC, Pin"],
+            "globals": [
+              "bat_estado = []\n\ndef bat_configurar(pin, r1, r2, referencia, bloque):\n    if not (r1 > 0 and r2 > 0 and referencia > 0):\n        rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\")\n    adc = ADC(Pin(pin))\n    if hasattr(adc, \"atten\"):\n        adc.atten(ADC.ATTN_11DB)\n    if hasattr(adc, \"width\"):\n        adc.width(ADC.WIDTH_12BIT)\n    bat_estado[:] = [adc, r1, r2, referencia]\n\ndef bat_voltaje(bloque):\n    if not bat_estado:\n        rb_fail(bloque, \"Configura la batería al iniciar\")\n    adc, r1, r2, referencia = bat_estado\n    total = 0\n    for indice in range(8):\n        if hasattr(adc, \"read_uv\"):\n            total += adc.read_uv() / 1000000\n        else:\n            total += adc.read() / 4095 * referencia\n    return total / 8 * (r1 + r2) / r2\n\ndef bat_porcentaje(minimo, maximo, bloque):\n    minimo = rb_finite(minimo, bloque)\n    maximo = rb_finite(maximo, bloque)\n    if not maximo > minimo:\n        rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\")\n    return max(0, min(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)))\n"
+            ],
+            "expression": "bat_voltaje({BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "static int bat_pin = -1;\nstatic float bat_r1 = 0, bat_r2 = 0, bat_referencia = 0;\ninline void bat_configurar(int pin, float r1, float r2, float referencia, const char* bloque) {\n    if (!(r1 > 0 && r2 > 0 && referencia > 0)) { rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\"); return; }\n    bat_pin = pin;\n    bat_r1 = r1;\n    bat_r2 = r2;\n    bat_referencia = referencia;\n    pinMode(pin, INPUT);\n}\ninline float bat_voltaje(const char* bloque) {\n    if (bat_pin < 0) { rb_fail(bloque, \"Configura la batería al iniciar\"); return 0; }\n    float suma = 0;\n    for (int indice = 0; indice < 8; indice++) suma += analogRead(bat_pin);\n    return suma / 8 / {ADC_MAX} * bat_referencia * (bat_r1 + bat_r2) / bat_r2;\n}\ninline float bat_porcentaje(float minimo, float maximo, const char* bloque) {\n    minimo = rb_finite(minimo, bloque);\n    maximo = rb_finite(maximo, bloque);\n    if (!(maximo > minimo)) { rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\"); return 0; }\n    return fmaxf(0, fminf(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)));\n}\n"
+            ],
+            "expression": "bat_voltaje({BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:percent",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": {
+          "es": "porcentaje de batería entre %MIN V y %MAX V",
+          "en": "battery percentage between %MIN V and %MAX V"
+        },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [
+          { "name": "MIN", "type": "number", "default": 6.4 },
+          { "name": "MAX", "type": "number", "default": 8.4 }
+        ],
+        "operation": "org.robotblocks.bateria:percent",
+        "tooltip": {
+          "es": "Divisor: R1 arriba y R2 a GND. Promedia 8 lecturas. Referencia 5 V en UNO/Nano y 3.3 V en las demás. No excedas VREF ni el rango medible del ADC.",
+          "en": "Divider: R1 above and R2 to GND. Averages 8 readings. Reference 5 V on UNO/Nano and 3.3 V on other boards. Do not exceed VREF or the ADC measurable range."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import ADC, Pin"],
+            "globals": [
+              "bat_estado = []\n\ndef bat_configurar(pin, r1, r2, referencia, bloque):\n    if not (r1 > 0 and r2 > 0 and referencia > 0):\n        rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\")\n    adc = ADC(Pin(pin))\n    if hasattr(adc, \"atten\"):\n        adc.atten(ADC.ATTN_11DB)\n    if hasattr(adc, \"width\"):\n        adc.width(ADC.WIDTH_12BIT)\n    bat_estado[:] = [adc, r1, r2, referencia]\n\ndef bat_voltaje(bloque):\n    if not bat_estado:\n        rb_fail(bloque, \"Configura la batería al iniciar\")\n    adc, r1, r2, referencia = bat_estado\n    total = 0\n    for indice in range(8):\n        if hasattr(adc, \"read_uv\"):\n            total += adc.read_uv() / 1000000\n        else:\n            total += adc.read() / 4095 * referencia\n    return total / 8 * (r1 + r2) / r2\n\ndef bat_porcentaje(minimo, maximo, bloque):\n    minimo = rb_finite(minimo, bloque)\n    maximo = rb_finite(maximo, bloque)\n    if not maximo > minimo:\n        rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\")\n    return max(0, min(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)))\n"
+            ],
+            "expression": "bat_porcentaje({MIN}, {MAX}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "static int bat_pin = -1;\nstatic float bat_r1 = 0, bat_r2 = 0, bat_referencia = 0;\ninline void bat_configurar(int pin, float r1, float r2, float referencia, const char* bloque) {\n    if (!(r1 > 0 && r2 > 0 && referencia > 0)) { rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\"); return; }\n    bat_pin = pin;\n    bat_r1 = r1;\n    bat_r2 = r2;\n    bat_referencia = referencia;\n    pinMode(pin, INPUT);\n}\ninline float bat_voltaje(const char* bloque) {\n    if (bat_pin < 0) { rb_fail(bloque, \"Configura la batería al iniciar\"); return 0; }\n    float suma = 0;\n    for (int indice = 0; indice < 8; indice++) suma += analogRead(bat_pin);\n    return suma / 8 / {ADC_MAX} * bat_referencia * (bat_r1 + bat_r2) / bat_r2;\n}\ninline float bat_porcentaje(float minimo, float maximo, const char* bloque) {\n    minimo = rb_finite(minimo, bloque);\n    maximo = rb_finite(maximo, bloque);\n    if (!(maximo > minimo)) { rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\"); return 0; }\n    return fmaxf(0, fminf(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)));\n}\n"
+            ],
+            "expression": "bat_porcentaje({MIN}, {MAX}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:low",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": { "es": "batería baja (menos de %V V)", "en": "low battery (below %V V)" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [],
+        "inputs": [{ "name": "V", "type": "number", "default": 6.4 }],
+        "operation": "org.robotblocks.bateria:low",
+        "tooltip": {
+          "es": "Divisor: R1 arriba y R2 a GND. Promedia 8 lecturas. Referencia 5 V en UNO/Nano y 3.3 V en las demás. No excedas VREF ni el rango medible del ADC.",
+          "en": "Divider: R1 above and R2 to GND. Averages 8 readings. Reference 5 V on UNO/Nano and 3.3 V on other boards. Do not exceed VREF or the ADC measurable range."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import ADC, Pin"],
+            "globals": [
+              "bat_estado = []\n\ndef bat_configurar(pin, r1, r2, referencia, bloque):\n    if not (r1 > 0 and r2 > 0 and referencia > 0):\n        rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\")\n    adc = ADC(Pin(pin))\n    if hasattr(adc, \"atten\"):\n        adc.atten(ADC.ATTN_11DB)\n    if hasattr(adc, \"width\"):\n        adc.width(ADC.WIDTH_12BIT)\n    bat_estado[:] = [adc, r1, r2, referencia]\n\ndef bat_voltaje(bloque):\n    if not bat_estado:\n        rb_fail(bloque, \"Configura la batería al iniciar\")\n    adc, r1, r2, referencia = bat_estado\n    total = 0\n    for indice in range(8):\n        if hasattr(adc, \"read_uv\"):\n            total += adc.read_uv() / 1000000\n        else:\n            total += adc.read() / 4095 * referencia\n    return total / 8 * (r1 + r2) / r2\n\ndef bat_porcentaje(minimo, maximo, bloque):\n    minimo = rb_finite(minimo, bloque)\n    maximo = rb_finite(maximo, bloque)\n    if not maximo > minimo:\n        rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\")\n    return max(0, min(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)))\n"
+            ],
+            "expression": "bat_voltaje({BLOCK_ID}) < rb_finite({V}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "static int bat_pin = -1;\nstatic float bat_r1 = 0, bat_r2 = 0, bat_referencia = 0;\ninline void bat_configurar(int pin, float r1, float r2, float referencia, const char* bloque) {\n    if (!(r1 > 0 && r2 > 0 && referencia > 0)) { rb_fail(bloque, \"R1, R2 y referencia deben ser mayores que cero\"); return; }\n    bat_pin = pin;\n    bat_r1 = r1;\n    bat_r2 = r2;\n    bat_referencia = referencia;\n    pinMode(pin, INPUT);\n}\ninline float bat_voltaje(const char* bloque) {\n    if (bat_pin < 0) { rb_fail(bloque, \"Configura la batería al iniciar\"); return 0; }\n    float suma = 0;\n    for (int indice = 0; indice < 8; indice++) suma += analogRead(bat_pin);\n    return suma / 8 / {ADC_MAX} * bat_referencia * (bat_r1 + bat_r2) / bat_r2;\n}\ninline float bat_porcentaje(float minimo, float maximo, const char* bloque) {\n    minimo = rb_finite(minimo, bloque);\n    maximo = rb_finite(maximo, bloque);\n    if (!(maximo > minimo)) { rb_fail(bloque, \"El voltaje máximo debe ser mayor que el mínimo\"); return 0; }\n    return fmaxf(0, fminf(100, (bat_voltaje(bloque) - minimo) * 100 / (maximo - minimo)));\n}\n"
+            ],
+            "expression": "bat_voltaje({BLOCK_ID}) < rb_finite({V}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:ina-configure",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": {
+          "es": "configurar INA219 dirección %ADDR SDA %SDA SCL %SCL",
+          "en": "configure INA219 address %ADDR SDA %SDA SCL %SCL"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "ADDR",
+            "type": "string",
+            "default": "0x40",
+            "options": [
+              { "label": "0x40", "value": "0x40" },
+              { "label": "0x41", "value": "0x41" },
+              { "label": "0x42", "value": "0x42" },
+              { "label": "0x43", "value": "0x43" },
+              { "label": "0x44", "value": "0x44" },
+              { "label": "0x45", "value": "0x45" }
+            ]
+          },
+          {
+            "name": "SDA",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "SCL",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.bateria:ina-configure",
+        "tooltip": {
+          "es": "En al iniciar. Comparte SDA/SCL con otros sensores I2C; el bus Arduino se elige según la tarjeta. Shunt de 0.1 Ω, rango 32 V / 2 A.",
+          "en": "At start. Share SDA/SCL with other I2C sensors; Arduino bus follows the board mapping. 0.1 Ω shunt, 32 V / 2 A range."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import I2C, Pin, SoftI2C"],
+            "globals": [
+              "ina_buses = {}\n",
+              "def ina_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in ina_buses:\n        try:\n            if len(ina_buses) < 2:\n                ina_buses[clave] = I2C(len(ina_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                ina_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return ina_buses[clave]\n",
+              "ina_estado = []\n\ndef ina_error(direccion, bloque):\n    mensajes = (\"No se encontró el INA219 en 0x40\", \"No se encontró el INA219 en 0x41\", \"No se encontró el INA219 en 0x42\", \"No se encontró el INA219 en 0x43\", \"No se encontró el INA219 en 0x44\", \"No se encontró el INA219 en 0x45\")\n    rb_fail(bloque, mensajes[direccion - 0x40])\n\ndef ina_configurar(sda, scl, direccion, bloque):\n    direccion = int(direccion, 16)\n    bus = ina_bus(sda, scl, bloque)\n    ina_estado[:] = []\n    try:\n        bus.readfrom_mem(direccion, 0, 2)\n        bus.writeto_mem(direccion, 0, bytes((0x39, 0x9F)))\n        bus.writeto_mem(direccion, 5, bytes((0x10, 0x00)))\n    except OSError:\n        ina_error(direccion, bloque)\n    ina_estado[:] = [bus, direccion]\n\ndef ina_leer(registro, bloque):\n    if not ina_estado:\n        rb_fail(bloque, \"Configura el INA219 al iniciar\")\n    bus, direccion = ina_estado\n    try:\n        datos = bus.readfrom_mem(direccion, registro, 2)\n    except OSError:\n        ina_error(direccion, bloque)\n    valor = datos[0] * 256 + datos[1]\n    if registro == 2:\n        if valor & 1:\n            rb_fail(bloque, \"Desbordamiento de medición INA219\")\n        return (valor >> 3) * 0.004\n    if registro == 4:\n        return (valor - 65536 if valor & 0x8000 else valor) * 0.1\n    return valor * 2\n"
+            ],
+            "statement": "ina_configurar({SDA}, {SCL}, {ADDR}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+              "static TwoWire* ina_bus_actual = nullptr;\nstatic uint8_t ina_direccion = 0x40;\ninline void ina_error(const char* bloque) {\n    const char* mensajes[] = {\"No se encontró el INA219 en 0x40\", \"No se encontró el INA219 en 0x41\", \"No se encontró el INA219 en 0x42\", \"No se encontró el INA219 en 0x43\", \"No se encontró el INA219 en 0x44\", \"No se encontró el INA219 en 0x45\"};\n    rb_fail(bloque, mensajes[ina_direccion - 0x40]);\n}\ninline bool ina_escribir(TwoWire& bus, uint8_t registro, uint16_t valor) {\n    // El helper compartido escribe un byte; estos registros exigen dos en la misma transacción.\n    bus.beginTransmission(ina_direccion);\n    bus.write(registro);\n    bus.write(uint8_t(valor >> 8));\n    bus.write(uint8_t(valor));\n    return bus.endTransmission() == 0;\n}\ninline void ina_configurar(TwoWire& bus, const String& direccion, const char* bloque) {\n    ina_bus_actual = nullptr;\n    ina_direccion = uint8_t(strtoul(direccion.c_str(), nullptr, 16));\n    uint8_t datos[2];\n    if (!rb_i2c_read(bus, ina_direccion, 0, datos, 2) || !ina_escribir(bus, 0, 0x399F) || !ina_escribir(bus, 5, 4096)) { ina_error(bloque); return; }\n    ina_bus_actual = &bus;\n}\ninline float ina_leer(uint8_t registro, const char* bloque) {\n    if (!ina_bus_actual) { rb_fail(bloque, \"Configura el INA219 al iniciar\"); return 0; }\n    uint8_t datos[2];\n    if (!rb_i2c_read(*ina_bus_actual, ina_direccion, registro, datos, 2)) { ina_error(bloque); return 0; }\n    uint16_t valor = uint16_t(datos[0]) << 8 | datos[1];\n    if (registro == 2) {\n        if (valor & 1) { rb_fail(bloque, \"Desbordamiento de medición INA219\"); return 0; }\n        return (valor >> 3) * 0.004f;\n    }\n    if (registro == 4) return (valor & 0x8000 ? int32_t(valor) - 65536 : int32_t(valor)) * 0.1f;\n    return valor * 2.0f;\n}\n"
+            ],
+            "setup": ["rb_wire_begin({I2C_BUS});", "{I2C_BUS}.setClock(100000);"],
+            "statement": "ina_configurar({I2C_BUS}, {ADDR}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.bateria:ina-current",
+        "category": "org.robotblocks.bateria:bateria",
+        "label": { "es": "corriente INA219 (mA)", "en": "INA219 current (mA)" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.bateria:ina-current",
+        "tooltip": {
+          "es": "Lectura síncrona del último registro convertido. Configura antes el INA219.",
+          "en": "Synchronous reading of the latest converted register. Configure INA219 first."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": { "expression": "ina_leer(4, {BLOCK_ID})" },
+          "arduino": { "expression": "ina_leer(4, {BLOCK_ID})" }
+        }
+      }
+    ]
+  }
+}

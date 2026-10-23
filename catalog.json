@@ -205,6 +205,12 @@
       "description": "Tonos, notas y melodías en segundo plano para zumbadores pasivos. Arduino y MicroPython.",
       "kind": "module",
       "path": "packages/zumbador"
+    },
+    {
+      "name": "Batería",
+      "description": "Voltaje con divisor (promedio, porcentaje, batería baja) e INA219 por I2C sin librería. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/bateria"
     }
   ]
 }
