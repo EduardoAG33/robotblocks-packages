@@ -22,6 +22,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo  | Arduino/C++ experimental, sin librería externa                     |
 | `packages/i2c`                | Registros entre tarjetas por I2C            | Arduino maestro/esclavo y MicroPython maestro; experimental        |
 | `packages/maquina-estados`    | Estados con nombre para ordenar el robot    | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/cronometros`        | Cronómetros con nombre y tareas periódicas  | Arduino, MicroPython y Pybricks; experimental                      |
 | `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |
 | `packages/arduino-nano`       | Arduino Nano ATmega328P                     | Arduino experimental, sin carga                                    |
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |

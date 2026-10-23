@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.cronometros",
+  "name": "Cronómetros",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Varios cronómetros con nombre: reiniciar, leer el tiempo, límites de tiempo y tareas «cada X ms» sin frenar el programa. Arduino, MicroPython y Pybricks.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.cronometros:cronometros", "name": "Cronómetros", "colour": "#26A69A" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "other",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Cronómetros": "Stopwatches",
+        "Varios cronómetros con nombre: reiniciar, leer el tiempo, límites de tiempo y tareas «cada X ms» sin frenar el programa. Arduino, MicroPython y Pybricks.": "Several named stopwatches: reset, read the time, time limits and “every X ms” tasks without slowing the program. Arduino, MicroPython and Pybricks."
+      }
+    }
+  }
+}

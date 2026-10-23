@@ -181,6 +181,12 @@
       "description": "Estados con nombre: cambiar de estado, saber en cuál está, si acaba de entrar y cuánto lleva. Arduino, MicroPython y Pybricks.",
       "kind": "module",
       "path": "packages/maquina-estados"
+    },
+    {
+      "name": "Cronómetros",
+      "description": "Varios cronómetros con nombre, límites de tiempo y tareas «cada X ms» sin frenar el programa. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/cronometros"
     }
   ]
 }

@@ -1,0 +1,149 @@
+{
+  "titulo": "Cronómetros · dos tareas a la vez",
+  "ejemplo": "arduino-uno",
+  "tarjetas": ["arduino-uno", "arduino-giga-r1", "dfrobot-firebeetle-esp32"],
+  "pines": {
+    "arduino-uno": {
+      "LED": "d13"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "LED": "gpio2"
+    },
+    "arduino-giga-r1": {
+      "LED": "d13"
+    }
+  },
+  "variables": {
+    "led": 0,
+    "vueltas": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "NAME1": "parpadeo",
+        "NAME2": "monitor"
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "vueltas"
+            },
+            {
+              "VALUE": [
+                "core:add",
+                {},
+                {
+                  "LEFT": {
+                    "var": "vueltas"
+                  },
+                  "RIGHT": 1
+                }
+              ]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                ":every",
+                {
+                  "T": "parpadeo"
+                },
+                {
+                  "MS": 250
+                }
+              ],
+              "BODY": [
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "led"
+                  },
+                  {
+                    "VALUE": [
+                      "core:subtract",
+                      {},
+                      {
+                        "LEFT": 1,
+                        "RIGHT": {
+                          "var": "led"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "org.robotblocks.demo-board-io:digital-write-value",
+                  {
+                    "PIN": "$LED"
+                  },
+                  {
+                    "VALUE": {
+                      "var": "led"
+                    }
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                ":every",
+                {
+                  "T": "monitor"
+                },
+                {
+                  "MS": 1000
+                }
+              ],
+              "BODY": [
+                [
+                  "core:serial-println",
+                  {},
+                  {
+                    "VALUE": [
+                      "core:join",
+                      {},
+                      {
+                        "LEFT": "vueltas por segundo: ",
+                        "RIGHT": [
+                          "core:to-text",
+                          {},
+                          {
+                            "VALUE": {
+                              "var": "vueltas"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "vueltas"
+                  },
+                  {
+                    "VALUE": 0
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}
