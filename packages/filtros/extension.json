@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.filtros",
+  "name": "Filtros",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Filtros con nombre: promedio móvil, mediana y exponencial, sin hardware.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.filtros:filtros",
+        "name": "Filtros",
+        "colour": "#8D6E63"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "other",
+    "translations": {
+      "en": {
+        "Filtros": "Filters",
+        "Filtros con nombre: promedio móvil, mediana y exponencial, sin hardware.": "Named moving average, median and exponential filters, without hardware.",
+        "Configura el filtro al iniciar": "Configure the filter at start",
+        "Parámetro de filtro inválido: ventana entera 1–15 o alfa 0–1": "Invalid filter parameter: integer window 1–15 or alpha 0–1"
+      }
+    }
+  }
+}

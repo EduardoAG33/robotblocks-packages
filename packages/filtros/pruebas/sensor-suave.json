@@ -1,0 +1,75 @@
+{
+  "titulo": "Filtros · lectura analógica suave",
+  "ejemplo": "arduino-uno",
+  "tarjetas": [
+    "arduino-uno",
+    "dfrobot-firebeetle-esp32"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "SENSOR": "a0"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "SENSOR": "gpio36"
+    }
+  },
+  "variables": {
+    "suave": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "NAME1": "sensor",
+        "TYPE1": "1",
+        "PARAM1": 5
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "suave"
+            },
+            {
+              "VALUE": [
+                ":filter",
+                {
+                  "F": "sensor"
+                },
+                {
+                  "X": [
+                    "org.robotblocks.demo-board-io:analog-read",
+                    {
+                      "PIN": "$SENSOR"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            "core:serial-println",
+            {},
+            {
+              "VALUE": {
+                "var": "suave"
+              }
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 50
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}

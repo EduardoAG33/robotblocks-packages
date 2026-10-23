@@ -211,6 +211,12 @@
       "description": "Voltaje con divisor (promedio, porcentaje, batería baja) e INA219 por I2C sin librería. Arduino y MicroPython.",
       "kind": "module",
       "path": "packages/bateria"
+    },
+    {
+      "name": "Filtros",
+      "description": "Promedio móvil, mediana y exponencial con nombre. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/filtros"
     }
   ]
 }

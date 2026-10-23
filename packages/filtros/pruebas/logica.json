@@ -1,0 +1,233 @@
+{
+  "titulo": "Filtros · prueba de lógica",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32",
+    "lego-spike-prime",
+    "lego-ev3"
+  ],
+  "variables": {
+    "a": 0,
+    "m": 0,
+    "e": 0,
+    "u": 0,
+    "r": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "NAME1": "suave",
+        "TYPE1": "0",
+        "PARAM1": 3,
+        "NAME2": "robusta",
+        "TYPE2": "1",
+        "PARAM2": 3,
+        "NAME3": "expo",
+        "TYPE3": "2",
+        "PARAM3": 0.5
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "a"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "suave"
+          },
+          {
+            "X": 10
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "m"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "robusta"
+          },
+          {
+            "X": 10
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "e"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "expo"
+          },
+          {
+            "X": 10
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "a"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "suave"
+          },
+          {
+            "X": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "m"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "robusta"
+          },
+          {
+            "X": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "e"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "expo"
+          },
+          {
+            "X": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "a"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "suave"
+          },
+          {
+            "X": 90
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "m"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "robusta"
+          },
+          {
+            "X": 90
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "e"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "expo"
+          },
+          {
+            "X": 90
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "u"
+      },
+      {
+        "VALUE": [
+          ":last",
+          {
+            "F": "suave"
+          }
+        ]
+      }
+    ],
+    [
+      ":reset",
+      {
+        "F": "suave"
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "r"
+      },
+      {
+        "VALUE": [
+          ":filter",
+          {
+            "F": "suave"
+          },
+          {
+            "X": 7
+          }
+        ]
+      }
+    ]
+  ],
+  "esperado": {
+    "a": 40,
+    "m": 20,
+    "e": 52.5,
+    "u": 40,
+    "r": 7
+  }
+}
