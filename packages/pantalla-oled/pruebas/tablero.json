@@ -1,0 +1,187 @@
+{
+  "titulo": "Pantalla OLED · tablero del robot",
+  "ejemplo": "arduino-uno",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "SDA": "a4",
+      "SCL": "a5",
+      "SENSOR": "a0"
+    },
+    "arduino-uno-r4-minima": {
+      "SDA": "a4",
+      "SCL": "a5",
+      "SENSOR": "a0"
+    },
+    "arduino-giga-r1": {
+      "SDA": "d102",
+      "SCL": "d101",
+      "SENSOR": "a0"
+    },
+    "teensy-40": {
+      "SDA": "d18",
+      "SCL": "d19",
+      "SENSOR": "d14"
+    },
+    "seeed-xiao-esp32s3": {
+      "SDA": "d4",
+      "SCL": "d5",
+      "SENSOR": "d0"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "SDA": "gpio21",
+      "SCL": "gpio22",
+      "SENSOR": "gpio36"
+    }
+  },
+  "variables": {
+    "vueltas": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "CHIP": "ssd1306",
+        "SIZE": "64",
+        "ADDR": "0x3C",
+        "SDA": "$SDA",
+        "SCL": "$SCL"
+      }
+    ],
+    [
+      ":show",
+      {},
+      {
+        "ROW": 1,
+        "TEXT": "¡GreyForge!"
+      }
+    ],
+    [
+      ":write",
+      {},
+      {
+        "TEXT": "°C",
+        "ROW": 2,
+        "COL": 15
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "vueltas"
+            },
+            {
+              "VALUE": [
+                "core:add",
+                {},
+                {
+                  "LEFT": {
+                    "var": "vueltas"
+                  },
+                  "RIGHT": 1
+                }
+              ]
+            }
+          ],
+          [
+            ":show",
+            {},
+            {
+              "ROW": 3,
+              "TEXT": [
+                "core:join",
+                {},
+                {
+                  "LEFT": "Vueltas: ",
+                  "RIGHT": [
+                    "core:to-text",
+                    {},
+                    {
+                      "VALUE": {
+                        "var": "vueltas"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          [
+            ":show",
+            {},
+            {
+              "ROW": 4,
+              "TEXT": [
+                "org.robotblocks.demo-board-io:analog-read",
+                {
+                  "PIN": "$SENSOR"
+                }
+              ]
+            }
+          ],
+          [
+            ":show",
+            {},
+            {
+              "ROW": 5,
+              "TEXT": [
+                "core:divide",
+                {},
+                {
+                  "LEFT": [
+                    "org.robotblocks.demo-board-io:analog-read",
+                    {
+                      "PIN": "$SENSOR"
+                    }
+                  ],
+                  "RIGHT": 3
+                }
+              ]
+            }
+          ],
+          [
+            ":bar",
+            {},
+            {
+              "ROW": 7,
+              "VALUE": [
+                "org.robotblocks.demo-board-io:analog-read",
+                {
+                  "PIN": "$SENSOR"
+                }
+              ],
+              "MAX": 1023
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 200
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      ":clear-row",
+      {},
+      {
+        "ROW": 7
+      }
+    ],
+    [":clear"]
+  ]
+}

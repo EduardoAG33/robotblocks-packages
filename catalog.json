@@ -193,6 +193,12 @@
       "description": "Escanea el bus I2C e imprime qué sensores responden, o comprueba una dirección antes de arrancar. Arduino y MicroPython.",
       "kind": "module",
       "path": "packages/diagnostico-i2c"
+    },
+    {
+      "name": "Pantalla OLED",
+      "description": "OLED I2C SSD1306/SH1106: texto por filas, barras y borrar, sin librerías y casi sin RAM. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/pantalla-oled"
     }
   ]
 }
