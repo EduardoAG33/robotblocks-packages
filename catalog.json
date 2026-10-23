@@ -187,6 +187,12 @@
       "description": "Varios cronómetros con nombre, límites de tiempo y tareas «cada X ms» sin frenar el programa. Arduino, MicroPython y Pybricks.",
       "kind": "module",
       "path": "packages/cronometros"
+    },
+    {
+      "name": "Diagnóstico I2C",
+      "description": "Escanea el bus I2C e imprime qué sensores responden, o comprueba una dirección antes de arrancar. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/diagnostico-i2c"
     }
   ]
 }
