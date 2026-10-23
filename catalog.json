@@ -199,6 +199,12 @@
       "description": "OLED I2C SSD1306/SH1106: texto por filas, barras y borrar, sin librerías y casi sin RAM. Arduino y MicroPython.",
       "kind": "module",
       "path": "packages/pantalla-oled"
+    },
+    {
+      "name": "Zumbador",
+      "description": "Tonos, notas y melodías en segundo plano para zumbadores pasivos. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/zumbador"
     }
   ]
 }
