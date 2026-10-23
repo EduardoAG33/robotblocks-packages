@@ -19,7 +19,7 @@ El contrato completo (todos los campos) está en la app: `docs/CREATING_EXTENSIO
 | Es un sensor I2C sin librería                   | `packages/color-tcs34725`, `laser-vl53l0x` |
 | Habla por UART                                  | `packages/uart`, `huskylens`               |
 | Necesita una librería Arduino                   | `packages/ws2812` (la app sabe instalarla) |
-| Debe esperar sin frenar a los demás procesos    | `packages/imu-mpu6050` (`waitUntil`)       |
+| Debe esperar sin frenar a los demás procesos    | `imu-mpu6050` (Arduino) o `zumbador`       |
 | Tiene varias cosas con nombre (filas con + y −) | `packages/control-pid`, `laser-vl53l0x`    |
 
 ```text
@@ -75,11 +75,11 @@ Un arreglo de bloques. Cada uno:
 
 ### Reglas de oro (lo que más falla)
 
-1. Nada de `delay()` ni `time.sleep(segundos)`: congelan a todos los procesos. Pausas de pocos ms (`delayMicroseconds`, `time.sleep_us`) sí; esperas largas con `waitUntil`.
+1. Nada de `delay()` ni `time.sleep(segundos)`: congelan a todos los procesos. Pausas de pocos ms (`delayMicroseconds`, `time.sleep_us`) sí; para esperas largas usa `waitUntil` (solo Arduino) o deja el trabajo en segundo plano (`poll` en Arduino, `machine.Timer` en MicroPython) y ofrece un booleano «terminó» para que el alumno use «esperar hasta» del núcleo, como `zumbador`.
 2. Prefijo propio para tus funciones y variables (`mi_…`). Nunca `rb_`, `v_`, `d_`, `fn_`, `p_`, `proceso_` (son del motor).
 3. Python: una función que reasigna un global necesita `global nombre`.
 4. C++: una función por línea (el generador de prototipos de Arduino falla si hay dos) y nada de `String` avanzado (`substring`, `trim`, `lastIndexOf`…), porque la CI de la app compila con un `String` simulado.
-5. En Arduino un texto literal llega como `String("…")`, no como `const char*`.
+5. En Arduino un campo de texto o menú llega como `String("…")`, no como `const char*`; dentro de las filas (`variadic.row`) llega como `"…"` sin `String`.
 6. Errores con `rb_fail(bloque, "Mensaje claro")` (y su traducción en `metadata.translations.en`). El programa se detiene e imprime `RB_ERROR`.
 7. Usar algo sin configurarlo da un error claro («Configura … al iniciar»), nunca un valor inventado.
 8. Etiquetas cortas y en el idioma del alumno; el tooltip explica cuándo usar el bloque.
