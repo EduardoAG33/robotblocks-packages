@@ -1,10 +1,7 @@
 {
   "titulo": "Filtros · lectura analógica suave",
   "ejemplo": "arduino-uno",
-  "tarjetas": [
-    "arduino-uno",
-    "dfrobot-firebeetle-esp32"
-  ],
+  "tarjetas": ["arduino-uno", "dfrobot-firebeetle-esp32"],
   "pines": {
     "arduino-uno": {
       "SENSOR": "a0"
