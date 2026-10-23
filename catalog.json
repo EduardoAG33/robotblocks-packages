@@ -175,6 +175,12 @@
       "description": "Tabletas y tiras WS2812 (NeoPixel): colores, brillo, arcoíris, movimiento y barras. Experimental hasta probar en hardware.",
       "kind": "module",
       "path": "packages/ws2812"
+    },
+    {
+      "name": "Máquina de estados",
+      "description": "Estados con nombre: cambiar de estado, saber en cuál está, si acaba de entrar y cuánto lleva. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/maquina-estados"
     }
   ]
 }
