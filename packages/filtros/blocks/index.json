@@ -1,0 +1,224 @@
+[
+  {
+    "id": "org.robotblocks.filtros:configure",
+    "operation": "org.robotblocks.filtros:configure",
+    "category": "org.robotblocks.filtros:filtros",
+    "label": {
+      "es": "configurar filtros %FILTERS",
+      "en": "configure filters %FILTERS"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "Configura al iniciar. Ventana entera 1–15 o alfa 0–1. La primera lectura inicia el exponencial; mediana par promedia los dos centrales. Reiniciar deja el último valor en 0.",
+      "en": "Configure at start. Integer window 1–15 or alpha 0–1. The first reading initializes the exponential filter; an even median averages the middle pair. Reset sets the last value to 0."
+    },
+    "requiredCapabilities": [],
+    "variadic": {
+      "input": {
+        "name": "FILTERS",
+        "type": "value"
+      },
+      "min": 1,
+      "max": 8,
+      "row": {
+        "label": {
+          "es": "nombre %NAME tipo %TYPE tamaño/α %PARAM",
+          "en": "name %NAME type %TYPE size/α %PARAM"
+        },
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string",
+            "default": "{N}"
+          },
+          {
+            "name": "TYPE",
+            "type": "string",
+            "default": "0",
+            "options": [
+              {
+                "label": {
+                  "es": "promedio móvil",
+                  "en": "moving average"
+                },
+                "value": "0"
+              },
+              {
+                "label": {
+                  "es": "mediana",
+                  "en": "median"
+                },
+                "value": "1"
+              },
+              {
+                "label": {
+                  "es": "exponencial",
+                  "en": "exponential"
+                },
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "name": "PARAM",
+            "type": "number",
+            "default": 5
+          }
+        ],
+        "template": "{TYPE}, {PARAM}"
+      }
+    },
+    "generators": {
+      "micropython": {
+        "globals": [
+          "filtro_estado = [None] * {FILTERS_TOTAL}\n",
+          "def filtro_reiniciar(filtro):\n    filtro[2][:] = []\n    filtro[3] = 0\n\ndef filtro_configurar(inicio, filas, bloque):\n    for indice in range(len(filas) // 2):\n        tipo, parametro = filas[2 * indice:2 * indice + 2]\n        tipo = int(tipo)\n        valido = 0 <= parametro <= 1 if tipo == 2 else 1 <= parametro <= 15 and parametro == int(parametro)\n        if not valido:\n            rb_fail(bloque, \"Parámetro de filtro inválido: ventana entera 1–15 o alfa 0–1\")\n        filtro_estado[inicio + indice] = [tipo, parametro, [], 0]\n\ndef filtro_obtener(numero, bloque):\n    filtro = filtro_estado[numero - 1] if 1 <= numero <= len(filtro_estado) else None\n    if filtro is None:\n        rb_fail(bloque, \"Configura el filtro al iniciar\")\n    return filtro\n\ndef filtro_actualizar(numero, lectura, bloque):\n    filtro = filtro_obtener(numero, bloque)\n    lectura = rb_finite(lectura, bloque)\n    tipo, parametro, datos, ultimo = filtro\n    if tipo == 2:\n        filtro[3] = lectura if not datos else parametro * lectura + (1 - parametro) * ultimo\n        datos[:] = [lectura]\n    else:\n        datos.append(lectura)\n        if len(datos) > int(parametro):\n            datos.pop(0)\n        if tipo == 0:\n            filtro[3] = sum(datos) / len(datos)\n        else:\n            orden = sorted(datos)\n            mitad = len(orden) // 2\n            filtro[3] = orden[mitad] if len(orden) % 2 else (orden[mitad - 1] + orden[mitad]) / 2\n    return filtro[3]\n"
+        ],
+        "statement": "filtro_configurar({FILTERS_OFFSET}, [{FILTERS}], {BLOCK_ID})"
+      },
+      "pybricks": {
+        "globals": [
+          "filtro_estado = [None] * {FILTERS_TOTAL}\n",
+          "def filtro_reiniciar(filtro):\n    filtro[2][:] = []\n    filtro[3] = 0\n\ndef filtro_configurar(inicio, filas, bloque):\n    for indice in range(len(filas) // 2):\n        tipo, parametro = filas[2 * indice:2 * indice + 2]\n        tipo = int(tipo)\n        valido = 0 <= parametro <= 1 if tipo == 2 else 1 <= parametro <= 15 and parametro == int(parametro)\n        if not valido:\n            rb_fail(bloque, \"Parámetro de filtro inválido: ventana entera 1–15 o alfa 0–1\")\n        filtro_estado[inicio + indice] = [tipo, parametro, [], 0]\n\ndef filtro_obtener(numero, bloque):\n    filtro = filtro_estado[numero - 1] if 1 <= numero <= len(filtro_estado) else None\n    if filtro is None:\n        rb_fail(bloque, \"Configura el filtro al iniciar\")\n    return filtro\n\ndef filtro_actualizar(numero, lectura, bloque):\n    filtro = filtro_obtener(numero, bloque)\n    lectura = rb_finite(lectura, bloque)\n    tipo, parametro, datos, ultimo = filtro\n    if tipo == 2:\n        filtro[3] = lectura if not datos else parametro * lectura + (1 - parametro) * ultimo\n        datos[:] = [lectura]\n    else:\n        datos.append(lectura)\n        if len(datos) > int(parametro):\n            datos.pop(0)\n        if tipo == 0:\n            filtro[3] = sum(datos) / len(datos)\n        else:\n            orden = sorted(datos)\n            mitad = len(orden) // 2\n            filtro[3] = orden[mitad] if len(orden) % 2 else (orden[mitad - 1] + orden[mitad]) / 2\n    return filtro[3]\n"
+        ],
+        "statement": "filtro_configurar({FILTERS_OFFSET}, [{FILTERS}], {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct filtro_datos {\n    float datos[15] = {}, ultimo = 0, parametro = 0;\n    uint8_t tipo = 0, cantidad = 0, siguiente = 0;\n    bool configurado = false;\n};\ninline void filtro_reiniciar(filtro_datos& filtro) {\n    filtro.cantidad = 0;\n    filtro.siguiente = 0;\n    filtro.ultimo = 0;\n}\n\nstruct filtro_fila { const char* tipo; float parametro; };\n",
+          "static filtro_datos filtro_estado[{FILTERS_TOTAL}];",
+          "inline filtro_datos& filtro_obtener(int numero, const char* bloque) {\n    static filtro_datos vacio;\n    int total = sizeof(filtro_estado) / sizeof(filtro_estado[0]);\n    if (numero < 1 || numero > total || !filtro_estado[numero - 1].configurado) {\n        rb_fail(bloque, \"Configura el filtro al iniciar\");\n        return vacio;\n    }\n    return filtro_estado[numero - 1];\n}\ninline void filtro_configurar(int inicio, const filtro_fila* filas, int cantidad, const char* bloque) {\n    for (int indice = 0; indice < cantidad; indice++) {\n        int tipo = atoi(filas[indice].tipo);\n        float parametro = filas[indice].parametro;\n        bool valido = tipo == 2 ? parametro >= 0 && parametro <= 1 : parametro >= 1 && parametro <= 15 && floorf(parametro) == parametro;\n        if (!valido) { rb_fail(bloque, \"Parámetro de filtro inválido: ventana entera 1–15 o alfa 0–1\"); return; }\n        filtro_datos& filtro = filtro_estado[inicio + indice];\n        filtro.tipo = tipo;\n        filtro.parametro = parametro;\n        filtro.configurado = true;\n        filtro_reiniciar(filtro);\n    }\n}\ninline float filtro_actualizar(int numero, float lectura, const char* bloque) {\n    filtro_datos& filtro = filtro_obtener(numero, bloque);\n    lectura = rb_finite(lectura, bloque);\n    if (rb_failed) return 0;\n    if (filtro.tipo == 2) {\n        filtro.ultimo = filtro.cantidad == 0 ? lectura : filtro.parametro * lectura + (1 - filtro.parametro) * filtro.ultimo;\n        filtro.cantidad = 1;\n        return filtro.ultimo;\n    }\n    int ventana = int(filtro.parametro);\n    filtro.datos[filtro.siguiente] = lectura;\n    filtro.siguiente = (filtro.siguiente + 1) % ventana;\n    if (filtro.cantidad < ventana) filtro.cantidad++;\n    float orden[15], suma = 0;\n    for (int i = 0; i < filtro.cantidad; i++) { orden[i] = filtro.datos[i]; suma += orden[i]; }\n    if (filtro.tipo == 0) filtro.ultimo = suma / filtro.cantidad;\n    else {\n        for (int i = 1; i < filtro.cantidad; i++) {\n            float valor = orden[i];\n            int j = i - 1;\n            while (j >= 0 && orden[j] > valor) { orden[j + 1] = orden[j]; j--; }\n            orden[j + 1] = valor;\n        }\n        int mitad = filtro.cantidad / 2;\n        filtro.ultimo = filtro.cantidad % 2 ? orden[mitad] : (orden[mitad - 1] + orden[mitad]) / 2;\n    }\n    return filtro.ultimo;\n}\n",
+          "static const filtro_fila filtro_filas_{FILTERS_OFFSET}[] = { {FILTERS} };"
+        ],
+        "statement": "filtro_configurar({FILTERS_OFFSET}, filtro_filas_{FILTERS_OFFSET}, {FILTERS_COUNT}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.filtros:filter",
+    "operation": "org.robotblocks.filtros:filter",
+    "category": "org.robotblocks.filtros:filtros",
+    "label": {
+      "es": "filtrar %F con lectura %X",
+      "en": "filter %F with reading %X"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "F",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.filtros:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "X",
+        "type": "number",
+        "default": 0
+      }
+    ],
+    "tooltip": {
+      "es": "Configura al iniciar. Ventana entera 1–15 o alfa 0–1. La primera lectura inicia el exponencial; mediana par promedia los dos centrales. Reiniciar deja el último valor en 0.",
+      "en": "Configure at start. Integer window 1–15 or alpha 0–1. The first reading initializes the exponential filter; an even median averages the middle pair. Reset sets the last value to 0."
+    },
+    "requiredCapabilities": [],
+    "output": "number",
+    "generators": {
+      "micropython": {
+        "expression": "filtro_actualizar({F}, {X}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "expression": "filtro_actualizar({F}, {X}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "expression": "filtro_actualizar({F}, {X}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.filtros:last",
+    "operation": "org.robotblocks.filtros:last",
+    "category": "org.robotblocks.filtros:filtros",
+    "label": {
+      "es": "último valor de filtro %F",
+      "en": "last value of filter %F"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "F",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.filtros:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Configura al iniciar. Ventana entera 1–15 o alfa 0–1. La primera lectura inicia el exponencial; mediana par promedia los dos centrales. Reiniciar deja el último valor en 0.",
+      "en": "Configure at start. Integer window 1–15 or alpha 0–1. The first reading initializes the exponential filter; an even median averages the middle pair. Reset sets the last value to 0."
+    },
+    "requiredCapabilities": [],
+    "output": "number",
+    "generators": {
+      "micropython": {
+        "expression": "filtro_obtener({F}, {BLOCK_ID})[3]"
+      },
+      "pybricks": {
+        "expression": "filtro_obtener({F}, {BLOCK_ID})[3]"
+      },
+      "arduino": {
+        "expression": "filtro_obtener({F}, {BLOCK_ID}).ultimo"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.filtros:reset",
+    "operation": "org.robotblocks.filtros:reset",
+    "category": "org.robotblocks.filtros:filtros",
+    "label": {
+      "es": "reiniciar filtro %F",
+      "en": "reset filter %F"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "F",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.filtros:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Configura al iniciar. Ventana entera 1–15 o alfa 0–1. La primera lectura inicia el exponencial; mediana par promedia los dos centrales. Reiniciar deja el último valor en 0.",
+      "en": "Configure at start. Integer window 1–15 or alpha 0–1. The first reading initializes the exponential filter; an even median averages the middle pair. Reset sets the last value to 0."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "statement": "filtro_reiniciar(filtro_obtener({F}, {BLOCK_ID}))"
+      },
+      "pybricks": {
+        "statement": "filtro_reiniciar(filtro_obtener({F}, {BLOCK_ID}))"
+      },
+      "arduino": {
+        "statement": "filtro_reiniciar(filtro_obtener({F}, {BLOCK_ID}));"
+      }
+    }
+  }
+]

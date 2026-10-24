@@ -1,0 +1,52 @@
+{
+  "titulo": "Cronómetros · prueba de lógica",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32",
+    "lego-spike-prime",
+    "lego-ev3"
+  ],
+  "variables": { "veces": 0, "segundos": 0, "reiniciado": 0 },
+  "programa": [
+    [":configure", { "NAME1": "rápido", "NAME2": "lento" }],
+    [
+      "core:repeat-until",
+      {},
+      {
+        "CONDITION": [":passed", { "T": "lento" }, { "MS": 300 }],
+        "BODY": [
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [":every", { "T": "rápido" }, { "MS": 50 }],
+              "BODY": [
+                [
+                  "core:set",
+                  { "VARIABLE": "veces" },
+                  { "VALUE": ["core:add", {}, { "LEFT": { "var": "veces" }, "RIGHT": 1 }] }
+                ]
+              ]
+            }
+          ],
+          ["core:wait-ms", {}, { "MS": 5 }]
+        ]
+      }
+    ],
+    ["core:set", { "VARIABLE": "segundos" }, { "VALUE": [":time", { "T": "lento", "UNIT": "s" }] }],
+    [":reset", { "T": "rápido" }],
+    [
+      "core:if",
+      {},
+      {
+        "CONDITION": ["core:not", {}, { "VALUE": [":passed", { "T": "rápido" }, { "MS": 1000 }] }],
+        "BODY": [["core:set", { "VARIABLE": "reiniciado" }, { "VALUE": 1 }]]
+      }
+    ]
+  ],
+  "esperado": { "veces": { "minimum": 4 }, "segundos": { "minimum": 0.3 }, "reiniciado": 1 }
+}
