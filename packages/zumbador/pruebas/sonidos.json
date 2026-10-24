@@ -1,0 +1,137 @@
+{
+  "titulo": "Zumbador · sonidos al arrancar",
+  "ejemplo": "arduino-uno",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "BUZ": "d8"
+    },
+    "arduino-uno-r4-minima": {
+      "BUZ": "d8"
+    },
+    "arduino-giga-r1": {
+      "BUZ": "d8"
+    },
+    "teensy-40": {
+      "BUZ": "d8"
+    },
+    "seeed-xiao-esp32s3": {
+      "BUZ": "d2"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "BUZ": "gpio25"
+    }
+  },
+  "programa": [
+    [
+      ":melody",
+      {
+        "MELODY": "0",
+        "PIN": "$BUZ"
+      }
+    ],
+    [
+      "core:wait-until",
+      {},
+      {
+        "CONDITION": [
+          "core:not",
+          {},
+          {
+            "VALUE": [
+              ":playing",
+              {
+                "PIN": "$BUZ"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      ":note",
+      {
+        "NOTE": "523",
+        "PIN": "$BUZ"
+      },
+      {
+        "MS": 200
+      }
+    ],
+    [
+      "core:wait-until",
+      {},
+      {
+        "CONDITION": [
+          "core:not",
+          {},
+          {
+            "VALUE": [
+              ":playing",
+              {
+                "PIN": "$BUZ"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      ":note",
+      {
+        "NOTE": "659",
+        "PIN": "$BUZ"
+      },
+      {
+        "MS": 200
+      }
+    ],
+    [
+      "core:wait-until",
+      {},
+      {
+        "CONDITION": [
+          "core:not",
+          {},
+          {
+            "VALUE": [
+              ":playing",
+              {
+                "PIN": "$BUZ"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    [
+      ":tone",
+      {
+        "PIN": "$BUZ"
+      },
+      {
+        "FREQ": 880
+      }
+    ],
+    [
+      "core:wait-ms",
+      {},
+      {
+        "MS": 300
+      }
+    ],
+    [
+      ":stop",
+      {
+        "PIN": "$BUZ"
+      }
+    ]
+  ]
+}

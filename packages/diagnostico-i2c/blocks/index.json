@@ -1,0 +1,154 @@
+[
+  {
+    "id": "org.robotblocks.diagnostico-i2c:scan",
+    "operation": "org.robotblocks.diagnostico-i2c:scan",
+    "category": "org.robotblocks.diagnostico-i2c:diagnostico",
+    "label": { "es": "escanear I2C en SDA %SDA SCL %SCL e imprimir", "en": "scan I2C on SDA %SDA SCL %SCL and print" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Imprime en el monitor cada dirección que responde, con el sensor que suele usarla, y cuántos dispositivos hay. Tarda unos 100 ms: úsalo al iniciar, no en el bucle rápido.",
+      "en": "Prints on the monitor each address that answers, with the sensor that usually uses it, and how many devices there are. Takes about 100 ms: use it at start, not in the fast loop."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "DIAG_I2C_NOMBRES = {\n    0x0D: \"QMC5883L (brújula)\",\n    0x1E: \"HMC5883L (brújula)\",\n    0x28: \"BNO055 (IMU)\",\n    0x29: \"TCS34725 (color) o VL53L0X (láser)\",\n    0x32: \"HuskyLens\",\n    0x39: \"APDS-9960 (color/gestos)\",\n    0x3C: \"OLED SSD1306/SH1106\",\n    0x3D: \"OLED SSD1306/SH1106\",\n    0x40: \"INA219 o PCA9685\",\n    0x41: \"INA219\",\n    0x44: \"INA219\",\n    0x45: \"INA219\",\n    0x48: \"ADS1115 (ADC)\",\n    0x4A: \"BNO085 (IMU)\",\n    0x4B: \"BNO085 (IMU)\",\n    0x50: \"EEPROM\",\n    0x68: \"MPU6050 (IMU)\",\n    0x69: \"MPU6050 (IMU)\",\n    0x70: \"TCA9548A (multiplexor)\",\n    0x76: \"BMP280/BME280 (presión)\",\n    0x77: \"BMP280/BME280 (presión)\",\n}\n\ndef diag_i2c_direccion(texto, bloque):\n    try:\n        direccion = int(str(texto).strip(), 0)\n    except ValueError:\n        direccion = -1\n    if not 0 < direccion < 128:\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\")\n    return direccion\n\ndef diag_i2c_escanear(sda, scl, bloque):\n    direcciones = i2c_bus(sda, scl, bloque).scan()\n    for direccion in direcciones:\n        print(\"I2C 0x%02X %s\" % (direccion, DIAG_I2C_NOMBRES.get(direccion, \"\")))\n    print(\"I2C: %d dispositivos\" % len(direcciones))\n\ndef diag_i2c_hay(sda, scl, texto, bloque):\n    return diag_i2c_direccion(texto, bloque) in i2c_bus(sda, scl, bloque).scan()\n\ndef diag_i2c_cantidad(sda, scl, bloque):\n    return len(i2c_bus(sda, scl, bloque).scan())\n"
+        ],
+        "statement": "diag_i2c_escanear({SDA}, {SCL}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "canFail": false,
+        "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+        "includes": ["#include <Wire.h>"],
+        "setup": ["rb_wire_begin({I2C_BUS});"],
+        "globals": [
+          "inline bool diag_i2c_responde(TwoWire& bus, uint8_t direccion) {\n    bus.beginTransmission(direccion);\n    return bus.endTransmission() == 0;\n}\ninline void diag_i2c_nombre(uint8_t direccion) {\n    switch (direccion) {\n        case 0x0D: Serial.print(\" QMC5883L (brújula)\"); break;\n        case 0x1E: Serial.print(\" HMC5883L (brújula)\"); break;\n        case 0x28: Serial.print(\" BNO055 (IMU)\"); break;\n        case 0x29: Serial.print(\" TCS34725 (color) o VL53L0X (láser)\"); break;\n        case 0x32: Serial.print(\" HuskyLens\"); break;\n        case 0x39: Serial.print(\" APDS-9960 (color/gestos)\"); break;\n        case 0x3C: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x3D: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x40: Serial.print(\" INA219 o PCA9685\"); break;\n        case 0x41: Serial.print(\" INA219\"); break;\n        case 0x44: Serial.print(\" INA219\"); break;\n        case 0x45: Serial.print(\" INA219\"); break;\n        case 0x48: Serial.print(\" ADS1115 (ADC)\"); break;\n        case 0x4A: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x4B: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x50: Serial.print(\" EEPROM\"); break;\n        case 0x68: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x69: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x70: Serial.print(\" TCA9548A (multiplexor)\"); break;\n        case 0x76: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        case 0x77: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        default: break;\n    }\n}\ninline void diag_i2c_escanear(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++) {\n        if (!diag_i2c_responde(bus, direccion)) continue;\n        cantidad++;\n        Serial.print(\"I2C 0x\");\n        if (direccion < 16) Serial.print(\"0\");\n        Serial.print(direccion, HEX);\n        diag_i2c_nombre(direccion);\n        Serial.println();\n    }\n    Serial.print(\"I2C: \");\n    Serial.print(cantidad);\n    Serial.println(\" dispositivos\");\n}\ninline int diag_i2c_direccion(const String& texto, const char* bloque) {\n    const char* inicio = texto.c_str();\n    char* fin = nullptr;\n    long direccion = strtol(inicio, &fin, 0);\n    if (fin == inicio || *fin != '\\0' || direccion <= 0 || direccion >= 128) {\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\");\n        return 0;\n    }\n    return int(direccion);\n}\ninline bool diag_i2c_hay(TwoWire& bus, const String& texto, const char* bloque) {\n    int direccion = diag_i2c_direccion(texto, bloque);\n    return direccion > 0 && diag_i2c_responde(bus, uint8_t(direccion));\n}\ninline float diag_i2c_cantidad(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++)\n        if (diag_i2c_responde(bus, direccion)) cantidad++;\n    return float(cantidad);\n}\n"
+        ],
+        "statement": "diag_i2c_escanear({I2C_BUS});"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.diagnostico-i2c:present",
+    "operation": "org.robotblocks.diagnostico-i2c:present",
+    "category": "org.robotblocks.diagnostico-i2c:diagnostico",
+    "label": {
+      "es": "hay dispositivo I2C en %ADDR (SDA %SDA SCL %SCL)",
+      "en": "I2C device at %ADDR (SDA %SDA SCL %SCL)"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      { "name": "ADDR", "type": "string", "default": "0x29" },
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero si algo responde en esa dirección (escríbela como 0x29 o 41). Sirve para avisar con un LED o en el monitor si un sensor quedó desconectado antes de arrancar.",
+      "en": "True if something answers at that address (write it as 0x29 or 41). Use it to warn with an LED or on the monitor if a sensor got disconnected before starting."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "DIAG_I2C_NOMBRES = {\n    0x0D: \"QMC5883L (brújula)\",\n    0x1E: \"HMC5883L (brújula)\",\n    0x28: \"BNO055 (IMU)\",\n    0x29: \"TCS34725 (color) o VL53L0X (láser)\",\n    0x32: \"HuskyLens\",\n    0x39: \"APDS-9960 (color/gestos)\",\n    0x3C: \"OLED SSD1306/SH1106\",\n    0x3D: \"OLED SSD1306/SH1106\",\n    0x40: \"INA219 o PCA9685\",\n    0x41: \"INA219\",\n    0x44: \"INA219\",\n    0x45: \"INA219\",\n    0x48: \"ADS1115 (ADC)\",\n    0x4A: \"BNO085 (IMU)\",\n    0x4B: \"BNO085 (IMU)\",\n    0x50: \"EEPROM\",\n    0x68: \"MPU6050 (IMU)\",\n    0x69: \"MPU6050 (IMU)\",\n    0x70: \"TCA9548A (multiplexor)\",\n    0x76: \"BMP280/BME280 (presión)\",\n    0x77: \"BMP280/BME280 (presión)\",\n}\n\ndef diag_i2c_direccion(texto, bloque):\n    try:\n        direccion = int(str(texto).strip(), 0)\n    except ValueError:\n        direccion = -1\n    if not 0 < direccion < 128:\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\")\n    return direccion\n\ndef diag_i2c_escanear(sda, scl, bloque):\n    direcciones = i2c_bus(sda, scl, bloque).scan()\n    for direccion in direcciones:\n        print(\"I2C 0x%02X %s\" % (direccion, DIAG_I2C_NOMBRES.get(direccion, \"\")))\n    print(\"I2C: %d dispositivos\" % len(direcciones))\n\ndef diag_i2c_hay(sda, scl, texto, bloque):\n    return diag_i2c_direccion(texto, bloque) in i2c_bus(sda, scl, bloque).scan()\n\ndef diag_i2c_cantidad(sda, scl, bloque):\n    return len(i2c_bus(sda, scl, bloque).scan())\n"
+        ],
+        "expression": "diag_i2c_hay({SDA}, {SCL}, {ADDR}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+        "includes": ["#include <Wire.h>"],
+        "setup": ["rb_wire_begin({I2C_BUS});"],
+        "globals": [
+          "inline bool diag_i2c_responde(TwoWire& bus, uint8_t direccion) {\n    bus.beginTransmission(direccion);\n    return bus.endTransmission() == 0;\n}\ninline void diag_i2c_nombre(uint8_t direccion) {\n    switch (direccion) {\n        case 0x0D: Serial.print(\" QMC5883L (brújula)\"); break;\n        case 0x1E: Serial.print(\" HMC5883L (brújula)\"); break;\n        case 0x28: Serial.print(\" BNO055 (IMU)\"); break;\n        case 0x29: Serial.print(\" TCS34725 (color) o VL53L0X (láser)\"); break;\n        case 0x32: Serial.print(\" HuskyLens\"); break;\n        case 0x39: Serial.print(\" APDS-9960 (color/gestos)\"); break;\n        case 0x3C: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x3D: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x40: Serial.print(\" INA219 o PCA9685\"); break;\n        case 0x41: Serial.print(\" INA219\"); break;\n        case 0x44: Serial.print(\" INA219\"); break;\n        case 0x45: Serial.print(\" INA219\"); break;\n        case 0x48: Serial.print(\" ADS1115 (ADC)\"); break;\n        case 0x4A: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x4B: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x50: Serial.print(\" EEPROM\"); break;\n        case 0x68: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x69: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x70: Serial.print(\" TCA9548A (multiplexor)\"); break;\n        case 0x76: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        case 0x77: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        default: break;\n    }\n}\ninline void diag_i2c_escanear(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++) {\n        if (!diag_i2c_responde(bus, direccion)) continue;\n        cantidad++;\n        Serial.print(\"I2C 0x\");\n        if (direccion < 16) Serial.print(\"0\");\n        Serial.print(direccion, HEX);\n        diag_i2c_nombre(direccion);\n        Serial.println();\n    }\n    Serial.print(\"I2C: \");\n    Serial.print(cantidad);\n    Serial.println(\" dispositivos\");\n}\ninline int diag_i2c_direccion(const String& texto, const char* bloque) {\n    const char* inicio = texto.c_str();\n    char* fin = nullptr;\n    long direccion = strtol(inicio, &fin, 0);\n    if (fin == inicio || *fin != '\\0' || direccion <= 0 || direccion >= 128) {\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\");\n        return 0;\n    }\n    return int(direccion);\n}\ninline bool diag_i2c_hay(TwoWire& bus, const String& texto, const char* bloque) {\n    int direccion = diag_i2c_direccion(texto, bloque);\n    return direccion > 0 && diag_i2c_responde(bus, uint8_t(direccion));\n}\ninline float diag_i2c_cantidad(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++)\n        if (diag_i2c_responde(bus, direccion)) cantidad++;\n    return float(cantidad);\n}\n"
+        ],
+        "expression": "diag_i2c_hay({I2C_BUS}, {ADDR}, {BLOCK_ID})"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.diagnostico-i2c:count",
+    "operation": "org.robotblocks.diagnostico-i2c:count",
+    "category": "org.robotblocks.diagnostico-i2c:diagnostico",
+    "label": {
+      "es": "cantidad de dispositivos I2C (SDA %SDA SCL %SCL)",
+      "en": "number of I2C devices (SDA %SDA SCL %SCL)"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Cuántas direcciones responden en ese bus. Por ejemplo, si el robot tiene 9 láseres y una IMU, debería dar 10.",
+      "en": "How many addresses answer on that bus. For example, if the robot has 9 lasers and an IMU, it should give 10."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "DIAG_I2C_NOMBRES = {\n    0x0D: \"QMC5883L (brújula)\",\n    0x1E: \"HMC5883L (brújula)\",\n    0x28: \"BNO055 (IMU)\",\n    0x29: \"TCS34725 (color) o VL53L0X (láser)\",\n    0x32: \"HuskyLens\",\n    0x39: \"APDS-9960 (color/gestos)\",\n    0x3C: \"OLED SSD1306/SH1106\",\n    0x3D: \"OLED SSD1306/SH1106\",\n    0x40: \"INA219 o PCA9685\",\n    0x41: \"INA219\",\n    0x44: \"INA219\",\n    0x45: \"INA219\",\n    0x48: \"ADS1115 (ADC)\",\n    0x4A: \"BNO085 (IMU)\",\n    0x4B: \"BNO085 (IMU)\",\n    0x50: \"EEPROM\",\n    0x68: \"MPU6050 (IMU)\",\n    0x69: \"MPU6050 (IMU)\",\n    0x70: \"TCA9548A (multiplexor)\",\n    0x76: \"BMP280/BME280 (presión)\",\n    0x77: \"BMP280/BME280 (presión)\",\n}\n\ndef diag_i2c_direccion(texto, bloque):\n    try:\n        direccion = int(str(texto).strip(), 0)\n    except ValueError:\n        direccion = -1\n    if not 0 < direccion < 128:\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\")\n    return direccion\n\ndef diag_i2c_escanear(sda, scl, bloque):\n    direcciones = i2c_bus(sda, scl, bloque).scan()\n    for direccion in direcciones:\n        print(\"I2C 0x%02X %s\" % (direccion, DIAG_I2C_NOMBRES.get(direccion, \"\")))\n    print(\"I2C: %d dispositivos\" % len(direcciones))\n\ndef diag_i2c_hay(sda, scl, texto, bloque):\n    return diag_i2c_direccion(texto, bloque) in i2c_bus(sda, scl, bloque).scan()\n\ndef diag_i2c_cantidad(sda, scl, bloque):\n    return len(i2c_bus(sda, scl, bloque).scan())\n"
+        ],
+        "expression": "diag_i2c_cantidad({SDA}, {SCL}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "canFail": false,
+        "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+        "includes": ["#include <Wire.h>"],
+        "setup": ["rb_wire_begin({I2C_BUS});"],
+        "globals": [
+          "inline bool diag_i2c_responde(TwoWire& bus, uint8_t direccion) {\n    bus.beginTransmission(direccion);\n    return bus.endTransmission() == 0;\n}\ninline void diag_i2c_nombre(uint8_t direccion) {\n    switch (direccion) {\n        case 0x0D: Serial.print(\" QMC5883L (brújula)\"); break;\n        case 0x1E: Serial.print(\" HMC5883L (brújula)\"); break;\n        case 0x28: Serial.print(\" BNO055 (IMU)\"); break;\n        case 0x29: Serial.print(\" TCS34725 (color) o VL53L0X (láser)\"); break;\n        case 0x32: Serial.print(\" HuskyLens\"); break;\n        case 0x39: Serial.print(\" APDS-9960 (color/gestos)\"); break;\n        case 0x3C: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x3D: Serial.print(\" OLED SSD1306/SH1106\"); break;\n        case 0x40: Serial.print(\" INA219 o PCA9685\"); break;\n        case 0x41: Serial.print(\" INA219\"); break;\n        case 0x44: Serial.print(\" INA219\"); break;\n        case 0x45: Serial.print(\" INA219\"); break;\n        case 0x48: Serial.print(\" ADS1115 (ADC)\"); break;\n        case 0x4A: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x4B: Serial.print(\" BNO085 (IMU)\"); break;\n        case 0x50: Serial.print(\" EEPROM\"); break;\n        case 0x68: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x69: Serial.print(\" MPU6050 (IMU)\"); break;\n        case 0x70: Serial.print(\" TCA9548A (multiplexor)\"); break;\n        case 0x76: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        case 0x77: Serial.print(\" BMP280/BME280 (presión)\"); break;\n        default: break;\n    }\n}\ninline void diag_i2c_escanear(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++) {\n        if (!diag_i2c_responde(bus, direccion)) continue;\n        cantidad++;\n        Serial.print(\"I2C 0x\");\n        if (direccion < 16) Serial.print(\"0\");\n        Serial.print(direccion, HEX);\n        diag_i2c_nombre(direccion);\n        Serial.println();\n    }\n    Serial.print(\"I2C: \");\n    Serial.print(cantidad);\n    Serial.println(\" dispositivos\");\n}\ninline int diag_i2c_direccion(const String& texto, const char* bloque) {\n    const char* inicio = texto.c_str();\n    char* fin = nullptr;\n    long direccion = strtol(inicio, &fin, 0);\n    if (fin == inicio || *fin != '\\0' || direccion <= 0 || direccion >= 128) {\n        rb_fail(bloque, \"Dirección I2C inválida: usa 0x08 a 0x77\");\n        return 0;\n    }\n    return int(direccion);\n}\ninline bool diag_i2c_hay(TwoWire& bus, const String& texto, const char* bloque) {\n    int direccion = diag_i2c_direccion(texto, bloque);\n    return direccion > 0 && diag_i2c_responde(bus, uint8_t(direccion));\n}\ninline float diag_i2c_cantidad(TwoWire& bus) {\n    int cantidad = 0;\n    for (uint8_t direccion = 1; direccion < 127; direccion++)\n        if (diag_i2c_responde(bus, direccion)) cantidad++;\n    return float(cantidad);\n}\n"
+        ],
+        "expression": "diag_i2c_cantidad({I2C_BUS})"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  }
+]
