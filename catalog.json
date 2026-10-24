@@ -219,6 +219,12 @@
       "path": "packages/filtros"
     },
     {
+      "name": "Control PID",
+      "description": "Controladores PID con nombre: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/control-pid"
+    },
+    {
       "name": "EV3 · AbsoluteIMU de mindsensors · experimental",
       "description": "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.",
       "kind": "module",

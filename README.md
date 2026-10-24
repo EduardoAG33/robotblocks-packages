@@ -28,6 +28,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/zumbador`           | Tonos, notas y melodías en segundo plano    | Arduino y MicroPython; experimental                                |
 | `packages/bateria`            | Voltaje con divisor e INA219 sin librería   | Arduino y MicroPython; experimental                                |
 | `packages/filtros`            | Promedio móvil, mediana y exponencial       | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/control-pid`        | Controladores PID con nombre                | Arduino, MicroPython y Pybricks; experimental                      |
 | `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |
 | `packages/arduino-nano`       | Arduino Nano ATmega328P                     | Arduino experimental, sin carga                                    |
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |

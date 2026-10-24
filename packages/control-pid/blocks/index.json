@@ -1,0 +1,335 @@
+[
+  {
+    "id": "org.robotblocks.control-pid:configure",
+    "operation": "org.robotblocks.control-pid:configure",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "configurar PID %PIDS",
+      "en": "configure PID %PIDS"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "variadic": {
+      "input": {
+        "name": "PIDS",
+        "type": "value"
+      },
+      "min": 1,
+      "max": 8,
+      "row": {
+        "label": {
+          "es": "nombre %NAME Kp %KP Ki %KI Kd %KD límite ± %LIMIT",
+          "en": "name %NAME Kp %KP Ki %KI Kd %KD limit ± %LIMIT"
+        },
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string",
+            "default": "{N}"
+          },
+          {
+            "name": "KP",
+            "type": "number",
+            "default": 1
+          },
+          {
+            "name": "KI",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "KD",
+            "type": "number",
+            "default": 0
+          },
+          {
+            "name": "LIMIT",
+            "type": "number",
+            "default": 100
+          }
+        ],
+        "template": "{KP}, {KI}, {KD}, {LIMIT}"
+      }
+    },
+    "tooltip": {
+      "es": "En «al iniciar». Cada fila es un PID con nombre; + y − añaden o quitan PID (1–8). Ki usa el error acumulado por segundo y Kd el cambio del error por segundo. La salida queda entre −límite y +límite.",
+      "en": "In “when started”. Each row is a named PID; + and − add or remove PIDs (1–8). Ki uses the error accumulated per second and Kd the change of the error per second. The output stays between −limit and +limit."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def pid_ahora():\n    return time.ticks_us() if hasattr(time, \"ticks_us\") else int(time.monotonic() * 1000000)\n\ndef pid_transcurrido(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+          "# La I y la D se recalculan cada 5 ms o más; en vueltas más cortas solo cambia la P.\nPID_MUESTRA_US = 5000\n\nclass PidControl:\n    def __init__(self, kp, ki, kd, limite):\n        self.kp = kp\n        self.ki = ki\n        self.kd = kd\n        self.limite = limite\n        pid_reiniciar(self)\n\ndef pid_reiniciar(pid):\n    pid.integral = 0\n    pid.anterior = 0\n    pid.error = 0\n    pid.p = 0\n    pid.i = 0\n    pid.d = 0\n    pid.salida = 0\n    pid.ultimo = None\n\ndef pid_limitar(valor, limite):\n    return max(-limite, min(limite, valor))\n\n# filas: Kp, Ki, Kd y límite de cada PID, uno tras otro.\ndef pid_configurar(inicio, filas, bloque):\n    for n in range(len(filas) // 4):\n        kp, ki, kd, limite = filas[4 * n:4 * n + 4]\n        if not limite > 0:\n            rb_fail(bloque, \"El límite del PID debe ser mayor que 0\")\n        pid_estado[inicio + n] = PidControl(kp, ki, kd, limite)\n\ndef pid_control(n, bloque):\n    pid = pid_estado[n - 1] if 1 <= n <= len(pid_estado) else None\n    if pid is None:\n        rb_fail(bloque, \"Configura el PID al iniciar\")\n    return pid\n\ndef pid_actualizar(n, error, bloque):\n    pid = pid_control(n, bloque)\n    error = rb_finite(error, bloque)\n    ahora = pid_ahora()\n    pid.error = error\n    pid.p = pid.kp * error\n    if pid.ultimo is None:\n        # Primera vuelta: todavía no hay tiempo ni error anterior, así que D = 0.\n        pid.ultimo = ahora\n        pid.anterior = error\n        pid.d = 0\n    else:\n        pasado = pid_transcurrido(ahora, pid.ultimo)\n        if pasado >= PID_MUESTRA_US:\n            dt = pasado / 1000000\n            if pid.ki != 0:\n                # Anti-windup: la I sola nunca supera el límite.\n                tope = pid.limite / abs(pid.ki)\n                pid.integral = pid_limitar(pid.integral + error * dt, tope)\n            pid.d = pid.kd * (error - pid.anterior) / dt\n            pid.anterior = error\n            pid.ultimo = ahora\n    pid.i = pid.ki * pid.integral\n    pid.salida = pid_limitar(pid.p + pid.i + pid.d, pid.limite)\n\ndef pid_cambiar(n, kp, ki, kd, bloque):\n    pid = pid_control(n, bloque)\n    pid.kp = rb_finite(kp, bloque)\n    pid.ki = rb_finite(ki, bloque)\n    pid.kd = rb_finite(kd, bloque)\n\ndef pid_parte(n, parte, bloque):\n    pid = pid_control(n, bloque)\n    if parte == \"p\":\n        return pid.p\n    if parte == \"i\":\n        return pid.i\n    if parte == \"d\":\n        return pid.d\n    return pid.error\n",
+          "pid_estado = [None] * {PIDS_TOTAL}\n"
+        ],
+        "statement": "pid_configurar({PIDS_OFFSET}, [{PIDS}], {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos.\npid_reloj = StopWatch()\n\ndef pid_ahora():\n    return pid_reloj.time() * 1000\n\ndef pid_transcurrido(ahora, antes):\n    return ahora - antes\n",
+          "# La I y la D se recalculan cada 5 ms o más; en vueltas más cortas solo cambia la P.\nPID_MUESTRA_US = 5000\n\nclass PidControl:\n    def __init__(self, kp, ki, kd, limite):\n        self.kp = kp\n        self.ki = ki\n        self.kd = kd\n        self.limite = limite\n        pid_reiniciar(self)\n\ndef pid_reiniciar(pid):\n    pid.integral = 0\n    pid.anterior = 0\n    pid.error = 0\n    pid.p = 0\n    pid.i = 0\n    pid.d = 0\n    pid.salida = 0\n    pid.ultimo = None\n\ndef pid_limitar(valor, limite):\n    return max(-limite, min(limite, valor))\n\n# filas: Kp, Ki, Kd y límite de cada PID, uno tras otro.\ndef pid_configurar(inicio, filas, bloque):\n    for n in range(len(filas) // 4):\n        kp, ki, kd, limite = filas[4 * n:4 * n + 4]\n        if not limite > 0:\n            rb_fail(bloque, \"El límite del PID debe ser mayor que 0\")\n        pid_estado[inicio + n] = PidControl(kp, ki, kd, limite)\n\ndef pid_control(n, bloque):\n    pid = pid_estado[n - 1] if 1 <= n <= len(pid_estado) else None\n    if pid is None:\n        rb_fail(bloque, \"Configura el PID al iniciar\")\n    return pid\n\ndef pid_actualizar(n, error, bloque):\n    pid = pid_control(n, bloque)\n    error = rb_finite(error, bloque)\n    ahora = pid_ahora()\n    pid.error = error\n    pid.p = pid.kp * error\n    if pid.ultimo is None:\n        # Primera vuelta: todavía no hay tiempo ni error anterior, así que D = 0.\n        pid.ultimo = ahora\n        pid.anterior = error\n        pid.d = 0\n    else:\n        pasado = pid_transcurrido(ahora, pid.ultimo)\n        if pasado >= PID_MUESTRA_US:\n            dt = pasado / 1000000\n            if pid.ki != 0:\n                # Anti-windup: la I sola nunca supera el límite.\n                tope = pid.limite / abs(pid.ki)\n                pid.integral = pid_limitar(pid.integral + error * dt, tope)\n            pid.d = pid.kd * (error - pid.anterior) / dt\n            pid.anterior = error\n            pid.ultimo = ahora\n    pid.i = pid.ki * pid.integral\n    pid.salida = pid_limitar(pid.p + pid.i + pid.d, pid.limite)\n\ndef pid_cambiar(n, kp, ki, kd, bloque):\n    pid = pid_control(n, bloque)\n    pid.kp = rb_finite(kp, bloque)\n    pid.ki = rb_finite(ki, bloque)\n    pid.kd = rb_finite(kd, bloque)\n\ndef pid_parte(n, parte, bloque):\n    pid = pid_control(n, bloque)\n    if parte == \"p\":\n        return pid.p\n    if parte == \"i\":\n        return pid.i\n    if parte == \"d\":\n        return pid.d\n    return pid.error\n",
+          "pid_estado = [None] * {PIDS_TOTAL}\n"
+        ],
+        "statement": "pid_configurar({PIDS_OFFSET}, [{PIDS}], {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct RbPid {\n    float kp = 0, ki = 0, kd = 0, limite = 0;\n    float integral = 0, anterior = 0, error = 0, p = 0, i = 0, d = 0, salida = 0;\n    unsigned long ultimo = 0;\n    bool configurado = false, iniciado = false;\n};\n// La I y la D se recalculan cada 5 ms o más; en vueltas más cortas solo cambia la P.\nconst unsigned long PID_MUESTRA_US = 5000UL;\ninline float pid_limitar(float valor, float limite) {\n    return valor > limite ? limite : valor < -limite ? -limite : valor;\n}\ninline void pid_reiniciar(RbPid& pid) {\n    pid.integral = 0;\n    pid.anterior = 0;\n    pid.error = 0;\n    pid.p = 0;\n    pid.i = 0;\n    pid.d = 0;\n    pid.salida = 0;\n    pid.iniciado = false;\n}\n",
+          "static RbPid pid_estado[{PIDS_TOTAL}];\n",
+          "inline RbPid& pid_control(int n, const char* bloque) {\n    static RbPid vacio;\n    int total = int(sizeof(pid_estado) / sizeof(pid_estado[0]));\n    if (n < 1 || n > total || !pid_estado[n - 1].configurado) {\n        rb_fail(bloque, \"Configura el PID al iniciar\");\n        return vacio;\n    }\n    return pid_estado[n - 1];\n}\n// filas: Kp, Ki, Kd y límite de cada PID, uno tras otro.\ninline void pid_configurar(int inicio, const float* filas, int cantidad, const char* bloque) {\n    for (int n = 0; n < cantidad; n++) {\n        const float* fila = filas + 4 * n;\n        if (!(fila[3] > 0)) {\n            rb_fail(bloque, \"El límite del PID debe ser mayor que 0\");\n            return;\n        }\n        RbPid& pid = pid_estado[inicio + n];\n        pid.kp = fila[0];\n        pid.ki = fila[1];\n        pid.kd = fila[2];\n        pid.limite = fila[3];\n        pid.configurado = true;\n        pid_reiniciar(pid);\n    }\n}\ninline void pid_actualizar(int n, float error, const char* bloque) {\n    RbPid& pid = pid_control(n, bloque);\n    error = rb_finite(error, bloque);\n    if (rb_failed) return;\n    unsigned long ahora = micros();\n    pid.error = error;\n    pid.p = pid.kp * error;\n    if (!pid.iniciado) {\n        // Primera vuelta: todavía no hay tiempo ni error anterior, así que D = 0.\n        pid.iniciado = true;\n        pid.ultimo = ahora;\n        pid.anterior = error;\n        pid.d = 0;\n    } else {\n        unsigned long pasado = ahora - pid.ultimo;\n        if (pasado >= PID_MUESTRA_US) {\n            float dt = pasado / 1000000.0f;\n            if (pid.ki != 0) {\n                // Anti-windup: la I sola nunca supera el límite.\n                float tope = pid.limite / fabs(pid.ki);\n                pid.integral = pid_limitar(pid.integral + error * dt, tope);\n            }\n            pid.d = pid.kd * (error - pid.anterior) / dt;\n            pid.anterior = error;\n            pid.ultimo = ahora;\n        }\n    }\n    pid.i = pid.ki * pid.integral;\n    pid.salida = pid_limitar(pid.p + pid.i + pid.d, pid.limite);\n}\ninline void pid_cambiar(int n, float kp, float ki, float kd, const char* bloque) {\n    RbPid& pid = pid_control(n, bloque);\n    kp = rb_finite(kp, bloque);\n    ki = rb_finite(ki, bloque);\n    kd = rb_finite(kd, bloque);\n    if (rb_failed) return;\n    pid.kp = kp;\n    pid.ki = ki;\n    pid.kd = kd;\n}\ninline float pid_parte(int n, const String& parte, const char* bloque) {\n    RbPid& pid = pid_control(n, bloque);\n    if (parte == \"p\") return pid.p;\n    if (parte == \"i\") return pid.i;\n    if (parte == \"d\") return pid.d;\n    return pid.error;\n}\n",
+          "static const float pid_filas_{PIDS_OFFSET}[] = { {PIDS} };"
+        ],
+        "statement": "pid_configurar({PIDS_OFFSET}, pid_filas_{PIDS_OFFSET}, {PIDS_COUNT}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.control-pid:update",
+    "operation": "org.robotblocks.control-pid:update",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "actualizar PID %N con error %ERROR",
+      "en": "update PID %N with error %ERROR"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.control-pid:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ERROR",
+        "type": "number",
+        "default": 0
+      }
+    ],
+    "tooltip": {
+      "es": "Úsalo una vez por vuelta del bucle. Calcula P, I y D con el tiempo real entre vueltas. Error positivo da salida positiva con Kp positivo; si el robot corrige al revés, invierte el error.",
+      "en": "Use it once per loop. Computes P, I and D with the real time between loops. A positive error gives a positive output with a positive Kp; if the robot corrects the wrong way, invert the error."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "statement": "pid_actualizar({N}, {ERROR}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "statement": "pid_actualizar({N}, {ERROR}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "statement": "pid_actualizar({N}, {ERROR}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.control-pid:output",
+    "operation": "org.robotblocks.control-pid:output",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "salida de PID %N",
+      "en": "output of PID %N"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.control-pid:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Último resultado de «actualizar PID», entre −límite y +límite. Puedes usarlo varias veces (por ejemplo base + salida y base − salida) sin recalcular.",
+      "en": "Latest result of “update PID”, between −limit and +limit. You can use it several times (for example base + output and base − output) without recomputing."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "expression": "pid_control({N}, {BLOCK_ID}).salida"
+      },
+      "pybricks": {
+        "expression": "pid_control({N}, {BLOCK_ID}).salida"
+      },
+      "arduino": {
+        "expression": "pid_control({N}, {BLOCK_ID}).salida"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.control-pid:part",
+    "operation": "org.robotblocks.control-pid:part",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "%PART de PID %N",
+      "en": "%PART of PID %N"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PART",
+        "type": "string",
+        "default": "p",
+        "options": [
+          {
+            "label": "P",
+            "value": "p"
+          },
+          {
+            "label": "I",
+            "value": "i"
+          },
+          {
+            "label": "D",
+            "value": "d"
+          },
+          {
+            "label": {
+              "es": "error",
+              "en": "error"
+            },
+            "value": "error"
+          }
+        ]
+      },
+      {
+        "name": "N",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.control-pid:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Parte del último cálculo, para ajustar Kp, Ki y Kd en el monitor. P + I + D da la salida antes de aplicar el límite.",
+      "en": "Part of the latest computation, to tune Kp, Ki and Kd on the monitor. P + I + D gives the output before the limit."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "expression": "pid_parte({N}, {PART}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "expression": "pid_parte({N}, {PART}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "expression": "pid_parte({N}, {PART}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.control-pid:reset",
+    "operation": "org.robotblocks.control-pid:reset",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "reiniciar PID %N",
+      "en": "reset PID %N"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.control-pid:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Borra la I acumulada, el error anterior y la salida. Úsalo antes de empezar a seguir, después de un giro o al cambiar el objetivo.",
+      "en": "Clears the accumulated I, the previous error and the output. Use it before starting to follow, after a turn or when the target changes."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "statement": "pid_reiniciar(pid_control({N}, {BLOCK_ID}))"
+      },
+      "pybricks": {
+        "statement": "pid_reiniciar(pid_control({N}, {BLOCK_ID}))"
+      },
+      "arduino": {
+        "statement": "pid_reiniciar(pid_control({N}, {BLOCK_ID}));"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.control-pid:tune",
+    "operation": "org.robotblocks.control-pid:tune",
+    "category": "org.robotblocks.control-pid:pid",
+    "label": {
+      "es": "cambiar PID %N a Kp %KP Ki %KI Kd %KD",
+      "en": "set PID %N to Kp %KP Ki %KI Kd %KD"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "N",
+        "type": "string",
+        "default": "1",
+        "reference": {
+          "kind": "row",
+          "block": "org.robotblocks.control-pid:configure",
+          "field": "NAME"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "KP",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "KI",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "KD",
+        "type": "number",
+        "default": 0
+      }
+    ],
+    "tooltip": {
+      "es": "Cambia las constantes sin reiniciar el PID; acepta variables, por ejemplo para ajustar con botones o por UART. El límite se queda como en «configurar PID».",
+      "en": "Changes the constants without resetting the PID; accepts variables, for example to tune with buttons or over UART. The limit stays as in “configure PID”."
+    },
+    "requiredCapabilities": [],
+    "generators": {
+      "micropython": {
+        "statement": "pid_cambiar({N}, {KP}, {KI}, {KD}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "statement": "pid_cambiar({N}, {KP}, {KI}, {KD}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "statement": "pid_cambiar({N}, {KP}, {KI}, {KD}, {BLOCK_ID});"
+      }
+    }
+  }
+]

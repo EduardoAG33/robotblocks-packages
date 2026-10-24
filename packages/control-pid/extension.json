@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.control-pid",
+  "name": "Control PID",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Controladores PID con nombre para seguir líneas, paredes o un ángulo: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.control-pid:pid",
+        "name": "Control PID",
+        "colour": "#00897B"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "other",
+    "translations": {
+      "en": {
+        "Control PID": "PID control",
+        "Controladores PID con nombre para seguir líneas, paredes o un ángulo: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.": "Named PID controllers to follow lines, walls or an angle: real time between loops, anti-windup and a limited output. Arduino, MicroPython and Pybricks.",
+        "Configura el PID al iniciar": "Configure the PID at start",
+        "El límite del PID debe ser mayor que 0": "The PID limit must be greater than 0"
+      }
+    }
+  }
+}
