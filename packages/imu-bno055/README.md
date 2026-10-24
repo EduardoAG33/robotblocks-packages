@@ -8,7 +8,7 @@ Extensión **experimental** para MicroPython y Arduino/C++, probada en simulaci�
 - **ángulo de giro**: de -180 a 180 grados respecto al último reinicio; positivo hacia la derecha. Perfecto para girar 90° o avanzar recto con un PID.
 - **ángulo de giro acumulado**: sin límite de vueltas; derecha positiva, +1080° para tres vueltas a la derecha y −1080° a la izquierda.
 - **reiniciar ángulo de giro**: la dirección actual pasa a ser 0 y el giro acumulado se reinicia también.
-- **inclinación [adelante/atrás / izquierda/derecha]**: en grados, útil para rampas.
+- **inclinación [adelante/atrás / izquierda/derecha]**: en grados, útil para rampas. Monta la placa con la flecha X hacia el frente del robot.
 
 Usa el modo **IMU** del chip (acelerómetro + giroscopio, sin brújula), así que los motores y las estructuras metálicas no alteran el giro. A cambio, puede desviarse lentamente con el tiempo: reinicia el ángulo al empezar cada recorrido.
 
