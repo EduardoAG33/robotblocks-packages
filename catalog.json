@@ -177,6 +177,48 @@
       "path": "packages/ws2812"
     },
     {
+      "name": "Máquina de estados",
+      "description": "Estados con nombre: cambiar de estado, saber en cuál está, si acaba de entrar y cuánto lleva. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/maquina-estados"
+    },
+    {
+      "name": "Cronómetros",
+      "description": "Varios cronómetros con nombre, límites de tiempo y tareas «cada X ms» sin frenar el programa. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/cronometros"
+    },
+    {
+      "name": "Diagnóstico I2C",
+      "description": "Escanea el bus I2C e imprime qué sensores responden, o comprueba una dirección antes de arrancar. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/diagnostico-i2c"
+    },
+    {
+      "name": "Pantalla OLED",
+      "description": "OLED I2C SSD1306/SH1106: texto por filas, barras y borrar, sin librerías y casi sin RAM. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/pantalla-oled"
+    },
+    {
+      "name": "Zumbador",
+      "description": "Tonos, notas y melodías en segundo plano para zumbadores pasivos. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/zumbador"
+    },
+    {
+      "name": "Batería",
+      "description": "Voltaje con divisor (promedio, porcentaje, batería baja) e INA219 por I2C sin librería. Arduino y MicroPython.",
+      "kind": "module",
+      "path": "packages/bateria"
+    },
+    {
+      "name": "Filtros",
+      "description": "Promedio móvil, mediana y exponencial con nombre. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/filtros"
+    },
+    {
       "name": "Control PID",
       "description": "Controladores PID con nombre: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
       "kind": "module",
