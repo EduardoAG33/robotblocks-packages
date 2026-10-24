@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.bateria",
+  "name": "Batería",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Voltaje por divisor resistivo e INA219 por I2C sin librerías externas.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.bateria:bateria",
+        "name": "Batería",
+        "colour": "#43A047"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Batería": "Battery",
+        "Voltaje por divisor resistivo e INA219 por I2C sin librerías externas.": "Voltage through a resistive divider and INA219 over I2C without external libraries.",
+        "R1, R2 y referencia deben ser mayores que cero": "R1, R2 and reference must be greater than zero",
+        "Configura la batería al iniciar": "Configure the battery at start",
+        "El voltaje máximo debe ser mayor que el mínimo": "Maximum voltage must be greater than minimum voltage",
+        "Configura el INA219 al iniciar": "Configure INA219 at start",
+        "Desbordamiento de medición INA219": "INA219 measurement overflow",
+        "No se pudo iniciar I2C en SDA %s / SCL %s: %s": "Could not start I2C on SDA %s / SCL %s: %s",
+        "No se encontró el INA219 en 0x40": "INA219 not found at 0x40",
+        "No se encontró el INA219 en 0x41": "INA219 not found at 0x41",
+        "No se encontró el INA219 en 0x42": "INA219 not found at 0x42",
+        "No se encontró el INA219 en 0x43": "INA219 not found at 0x43",
+        "No se encontró el INA219 en 0x44": "INA219 not found at 0x44",
+        "No se encontró el INA219 en 0x45": "INA219 not found at 0x45"
+      }
+    }
+  }
+}

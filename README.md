@@ -21,6 +21,13 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/uart`               | Líneas de texto por UART (OpenMV)           | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo  | Arduino/C++ experimental, sin librería externa                     |
 | `packages/i2c`                | Registros entre tarjetas por I2C            | Arduino maestro/esclavo y MicroPython maestro; experimental        |
+| `packages/maquina-estados`    | Estados con nombre para ordenar el robot    | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/cronometros`        | Cronómetros con nombre y tareas periódicas  | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/diagnostico-i2c`    | Escanear el bus I2C y revisar direcciones   | Arduino y MicroPython; experimental                                |
+| `packages/pantalla-oled`      | Pantalla OLED I2C: texto, barras y borrar   | Arduino y MicroPython; experimental                                |
+| `packages/zumbador`           | Tonos, notas y melodías en segundo plano    | Arduino y MicroPython; experimental                                |
+| `packages/bateria`            | Voltaje con divisor e INA219 sin librería   | Arduino y MicroPython; experimental                                |
+| `packages/filtros`            | Promedio móvil, mediana y exponencial       | Arduino, MicroPython y Pybricks; experimental                      |
 | `packages/arduino-uno`        | Arduino UNO R3                              | Arduino experimental, sin carga                                    |
 | `packages/arduino-nano`       | Arduino Nano ATmega328P                     | Arduino experimental, sin carga                                    |
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |

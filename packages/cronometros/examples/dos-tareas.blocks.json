@@ -1,0 +1,556 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "dos-tareas",
+  "name": "Cronómetros · dos tareas a la vez",
+  "board": { "definitionId": "org.robotblocks.arduino-uno:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "dos-tareas-arduino-uno-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "dos-tareas-arduino-uno-1",
+            "blockId": "org.robotblocks.cronometros:configure",
+            "operation": "org.robotblocks.cronometros:configure",
+            "fields": { "NAME1": "parpadeo", "NAME2": "monitor" },
+            "inputs": {},
+            "next": {
+              "id": "dos-tareas-arduino-uno-25",
+              "blockId": "core:forever",
+              "operation": "core:forever",
+              "fields": {},
+              "inputs": {
+                "BODY": {
+                  "id": "dos-tareas-arduino-uno-5",
+                  "blockId": "core:set",
+                  "operation": "core:set",
+                  "fields": { "VARIABLE": "vueltas" },
+                  "inputs": {
+                    "VALUE": {
+                      "id": "dos-tareas-arduino-uno-4",
+                      "blockId": "core:add",
+                      "operation": "core:add",
+                      "fields": {},
+                      "inputs": {
+                        "LEFT": {
+                          "id": "dos-tareas-arduino-uno-2",
+                          "blockId": "core:variable",
+                          "operation": "core:variable",
+                          "fields": { "VARIABLE": "vueltas" },
+                          "inputs": {},
+                          "next": null
+                        },
+                        "RIGHT": {
+                          "id": "dos-tareas-arduino-uno-3",
+                          "blockId": "core:number",
+                          "operation": "core:number",
+                          "fields": { "NUMBER": 1 },
+                          "inputs": {},
+                          "next": null
+                        }
+                      },
+                      "next": null
+                    }
+                  },
+                  "next": {
+                    "id": "dos-tareas-arduino-uno-14",
+                    "blockId": "core:if",
+                    "operation": "core:if",
+                    "fields": {},
+                    "inputs": {
+                      "CONDITION": {
+                        "id": "dos-tareas-arduino-uno-7",
+                        "blockId": "org.robotblocks.cronometros:every",
+                        "operation": "org.robotblocks.cronometros:every",
+                        "fields": { "T": "parpadeo" },
+                        "inputs": {
+                          "MS": {
+                            "id": "dos-tareas-arduino-uno-6",
+                            "blockId": "core:number",
+                            "operation": "core:number",
+                            "fields": { "NUMBER": 250 },
+                            "inputs": {},
+                            "next": null
+                          }
+                        },
+                        "next": null
+                      },
+                      "BODY": {
+                        "id": "dos-tareas-arduino-uno-11",
+                        "blockId": "core:set",
+                        "operation": "core:set",
+                        "fields": { "VARIABLE": "led" },
+                        "inputs": {
+                          "VALUE": {
+                            "id": "dos-tareas-arduino-uno-10",
+                            "blockId": "core:subtract",
+                            "operation": "core:subtract",
+                            "fields": {},
+                            "inputs": {
+                              "LEFT": {
+                                "id": "dos-tareas-arduino-uno-8",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 1 },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "RIGHT": {
+                                "id": "dos-tareas-arduino-uno-9",
+                                "blockId": "core:variable",
+                                "operation": "core:variable",
+                                "fields": { "VARIABLE": "led" },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        },
+                        "next": {
+                          "id": "dos-tareas-arduino-uno-13",
+                          "blockId": "org.robotblocks.demo-board-io:digital-write-value",
+                          "operation": "org.robotblocks.demo-board-io:digital-write-value",
+                          "fields": { "PIN": "d13" },
+                          "inputs": {
+                            "VALUE": {
+                              "id": "dos-tareas-arduino-uno-12",
+                              "blockId": "core:variable",
+                              "operation": "core:variable",
+                              "fields": { "VARIABLE": "led" },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "next": null
+                        }
+                      }
+                    },
+                    "next": {
+                      "id": "dos-tareas-arduino-uno-24",
+                      "blockId": "core:if",
+                      "operation": "core:if",
+                      "fields": {},
+                      "inputs": {
+                        "CONDITION": {
+                          "id": "dos-tareas-arduino-uno-16",
+                          "blockId": "org.robotblocks.cronometros:every",
+                          "operation": "org.robotblocks.cronometros:every",
+                          "fields": { "T": "monitor" },
+                          "inputs": {
+                            "MS": {
+                              "id": "dos-tareas-arduino-uno-15",
+                              "blockId": "core:number",
+                              "operation": "core:number",
+                              "fields": { "NUMBER": 1000 },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "next": null
+                        },
+                        "BODY": {
+                          "id": "dos-tareas-arduino-uno-21",
+                          "blockId": "core:serial-println",
+                          "operation": "core:serial-println",
+                          "fields": {},
+                          "inputs": {
+                            "VALUE": {
+                              "id": "dos-tareas-arduino-uno-20",
+                              "blockId": "core:join",
+                              "operation": "core:join",
+                              "fields": {},
+                              "inputs": {
+                                "LEFT": {
+                                  "id": "dos-tareas-arduino-uno-17",
+                                  "blockId": "core:text",
+                                  "operation": "core:text",
+                                  "fields": { "TEXT": "vueltas por segundo: " },
+                                  "inputs": {},
+                                  "next": null
+                                },
+                                "RIGHT": {
+                                  "id": "dos-tareas-arduino-uno-19",
+                                  "blockId": "core:to-text",
+                                  "operation": "core:to-text",
+                                  "fields": {},
+                                  "inputs": {
+                                    "VALUE": {
+                                      "id": "dos-tareas-arduino-uno-18",
+                                      "blockId": "core:variable",
+                                      "operation": "core:variable",
+                                      "fields": { "VARIABLE": "vueltas" },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "dos-tareas-arduino-uno-23",
+                            "blockId": "core:set",
+                            "operation": "core:set",
+                            "fields": { "VARIABLE": "vueltas" },
+                            "inputs": {
+                              "VALUE": {
+                                "id": "dos-tareas-arduino-uno-22",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 0 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        }
+                      },
+                      "next": null
+                    }
+                  }
+                }
+              },
+              "next": null
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [
+    { "id": "led", "name": "led", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "vueltas", "name": "vueltas", "type": "number", "scope": "project", "initialValue": 0 }
+  ],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-uno", "version": "0.3.0" },
+    { "id": "org.robotblocks.cronometros", "version": "1.0.0" },
+    { "id": "org.robotblocks.demo-board-io", "version": "1.3.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "dos-tareas-arduino-uno-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:if",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %BODY", "en": "if %CONDITION then %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "operation": "core:if",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:add",
+        "operation": "core:add",
+        "category": "core:operators",
+        "label": { "es": "%LEFT + %RIGHT", "en": "%LEFT + %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:subtract",
+        "operation": "core:subtract",
+        "category": "core:operators",
+        "label": { "es": "%LEFT − %RIGHT", "en": "%LEFT − %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:join",
+        "operation": "core:join",
+        "category": "core:operators",
+        "label": { "es": "unir %LEFT con %RIGHT", "en": "join %LEFT with %RIGHT" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [
+          { "name": "LEFT", "type": "string", "default": "hola" },
+          { "name": "RIGHT", "type": "string", "default": "mundo" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:to-text",
+        "operation": "core:to-text",
+        "category": "core:operators",
+        "label": { "es": "convertir %VALUE a texto", "en": "convert %VALUE to text" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [{ "name": "VALUE", "type": "value", "default": 123 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "org.robotblocks.demo-board-io:digital-write-value",
+        "category": "org.robotblocks.demo-board-io:pins",
+        "label": { "es": "escribir pin digital %PIN valor %VALUE", "en": "write digital pin %PIN value %VALUE" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [{ "name": "VALUE", "type": "number", "default": 1, "min": 0, "max": 1, "integer": true }],
+        "operation": "org.robotblocks.demo-board-io:digital-write-value",
+        "tooltip": {
+          "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+          "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "setup": ["pin_{PIN} = Pin({PIN}, Pin.OUT)"],
+            "statement": "pin_{PIN}.value({VALUE})"
+          },
+          "arduino": {
+            "canFail": false,
+            "setup": ["pinMode({PIN}, OUTPUT);"],
+            "statement": "digitalWrite({PIN}, {VALUE});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.cronometros:configure",
+        "category": "org.robotblocks.cronometros:cronometros",
+        "label": { "es": "configurar cronómetros %TIMERS", "en": "set up stopwatches %TIMERS" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.cronometros:configure",
+        "tooltip": {
+          "es": "En «al iniciar». Cada fila es un cronómetro con nombre; + y − añaden o quitan (1–8). Todos empiezan a contar aquí.",
+          "en": "In “when started”. Each row is a named stopwatch; + and − add or remove them (1–8). They all start counting here."
+        },
+        "requiredCapabilities": [],
+        "variadic": {
+          "input": { "name": "TIMERS", "type": "value" },
+          "min": 1,
+          "max": 8,
+          "row": {
+            "label": { "es": "cronómetro %NAME", "en": "stopwatch %NAME" },
+            "fields": [{ "name": "NAME", "type": "string", "default": "crono {N}" }],
+            "template": "{NAME}"
+          }
+        },
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["import time"],
+            "globals": [
+              "def crono_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef crono_pasado(desde):\n    return time.ticks_diff(crono_ms(), desde) if hasattr(time, \"ticks_diff\") else crono_ms() - desde\n\ndef crono_sumar(desde, ms):\n    return time.ticks_add(desde, int(ms)) if hasattr(time, \"ticks_add\") else desde + ms\n",
+              "def crono_reiniciar(n):\n    crono_inicio[n - 1] = crono_ms()\n\ndef crono_tiempo(n, unidad):\n    ms = crono_pasado(crono_inicio[n - 1])\n    return ms / 1000 if unidad == \"s\" else ms\n\ndef crono_paso(n, ms):\n    return crono_pasado(crono_inicio[n - 1]) >= ms\n\n# Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ndef crono_cada(n, ms):\n    pasado = crono_pasado(crono_inicio[n - 1])\n    if pasado < ms:\n        return False\n    if ms <= 0 or pasado >= 2 * ms:\n        crono_inicio[n - 1] = crono_ms()\n    else:\n        crono_inicio[n - 1] = crono_sumar(crono_inicio[n - 1], ms)\n    return True\n\ndef crono_configurar(inicio, cantidad):\n    ahora = crono_ms()\n    for n in range(cantidad):\n        crono_inicio[inicio + n] = ahora\n",
+              "crono_inicio = [0] * {TIMERS_TOTAL}\n"
+            ],
+            "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT})"
+          },
+          "arduino": {
+            "canFail": false,
+            "globals": [
+              "static unsigned long crono_inicio[{TIMERS_TOTAL}];\n",
+              "inline void crono_reiniciar(int n) {\n    crono_inicio[n - 1] = millis();\n}\ninline float crono_tiempo(int n, const String& unidad) {\n    unsigned long ms = millis() - crono_inicio[n - 1];\n    return unidad == \"s\" ? ms / 1000.0f : float(ms);\n}\ninline bool crono_paso(int n, float ms) {\n    return float(millis() - crono_inicio[n - 1]) >= ms;\n}\n// Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ninline bool crono_cada(int n, float ms) {\n    unsigned long pasado = millis() - crono_inicio[n - 1];\n    if (float(pasado) < ms) return false;\n    if (ms <= 0 || float(pasado) >= 2 * ms) crono_inicio[n - 1] = millis();\n    else crono_inicio[n - 1] += (unsigned long)ms;\n    return true;\n}\ninline void crono_configurar(int inicio, int cantidad) {\n    unsigned long ahora = millis();\n    for (int n = 0; n < cantidad; n++) crono_inicio[inicio + n] = ahora;\n}\n"
+            ],
+            "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT});"
+          },
+          "pybricks": {
+            "canFail": false,
+            "imports": ["from pybricks.tools import StopWatch"],
+            "globals": [
+              "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ncrono_reloj = StopWatch()\n\ndef crono_ms():\n    return crono_reloj.time()\n\ndef crono_pasado(desde):\n    return crono_ms() - desde\n\ndef crono_sumar(desde, ms):\n    return desde + ms\n",
+              "def crono_reiniciar(n):\n    crono_inicio[n - 1] = crono_ms()\n\ndef crono_tiempo(n, unidad):\n    ms = crono_pasado(crono_inicio[n - 1])\n    return ms / 1000 if unidad == \"s\" else ms\n\ndef crono_paso(n, ms):\n    return crono_pasado(crono_inicio[n - 1]) >= ms\n\n# Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ndef crono_cada(n, ms):\n    pasado = crono_pasado(crono_inicio[n - 1])\n    if pasado < ms:\n        return False\n    if ms <= 0 or pasado >= 2 * ms:\n        crono_inicio[n - 1] = crono_ms()\n    else:\n        crono_inicio[n - 1] = crono_sumar(crono_inicio[n - 1], ms)\n    return True\n\ndef crono_configurar(inicio, cantidad):\n    ahora = crono_ms()\n    for n in range(cantidad):\n        crono_inicio[inicio + n] = ahora\n",
+              "crono_inicio = [0] * {TIMERS_TOTAL}\n"
+            ],
+            "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.cronometros:every",
+        "category": "org.robotblocks.cronometros:cronometros",
+        "label": { "es": "cada %MS ms con cronómetro %T", "en": "every %MS ms with stopwatch %T" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [
+          {
+            "name": "T",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "row", "block": "org.robotblocks.cronometros:configure", "field": "NAME" }
+          }
+        ],
+        "inputs": [{ "name": "MS", "type": "number", "default": 500 }],
+        "operation": "org.robotblocks.cronometros:every",
+        "tooltip": {
+          "es": "Verdadero una vez cada ese tiempo; ponlo en un «si» dentro de «por siempre» para tareas periódicas (imprimir, parpadear) sin frenar el resto. Usa un cronómetro para cada tarea.",
+          "en": "True once every that time; put it in an “if” inside “forever” for periodic tasks (print, blink) without slowing the rest. Use one stopwatch per task."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": { "canFail": false, "expression": "crono_cada({T}, {MS})" },
+          "arduino": { "canFail": false, "expression": "crono_cada({T}, {MS})" },
+          "pybricks": { "canFail": false, "expression": "crono_cada({T}, {MS})" }
+        }
+      }
+    ]
+  }
+}

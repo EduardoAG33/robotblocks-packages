@@ -1,0 +1,300 @@
+[
+  {
+    "id": "org.robotblocks.maquina-estados:configure",
+    "operation": "org.robotblocks.maquina-estados:configure",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "configurar estados %STATES", "en": "set up states %STATES" },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "variadic": {
+      "input": { "name": "STATES", "type": "value" },
+      "min": 1,
+      "max": 16,
+      "row": {
+        "label": { "es": "estado %NAME", "en": "state %NAME" },
+        "fields": [{ "name": "NAME", "type": "string", "default": "estado {N}" }],
+        "template": "{NAME}"
+      }
+    },
+    "tooltip": {
+      "es": "En «al iniciar». Cada fila es un estado con nombre; + y − añaden o quitan estados (1–16). El robot empieza en el primero.",
+      "en": "In “when started”. Each row is a named state; + and − add or remove states (1–16). The robot starts in the first one."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "statement": "estados_configurar({STATES_OFFSET}, [{STATES}], {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "statement": "estados_configurar({STATES_OFFSET}, [{STATES}], {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n",
+          "static const String estados_filas_{STATES_OFFSET}[] = { {STATES} };"
+        ],
+        "statement": "estados_configurar({STATES_OFFSET}, estados_filas_{STATES_OFFSET}, {STATES_COUNT}, {BLOCK_ID});"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.maquina-estados:change",
+    "operation": "org.robotblocks.maquina-estados:change",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "cambiar a estado %S", "en": "change to state %S" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "S",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.maquina-estados:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Pasa al estado elegido: el actual se vuelve el anterior y el tiempo en el estado empieza en 0. Si ya está en ese estado no hace nada.",
+      "en": "Goes to the chosen state: the current one becomes the previous one and the time in the state starts at 0. If it is already in that state it does nothing."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "statement": "estados_cambiar({S})"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "statement": "estados_cambiar({S})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n"
+        ],
+        "statement": "estados_cambiar({S});"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.maquina-estados:is",
+    "operation": "org.robotblocks.maquina-estados:is",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "estado %WHICH es %S", "en": "%WHICH state is %S" },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "WHICH",
+        "type": "string",
+        "default": "actual",
+        "options": [
+          { "label": { "es": "actual", "en": "current" }, "value": "actual" },
+          { "label": { "es": "anterior", "en": "previous" }, "value": "anterior" }
+        ]
+      },
+      {
+        "name": "S",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.maquina-estados:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero si el estado actual (o el anterior) es el elegido. Úsalo en un «si» dentro de «por siempre», una rama por estado.",
+      "en": "True if the current (or previous) state is the chosen one. Use it in an “if” inside “forever”, one branch per state."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_es({WHICH}, {S})"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_es({WHICH}, {S})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n"
+        ],
+        "expression": "estados_es({WHICH}, {S})"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.maquina-estados:entered",
+    "operation": "org.robotblocks.maquina-estados:entered",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "acaba de entrar al estado %S", "en": "just entered state %S" },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "S",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.maquina-estados:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero una sola vez después de entrar al estado (también al arrancar, en el primero). Sirve para lo que se hace una vez: parar motores, reiniciar un PID o imprimir.",
+      "en": "True only once after entering the state (also at start, in the first one). Use it for things done once: stop motors, reset a PID or print."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_entro({S})"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_entro({S})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n"
+        ],
+        "expression": "estados_entro({S})"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.maquina-estados:time",
+    "operation": "org.robotblocks.maquina-estados:time",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "ms en el estado actual", "en": "ms in the current state" },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "Milisegundos desde el último cambio de estado. Por ejemplo: si pasan más de 3000 ms buscando la línea, cambiar a «perdido».",
+      "en": "Milliseconds since the last state change. For example: if more than 3000 ms pass looking for the line, change to “lost”."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_tiempo()"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_tiempo()"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n"
+        ],
+        "expression": "estados_tiempo()"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.maquina-estados:name",
+    "operation": "org.robotblocks.maquina-estados:name",
+    "category": "org.robotblocks.maquina-estados:estados",
+    "label": { "es": "nombre del estado %WHICH", "en": "name of the %WHICH state" },
+    "kind": "reporter",
+    "output": "string",
+    "fields": [
+      {
+        "name": "WHICH",
+        "type": "string",
+        "default": "actual",
+        "options": [
+          { "label": { "es": "actual", "en": "current" }, "value": "actual" },
+          { "label": { "es": "anterior", "en": "previous" }, "value": "anterior" }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Nombre del estado actual o del anterior, para imprimirlo en el monitor. Vacío si todavía no hubo estado anterior.",
+      "en": "Name of the current or previous state, to print on the monitor. Empty if there was no previous state yet."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def estados_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef estados_pasado(desde):\n    return time.ticks_diff(estados_ms(), desde) if hasattr(time, \"ticks_diff\") else estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_nombre({WHICH})"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\nestados_reloj = StopWatch()\n\ndef estados_ms():\n    return estados_reloj.time()\n\ndef estados_pasado(desde):\n    return estados_ms() - desde\n",
+          "# Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nESTADOS_MAX = 16\nestados_nombres = [\"\"] * ESTADOS_MAX\nestados_actual = 1\nestados_anterior = 0\nestados_entrada = True\nestados_desde = 0\n\ndef estados_configurar(inicio, nombres, bloque):\n    global estados_desde\n    if inicio + len(nombres) > ESTADOS_MAX:\n        rb_fail(bloque, \"Máximo 16 estados\")\n    for n in range(len(nombres)):\n        estados_nombres[inicio + n] = nombres[n]\n    if inicio == 0:\n        estados_desde = estados_ms()\n\ndef estados_cambiar(n):\n    global estados_actual, estados_anterior, estados_entrada, estados_desde\n    if n != estados_actual:\n        estados_anterior = estados_actual\n        estados_actual = n\n        estados_entrada = True\n        estados_desde = estados_ms()\n\ndef estados_es(cual, n):\n    return (estados_actual if cual == \"actual\" else estados_anterior) == n\n\ndef estados_entro(n):\n    global estados_entrada\n    if estados_entrada and estados_actual == n:\n        estados_entrada = False\n        return True\n    return False\n\ndef estados_nombre(cual):\n    n = estados_actual if cual == \"actual\" else estados_anterior\n    return estados_nombres[n - 1] if 1 <= n <= ESTADOS_MAX else \"\"\n\ndef estados_tiempo():\n    return estados_pasado(estados_desde)\n"
+        ],
+        "expression": "estados_nombre({WHICH})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "// Estado actual y anterior por número: 1 = primera fila de «configurar estados», 0 = ninguno.\nconst int ESTADOS_MAX = 16;\nstatic String estados_nombres[ESTADOS_MAX];\nstatic int estados_actual = 1;\nstatic int estados_anterior = 0;\nstatic bool estados_entrada = true;\nstatic unsigned long estados_desde = 0;\ninline void estados_configurar(int inicio, const String* nombres, int cantidad, const char* bloque) {\n    if (inicio + cantidad > ESTADOS_MAX) {\n        rb_fail(bloque, \"Máximo 16 estados\");\n        return;\n    }\n    for (int n = 0; n < cantidad; n++) estados_nombres[inicio + n] = nombres[n];\n    if (inicio == 0) estados_desde = millis();\n}\ninline void estados_cambiar(int n) {\n    if (n == estados_actual) return;\n    estados_anterior = estados_actual;\n    estados_actual = n;\n    estados_entrada = true;\n    estados_desde = millis();\n}\ninline bool estados_es(const String& cual, int n) {\n    return (cual == \"actual\" ? estados_actual : estados_anterior) == n;\n}\ninline bool estados_entro(int n) {\n    if (!estados_entrada || estados_actual != n) return false;\n    estados_entrada = false;\n    return true;\n}\ninline String estados_nombre(const String& cual) {\n    int n = cual == \"actual\" ? estados_actual : estados_anterior;\n    return n >= 1 && n <= ESTADOS_MAX ? estados_nombres[n - 1] : String(\"\");\n}\ninline float estados_tiempo() {\n    return float(millis() - estados_desde);\n}\n"
+        ],
+        "expression": "estados_nombre({WHICH})"
+      }
+    },
+    "requiredCapabilities": []
+  }
+]

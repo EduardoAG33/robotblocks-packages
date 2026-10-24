@@ -1,0 +1,59 @@
+{
+  "titulo": "Pantalla OLED · error si no responde",
+  "tarjetas": ["dfrobot-firebeetle-esp32", "seeed-xiao-esp32s3"],
+  "pines": {
+    "arduino-uno": {
+      "SDA": "a4",
+      "SCL": "a5",
+      "SENSOR": "a0"
+    },
+    "arduino-uno-r4-minima": {
+      "SDA": "a4",
+      "SCL": "a5",
+      "SENSOR": "a0"
+    },
+    "arduino-giga-r1": {
+      "SDA": "d102",
+      "SCL": "d101",
+      "SENSOR": "a0"
+    },
+    "teensy-40": {
+      "SDA": "d18",
+      "SCL": "d19",
+      "SENSOR": "d14"
+    },
+    "seeed-xiao-esp32s3": {
+      "SDA": "d4",
+      "SCL": "d5",
+      "SENSOR": "d0"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "SDA": "gpio21",
+      "SCL": "gpio22",
+      "SENSOR": "gpio36"
+    }
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "CHIP": "ssd1306",
+        "SIZE": "64",
+        "ADDR": "0x3C",
+        "SDA": "$SDA",
+        "SCL": "$SCL"
+      }
+    ],
+    [
+      ":show",
+      {},
+      {
+        "ROW": 1,
+        "TEXT": "no llega"
+      }
+    ]
+  ],
+  "fallo": "1",
+  "salida": "",
+  "destinos": ["micropython"]
+}

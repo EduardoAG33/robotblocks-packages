@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.zumbador",
+  "name": "Zumbador",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Tonos, notas y melodías en segundo plano para zumbadores pasivos. Arduino y MicroPython.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.zumbador:zumbador", "name": "Sonido", "colour": "#E91E63" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "actuators",
+    "translations": {
+      "en": {
+        "Zumbador": "Buzzer",
+        "Sonido": "Sound",
+        "Tonos, notas y melodías en segundo plano para zumbadores pasivos. Arduino y MicroPython.": "Tones, notes and melodies in the background for passive buzzers. Arduino and MicroPython.",
+        "La frecuencia debe estar entre 31 y 20000 Hz": "Frequency must be between 31 and 20000 Hz",
+        "La duración debe estar entre 0 y 60000 ms": "Duration must be between 0 and 60000 ms"
+      }
+    }
+  }
+}

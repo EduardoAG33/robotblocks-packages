@@ -1,0 +1,98 @@
+{
+  "titulo": "Máquina de estados · robot por tiempo",
+  "ejemplo": "arduino-uno",
+  "tarjetas": ["arduino-uno", "dfrobot-firebeetle-esp32", "lego-spike-prime"],
+  "programa": [
+    [":configure", { "NAME1": "esperando", "NAME2": "avanzando", "NAME3": "girando" }],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [":entered", { "S": "esperando" }],
+              "BODY": [["core:serial-println", {}, { "VALUE": "esperando 1 s" }]]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                "core:and",
+                {},
+                {
+                  "LEFT": [":is", { "WHICH": "actual", "S": "esperando" }],
+                  "RIGHT": ["core:greater", {}, { "LEFT": [":time"], "RIGHT": 1000 }]
+                }
+              ],
+              "BODY": [[":change", { "S": "avanzando" }]]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [":entered", { "S": "avanzando" }],
+              "BODY": [["core:serial-println", {}, { "VALUE": "avanzando 2 s" }]]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                "core:and",
+                {},
+                {
+                  "LEFT": [":is", { "WHICH": "actual", "S": "avanzando" }],
+                  "RIGHT": ["core:greater", {}, { "LEFT": [":time"], "RIGHT": 2000 }]
+                }
+              ],
+              "BODY": [[":change", { "S": "girando" }]]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [":entered", { "S": "girando" }],
+              "BODY": [
+                [
+                  "core:serial-println",
+                  {},
+                  {
+                    "VALUE": [
+                      "core:join",
+                      {},
+                      { "LEFT": "girando; antes: ", "RIGHT": [":name", { "WHICH": "anterior" }] }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                "core:and",
+                {},
+                {
+                  "LEFT": [":is", { "WHICH": "actual", "S": "girando" }],
+                  "RIGHT": ["core:greater", {}, { "LEFT": [":time"], "RIGHT": 500 }]
+                }
+              ],
+              "BODY": [[":change", { "S": "esperando" }]]
+            }
+          ],
+          ["core:wait-ms", {}, { "MS": 10 }]
+        ]
+      }
+    ]
+  ]
+}
