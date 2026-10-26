@@ -1,0 +1,82 @@
+{
+  "titulo": "Brújula · rumbo y calibración",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "SDA": "a4",
+      "SCL": "a5"
+    },
+    "arduino-uno-r4-minima": {
+      "SDA": "a4",
+      "SCL": "a5"
+    },
+    "arduino-giga-r1": {
+      "SDA": "d20",
+      "SCL": "d21"
+    },
+    "teensy-40": {
+      "SDA": "d18",
+      "SCL": "d19"
+    },
+    "seeed-xiao-esp32s3": {
+      "SDA": "d4",
+      "SCL": "d5"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "SDA": "gpio21",
+      "SCL": "gpio22"
+    }
+  },
+  "ejemplo": "arduino-uno",
+  "variables": {
+    "rumbo": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "CHIP": "qmc",
+        "SDA": "$SDA",
+        "SCL": "$SCL"
+      }
+    ],
+    [
+      ":declination",
+      {},
+      {
+        "DEG": 4
+      }
+    ],
+    [":calibrate"],
+    [
+      "core:set",
+      {
+        "VARIABLE": "rumbo"
+      },
+      {
+        "VALUE": [":heading"]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "rumbo"
+      },
+      {
+        "VALUE": [
+          ":field",
+          {
+            "AXIS": "x"
+          }
+        ]
+      }
+    ]
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.brujula",
+  "name": "Brújula",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Rumbo y campo magnético con QMC5883L o HMC5883L por I2C.",
+  "requiredCapabilities": ["digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.brujula:brujula",
+        "name": "Brújula",
+        "colour": "#6D4C41"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "Brújula": "Compass",
+        "Rumbo y campo magnético con QMC5883L o HMC5883L por I2C.": "Heading and magnetic field with QMC5883L or HMC5883L over I2C.",
+        "Configura la brújula al iniciar": "Configure the compass at startup",
+        "No responde la brújula": "Compass does not respond",
+        "No responde la brújula QMC5883L (0x0D)": "QMC5883L compass (0x0D) does not respond",
+        "No responde la brújula HMC5883L (0x1E)": "HMC5883L compass (0x1E) does not respond",
+        "La identificación de la brújula HMC5883L no coincide": "HMC5883L compass identification does not match"
+      }
+    }
+  }
+}

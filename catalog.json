@@ -223,6 +223,12 @@
       "description": "Controladores PID con nombre: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
       "kind": "module",
       "path": "packages/control-pid"
+    },
+    {
+      "name": "Brújula",
+      "description": "Rumbo y campo magnético con QMC5883L o HMC5883L por I2C.",
+      "kind": "module",
+      "path": "packages/brujula"
     }
   ]
 }

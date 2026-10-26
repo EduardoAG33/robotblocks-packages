@@ -1,0 +1,263 @@
+[
+  {
+    "id": "org.robotblocks.brujula:configure",
+    "operation": "org.robotblocks.brujula:configure",
+    "category": "org.robotblocks.brujula:brujula",
+    "label": {
+      "es": "configurar brújula %CHIP SDA %SDA SCL %SCL",
+      "en": "configure compass %CHIP SDA %SDA SCL %SCL"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "CHIP",
+        "type": "string",
+        "default": "qmc",
+        "options": [
+          {
+            "label": "QMC5883L",
+            "value": "qmc"
+          },
+          {
+            "label": "HMC5883L",
+            "value": "hmc"
+          }
+        ]
+      },
+      {
+        "name": "SDA",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      },
+      {
+        "name": "SCL",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["digitalOutput"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "configurar brújula CHIP SDA SDA SCL SCL",
+      "en": "configure compass CHIP SDA SDA SCL SCL"
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import math"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "brj_bus = None\nbrj_chip = \"\"\nbrj_min = [32767, 32767]\nbrj_max = [-32768, -32768]\nbrj_decl = 0\n\ndef brj_configurar(sda, scl, chip, bloque):\n    global brj_bus, brj_chip, brj_min, brj_max, brj_decl\n    brj_bus = None\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if chip == \"qmc\":\n            bus.writeto_mem(0x0D, 0x0B, bytes([1]))\n            bus.writeto_mem(0x0D, 0x09, bytes([0x1D]))\n        else:\n            if bus.readfrom_mem(0x1E, 0x0A, 3) != b\"H43\":\n                rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\")\n            for reg, val in ((0, 0x70), (1, 0x20), (2, 0)):\n                bus.writeto_mem(0x1E, reg, bytes([val]))\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\" if chip == \"qmc\" else \"No responde la brújula HMC5883L (0x1E)\")\n    brj_bus, brj_chip = bus, chip\n    brj_min, brj_max, brj_decl = [32767, 32767], [-32768, -32768], 0\n\ndef brj_leer(bloque):\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    try:\n        qmc = brj_chip == \"qmc\"\n        data = brj_bus.readfrom_mem(0x0D if qmc else 0x1E, 0 if qmc else 3, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula\")\n    valores = []\n    for i in (0, 2, 4):\n        n = data[i] | data[i+1] << 8 if qmc else data[i] << 8 | data[i+1]\n        valores.append(n - 65536 if n >= 32768 else n)\n    return valores if qmc else [valores[0], valores[2], valores[1]]\n\ndef brj_calibrar(bloque):\n    v = brj_leer(bloque)\n    for i in (0, 1):\n        brj_min[i] = min(brj_min[i], v[i])\n        brj_max[i] = max(brj_max[i], v[i])\n\ndef brj_declinacion(deg, bloque):\n    global brj_decl\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    brj_decl = deg\n\ndef brj_normalizar(deg):\n    return deg % 360\n\ndef brj_rumbo(bloque):\n    x, y, z = brj_leer(bloque)\n    ox = (brj_min[0] + brj_max[0]) / 2 if brj_min[0] <= brj_max[0] else 0\n    oy = (brj_min[1] + brj_max[1]) / 2 if brj_min[1] <= brj_max[1] else 0\n    return brj_normalizar(math.atan2(y - oy, x - ox) * 180 / math.pi + brj_decl)\n\ndef brj_campo(axis, bloque):\n    return brj_leer(bloque)[\"xyz\".index(axis)]\n"
+        ],
+        "statement": "brj_configurar({SDA}, {SCL}, {CHIP}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "includes": ["#include <Wire.h>", "#include <math.h>"],
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* brj_bus = nullptr;\nstatic bool brj_qmc = true;\nstatic int16_t brj_min[2] = {32767, 32767}, brj_max[2] = {-32768, -32768};\nstatic float brj_decl = 0;\ninline void brj_configurar(TwoWire& bus, const String& chip, const char* bloque) {\n    brj_bus = nullptr; brj_qmc = chip == \"qmc\";\n    if (brj_qmc) {\n        if (!rb_i2c_write(bus, 0x0D, 0x0B, 1) || !rb_i2c_write(bus, 0x0D, 0x09, 0x1D)) { rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\"); return; }\n    } else {\n        uint8_t id[3];\n        if (!rb_i2c_read(bus, 0x1E, 0x0A, id, 3)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n        if (id[0] != 'H' || id[1] != '4' || id[2] != '3') { rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\"); return; }\n        if (!rb_i2c_write(bus, 0x1E, 0, 0x70) || !rb_i2c_write(bus, 0x1E, 1, 0x20) || !rb_i2c_write(bus, 0x1E, 2, 0)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n    }\n    brj_bus = &bus; brj_decl = 0; for (int i = 0; i < 2; i++) { brj_min[i] = 32767; brj_max[i] = -32768; }\n}\ninline bool brj_leer(int16_t* v, const char* bloque) {\n    if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return false; }\n    uint8_t d[6]; if (!rb_i2c_read(*brj_bus, brj_qmc ? 0x0D : 0x1E, brj_qmc ? 0 : 3, d, 6)) { rb_fail(bloque, \"No responde la brújula\"); return false; }\n    for (int i = 0; i < 3; i++) { uint16_t n = brj_qmc ? uint16_t(d[2*i]) | uint16_t(d[2*i+1]) << 8 : uint16_t(d[2*i]) << 8 | d[2*i+1]; v[i] = int16_t(n); }\n    if (!brj_qmc) { int16_t t = v[1]; v[1] = v[2]; v[2] = t; } return true;\n}\ninline void brj_calibrar(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return; for (int i = 0; i < 2; i++) { if (v[i] < brj_min[i]) brj_min[i] = v[i]; if (v[i] > brj_max[i]) brj_max[i] = v[i]; } }\ninline void brj_declinacion(float deg, const char* bloque) { if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return; } brj_decl = deg; }\ninline float brj_normalizar(float deg) { float n = fmodf(deg, 360.0f); return n < 0 ? n + 360.0f : n; }\ninline float brj_rumbo(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return 0; float ox = brj_min[0] <= brj_max[0] ? (float(brj_min[0]) + brj_max[0])/2 : 0; float oy = brj_min[1] <= brj_max[1] ? (float(brj_min[1]) + brj_max[1])/2 : 0; return brj_normalizar(atan2f(v[1]-oy, v[0]-ox)*180.0f/3.14159265358979323846f + brj_decl); }\ninline float brj_campo(const String& eje, const char* bloque) { int16_t v[3] = {}; if (!brj_leer(v, bloque)) return 0; return v[eje[0] == 'x' ? 0 : eje[0] == 'y' ? 1 : 2]; }\n"
+        ],
+        "hardware": {
+          "i2c": {
+            "sda": "SDA",
+            "scl": "SCL"
+          }
+        },
+        "setup": ["rb_wire_begin({I2C_BUS});"],
+        "statement": "brj_configurar({I2C_BUS}, {CHIP}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.brujula:calibrate",
+    "operation": "org.robotblocks.brujula:calibrate",
+    "category": "org.robotblocks.brujula:brujula",
+    "label": {
+      "es": "calibrar brújula",
+      "en": "calibrate compass"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "calibrar brújula",
+      "en": "calibrate compass"
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import math"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "brj_bus = None\nbrj_chip = \"\"\nbrj_min = [32767, 32767]\nbrj_max = [-32768, -32768]\nbrj_decl = 0\n\ndef brj_configurar(sda, scl, chip, bloque):\n    global brj_bus, brj_chip, brj_min, brj_max, brj_decl\n    brj_bus = None\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if chip == \"qmc\":\n            bus.writeto_mem(0x0D, 0x0B, bytes([1]))\n            bus.writeto_mem(0x0D, 0x09, bytes([0x1D]))\n        else:\n            if bus.readfrom_mem(0x1E, 0x0A, 3) != b\"H43\":\n                rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\")\n            for reg, val in ((0, 0x70), (1, 0x20), (2, 0)):\n                bus.writeto_mem(0x1E, reg, bytes([val]))\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\" if chip == \"qmc\" else \"No responde la brújula HMC5883L (0x1E)\")\n    brj_bus, brj_chip = bus, chip\n    brj_min, brj_max, brj_decl = [32767, 32767], [-32768, -32768], 0\n\ndef brj_leer(bloque):\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    try:\n        qmc = brj_chip == \"qmc\"\n        data = brj_bus.readfrom_mem(0x0D if qmc else 0x1E, 0 if qmc else 3, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula\")\n    valores = []\n    for i in (0, 2, 4):\n        n = data[i] | data[i+1] << 8 if qmc else data[i] << 8 | data[i+1]\n        valores.append(n - 65536 if n >= 32768 else n)\n    return valores if qmc else [valores[0], valores[2], valores[1]]\n\ndef brj_calibrar(bloque):\n    v = brj_leer(bloque)\n    for i in (0, 1):\n        brj_min[i] = min(brj_min[i], v[i])\n        brj_max[i] = max(brj_max[i], v[i])\n\ndef brj_declinacion(deg, bloque):\n    global brj_decl\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    brj_decl = deg\n\ndef brj_normalizar(deg):\n    return deg % 360\n\ndef brj_rumbo(bloque):\n    x, y, z = brj_leer(bloque)\n    ox = (brj_min[0] + brj_max[0]) / 2 if brj_min[0] <= brj_max[0] else 0\n    oy = (brj_min[1] + brj_max[1]) / 2 if brj_min[1] <= brj_max[1] else 0\n    return brj_normalizar(math.atan2(y - oy, x - ox) * 180 / math.pi + brj_decl)\n\ndef brj_campo(axis, bloque):\n    return brj_leer(bloque)[\"xyz\".index(axis)]\n"
+        ],
+        "statement": "brj_calibrar({BLOCK_ID})"
+      },
+      "arduino": {
+        "includes": ["#include <Wire.h>", "#include <math.h>"],
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* brj_bus = nullptr;\nstatic bool brj_qmc = true;\nstatic int16_t brj_min[2] = {32767, 32767}, brj_max[2] = {-32768, -32768};\nstatic float brj_decl = 0;\ninline void brj_configurar(TwoWire& bus, const String& chip, const char* bloque) {\n    brj_bus = nullptr; brj_qmc = chip == \"qmc\";\n    if (brj_qmc) {\n        if (!rb_i2c_write(bus, 0x0D, 0x0B, 1) || !rb_i2c_write(bus, 0x0D, 0x09, 0x1D)) { rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\"); return; }\n    } else {\n        uint8_t id[3];\n        if (!rb_i2c_read(bus, 0x1E, 0x0A, id, 3)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n        if (id[0] != 'H' || id[1] != '4' || id[2] != '3') { rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\"); return; }\n        if (!rb_i2c_write(bus, 0x1E, 0, 0x70) || !rb_i2c_write(bus, 0x1E, 1, 0x20) || !rb_i2c_write(bus, 0x1E, 2, 0)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n    }\n    brj_bus = &bus; brj_decl = 0; for (int i = 0; i < 2; i++) { brj_min[i] = 32767; brj_max[i] = -32768; }\n}\ninline bool brj_leer(int16_t* v, const char* bloque) {\n    if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return false; }\n    uint8_t d[6]; if (!rb_i2c_read(*brj_bus, brj_qmc ? 0x0D : 0x1E, brj_qmc ? 0 : 3, d, 6)) { rb_fail(bloque, \"No responde la brújula\"); return false; }\n    for (int i = 0; i < 3; i++) { uint16_t n = brj_qmc ? uint16_t(d[2*i]) | uint16_t(d[2*i+1]) << 8 : uint16_t(d[2*i]) << 8 | d[2*i+1]; v[i] = int16_t(n); }\n    if (!brj_qmc) { int16_t t = v[1]; v[1] = v[2]; v[2] = t; } return true;\n}\ninline void brj_calibrar(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return; for (int i = 0; i < 2; i++) { if (v[i] < brj_min[i]) brj_min[i] = v[i]; if (v[i] > brj_max[i]) brj_max[i] = v[i]; } }\ninline void brj_declinacion(float deg, const char* bloque) { if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return; } brj_decl = deg; }\ninline float brj_normalizar(float deg) { float n = fmodf(deg, 360.0f); return n < 0 ? n + 360.0f : n; }\ninline float brj_rumbo(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return 0; float ox = brj_min[0] <= brj_max[0] ? (float(brj_min[0]) + brj_max[0])/2 : 0; float oy = brj_min[1] <= brj_max[1] ? (float(brj_min[1]) + brj_max[1])/2 : 0; return brj_normalizar(atan2f(v[1]-oy, v[0]-ox)*180.0f/3.14159265358979323846f + brj_decl); }\ninline float brj_campo(const String& eje, const char* bloque) { int16_t v[3] = {}; if (!brj_leer(v, bloque)) return 0; return v[eje[0] == 'x' ? 0 : eje[0] == 'y' ? 1 : 2]; }\n"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "statement": "brj_calibrar({BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.brujula:heading",
+    "operation": "org.robotblocks.brujula:heading",
+    "category": "org.robotblocks.brujula:brujula",
+    "label": {
+      "es": "rumbo de la brújula (0–360)",
+      "en": "compass heading (0–360)"
+    },
+    "kind": "reporter",
+    "fields": [],
+    "inputs": [],
+    "tooltip": {
+      "es": "rumbo de la brújula (0–360)",
+      "en": "compass heading (0–360)"
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import math"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "brj_bus = None\nbrj_chip = \"\"\nbrj_min = [32767, 32767]\nbrj_max = [-32768, -32768]\nbrj_decl = 0\n\ndef brj_configurar(sda, scl, chip, bloque):\n    global brj_bus, brj_chip, brj_min, brj_max, brj_decl\n    brj_bus = None\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if chip == \"qmc\":\n            bus.writeto_mem(0x0D, 0x0B, bytes([1]))\n            bus.writeto_mem(0x0D, 0x09, bytes([0x1D]))\n        else:\n            if bus.readfrom_mem(0x1E, 0x0A, 3) != b\"H43\":\n                rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\")\n            for reg, val in ((0, 0x70), (1, 0x20), (2, 0)):\n                bus.writeto_mem(0x1E, reg, bytes([val]))\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\" if chip == \"qmc\" else \"No responde la brújula HMC5883L (0x1E)\")\n    brj_bus, brj_chip = bus, chip\n    brj_min, brj_max, brj_decl = [32767, 32767], [-32768, -32768], 0\n\ndef brj_leer(bloque):\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    try:\n        qmc = brj_chip == \"qmc\"\n        data = brj_bus.readfrom_mem(0x0D if qmc else 0x1E, 0 if qmc else 3, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula\")\n    valores = []\n    for i in (0, 2, 4):\n        n = data[i] | data[i+1] << 8 if qmc else data[i] << 8 | data[i+1]\n        valores.append(n - 65536 if n >= 32768 else n)\n    return valores if qmc else [valores[0], valores[2], valores[1]]\n\ndef brj_calibrar(bloque):\n    v = brj_leer(bloque)\n    for i in (0, 1):\n        brj_min[i] = min(brj_min[i], v[i])\n        brj_max[i] = max(brj_max[i], v[i])\n\ndef brj_declinacion(deg, bloque):\n    global brj_decl\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    brj_decl = deg\n\ndef brj_normalizar(deg):\n    return deg % 360\n\ndef brj_rumbo(bloque):\n    x, y, z = brj_leer(bloque)\n    ox = (brj_min[0] + brj_max[0]) / 2 if brj_min[0] <= brj_max[0] else 0\n    oy = (brj_min[1] + brj_max[1]) / 2 if brj_min[1] <= brj_max[1] else 0\n    return brj_normalizar(math.atan2(y - oy, x - ox) * 180 / math.pi + brj_decl)\n\ndef brj_campo(axis, bloque):\n    return brj_leer(bloque)[\"xyz\".index(axis)]\n"
+        ],
+        "expression": "brj_rumbo({BLOCK_ID})"
+      },
+      "arduino": {
+        "includes": ["#include <Wire.h>", "#include <math.h>"],
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* brj_bus = nullptr;\nstatic bool brj_qmc = true;\nstatic int16_t brj_min[2] = {32767, 32767}, brj_max[2] = {-32768, -32768};\nstatic float brj_decl = 0;\ninline void brj_configurar(TwoWire& bus, const String& chip, const char* bloque) {\n    brj_bus = nullptr; brj_qmc = chip == \"qmc\";\n    if (brj_qmc) {\n        if (!rb_i2c_write(bus, 0x0D, 0x0B, 1) || !rb_i2c_write(bus, 0x0D, 0x09, 0x1D)) { rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\"); return; }\n    } else {\n        uint8_t id[3];\n        if (!rb_i2c_read(bus, 0x1E, 0x0A, id, 3)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n        if (id[0] != 'H' || id[1] != '4' || id[2] != '3') { rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\"); return; }\n        if (!rb_i2c_write(bus, 0x1E, 0, 0x70) || !rb_i2c_write(bus, 0x1E, 1, 0x20) || !rb_i2c_write(bus, 0x1E, 2, 0)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n    }\n    brj_bus = &bus; brj_decl = 0; for (int i = 0; i < 2; i++) { brj_min[i] = 32767; brj_max[i] = -32768; }\n}\ninline bool brj_leer(int16_t* v, const char* bloque) {\n    if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return false; }\n    uint8_t d[6]; if (!rb_i2c_read(*brj_bus, brj_qmc ? 0x0D : 0x1E, brj_qmc ? 0 : 3, d, 6)) { rb_fail(bloque, \"No responde la brújula\"); return false; }\n    for (int i = 0; i < 3; i++) { uint16_t n = brj_qmc ? uint16_t(d[2*i]) | uint16_t(d[2*i+1]) << 8 : uint16_t(d[2*i]) << 8 | d[2*i+1]; v[i] = int16_t(n); }\n    if (!brj_qmc) { int16_t t = v[1]; v[1] = v[2]; v[2] = t; } return true;\n}\ninline void brj_calibrar(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return; for (int i = 0; i < 2; i++) { if (v[i] < brj_min[i]) brj_min[i] = v[i]; if (v[i] > brj_max[i]) brj_max[i] = v[i]; } }\ninline void brj_declinacion(float deg, const char* bloque) { if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return; } brj_decl = deg; }\ninline float brj_normalizar(float deg) { float n = fmodf(deg, 360.0f); return n < 0 ? n + 360.0f : n; }\ninline float brj_rumbo(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return 0; float ox = brj_min[0] <= brj_max[0] ? (float(brj_min[0]) + brj_max[0])/2 : 0; float oy = brj_min[1] <= brj_max[1] ? (float(brj_min[1]) + brj_max[1])/2 : 0; return brj_normalizar(atan2f(v[1]-oy, v[0]-ox)*180.0f/3.14159265358979323846f + brj_decl); }\ninline float brj_campo(const String& eje, const char* bloque) { int16_t v[3] = {}; if (!brj_leer(v, bloque)) return 0; return v[eje[0] == 'x' ? 0 : eje[0] == 'y' ? 1 : 2]; }\n"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "expression": "brj_rumbo({BLOCK_ID})"
+      }
+    },
+    "output": "number"
+  },
+  {
+    "id": "org.robotblocks.brujula:declination",
+    "operation": "org.robotblocks.brujula:declination",
+    "category": "org.robotblocks.brujula:brujula",
+    "label": {
+      "es": "declinación de la brújula %DEG °",
+      "en": "compass declination %DEG °"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "DEG",
+        "type": "number",
+        "default": 4
+      }
+    ],
+    "tooltip": {
+      "es": "declinación de la brújula DEG °",
+      "en": "compass declination DEG °"
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import math"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "brj_bus = None\nbrj_chip = \"\"\nbrj_min = [32767, 32767]\nbrj_max = [-32768, -32768]\nbrj_decl = 0\n\ndef brj_configurar(sda, scl, chip, bloque):\n    global brj_bus, brj_chip, brj_min, brj_max, brj_decl\n    brj_bus = None\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if chip == \"qmc\":\n            bus.writeto_mem(0x0D, 0x0B, bytes([1]))\n            bus.writeto_mem(0x0D, 0x09, bytes([0x1D]))\n        else:\n            if bus.readfrom_mem(0x1E, 0x0A, 3) != b\"H43\":\n                rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\")\n            for reg, val in ((0, 0x70), (1, 0x20), (2, 0)):\n                bus.writeto_mem(0x1E, reg, bytes([val]))\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\" if chip == \"qmc\" else \"No responde la brújula HMC5883L (0x1E)\")\n    brj_bus, brj_chip = bus, chip\n    brj_min, brj_max, brj_decl = [32767, 32767], [-32768, -32768], 0\n\ndef brj_leer(bloque):\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    try:\n        qmc = brj_chip == \"qmc\"\n        data = brj_bus.readfrom_mem(0x0D if qmc else 0x1E, 0 if qmc else 3, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula\")\n    valores = []\n    for i in (0, 2, 4):\n        n = data[i] | data[i+1] << 8 if qmc else data[i] << 8 | data[i+1]\n        valores.append(n - 65536 if n >= 32768 else n)\n    return valores if qmc else [valores[0], valores[2], valores[1]]\n\ndef brj_calibrar(bloque):\n    v = brj_leer(bloque)\n    for i in (0, 1):\n        brj_min[i] = min(brj_min[i], v[i])\n        brj_max[i] = max(brj_max[i], v[i])\n\ndef brj_declinacion(deg, bloque):\n    global brj_decl\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    brj_decl = deg\n\ndef brj_normalizar(deg):\n    return deg % 360\n\ndef brj_rumbo(bloque):\n    x, y, z = brj_leer(bloque)\n    ox = (brj_min[0] + brj_max[0]) / 2 if brj_min[0] <= brj_max[0] else 0\n    oy = (brj_min[1] + brj_max[1]) / 2 if brj_min[1] <= brj_max[1] else 0\n    return brj_normalizar(math.atan2(y - oy, x - ox) * 180 / math.pi + brj_decl)\n\ndef brj_campo(axis, bloque):\n    return brj_leer(bloque)[\"xyz\".index(axis)]\n"
+        ],
+        "statement": "brj_declinacion({DEG}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "includes": ["#include <Wire.h>", "#include <math.h>"],
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* brj_bus = nullptr;\nstatic bool brj_qmc = true;\nstatic int16_t brj_min[2] = {32767, 32767}, brj_max[2] = {-32768, -32768};\nstatic float brj_decl = 0;\ninline void brj_configurar(TwoWire& bus, const String& chip, const char* bloque) {\n    brj_bus = nullptr; brj_qmc = chip == \"qmc\";\n    if (brj_qmc) {\n        if (!rb_i2c_write(bus, 0x0D, 0x0B, 1) || !rb_i2c_write(bus, 0x0D, 0x09, 0x1D)) { rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\"); return; }\n    } else {\n        uint8_t id[3];\n        if (!rb_i2c_read(bus, 0x1E, 0x0A, id, 3)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n        if (id[0] != 'H' || id[1] != '4' || id[2] != '3') { rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\"); return; }\n        if (!rb_i2c_write(bus, 0x1E, 0, 0x70) || !rb_i2c_write(bus, 0x1E, 1, 0x20) || !rb_i2c_write(bus, 0x1E, 2, 0)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n    }\n    brj_bus = &bus; brj_decl = 0; for (int i = 0; i < 2; i++) { brj_min[i] = 32767; brj_max[i] = -32768; }\n}\ninline bool brj_leer(int16_t* v, const char* bloque) {\n    if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return false; }\n    uint8_t d[6]; if (!rb_i2c_read(*brj_bus, brj_qmc ? 0x0D : 0x1E, brj_qmc ? 0 : 3, d, 6)) { rb_fail(bloque, \"No responde la brújula\"); return false; }\n    for (int i = 0; i < 3; i++) { uint16_t n = brj_qmc ? uint16_t(d[2*i]) | uint16_t(d[2*i+1]) << 8 : uint16_t(d[2*i]) << 8 | d[2*i+1]; v[i] = int16_t(n); }\n    if (!brj_qmc) { int16_t t = v[1]; v[1] = v[2]; v[2] = t; } return true;\n}\ninline void brj_calibrar(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return; for (int i = 0; i < 2; i++) { if (v[i] < brj_min[i]) brj_min[i] = v[i]; if (v[i] > brj_max[i]) brj_max[i] = v[i]; } }\ninline void brj_declinacion(float deg, const char* bloque) { if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return; } brj_decl = deg; }\ninline float brj_normalizar(float deg) { float n = fmodf(deg, 360.0f); return n < 0 ? n + 360.0f : n; }\ninline float brj_rumbo(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return 0; float ox = brj_min[0] <= brj_max[0] ? (float(brj_min[0]) + brj_max[0])/2 : 0; float oy = brj_min[1] <= brj_max[1] ? (float(brj_min[1]) + brj_max[1])/2 : 0; return brj_normalizar(atan2f(v[1]-oy, v[0]-ox)*180.0f/3.14159265358979323846f + brj_decl); }\ninline float brj_campo(const String& eje, const char* bloque) { int16_t v[3] = {}; if (!brj_leer(v, bloque)) return 0; return v[eje[0] == 'x' ? 0 : eje[0] == 'y' ? 1 : 2]; }\n"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "statement": "brj_declinacion({DEG}, {BLOCK_ID});"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.brujula:field",
+    "operation": "org.robotblocks.brujula:field",
+    "category": "org.robotblocks.brujula:brujula",
+    "label": {
+      "es": "campo %AXIS de la brújula",
+      "en": "compass %AXIS field"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "AXIS",
+        "type": "string",
+        "default": "x",
+        "options": [
+          {
+            "label": "X",
+            "value": "x"
+          },
+          {
+            "label": "Y",
+            "value": "y"
+          },
+          {
+            "label": "Z",
+            "value": "z"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "campo AXIS de la brújula",
+      "en": "compass AXIS field"
+    },
+    "requiredCapabilities": ["digitalOutput"],
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import I2C, Pin, SoftI2C", "import math"],
+        "globals": [
+          "i2c_buses = {}\n",
+          "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+          "brj_bus = None\nbrj_chip = \"\"\nbrj_min = [32767, 32767]\nbrj_max = [-32768, -32768]\nbrj_decl = 0\n\ndef brj_configurar(sda, scl, chip, bloque):\n    global brj_bus, brj_chip, brj_min, brj_max, brj_decl\n    brj_bus = None\n    bus = i2c_bus(sda, scl, bloque)\n    try:\n        if chip == \"qmc\":\n            bus.writeto_mem(0x0D, 0x0B, bytes([1]))\n            bus.writeto_mem(0x0D, 0x09, bytes([0x1D]))\n        else:\n            if bus.readfrom_mem(0x1E, 0x0A, 3) != b\"H43\":\n                rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\")\n            for reg, val in ((0, 0x70), (1, 0x20), (2, 0)):\n                bus.writeto_mem(0x1E, reg, bytes([val]))\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\" if chip == \"qmc\" else \"No responde la brújula HMC5883L (0x1E)\")\n    brj_bus, brj_chip = bus, chip\n    brj_min, brj_max, brj_decl = [32767, 32767], [-32768, -32768], 0\n\ndef brj_leer(bloque):\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    try:\n        qmc = brj_chip == \"qmc\"\n        data = brj_bus.readfrom_mem(0x0D if qmc else 0x1E, 0 if qmc else 3, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la brújula\")\n    valores = []\n    for i in (0, 2, 4):\n        n = data[i] | data[i+1] << 8 if qmc else data[i] << 8 | data[i+1]\n        valores.append(n - 65536 if n >= 32768 else n)\n    return valores if qmc else [valores[0], valores[2], valores[1]]\n\ndef brj_calibrar(bloque):\n    v = brj_leer(bloque)\n    for i in (0, 1):\n        brj_min[i] = min(brj_min[i], v[i])\n        brj_max[i] = max(brj_max[i], v[i])\n\ndef brj_declinacion(deg, bloque):\n    global brj_decl\n    if brj_bus is None:\n        rb_fail(bloque, \"Configura la brújula al iniciar\")\n    brj_decl = deg\n\ndef brj_normalizar(deg):\n    return deg % 360\n\ndef brj_rumbo(bloque):\n    x, y, z = brj_leer(bloque)\n    ox = (brj_min[0] + brj_max[0]) / 2 if brj_min[0] <= brj_max[0] else 0\n    oy = (brj_min[1] + brj_max[1]) / 2 if brj_min[1] <= brj_max[1] else 0\n    return brj_normalizar(math.atan2(y - oy, x - ox) * 180 / math.pi + brj_decl)\n\ndef brj_campo(axis, bloque):\n    return brj_leer(bloque)[\"xyz\".index(axis)]\n"
+        ],
+        "expression": "brj_campo({AXIS}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "includes": ["#include <Wire.h>", "#include <math.h>"],
+        "globals": [
+          "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+          "static TwoWire* brj_bus = nullptr;\nstatic bool brj_qmc = true;\nstatic int16_t brj_min[2] = {32767, 32767}, brj_max[2] = {-32768, -32768};\nstatic float brj_decl = 0;\ninline void brj_configurar(TwoWire& bus, const String& chip, const char* bloque) {\n    brj_bus = nullptr; brj_qmc = chip == \"qmc\";\n    if (brj_qmc) {\n        if (!rb_i2c_write(bus, 0x0D, 0x0B, 1) || !rb_i2c_write(bus, 0x0D, 0x09, 0x1D)) { rb_fail(bloque, \"No responde la brújula QMC5883L (0x0D)\"); return; }\n    } else {\n        uint8_t id[3];\n        if (!rb_i2c_read(bus, 0x1E, 0x0A, id, 3)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n        if (id[0] != 'H' || id[1] != '4' || id[2] != '3') { rb_fail(bloque, \"La identificación de la brújula HMC5883L no coincide\"); return; }\n        if (!rb_i2c_write(bus, 0x1E, 0, 0x70) || !rb_i2c_write(bus, 0x1E, 1, 0x20) || !rb_i2c_write(bus, 0x1E, 2, 0)) { rb_fail(bloque, \"No responde la brújula HMC5883L (0x1E)\"); return; }\n    }\n    brj_bus = &bus; brj_decl = 0; for (int i = 0; i < 2; i++) { brj_min[i] = 32767; brj_max[i] = -32768; }\n}\ninline bool brj_leer(int16_t* v, const char* bloque) {\n    if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return false; }\n    uint8_t d[6]; if (!rb_i2c_read(*brj_bus, brj_qmc ? 0x0D : 0x1E, brj_qmc ? 0 : 3, d, 6)) { rb_fail(bloque, \"No responde la brújula\"); return false; }\n    for (int i = 0; i < 3; i++) { uint16_t n = brj_qmc ? uint16_t(d[2*i]) | uint16_t(d[2*i+1]) << 8 : uint16_t(d[2*i]) << 8 | d[2*i+1]; v[i] = int16_t(n); }\n    if (!brj_qmc) { int16_t t = v[1]; v[1] = v[2]; v[2] = t; } return true;\n}\ninline void brj_calibrar(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return; for (int i = 0; i < 2; i++) { if (v[i] < brj_min[i]) brj_min[i] = v[i]; if (v[i] > brj_max[i]) brj_max[i] = v[i]; } }\ninline void brj_declinacion(float deg, const char* bloque) { if (!brj_bus) { rb_fail(bloque, \"Configura la brújula al iniciar\"); return; } brj_decl = deg; }\ninline float brj_normalizar(float deg) { float n = fmodf(deg, 360.0f); return n < 0 ? n + 360.0f : n; }\ninline float brj_rumbo(const char* bloque) { int16_t v[3]; if (!brj_leer(v, bloque)) return 0; float ox = brj_min[0] <= brj_max[0] ? (float(brj_min[0]) + brj_max[0])/2 : 0; float oy = brj_min[1] <= brj_max[1] ? (float(brj_min[1]) + brj_max[1])/2 : 0; return brj_normalizar(atan2f(v[1]-oy, v[0]-ox)*180.0f/3.14159265358979323846f + brj_decl); }\ninline float brj_campo(const String& eje, const char* bloque) { int16_t v[3] = {}; if (!brj_leer(v, bloque)) return 0; return v[eje[0] == 'x' ? 0 : eje[0] == 'y' ? 1 : 2]; }\n"
+        ],
+        "hardware": {
+          "features": []
+        },
+        "expression": "brj_campo({AXIS}, {BLOCK_ID})"
+      }
+    },
+    "output": "number"
+  }
+]
