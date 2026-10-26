@@ -1,0 +1,906 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "girar-90",
+  "name": "Giros con IMU · girar de 90 en 90",
+  "board": { "definitionId": "org.robotblocks.arduino-uno:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "girar-90-arduino-uno-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "girar-90-arduino-uno-1",
+            "blockId": "org.robotblocks.imu-bno055:configure",
+            "operation": "org.robotblocks.imu-bno055:configure",
+            "fields": { "SDA": "a4", "SCL": "a5" },
+            "inputs": {},
+            "next": {
+              "id": "girar-90-arduino-uno-2",
+              "blockId": "org.robotblocks.motores:configure",
+              "operation": "org.robotblocks.motores:configure",
+              "fields": { "MOTOR": "A", "PWM": "d5", "IN1": "d7", "IN2": "d8" },
+              "inputs": {},
+              "next": {
+                "id": "girar-90-arduino-uno-3",
+                "blockId": "org.robotblocks.motores:configure",
+                "operation": "org.robotblocks.motores:configure",
+                "fields": { "MOTOR": "B", "PWM": "d6", "IN1": "d9", "IN2": "d10" },
+                "inputs": {},
+                "next": {
+                  "id": "girar-90-arduino-uno-4",
+                  "blockId": "org.robotblocks.imu-bno055:reset",
+                  "operation": "org.robotblocks.imu-bno055:reset",
+                  "fields": {},
+                  "inputs": {},
+                  "next": {
+                    "id": "girar-90-arduino-uno-34",
+                    "blockId": "core:forever",
+                    "operation": "core:forever",
+                    "fields": {},
+                    "inputs": {
+                      "BODY": {
+                        "id": "girar-90-arduino-uno-25",
+                        "blockId": "core:repeat-until",
+                        "operation": "core:repeat-until",
+                        "fields": {},
+                        "inputs": {
+                          "CONDITION": {
+                            "id": "girar-90-arduino-uno-9",
+                            "blockId": "org.robotblocks.giros:arrived",
+                            "operation": "org.robotblocks.giros:arrived",
+                            "fields": {},
+                            "inputs": {
+                              "TARGET": {
+                                "id": "girar-90-arduino-uno-5",
+                                "blockId": "core:variable",
+                                "operation": "core:variable",
+                                "fields": { "VARIABLE": "objetivo" },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "ANGLE": {
+                                "id": "girar-90-arduino-uno-6",
+                                "blockId": "org.robotblocks.imu-bno055:turn",
+                                "operation": "org.robotblocks.imu-bno055:turn",
+                                "fields": {},
+                                "inputs": {},
+                                "next": null
+                              },
+                              "TOL": {
+                                "id": "girar-90-arduino-uno-7",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 2 },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "MS": {
+                                "id": "girar-90-arduino-uno-8",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 150 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          },
+                          "BODY": {
+                            "id": "girar-90-arduino-uno-22",
+                            "blockId": "org.robotblocks.motores:pair",
+                            "operation": "org.robotblocks.motores:pair",
+                            "fields": { "LEFT": "A", "RIGHT": "B" },
+                            "inputs": {
+                              "LEFT_SPEED": {
+                                "id": "girar-90-arduino-uno-14",
+                                "blockId": "org.robotblocks.giros:speed",
+                                "operation": "org.robotblocks.giros:speed",
+                                "fields": {},
+                                "inputs": {
+                                  "TARGET": {
+                                    "id": "girar-90-arduino-uno-10",
+                                    "blockId": "core:variable",
+                                    "operation": "core:variable",
+                                    "fields": { "VARIABLE": "objetivo" },
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "ANGLE": {
+                                    "id": "girar-90-arduino-uno-11",
+                                    "blockId": "org.robotblocks.imu-bno055:turn",
+                                    "operation": "org.robotblocks.imu-bno055:turn",
+                                    "fields": {},
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "MAX": {
+                                    "id": "girar-90-arduino-uno-12",
+                                    "blockId": "core:number",
+                                    "operation": "core:number",
+                                    "fields": { "NUMBER": 60 },
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "MIN": {
+                                    "id": "girar-90-arduino-uno-13",
+                                    "blockId": "core:number",
+                                    "operation": "core:number",
+                                    "fields": { "NUMBER": 20 },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              },
+                              "RIGHT_SPEED": {
+                                "id": "girar-90-arduino-uno-21",
+                                "blockId": "core:multiply",
+                                "operation": "core:multiply",
+                                "fields": {},
+                                "inputs": {
+                                  "LEFT": {
+                                    "id": "girar-90-arduino-uno-15",
+                                    "blockId": "core:number",
+                                    "operation": "core:number",
+                                    "fields": { "NUMBER": -1 },
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "RIGHT": {
+                                    "id": "girar-90-arduino-uno-20",
+                                    "blockId": "org.robotblocks.giros:speed",
+                                    "operation": "org.robotblocks.giros:speed",
+                                    "fields": {},
+                                    "inputs": {
+                                      "TARGET": {
+                                        "id": "girar-90-arduino-uno-16",
+                                        "blockId": "core:variable",
+                                        "operation": "core:variable",
+                                        "fields": { "VARIABLE": "objetivo" },
+                                        "inputs": {},
+                                        "next": null
+                                      },
+                                      "ANGLE": {
+                                        "id": "girar-90-arduino-uno-17",
+                                        "blockId": "org.robotblocks.imu-bno055:turn",
+                                        "operation": "org.robotblocks.imu-bno055:turn",
+                                        "fields": {},
+                                        "inputs": {},
+                                        "next": null
+                                      },
+                                      "MAX": {
+                                        "id": "girar-90-arduino-uno-18",
+                                        "blockId": "core:number",
+                                        "operation": "core:number",
+                                        "fields": { "NUMBER": 60 },
+                                        "inputs": {},
+                                        "next": null
+                                      },
+                                      "MIN": {
+                                        "id": "girar-90-arduino-uno-19",
+                                        "blockId": "core:number",
+                                        "operation": "core:number",
+                                        "fields": { "NUMBER": 20 },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "girar-90-arduino-uno-24",
+                              "blockId": "core:wait-ms",
+                              "operation": "core:wait-ms",
+                              "fields": {},
+                              "inputs": {
+                                "MS": {
+                                  "id": "girar-90-arduino-uno-23",
+                                  "blockId": "core:number",
+                                  "operation": "core:number",
+                                  "fields": { "NUMBER": 10 },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          }
+                        },
+                        "next": {
+                          "id": "girar-90-arduino-uno-26",
+                          "blockId": "org.robotblocks.motores:stop",
+                          "operation": "org.robotblocks.motores:stop",
+                          "fields": { "MOTOR": "todos", "MODE": "frenar" },
+                          "inputs": {},
+                          "next": {
+                            "id": "girar-90-arduino-uno-28",
+                            "blockId": "core:wait-ms",
+                            "operation": "core:wait-ms",
+                            "fields": {},
+                            "inputs": {
+                              "MS": {
+                                "id": "girar-90-arduino-uno-27",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 1000 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "girar-90-arduino-uno-33",
+                              "blockId": "core:set",
+                              "operation": "core:set",
+                              "fields": { "VARIABLE": "objetivo" },
+                              "inputs": {
+                                "VALUE": {
+                                  "id": "girar-90-arduino-uno-32",
+                                  "blockId": "org.robotblocks.giros:wrap",
+                                  "operation": "org.robotblocks.giros:wrap",
+                                  "fields": { "RANGE": "180" },
+                                  "inputs": {
+                                    "ANGLE": {
+                                      "id": "girar-90-arduino-uno-31",
+                                      "blockId": "core:add",
+                                      "operation": "core:add",
+                                      "fields": {},
+                                      "inputs": {
+                                        "LEFT": {
+                                          "id": "girar-90-arduino-uno-29",
+                                          "blockId": "core:variable",
+                                          "operation": "core:variable",
+                                          "fields": { "VARIABLE": "objetivo" },
+                                          "inputs": {},
+                                          "next": null
+                                        },
+                                        "RIGHT": {
+                                          "id": "girar-90-arduino-uno-30",
+                                          "blockId": "core:number",
+                                          "operation": "core:number",
+                                          "fields": { "NUMBER": 90 },
+                                          "inputs": {},
+                                          "next": null
+                                        }
+                                      },
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "next": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [{ "id": "objetivo", "name": "objetivo", "type": "number", "scope": "project", "initialValue": 90 }],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-uno", "version": "0.3.0" },
+    { "id": "org.robotblocks.giros", "version": "1.0.0" },
+    { "id": "org.robotblocks.imu-bno055", "version": "1.2.1" },
+    { "id": "org.robotblocks.motores", "version": "1.1.1" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "girar-90-arduino-uno-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:add",
+        "operation": "core:add",
+        "category": "core:operators",
+        "label": { "es": "%LEFT + %RIGHT", "en": "%LEFT + %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:multiply",
+        "operation": "core:multiply",
+        "category": "core:operators",
+        "label": { "es": "%LEFT × %RIGHT", "en": "%LEFT × %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:repeat-until",
+        "operation": "core:repeat-until",
+        "category": "core:control",
+        "label": { "es": "repetir hasta que %CONDITION %BODY", "en": "repeat until %CONDITION %BODY" },
+        "kind": "loop",
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Estructura de control del programa. No ejecuta ni bloquea el navegador.",
+          "en": "Program control structure. Does not execute or block the browser."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:wait-ms",
+        "operation": "core:wait-ms",
+        "category": "core:time",
+        "label": { "es": "esperar %MS ms", "en": "wait %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647, "integer": true }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:configure",
+        "category": "org.robotblocks.motores:motores",
+        "label": {
+          "es": "configurar motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2",
+          "en": "configure motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MOTOR",
+            "type": "string",
+            "default": "A",
+            "options": [
+              { "label": { "es": "A", "en": "A" }, "value": "A" },
+              { "label": { "es": "B", "en": "B" }, "value": "B" },
+              { "label": { "es": "C", "en": "C" }, "value": "C" },
+              { "label": { "es": "D", "en": "D" }, "value": "D" }
+            ]
+          },
+          {
+            "name": "PWM",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["pwm"] }
+          },
+          {
+            "name": "IN1",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "IN2",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.motores:configure",
+        "tooltip": {
+          "es": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+          "en": "Place in “when started”, once per motor. PWM connects to ENA/PWMA; IN1 and IN2 to the direction pins. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_configurar(motor, pwm, in1, in2):\n    motores_puente[motor] = (PWM(Pin(pwm), freq=1000, duty_u16=0), Pin(in1, Pin.OUT, value=0), Pin(in2, Pin.OUT, value=0))\n"
+            ],
+            "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:pair",
+        "category": "org.robotblocks.motores:motores",
+        "label": {
+          "es": "motores %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED",
+          "en": "motors %LEFT %LEFT_SPEED %RIGHT %RIGHT_SPEED"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "LEFT",
+            "type": "string",
+            "default": "B",
+            "options": [
+              { "label": { "es": "A", "en": "A" }, "value": "A" },
+              { "label": { "es": "B", "en": "B" }, "value": "B" },
+              { "label": { "es": "C", "en": "C" }, "value": "C" },
+              { "label": { "es": "D", "en": "D" }, "value": "D" }
+            ]
+          },
+          {
+            "name": "RIGHT",
+            "type": "string",
+            "default": "C",
+            "options": [
+              { "label": { "es": "A", "en": "A" }, "value": "A" },
+              { "label": { "es": "B", "en": "B" }, "value": "B" },
+              { "label": { "es": "C", "en": "C" }, "value": "C" },
+              { "label": { "es": "D", "en": "D" }, "value": "D" }
+            ]
+          }
+        ],
+        "inputs": [
+          { "name": "LEFT_SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } },
+          { "name": "RIGHT_SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }
+        ],
+        "operation": "org.robotblocks.motores:pair",
+        "tooltip": {
+          "es": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+          "en": "Moves two motors at once, for example left and right. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+              "def motores_velocidad(motor, velocidad, bloque):\n    salidas = motores_puente.get(motor)\n    if salidas is None:\n        rb_fail(bloque, \"Motor %s sin configurar: usa configurar motor al iniciar\" % motor)\n    velocidad = max(-100, min(100, velocidad))\n    if velocidad == 0:\n        motores_parar(salidas, \"libre\")\n        return\n    pwm, in1, in2 = salidas\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
+            ],
+            "statement": "motores_velocidad({LEFT}, {LEFT_SPEED}, {BLOCK_ID})\nmotores_velocidad({RIGHT}, {RIGHT_SPEED}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_velocidad({LEFT}, {LEFT_SPEED}, {BLOCK_ID});\nmotores_velocidad({RIGHT}, {RIGHT_SPEED}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:stop",
+        "category": "org.robotblocks.motores:motores",
+        "label": { "es": "detener %MOTOR %MODE", "en": "stop %MOTOR %MODE" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MOTOR",
+            "type": "string",
+            "default": "todos",
+            "options": [
+              { "label": { "es": "todos los motores", "en": "all motors" }, "value": "todos" },
+              { "label": { "es": "motor A", "en": "motor A" }, "value": "A" },
+              { "label": { "es": "motor B", "en": "motor B" }, "value": "B" },
+              { "label": { "es": "motor C", "en": "motor C" }, "value": "C" },
+              { "label": { "es": "motor D", "en": "motor D" }, "value": "D" }
+            ]
+          },
+          {
+            "name": "MODE",
+            "type": "string",
+            "default": "frenar",
+            "options": [
+              { "label": { "es": "frenando", "en": "brake" }, "value": "frenar" },
+              { "label": { "es": "en libre", "en": "coast" }, "value": "libre" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.motores:stop",
+        "tooltip": {
+          "es": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
+          "en": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+              "def motores_detener(motor, modo):\n    for letra, salidas in motores_puente.items():\n        if motor == \"todos\" or motor == letra:\n            motores_parar(salidas, modo)\n"
+            ],
+            "statement": "motores_detener({MOTOR}, {MODE})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_detener({MOTOR}, {MODE});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.imu-bno055:configure",
+        "category": "org.robotblocks.imu-bno055:imu",
+        "label": { "es": "configurar IMU BNO055 SDA %SDA SCL %SCL", "en": "configure BNO055 IMU SDA %SDA SCL %SCL" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "SDA",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "SCL",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.imu-bno055:configure",
+        "tooltip": {
+          "es": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+          "en": "In “when started”, with the robot still. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import I2C, Pin, SoftI2C", "import time", "import math"],
+            "globals": [
+              "i2c_buses = {}\n",
+              "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+              "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\nimu_anterior = None\nimu_acumulado = 0\n",
+              "def imu_acumular(heading):\n    global imu_anterior, imu_acumulado\n    if not math.isfinite(heading):\n        return\n    if imu_anterior is not None:\n        delta = (heading - imu_anterior + 180) % 360 - 180\n        if abs(delta) <= 90:\n            imu_acumulado += delta\n    imu_anterior = heading\n",
+              "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion, imu_cero, imu_anterior, imu_acumulado\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n    imu_cero = 0\n    imu_anterior = None\n    imu_acumulado = 0\n    imu_euler(bloque)\n",
+              "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    imu_acumular(valores[0])\n    return valores  # Rumbo, alabeo y cabeceo en grados\n"
+            ],
+            "statement": "imu_configurar({SDA}, {SCL}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+            "waitUntil": "imu_iniciar({BLOCK_ID})",
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+              "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0, imu_anterior = 0, imu_acumulado = 0;\nstatic bool imu_tiene_anterior = false;\ninline void imu_acumular(float heading) {\n    if (!isfinite(heading)) return;\n    if (imu_tiene_anterior) {\n        float delta = heading - imu_anterior + 180;\n        delta = delta - 360 * floorf(delta / 360) - 180;\n        if (fabsf(delta) <= 90) imu_acumulado += delta;\n    }\n    imu_anterior = heading; imu_tiene_anterior = true;\n}\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; imu_cero = 0; imu_acumulado = 0; imu_tiene_anterior = false; }\ninline float imu_euler(int axis, const char* bloque);\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; imu_euler(0, bloque); return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    imu_acumular(int16_t(uint16_t(data[0]) | uint16_t(data[1]) << 8) / 16.0f);\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); if (!rb_failed) imu_acumulado = 0; }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\n// Con la flecha X de la placa hacia adelante, roll (registro 1) es adelante/atrás y pitch (2) izquierda/derecha.\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0] == '2' ? 1 : 2, bloque); }\ninline float imu_giro_acumulado(const char* bloque) {\n    imu_euler(0, bloque);\n    return roundf(imu_acumulado * 10) / 10;\n}"
+            ],
+            "setup": ["rb_wire_begin({I2C_BUS});", "{I2C_BUS}.setClock(400000);"],
+            "statement": "imu_configurar({I2C_BUS});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.imu-bno055:turn",
+        "category": "org.robotblocks.imu-bno055:imu",
+        "label": { "es": "ángulo de giro", "en": "heading angle" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.imu-bno055:turn",
+        "tooltip": {
+          "es": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+          "en": "From -180 to 180 degrees relative to the last “reset heading angle”; positive to the right. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import I2C, Pin, SoftI2C", "import time", "import math"],
+            "globals": [
+              "i2c_buses = {}\n",
+              "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+              "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\nimu_anterior = None\nimu_acumulado = 0\n",
+              "def imu_acumular(heading):\n    global imu_anterior, imu_acumulado\n    if not math.isfinite(heading):\n        return\n    if imu_anterior is not None:\n        delta = (heading - imu_anterior + 180) % 360 - 180\n        if abs(delta) <= 90:\n            imu_acumulado += delta\n    imu_anterior = heading\n",
+              "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion, imu_cero, imu_anterior, imu_acumulado\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n    imu_cero = 0\n    imu_anterior = None\n    imu_acumulado = 0\n    imu_euler(bloque)\n",
+              "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    imu_acumular(valores[0])\n    return valores  # Rumbo, alabeo y cabeceo en grados\n",
+              "def imu_giro(bloque):\n    # -180 a 180 respecto al último «reiniciar»; positivo hacia la derecha.\n    return round((imu_euler(bloque)[0] - imu_cero + 180) % 360 - 180, 1)\n"
+            ],
+            "expression": "imu_giro({BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": [] },
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+              "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0, imu_anterior = 0, imu_acumulado = 0;\nstatic bool imu_tiene_anterior = false;\ninline void imu_acumular(float heading) {\n    if (!isfinite(heading)) return;\n    if (imu_tiene_anterior) {\n        float delta = heading - imu_anterior + 180;\n        delta = delta - 360 * floorf(delta / 360) - 180;\n        if (fabsf(delta) <= 90) imu_acumulado += delta;\n    }\n    imu_anterior = heading; imu_tiene_anterior = true;\n}\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; imu_cero = 0; imu_acumulado = 0; imu_tiene_anterior = false; }\ninline float imu_euler(int axis, const char* bloque);\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; imu_euler(0, bloque); return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    imu_acumular(int16_t(uint16_t(data[0]) | uint16_t(data[1]) << 8) / 16.0f);\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); if (!rb_failed) imu_acumulado = 0; }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\n// Con la flecha X de la placa hacia adelante, roll (registro 1) es adelante/atrás y pitch (2) izquierda/derecha.\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0] == '2' ? 1 : 2, bloque); }\ninline float imu_giro_acumulado(const char* bloque) {\n    imu_euler(0, bloque);\n    return roundf(imu_acumulado * 10) / 10;\n}"
+            ],
+            "expression": "imu_giro({BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.imu-bno055:reset",
+        "category": "org.robotblocks.imu-bno055:imu",
+        "label": { "es": "reiniciar ángulo de giro", "en": "reset heading angle" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.imu-bno055:reset",
+        "tooltip": {
+          "es": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
+          "en": "The current heading becomes 0. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import I2C, Pin, SoftI2C", "import time", "import math"],
+            "globals": [
+              "i2c_buses = {}\n",
+              "def i2c_bus(sda, scl, bloque):\n    # Un bus por par de pines; los sensores que comparten SDA/SCL comparten el bus.\n    clave = (sda, scl)\n    if clave not in i2c_buses:\n        try:\n            if len(i2c_buses) < 2:\n                i2c_buses[clave] = I2C(len(i2c_buses), scl=Pin(scl), sda=Pin(sda), freq=400000)\n            else:\n                i2c_buses[clave] = SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=400000)\n        except (ValueError, OSError) as error:\n            rb_fail(bloque, \"No se pudo iniciar I2C en SDA %s / SCL %s: %s\" % (sda, scl, error))\n    return i2c_buses[clave]\n",
+              "imu_bus = None\nimu_direccion = 0x28\nimu_cero = 0\nimu_anterior = None\nimu_acumulado = 0\n",
+              "def imu_acumular(heading):\n    global imu_anterior, imu_acumulado\n    if not math.isfinite(heading):\n        return\n    if imu_anterior is not None:\n        delta = (heading - imu_anterior + 180) % 360 - 180\n        if abs(delta) <= 90:\n            imu_acumulado += delta\n    imu_anterior = heading\n",
+              "def imu_configurar(sda, scl, bloque):\n    global imu_bus, imu_direccion, imu_cero, imu_anterior, imu_acumulado\n    bus = i2c_bus(sda, scl, bloque)\n    # La BNO055 tarda unos 650 ms en responder después de encender.\n    for _ in range(20):\n        for direccion in (0x28, 0x29):\n            try:\n                if bus.readfrom_mem(direccion, 0x00, 1)[0] == 0xA0:\n                    imu_direccion = direccion\n                    break\n            except OSError:\n                pass\n        else:\n            time.sleep_ms(50)\n            continue\n        break\n    else:\n        rb_fail(bloque, \"No se encontró la IMU BNO055 (0x28 o 0x29)\")\n    try:\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x00]))  # Modo configuración\n        time.sleep_ms(25)\n        bus.writeto_mem(imu_direccion, 0x3E, bytes([0x00]))  # Energía normal\n        bus.writeto_mem(imu_direccion, 0x3B, bytes([0x00]))  # Ángulos en grados\n        bus.writeto_mem(imu_direccion, 0x3D, bytes([0x08]))  # IMU: acelerómetro + giroscopio\n        time.sleep_ms(25)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    imu_bus = bus\n    imu_cero = 0\n    imu_anterior = None\n    imu_acumulado = 0\n    imu_euler(bloque)\n",
+              "def imu_euler(bloque):\n    if imu_bus is None:\n        rb_fail(bloque, \"Configura la IMU al iniciar\")\n    try:\n        d = imu_bus.readfrom_mem(imu_direccion, 0x1A, 6)\n    except OSError:\n        rb_fail(bloque, \"No responde la IMU BNO055\")\n    valores = []\n    for i in (0, 2, 4):\n        v = d[i] | d[i + 1] << 8\n        valores.append((v - 65536 if v > 32767 else v) / 16)\n    imu_acumular(valores[0])\n    return valores  # Rumbo, alabeo y cabeceo en grados\n",
+              "def imu_reiniciar(bloque):\n    global imu_cero, imu_acumulado\n    imu_cero = imu_euler(bloque)[0]\n    imu_acumulado = 0\n"
+            ],
+            "statement": "imu_reiniciar({BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": [] },
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "inline bool rb_i2c_read(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t* data, uint8_t count) {\n    bus.beginTransmission(address); bus.write(reg);\n    if (bus.endTransmission(false) != 0) return false;\n    if (bus.requestFrom(address, count) != count) return false;\n    for (uint8_t i = 0; i < count; i++) { int value = bus.read(); if (value < 0) return false; data[i] = value; } return true;\n}\ninline bool rb_i2c_write(TwoWire& bus, uint8_t address, uint8_t reg, uint8_t value) {\n    bus.beginTransmission(address); bus.write(reg); bus.write(value); return bus.endTransmission() == 0;\n}",
+              "static TwoWire* imu_bus = nullptr;\nstatic uint8_t imu_direccion = 0x28, imu_stage = 0, imu_intentos = 0;\nstatic uint32_t imu_started;\nstatic float imu_cero = 0, imu_anterior = 0, imu_acumulado = 0;\nstatic bool imu_tiene_anterior = false;\ninline void imu_acumular(float heading) {\n    if (!isfinite(heading)) return;\n    if (imu_tiene_anterior) {\n        float delta = heading - imu_anterior + 180;\n        delta = delta - 360 * floorf(delta / 360) - 180;\n        if (fabsf(delta) <= 90) imu_acumulado += delta;\n    }\n    imu_anterior = heading; imu_tiene_anterior = true;\n}\ninline void imu_configurar(TwoWire& bus) { imu_bus = &bus; imu_stage = 1; imu_intentos = 0; imu_started = millis() - 50; imu_cero = 0; imu_acumulado = 0; imu_tiene_anterior = false; }\ninline float imu_euler(int axis, const char* bloque);\ninline bool imu_iniciar(const char* bloque) {\n    if (rb_failed) return true;\n    if (!imu_bus) { rb_fail(bloque, \"Configura la IMU al iniciar\"); return true; }\n    uint32_t elapsed = uint32_t(millis() - imu_started);\n    if (imu_stage == 1) {\n        if (elapsed < 50) return false;\n        bool found = false;\n        for (uint8_t address = 0x28; address <= 0x29; address++) { uint8_t id; if (rb_i2c_read(*imu_bus, address, 0x00, &id, 1) && id == 0xA0) { imu_direccion = address; found = true; break; } }\n        imu_started = millis();\n        if (!found) { if (++imu_intentos == 20) { rb_fail(bloque, \"No se encontro BNO055 (0x28 o 0x29)\"); return true; } return false; }\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 0)) { rb_fail(bloque, \"No responde BNO055\"); return true; } imu_stage = 2; return false;\n    }\n    if (imu_stage == 2) {\n        if (elapsed < 25) return false;\n        if (!rb_i2c_write(*imu_bus, imu_direccion, 0x3E, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3B, 0) || !rb_i2c_write(*imu_bus, imu_direccion, 0x3D, 8)) { rb_fail(bloque, \"No responde BNO055\"); return true; }\n        imu_stage = 3; imu_started = millis(); return false;\n    }\n    if (elapsed < 25) return false; imu_stage = 4; imu_euler(0, bloque); return true;\n}\ninline float imu_euler(int axis, const char* bloque) {\n    uint8_t data[6];\n    if (!imu_bus || imu_stage != 4) { rb_fail(bloque, \"Configura la IMU al iniciar y espera a que termine\"); return 0; }\n    if (!rb_i2c_read(*imu_bus, imu_direccion, 0x1A, data, 6)) { rb_fail(bloque, \"No responde BNO055\"); return 0; }\n    imu_acumular(int16_t(uint16_t(data[0]) | uint16_t(data[1]) << 8) / 16.0f);\n    return int16_t(uint16_t(data[2*axis]) | uint16_t(data[2*axis+1]) << 8) / 16.0f;\n}\ninline void imu_reiniciar(const char* bloque) { imu_cero = imu_euler(0, bloque); if (!rb_failed) imu_acumulado = 0; }\ninline float imu_giro(const char* bloque) { float heading = imu_euler(0, bloque) - imu_cero + 180; return roundf((heading - 360 * floorf(heading/360) - 180)*10)/10; }\n// Con la flecha X de la placa hacia adelante, roll (registro 1) es adelante/atrás y pitch (2) izquierda/derecha.\ninline float imu_inclinacion(const String& axis, const char* bloque) { return imu_euler(axis[0] == '2' ? 1 : 2, bloque); }\ninline float imu_giro_acumulado(const char* bloque) {\n    imu_euler(0, bloque);\n    return roundf(imu_acumulado * 10) / 10;\n}"
+            ],
+            "statement": "imu_reiniciar({BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.giros:speed",
+        "category": "org.robotblocks.giros:giros",
+        "label": {
+          "es": "velocidad para girar a %TARGET ° desde %ANGLE ° máx %MAX mín %MIN",
+          "en": "speed to turn to %TARGET ° from %ANGLE ° max %MAX min %MIN"
+        },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [
+          { "name": "TARGET", "type": "number", "default": 90 },
+          { "name": "ANGLE", "type": "number", "default": 0 },
+          { "name": "MAX", "type": "number", "default": 60, "slider": { "min": 0, "max": 100 } },
+          { "name": "MIN", "type": "number", "default": 20, "slider": { "min": 0, "max": 100 } }
+        ],
+        "operation": "org.robotblocks.giros:speed",
+        "tooltip": {
+          "es": "Conecta en «desde» el ángulo de giro de tu IMU. Da la velocidad para girar por el camino más corto: positiva = a la derecha. Úsala en tus motores (izquierdo +velocidad, derecho −velocidad) dentro de «repetir hasta que llegó».",
+          "en": "Plug your IMU turn angle into “from”. Gives the speed to turn the shortest way: positive = right. Use it on your motors (left +speed, right −speed) inside “repeat until arrived”."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import time"],
+            "globals": [
+              "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+            ],
+            "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+          },
+          "pybricks": {
+            "imports": ["from pybricks.tools import StopWatch"],
+            "globals": [
+              "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.giros:arrived",
+        "category": "org.robotblocks.giros:giros",
+        "label": {
+          "es": "llegó a %TARGET ° con ángulo %ANGLE ° (± %TOL °) durante %MS ms",
+          "en": "arrived at %TARGET ° with angle %ANGLE ° (± %TOL °) for %MS ms"
+        },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [],
+        "inputs": [
+          { "name": "TARGET", "type": "number", "default": 90 },
+          { "name": "ANGLE", "type": "number", "default": 0 },
+          { "name": "TOL", "type": "number", "default": 2 },
+          { "name": "MS", "type": "number", "default": 150 }
+        ],
+        "operation": "org.robotblocks.giros:arrived",
+        "tooltip": {
+          "es": "Verdadero cuando el ángulo lleva ese tiempo dentro de la tolerancia, así no se detiene si solo pasó de largo. Con 0 ms es verdadero en cuanto entra.",
+          "en": "True when the angle has been within the tolerance for that time, so it does not stop if it only overshot. With 0 ms it is true as soon as it enters."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import time"],
+            "globals": [
+              "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+            ],
+            "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+          },
+          "pybricks": {
+            "imports": ["from pybricks.tools import StopWatch"],
+            "globals": [
+              "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.giros:wrap",
+        "category": "org.robotblocks.giros:giros",
+        "label": { "es": "ángulo %ANGLE ° de %RANGE", "en": "angle %ANGLE ° in %RANGE" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "RANGE",
+            "type": "string",
+            "default": "180",
+            "options": [
+              { "label": { "es": "−180 a 180", "en": "−180 to 180" }, "value": "180" },
+              { "label": { "es": "0 a 360", "en": "0 to 360" }, "value": "360" }
+            ]
+          }
+        ],
+        "inputs": [{ "name": "ANGLE", "type": "number", "default": 0 }],
+        "operation": "org.robotblocks.giros:wrap",
+        "tooltip": {
+          "es": "Lleva cualquier ángulo (por ejemplo el giro acumulado, 450°) al rango elegido (90°).",
+          "en": "Brings any angle (for example the accumulated turn, 450°) into the chosen range (90°)."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import time"],
+            "globals": [
+              "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "globals": [
+              "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+            ],
+            "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+          },
+          "pybricks": {
+            "imports": ["from pybricks.tools import StopWatch"],
+            "globals": [
+              "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+              "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+            ],
+            "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+          }
+        }
+      }
+    ]
+  }
+}
