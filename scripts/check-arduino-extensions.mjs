@@ -47,6 +47,7 @@ for (const slug of [
   'color-tcs34725',
   'imu-bno055',
   'imu-mpu6050',
+  'laser-vl53l0x',
 ]) {
   const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
   for (const path of manifest.contributes.blocks)
@@ -60,7 +61,7 @@ for (const slug of [
   assert((await readFile(`packages/${slug}/README.md`, 'utf8')).includes('Arduino/C++'));
 }
 // Solo Arduino/C++: sin plantilla MicroPython.
-for (const slug of ['imu-bno085', 'laser-vl53l0x', 'huskylens']) {
+for (const slug of ['imu-bno085', 'huskylens']) {
   const manifest = JSON.parse(await readFile(`packages/${slug}/extension.json`, 'utf8'));
   for (const path of manifest.contributes.blocks)
     for (const block of JSON.parse(await readFile(`packages/${slug}/${path}`, 'utf8'))) {

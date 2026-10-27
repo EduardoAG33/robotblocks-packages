@@ -1,12 +1,13 @@
 # Láser VL53L0X con XSHUT
 
-Extensión **Arduino/C++** para varios VL53L0X en un bus I2C, probada en hardware (ver «Pruebas en hardware»).
+Extensión **Arduino/C++ y MicroPython** para varios VL53L0X en un bus I2C, probada en hardware (ver «Pruebas en hardware»).
 Prioridad: robot de laberinto Teensy 4.0/4.1 con 9–10 sensores. También genera
-para UNO, Nano, GIGA R1 y UNO R4 Minima con los pares Wire oficiales.
+para UNO, Nano, GIGA R1 y UNO R4 Minima con los pares Wire oficiales, y en
+MicroPython para ESP32 (FireBeetle, XIAO ESP32-S3).
 No requiere Adafruit ni bibliotecas externas: el sketch incluye un port del
 [driver Pololu](https://github.com/pololu/vl53l0x-arduino). Los sensores usan un
 array fijo dimensionado por la cantidad configurada, sin heap por sensor.
-MicroPython/Pybricks ocultan los bloques y diagnostican un IR importado.
+Pybricks (SPIKE/EV3) oculta los bloques y diagnostica un IR importado.
 
 ## Bloques — categoría «Láser», color #B8860B
 
@@ -71,6 +72,27 @@ por ejemplo TCS34725 o BNO055 cableado a 0x29 debe estar en otro bus. Cambiar el
 orden de bloques no resuelve la colisión eléctrica. La extensión detecta el
 TCS34725 compartiendo SDA/SCL; comprueba manualmente los demás dispositivos.
 No reutilices tampoco una dirección final con otro dispositivo I2C.
+
+## MicroPython (ESP32)
+
+El mismo port de Pololu, traducido a Python con `I2C.readfrom_mem` /
+`writeto_mem`: misma secuencia de registros, mismas direcciones, modos y 8190 mm
+sin lectura. SDA/SCL pueden ser cualquier par de pines con salida; los sensores
+que comparten SDA/SCL comparten el bus (`i2c_bus`, igual que BNO055 y MPU6050), a
+400 kHz. La configuración es síncrona dentro de «al iniciar»: tarda unas decenas de milisegundos por
+sensor y en ese tiempo no corren otros procesos. Las lecturas no esperan.
+
+| Señal | FireBeetle ESP32 (ejemplo)           |
+| ----- | ------------------------------------ |
+| VIN   | 3.3 V                                |
+| GND   | Tierra común                         |
+| SDA   | GPIO21                               |
+| SCL   | GPIO22                               |
+| XSHUT | Un GPIO libre por sensor (p. ej. 26) |
+
+Evita GPIO0, 2, 5, 12 y 15 (strapping) para XSHUT y los pines solo entrada
+(34–39). Con un solo sensor XSHUT sigue siendo obligatorio: la extensión lo
+apaga y lo libera para darle su dirección.
 
 ## Secuencia de configuración y fallos
 
@@ -178,4 +200,4 @@ conditions are met:
 ## Pruebas en hardware
 
 - Arduino GIGA R1 (C++), 9 láseres con XSHUT en el robot Rescue Line, de 125 a 890 mm (2026-10-18).
-- MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.
+- MicroPython en una ESP32 (ESP32-D0WD) con un láser y XSHUT, de 80 a 300 mm, y vuelve a leer tras reiniciar la ESP32 (2026-10-17). La XIAO ESP32-S3 solo se probó en simulación.
