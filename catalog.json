@@ -247,6 +247,18 @@
       "description": "Manchas de color, línea, AprilTags, QR, LED y envío al GIGA por UART en la OpenMV Cam. MicroPython; experimental.",
       "kind": "module",
       "path": "packages/openmv-vision"
+    },
+    {
+      "name": "EV3 · AbsoluteIMU de mindsensors · experimental",
+      "description": "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.",
+      "kind": "module",
+      "path": "packages/ev3-absolute-imu"
+    },
+    {
+      "name": "EV3 · HuskyLens (adaptador OFDL) · experimental",
+      "description": "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.",
+      "kind": "module",
+      "path": "packages/ev3-huskylens-ofdl"
     }
   ]
 }
