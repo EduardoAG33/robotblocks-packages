@@ -223,6 +223,18 @@
       "description": "Controladores PID con nombre: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
       "kind": "module",
       "path": "packages/control-pid"
+    },
+    {
+      "name": "OpenMV Cam H7",
+      "description": "Cámara programable OpenMV Cam H7 con MicroPython por Web Serial. Experimental.",
+      "kind": "board",
+      "path": "packages/openmv-cam-h7"
+    },
+    {
+      "name": "Visión OpenMV",
+      "description": "Manchas de color, línea, AprilTags, QR, LED y envío al GIGA por UART en la OpenMV Cam. MicroPython; experimental.",
+      "kind": "module",
+      "path": "packages/openmv-vision"
     }
   ]
 }

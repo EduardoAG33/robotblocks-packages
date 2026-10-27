@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.openmv-vision",
+  "name": "Visión OpenMV",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Visión con la OpenMV Cam: manchas de color, línea, AprilTags y QR, LED y envío al GIGA por UART con el formato de la extensión UART. MicroPython en la cámara.",
+  "requiredCapabilities": ["camera"],
+  "supportedBoards": ["org.robotblocks.openmv-cam-h7:board"],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.openmv-vision:vision", "name": "Visión", "colour": "#00ACC1" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "sensors",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Visión OpenMV": "OpenMV Vision",
+        "Visión": "Vision",
+        "Visión con la OpenMV Cam: manchas de color, línea, AprilTags y QR, LED y envío al GIGA por UART con el formato de la extensión UART. MicroPython en la cámara.": "Vision with the OpenMV Cam: color blobs, line, AprilTags and QR, LED and sending to the GIGA over UART in the UART extension format. MicroPython on the camera.",
+        "No se pudo iniciar la cámara: %s": "Could not start the camera: %s",
+        "Inicia la cámara al iniciar": "Start the camera at start",
+        "Toma una foto antes de buscar": "Take a picture before searching",
+        "En grises solo se puede buscar negro o blanco": "In grayscale you can only find black or white",
+        "Los umbrales LAB necesitan la cámara a color": "LAB thresholds need the camera in color",
+        "No se pudo iniciar la UART 3: %s": "Could not start UART 3: %s",
+        "Configura la UART 3 al iniciar": "Set up UART 3 at start"
+      }
+    }
+  }
+}

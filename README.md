@@ -18,6 +18,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/imu-mpu6050`        | Giro acumulado y sensores MPU6050 por I2C   | Arduino/C++ y MicroPython experimentales                           |
 | `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)     | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/huskylens`          | Cámara AI DFRobot SEN0305                   | Arduino/C++ por I2C o UART de hardware; experimental               |
+| `packages/openmv-vision`      | Visión en la OpenMV: color, línea, tags, QR | MicroPython en la OpenMV Cam; experimental                         |
 | `packages/uart`               | Líneas de texto por UART (OpenMV)           | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo  | Arduino/C++ experimental, sin librería externa                     |
 | `packages/i2c`                | Registros entre tarjetas por I2C            | Arduino maestro/esclavo y MicroPython maestro; experimental        |
@@ -34,6 +35,7 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                        | Arduino experimental, sin carga                                    |
 | `packages/teensy-40`          | Teensy 4.0 (pinout propio)                  | Arduino experimental, sin carga                                    |
 | `packages/teensy-41`          | Teensy 4.1 (pinout propio)                  | Arduino experimental, sin carga                                    |
+| `packages/openmv-cam-h7`      | OpenMV Cam H7                               | MicroPython por Web Serial; experimental                           |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 

@@ -1,0 +1,580 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "rescue-openmv",
+  "name": "Visión OpenMV · Rescue Line: verde y plateado al GIGA",
+  "board": { "definitionId": "org.robotblocks.openmv-cam-h7:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "rescue-openmv-openmv-cam-h7-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "rescue-openmv-openmv-cam-h7-1",
+            "blockId": "org.robotblocks.openmv-vision:start",
+            "operation": "org.robotblocks.openmv-vision:start",
+            "fields": { "MODE": "color", "SIZE": "qqvga", "LIGHT": "fijo" },
+            "inputs": {},
+            "next": {
+              "id": "rescue-openmv-openmv-cam-h7-3",
+              "blockId": "org.robotblocks.openmv-vision:uart-configure",
+              "operation": "org.robotblocks.openmv-vision:uart-configure",
+              "fields": {},
+              "inputs": {
+                "BAUD": {
+                  "id": "rescue-openmv-openmv-cam-h7-2",
+                  "blockId": "core:number",
+                  "operation": "core:number",
+                  "fields": { "NUMBER": 19200 },
+                  "inputs": {},
+                  "next": null
+                }
+              },
+              "next": {
+                "id": "rescue-openmv-openmv-cam-h7-27",
+                "blockId": "core:forever",
+                "operation": "core:forever",
+                "fields": {},
+                "inputs": {
+                  "BODY": {
+                    "id": "rescue-openmv-openmv-cam-h7-4",
+                    "blockId": "org.robotblocks.openmv-vision:snapshot",
+                    "operation": "org.robotblocks.openmv-vision:snapshot",
+                    "fields": {},
+                    "inputs": {},
+                    "next": {
+                      "id": "rescue-openmv-openmv-cam-h7-6",
+                      "blockId": "org.robotblocks.openmv-vision:find-color",
+                      "operation": "org.robotblocks.openmv-vision:find-color",
+                      "fields": { "COLOR": "verde" },
+                      "inputs": {
+                        "MIN": {
+                          "id": "rescue-openmv-openmv-cam-h7-5",
+                          "blockId": "core:number",
+                          "operation": "core:number",
+                          "fields": { "NUMBER": 150 },
+                          "inputs": {},
+                          "next": null
+                        }
+                      },
+                      "next": {
+                        "id": "rescue-openmv-openmv-cam-h7-26",
+                        "blockId": "core:if-else",
+                        "operation": "core:if-else",
+                        "fields": {},
+                        "inputs": {
+                          "CONDITION": {
+                            "id": "rescue-openmv-openmv-cam-h7-7",
+                            "blockId": "org.robotblocks.openmv-vision:found",
+                            "operation": "org.robotblocks.openmv-vision:found",
+                            "fields": {},
+                            "inputs": {},
+                            "next": null
+                          },
+                          "THEN": {
+                            "id": "rescue-openmv-openmv-cam-h7-11",
+                            "blockId": "org.robotblocks.openmv-vision:send",
+                            "operation": "org.robotblocks.openmv-vision:send",
+                            "fields": {},
+                            "inputs": {
+                              "TYPE": {
+                                "id": "rescue-openmv-openmv-cam-h7-8",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 1 },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "DATA1": {
+                                "id": "rescue-openmv-openmv-cam-h7-9",
+                                "blockId": "org.robotblocks.openmv-vision:blob",
+                                "operation": "org.robotblocks.openmv-vision:blob",
+                                "fields": { "PROP": "dx" },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "DATA2": {
+                                "id": "rescue-openmv-openmv-cam-h7-10",
+                                "blockId": "org.robotblocks.openmv-vision:blob",
+                                "operation": "org.robotblocks.openmv-vision:blob",
+                                "fields": { "PROP": "area" },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "rescue-openmv-openmv-cam-h7-12",
+                              "blockId": "org.robotblocks.openmv-vision:led",
+                              "operation": "org.robotblocks.openmv-vision:led",
+                              "fields": { "COLOR": "verde" },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "ELSE": {
+                            "id": "rescue-openmv-openmv-cam-h7-14",
+                            "blockId": "org.robotblocks.openmv-vision:find-color",
+                            "operation": "org.robotblocks.openmv-vision:find-color",
+                            "fields": { "COLOR": "blanco" },
+                            "inputs": {
+                              "MIN": {
+                                "id": "rescue-openmv-openmv-cam-h7-13",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 300 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "rescue-openmv-openmv-cam-h7-25",
+                              "blockId": "core:if-else",
+                              "operation": "core:if-else",
+                              "fields": {},
+                              "inputs": {
+                                "CONDITION": {
+                                  "id": "rescue-openmv-openmv-cam-h7-15",
+                                  "blockId": "org.robotblocks.openmv-vision:found",
+                                  "operation": "org.robotblocks.openmv-vision:found",
+                                  "fields": {},
+                                  "inputs": {},
+                                  "next": null
+                                },
+                                "THEN": {
+                                  "id": "rescue-openmv-openmv-cam-h7-19",
+                                  "blockId": "org.robotblocks.openmv-vision:send",
+                                  "operation": "org.robotblocks.openmv-vision:send",
+                                  "fields": {},
+                                  "inputs": {
+                                    "TYPE": {
+                                      "id": "rescue-openmv-openmv-cam-h7-16",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 2 },
+                                      "inputs": {},
+                                      "next": null
+                                    },
+                                    "DATA1": {
+                                      "id": "rescue-openmv-openmv-cam-h7-17",
+                                      "blockId": "org.robotblocks.openmv-vision:blob",
+                                      "operation": "org.robotblocks.openmv-vision:blob",
+                                      "fields": { "PROP": "dx" },
+                                      "inputs": {},
+                                      "next": null
+                                    },
+                                    "DATA2": {
+                                      "id": "rescue-openmv-openmv-cam-h7-18",
+                                      "blockId": "org.robotblocks.openmv-vision:blob",
+                                      "operation": "org.robotblocks.openmv-vision:blob",
+                                      "fields": { "PROP": "area" },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": {
+                                    "id": "rescue-openmv-openmv-cam-h7-20",
+                                    "blockId": "org.robotblocks.openmv-vision:led",
+                                    "operation": "org.robotblocks.openmv-vision:led",
+                                    "fields": { "COLOR": "blanco" },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                },
+                                "ELSE": {
+                                  "id": "rescue-openmv-openmv-cam-h7-23",
+                                  "blockId": "org.robotblocks.openmv-vision:send",
+                                  "operation": "org.robotblocks.openmv-vision:send",
+                                  "fields": {},
+                                  "inputs": {
+                                    "TYPE": {
+                                      "id": "rescue-openmv-openmv-cam-h7-21",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 0 },
+                                      "inputs": {},
+                                      "next": null
+                                    },
+                                    "DATA1": {
+                                      "id": "rescue-openmv-openmv-cam-h7-22",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 0 },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": {
+                                    "id": "rescue-openmv-openmv-cam-h7-24",
+                                    "blockId": "org.robotblocks.openmv-vision:led",
+                                    "operation": "org.robotblocks.openmv-vision:led",
+                                    "fields": { "COLOR": "apagado" },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                }
+                              },
+                              "next": null
+                            }
+                          }
+                        },
+                        "next": null
+                      }
+                    }
+                  }
+                },
+                "next": null
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.openmv-cam-h7", "version": "0.1.0" },
+    { "id": "org.robotblocks.openmv-vision", "version": "1.0.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "rescue-openmv-openmv-cam-h7-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:if-else",
+        "operation": "core:if-else",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %THEN si no %ELSE", "en": "if %CONDITION then %THEN else %ELSE" },
+        "kind": "loop",
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "THEN", "type": "statement" },
+          { "name": "ELSE", "type": "statement" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Estructura de control del programa. No ejecuta ni bloquea el navegador.",
+          "en": "Program control structure. Does not execute or block the browser."
+        },
+        "requiredCapabilities": [],
+        "toolboxHidden": true
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:start",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": { "es": "iniciar cámara %MODE %SIZE luz %LIGHT", "en": "start camera %MODE %SIZE light %LIGHT" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MODE",
+            "type": "string",
+            "default": "color",
+            "options": [
+              { "label": { "es": "a color", "en": "in color" }, "value": "color" },
+              { "label": { "es": "en grises", "en": "grayscale" }, "value": "gris" }
+            ]
+          },
+          {
+            "name": "SIZE",
+            "type": "string",
+            "default": "qvga",
+            "options": [
+              { "label": "320×240", "value": "qvga" },
+              { "label": { "es": "160×120 (más rápida)", "en": "160×120 (faster)" }, "value": "qqvga" }
+            ]
+          },
+          {
+            "name": "LIGHT",
+            "type": "string",
+            "default": "fijo",
+            "options": [
+              { "label": { "es": "fija (para colores)", "en": "fixed (for colors)" }, "value": "fijo" },
+              { "label": { "es": "automática", "en": "automatic" }, "value": "auto" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.openmv-vision:start",
+        "tooltip": {
+          "es": "En «al iniciar». Tarda medio segundo en ajustar la luz. Para buscar colores deja la luz fija, así el verde no cambia cuando el robot se mueve.",
+          "en": "In “when started”. Takes half a second to adjust the light. To find colors keep the light fixed, so green does not change when the robot moves."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_iniciar({MODE}, {SIZE}, {LIGHT}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:snapshot",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": { "es": "tomar foto", "en": "take picture" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.openmv-vision:snapshot",
+        "tooltip": {
+          "es": "Toma una foto nueva. Los bloques «buscar» trabajan sobre la última foto. Úsalo una vez por vuelta.",
+          "en": "Takes a new picture. The “find” blocks work on the latest picture. Use it once per loop."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_foto({BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:find-color",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": {
+          "es": "buscar color %COLOR de al menos %MIN píxeles",
+          "en": "find color %COLOR of at least %MIN pixels"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "COLOR",
+            "type": "string",
+            "default": "verde",
+            "options": [
+              { "label": { "es": "rojo", "en": "red" }, "value": "rojo" },
+              { "label": { "es": "verde", "en": "green" }, "value": "verde" },
+              { "label": { "es": "azul", "en": "blue" }, "value": "azul" },
+              { "label": { "es": "amarillo", "en": "yellow" }, "value": "amarillo" },
+              { "label": { "es": "negro", "en": "black" }, "value": "negro" },
+              { "label": { "es": "blanco o plateado", "en": "white or silver" }, "value": "blanco" }
+            ]
+          }
+        ],
+        "inputs": [{ "name": "MIN", "type": "number", "default": 100, "min": 1 }],
+        "operation": "org.robotblocks.openmv-vision:find-color",
+        "tooltip": {
+          "es": "Busca manchas de ese color en la última foto y se queda con la más grande. Los colores son aproximados: si fallan con tu luz, usa «buscar color LAB» con los valores del editor de umbrales de OpenMV IDE.",
+          "en": "Finds blobs of that color in the latest picture and keeps the largest one. Colors are approximate: if they fail in your light, use “find LAB color” with the values from the OpenMV IDE threshold editor."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_buscar_color({COLOR}, {MIN}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:found",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": { "es": "¿se encontró el color?", "en": "was the color found?" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.openmv-vision:found",
+        "tooltip": {
+          "es": "Verdadero si la última búsqueda de color encontró alguna mancha.",
+          "en": "True if the last color search found any blob."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "expression": "len(vis_blobs) > 0"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:blob",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": { "es": "%PROP de la mancha más grande", "en": "%PROP of the largest blob" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "PROP",
+            "type": "string",
+            "default": "dx",
+            "options": [
+              { "label": { "es": "X desde el centro", "en": "X from the center" }, "value": "dx" },
+              { "label": { "es": "X centro", "en": "X center" }, "value": "cx" },
+              { "label": { "es": "Y centro", "en": "Y center" }, "value": "cy" },
+              { "label": { "es": "ancho", "en": "width" }, "value": "w" },
+              { "label": { "es": "alto", "en": "height" }, "value": "h" },
+              { "label": { "es": "área (píxeles)", "en": "area (pixels)" }, "value": "area" },
+              { "label": { "es": "ángulo", "en": "angle" }, "value": "angulo" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.openmv-vision:blob",
+        "tooltip": {
+          "es": "«X desde el centro» es negativa a la izquierda y positiva a la derecha: sirve directo como error de un PID. −1 si no hay mancha.",
+          "en": "“X from the center” is negative to the left and positive to the right: it works directly as a PID error. −1 if there is no blob."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "expression": "vis_blob({PROP}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:led",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": { "es": "LED de la cámara %COLOR", "en": "camera LED %COLOR" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "COLOR",
+            "type": "string",
+            "default": "verde",
+            "options": [
+              { "label": { "es": "rojo", "en": "red" }, "value": "rojo" },
+              { "label": { "es": "verde", "en": "green" }, "value": "verde" },
+              { "label": { "es": "azul", "en": "blue" }, "value": "azul" },
+              { "label": { "es": "blanco", "en": "white" }, "value": "blanco" },
+              { "label": { "es": "apagado", "en": "off" }, "value": "apagado" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.openmv-vision:led",
+        "tooltip": {
+          "es": "El LED RGB de la OpenMV, para ver qué detectó sin computadora.",
+          "en": "The OpenMV RGB LED, to see what it detected without a computer."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_led({COLOR})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:uart-configure",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": {
+          "es": "configurar envío al GIGA por UART 3 a %BAUD baudios",
+          "en": "set up sending to the GIGA on UART 3 at %BAUD baud"
+        },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "BAUD", "type": "number", "default": 19200, "min": 1200, "max": 921600, "integer": true }],
+        "operation": "org.robotblocks.openmv-vision:uart-configure",
+        "tooltip": {
+          "es": "En «al iniciar». UART 3: P4 (TX) al RX del GIGA, P5 (RX) a su TX, y GND con GND. Usa la misma velocidad en «configurar UART» del GIGA.",
+          "en": "In “when started”. UART 3: P4 (TX) to the GIGA RX, P5 (RX) to its TX, and GND to GND. Use the same speed in the GIGA “set up UART”."
+        },
+        "requiredCapabilities": ["camera"],
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_uart_configurar({BAUD}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.openmv-vision:send",
+        "category": "org.robotblocks.openmv-vision:vision",
+        "label": {
+          "es": "enviar al GIGA mensaje tipo %TYPE con datos %DATA",
+          "en": "send to the GIGA message type %TYPE with data %DATA"
+        },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "TYPE", "type": "number", "default": 1, "min": 0, "max": 9999, "integer": true }],
+        "operation": "org.robotblocks.openmv-vision:send",
+        "tooltip": {
+          "es": "Manda «tipo:dato1,dato2*CC» con verificación, el formato que leen los bloques «dato (n)» y «tipo del mensaje» de la extensión UART en el GIGA. + y − cambian cuántos datos (1 a 8).",
+          "en": "Sends “type:data1,data2*CC” with a checksum, the format read by the “data (n)” and “message type” blocks of the UART extension on the GIGA. + and − change how many data (1 to 8)."
+        },
+        "requiredCapabilities": ["camera"],
+        "variadic": { "input": { "name": "DATA", "type": "number", "default": 0 }, "min": 1, "max": 8 },
+        "generators": {
+          "micropython": {
+            "imports": ["import sensor", "import time", "import math", "from pyb import UART, LED"],
+            "globals": [
+              "# Visión OpenMV: la última foto y lo último que se buscó en ella.\nVIS_COLORES = {\n    \"rojo\": (30, 100, 15, 127, 15, 127),\n    \"verde\": (30, 100, -64, -8, -32, 32),\n    \"azul\": (0, 30, 0, 64, -128, 0),\n    \"amarillo\": (60, 100, -10, 10, 20, 127),\n    \"negro\": (0, 30, -20, 20, -20, 20),\n    \"blanco\": (75, 100, -10, 10, -10, 10),\n}\nVIS_GRISES = {\"negro\": (0, 60), \"blanco\": (180, 255)}\nvis_gris = False\nvis_img = None\nvis_reloj = None\nvis_fps = 0\nvis_blobs = []\nvis_linea = None\nvis_tags = []\nvis_qrs = []\nvis_uart = None\n\ndef vis_iniciar(modo, tamano, ajuste, bloque):\n    global vis_gris, vis_reloj\n    vis_gris = modo == \"gris\"\n    try:\n        sensor.reset()\n        sensor.set_pixformat(sensor.GRAYSCALE if vis_gris else sensor.RGB565)\n        sensor.set_framesize(sensor.QQVGA if tamano == \"qqvga\" else sensor.QVGA)\n        # Medio segundo para que la cámara ajuste la luz; solo una vez, al iniciar.\n        sensor.skip_frames(time=500)\n        if ajuste == \"fijo\":\n            sensor.set_auto_gain(False)\n            sensor.set_auto_whitebal(False)\n    except Exception as error:\n        rb_fail(bloque, \"No se pudo iniciar la cámara: %s\" % error)\n    vis_reloj = time.clock()\n\ndef vis_foto(bloque):\n    global vis_img, vis_fps\n    if vis_reloj is None:\n        rb_fail(bloque, \"Inicia la cámara al iniciar\")\n    vis_reloj.tick()\n    vis_img = sensor.snapshot()\n    vis_fps = vis_reloj.fps()\n\ndef vis_imagen(bloque):\n    if vis_img is None:\n        rb_fail(bloque, \"Toma una foto antes de buscar\")\n    return vis_img\n\ndef vis_umbral(color, bloque):\n    if vis_gris:\n        if color not in VIS_GRISES:\n            rb_fail(bloque, \"En grises solo se puede buscar negro o blanco\")\n        return VIS_GRISES[color]\n    return VIS_COLORES[color]\n\ndef vis_buscar(umbral, minimo, bloque):\n    global vis_blobs\n    minimo = int(max(1, rb_finite(minimo, bloque)))\n    encontrados = vis_imagen(bloque).find_blobs([umbral], pixels_threshold=minimo, area_threshold=minimo, merge=True)\n    vis_blobs = sorted(encontrados, key=lambda blob: blob.pixels(), reverse=True)\n\ndef vis_buscar_color(color, minimo, bloque):\n    vis_buscar(vis_umbral(color, bloque), minimo, bloque)\n\ndef vis_buscar_lab(l1, l2, a1, a2, b1, b2, minimo, bloque):\n    if vis_gris:\n        rb_fail(bloque, \"Los umbrales LAB necesitan la cámara a color\")\n    valores = [int(rb_finite(valor, bloque)) for valor in (l1, l2, a1, a2, b1, b2)]\n    vis_buscar(tuple(valores), minimo, bloque)\n\ndef vis_blob(dato, bloque):\n    if not vis_blobs:\n        return -1\n    blob = vis_blobs[0]\n    if dato == \"cx\":\n        return blob.cx()\n    if dato == \"cy\":\n        return blob.cy()\n    if dato == \"dx\":\n        return blob.cx() - vis_imagen(bloque).width() // 2\n    if dato == \"w\":\n        return blob.w()\n    if dato == \"h\":\n        return blob.h()\n    if dato == \"area\":\n        return blob.pixels()\n    return round(blob.rotation() * 180 / math.pi)\n\ndef vis_buscar_linea(color, bloque):\n    global vis_linea\n    vis_linea = vis_imagen(bloque).get_regression([vis_umbral(color, bloque)], robust=True)\n\n# Ángulo: 0 = línea recta hacia adelante, positivo = inclinada a la derecha (−90 a 90).\n# Desplazamiento: píxeles del centro de la imagen al punto de la línea en la fila del medio.\ndef vis_linea_dato(dato, bloque):\n    if vis_linea is None:\n        return -1 if dato == \"calidad\" else 0\n    if dato == \"calidad\":\n        return vis_linea.magnitude()\n    if dato == \"angulo\":\n        theta = vis_linea.theta()\n        return theta if theta < 90 else theta - 180\n    img = vis_imagen(bloque)\n    x1, y1, x2, y2 = vis_linea.line()\n    medio = img.height() / 2\n    x = (x1 + x2) / 2 if y1 == y2 else x1 + (x2 - x1) * (medio - y1) / (y2 - y1)\n    return round(x - img.width() / 2)\n\ndef vis_buscar_tags(bloque):\n    global vis_tags\n    vis_tags = sorted(vis_imagen(bloque).find_apriltags(), key=lambda tag: tag.w() * tag.h(), reverse=True)\n\ndef vis_tag(dato, bloque):\n    if not vis_tags:\n        return -1\n    tag = vis_tags[0]\n    if dato == \"id\":\n        return tag.id()\n    if dato == \"cx\":\n        return tag.cx()\n    if dato == \"cy\":\n        return tag.cy()\n    return round(tag.rotation() * 180 / math.pi)\n\ndef vis_buscar_qr(bloque):\n    global vis_qrs\n    vis_qrs = vis_imagen(bloque).find_qrcodes()\n\ndef vis_qr_texto():\n    return vis_qrs[0].payload() if vis_qrs else \"\"\n\ndef vis_led(color):\n    encendidos = {\"rojo\": (1,), \"verde\": (2,), \"azul\": (3,), \"blanco\": (1, 2, 3), \"apagado\": ()}[color]\n    for numero in (1, 2, 3):\n        if numero in encendidos:\n            LED(numero).on()\n        else:\n            LED(numero).off()\n\ndef vis_uart_configurar(baudios, bloque):\n    global vis_uart\n    try:\n        vis_uart = UART(3, int(rb_finite(baudios, bloque)))\n    except (ValueError, OSError) as error:\n        rb_fail(bloque, \"No se pudo iniciar la UART 3: %s\" % error)\n\n# Mismo formato que la extensión UART del GIGA: «tipo:dato1,dato2*CC» con XOR en hexadecimal.\ndef vis_mensaje(tipo, datos, bloque):\n    tipo = int(rb_finite(tipo, bloque))\n    partes = []\n    for dato in datos:\n        dato = round(rb_finite(dato, bloque), 3)\n        partes.append(str(int(dato)) if dato == int(dato) else str(dato))\n    texto = \"%d:%s\" % (tipo, \",\".join(partes))\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return \"%s*%02X\\n\" % (texto, suma)\n\ndef vis_enviar(tipo, datos, bloque):\n    if vis_uart is None:\n        rb_fail(bloque, \"Configura la UART 3 al iniciar\")\n    vis_uart.write(vis_mensaje(tipo, datos, bloque))\n"
+            ],
+            "statement": "vis_enviar({TYPE}, [{DATA}], {BLOCK_ID})"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "titulo": "Visión OpenMV · GIGA recibe verde y plateado",
+  "ejemplo": "arduino-giga-r1",
+  "tarjetas": ["arduino-giga-r1"],
+  "variables": {
+    "tipo": 0,
+    "x": 0
+  },
+  "programa": [
+    [
+      "org.robotblocks.uart:configure",
+      {
+        "PORT": "1",
+        "RX": "d0",
+        "TX": "d1"
+      },
+      {
+        "BAUD": 19200
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                "org.robotblocks.uart:received",
+                {
+                  "PORT": "1"
+                }
+              ],
+              "BODY": [
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "tipo"
+                  },
+                  {
+                    "VALUE": [
+                      "org.robotblocks.uart:type",
+                      {
+                        "PORT": "1"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "x"
+                  },
+                  {
+                    "VALUE": [
+                      "org.robotblocks.uart:field",
+                      {
+                        "PORT": "1"
+                      },
+                      {
+                        "NUMBER": 1
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "core:if",
+                  {},
+                  {
+                    "CONDITION": [
+                      "core:equal",
+                      {},
+                      {
+                        "LEFT": {
+                          "var": "tipo"
+                        },
+                        "RIGHT": 1
+                      }
+                    ],
+                    "BODY": [
+                      [
+                        "core:serial-println",
+                        {},
+                        {
+                          "VALUE": [
+                            "core:join",
+                            {},
+                            {
+                              "LEFT": "verde en x ",
+                              "RIGHT": [
+                                "core:to-text",
+                                {},
+                                {
+                                  "VALUE": {
+                                    "var": "x"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "core:if",
+                  {},
+                  {
+                    "CONDITION": [
+                      "core:equal",
+                      {},
+                      {
+                        "LEFT": {
+                          "var": "tipo"
+                        },
+                        "RIGHT": 2
+                      }
+                    ],
+                    "BODY": [
+                      [
+                        "core:serial-println",
+                        {},
+                        {
+                          "VALUE": "plateado: zona de rescate"
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 5
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}

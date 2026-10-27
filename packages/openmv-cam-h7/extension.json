@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.openmv-cam-h7",
+  "name": "OpenMV Cam H7",
+  "version": "0.1.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Cámara programable OpenMV Cam H7 (STM32H743) con MicroPython por Web Serial. Se usa con la extensión Visión OpenMV.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [],
+    "blocks": [],
+    "devices": [],
+    "generators": [],
+    "monitors": [],
+    "boards": [
+      {
+        "id": "org.robotblocks.openmv-cam-h7:board",
+        "name": "OpenMV Cam H7",
+        "family": "stm32",
+        "description": "Lógica de 3.3 V (P0–P9 toleran 5 V). Cámara OV7725. La UART 3 (P4 TX, P5 RX) habla con el GIGA. Los pines libres llegarán en otra versión.",
+        "capabilities": ["camera"],
+        "logicLevel": 3.3,
+        "experimental": true,
+        "targets": { "micropython": { "upload": "webserial-raw-repl" } },
+        "resources": [
+          { "id": "p0", "label": "P0 · SPI2 MOSI", "capabilities": [], "symbol": { "micropython": "P0" } },
+          { "id": "p1", "label": "P1 · SPI2 MISO", "capabilities": [], "symbol": { "micropython": "P1" } },
+          { "id": "p2", "label": "P2 · SPI2 SCLK", "capabilities": [], "symbol": { "micropython": "P2" } },
+          { "id": "p3", "label": "P3 · SPI2 SS", "capabilities": [], "symbol": { "micropython": "P3" } },
+          {
+            "id": "p4",
+            "label": "P4 · UART3 TX · I2C2 SCL",
+            "capabilities": [],
+            "symbol": { "micropython": "P4" },
+            "notes": "TX de la UART 3: conéctalo al RX del GIGA. Lo usa «enviar al GIGA» de Visión OpenMV."
+          },
+          {
+            "id": "p5",
+            "label": "P5 · UART3 RX · I2C2 SDA",
+            "capabilities": [],
+            "symbol": { "micropython": "P5" },
+            "notes": "RX de la UART 3: conéctalo al TX del GIGA."
+          },
+          { "id": "p6", "label": "P6 · ADC · DAC", "capabilities": [], "symbol": { "micropython": "P6" } },
+          { "id": "p7", "label": "P7 · PWM · servo 1", "capabilities": [], "symbol": { "micropython": "P7" } },
+          { "id": "p8", "label": "P8 · PWM · servo 2", "capabilities": [], "symbol": { "micropython": "P8" } },
+          { "id": "p9", "label": "P9 · PWM · servo 3", "capabilities": [], "symbol": { "micropython": "P9" } }
+        ]
+      }
+    ]
+  },
+  "assets": [],
+  "metadata": {
+    "group": "boards",
+    "translations": {
+      "en": {
+        "Cámara programable OpenMV Cam H7 (STM32H743) con MicroPython por Web Serial. Se usa con la extensión Visión OpenMV.": "Programmable OpenMV Cam H7 camera (STM32H743) with MicroPython over Web Serial. Used with the OpenMV Vision extension.",
+        "Lógica de 3.3 V (P0–P9 toleran 5 V). Cámara OV7725. La UART 3 (P4 TX, P5 RX) habla con el GIGA. Los pines libres llegarán en otra versión.": "3.3 V logic (P0–P9 are 5 V tolerant). OV7725 camera. UART 3 (P4 TX, P5 RX) talks to the GIGA. Free pins will come in a later version.",
+        "TX de la UART 3: conéctalo al RX del GIGA. Lo usa «enviar al GIGA» de Visión OpenMV.": "UART 3 TX: connect it to the GIGA RX. Used by “send to GIGA” in OpenMV Vision.",
+        "RX de la UART 3: conéctalo al TX del GIGA.": "UART 3 RX: connect it to the GIGA TX."
+      }
+    }
+  }
+}
