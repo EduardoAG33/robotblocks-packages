@@ -70,15 +70,15 @@
         "options": [
           {
             "label": {
-              "es": "1",
-              "en": "1"
+              "es": "UART 1",
+              "en": "UART 1"
             },
             "value": "1"
           },
           {
             "label": {
-              "es": "2",
-              "en": "2"
+              "es": "UART 2",
+              "en": "UART 2"
             },
             "value": "2"
           },
@@ -129,7 +129,7 @@
       {
         "name": "RX",
         "type": "string",
-        "default": "",
+        "default": "@uart.rx",
         "reference": {
           "kind": "resource",
           "capabilities": ["digitalInput"]
@@ -138,7 +138,7 @@
       {
         "name": "TX",
         "type": "string",
-        "default": "",
+        "default": "@uart.tx",
         "reference": {
           "kind": "resource",
           "capabilities": ["digitalOutput"]
