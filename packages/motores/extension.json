@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.motores",
   "name": "Motores DC (puente H)",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Hasta cuatro motores (A–D) con TB6612FNG o L298N: PWM + IN1 + IN2. Plantillas MicroPython experimentales; Arduino pendiente.",
+  "description": "Hasta cuatro motores (A–D) con TB6612FNG, L298N o VNH5019: PWM + IN1 + IN2. Arduino y MicroPython.",
   "requiredCapabilities": ["pwm", "digitalOutput"],
   "supportedBoards": [],
   "dependencies": [],
@@ -20,12 +20,11 @@
   },
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "actuators",
     "translations": {
       "en": {
         "Motores DC (puente H)": "DC motors (H bridge)",
-        "Hasta cuatro motores (A–D) con TB6612FNG o L298N: PWM + IN1 + IN2. Plantillas MicroPython experimentales; Arduino pendiente.": "Up to four motors (A–D) with TB6612FNG or L298N: PWM + IN1 + IN2. Experimental MicroPython templates; Arduino pending.",
+        "Hasta cuatro motores (A–D) con TB6612FNG, L298N o VNH5019: PWM + IN1 + IN2. Arduino y MicroPython.": "Up to four motors (A–D) with TB6612FNG, L298N or VNH5019: PWM + IN1 + IN2. Arduino and MicroPython.",
         "Motores": "Motors"
       }
     }

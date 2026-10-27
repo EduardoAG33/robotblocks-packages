@@ -1,0 +1,241 @@
+[
+  {
+    "id": "org.robotblocks.zumbador:tone",
+    "operation": "org.robotblocks.zumbador:tone",
+    "category": "org.robotblocks.zumbador:zumbador",
+    "label": { "es": "tocar tono en pin %PIN frecuencia %FREQ Hz", "en": "play tone on pin %PIN frequency %FREQ Hz" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [{ "name": "FREQ", "type": "number", "default": 440, "min": 31, "max": 20000 }],
+    "tooltip": {
+      "es": "Suena sin parar hasta «detener sonido». Para zumbadores pasivos (los activos suenan siempre a su propia frecuencia).",
+      "en": "Sounds non-stop until “stop sound”. For passive buzzers (active ones always sound at their own frequency)."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import Pin, PWM, Timer"],
+        "globals": [
+          "ZUM_MELODIAS = (\n    ((523, 100), (659, 100), (784, 100), (1047, 160)),\n    ((659, 100), (784, 100), (1047, 140), (1319, 180)),\n    ((392, 120), (330, 120), (262, 120), (196, 220)),\n    ((880, 100), (440, 100), (880, 100), (440, 100), (880, 100), (440, 180)),\n)\nZUM_TIC_MS = 10\n# Por pin: [PWM, notas que faltan o None, índice, ms que le quedan a la nota, tono continuo].\nzum_estados = {}\nzum_reloj = None\n\ndef zum_estado(pin):\n    if pin not in zum_estados:\n        zum_estados[pin] = [PWM(Pin(pin), freq=440, duty_u16=0), None, 0, 0, False]\n    return zum_estados[pin]\n\ndef zum_sonar(pwm, hz):\n    pwm.freq(int(hz))\n    pwm.duty_u16(32768)\n\ndef zum_callar(estado):\n    estado[0].duty_u16(0)\n    estado[1] = None\n    estado[4] = False\n\n# Corre cada 10 ms con un Timer: avanza las notas sin frenar el programa.\ndef zum_tic(_):\n    for estado in zum_estados.values():\n        if estado[1] is None:\n            continue\n        estado[3] -= ZUM_TIC_MS\n        if estado[3] > 0:\n            continue\n        estado[2] += 1\n        if estado[2] >= len(estado[1]):\n            zum_callar(estado)\n        else:\n            hz, ms = estado[1][estado[2]]\n            zum_sonar(estado[0], hz)\n            estado[3] = ms\n\ndef zum_empezar(pin, notas):\n    global zum_reloj\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[2] = 0\n    estado[3] = notas[0][1]\n    estado[4] = False\n    zum_sonar(estado[0], notas[0][0])\n    estado[1] = notas\n    if zum_reloj is None:\n        zum_reloj = Timer(0)\n        zum_reloj.init(period=ZUM_TIC_MS, mode=Timer.PERIODIC, callback=zum_tic)\n\ndef zum_tono(pin, hz, bloque):\n    hz = rb_finite(hz, bloque)\n    if not 31 <= hz <= 20000:\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\")\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[4] = True\n    zum_sonar(estado[0], hz)\n\ndef zum_nota(pin, hz, ms, bloque):\n    ms = rb_finite(ms, bloque)\n    if not 0 <= ms <= 60000:\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\")\n    zum_empezar(pin, ((hz, ms),))\n\ndef zum_detener(pin):\n    zum_callar(zum_estado(pin))\n\ndef zum_sonando(pin):\n    estado = zum_estados.get(pin)\n    return estado is not None and (estado[4] or estado[1] is not None)\n"
+        ],
+        "statement": "zum_tono({PIN}, {FREQ}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct zum_nota { uint16_t hz; uint16_t ms; };\nstatic const zum_nota zum_melodias[4][6] = {\n    {{523, 100}, {659, 100}, {784, 100}, {1047, 160}},\n    {{659, 100}, {784, 100}, {1047, 140}, {1319, 180}},\n    {{392, 120}, {330, 120}, {262, 120}, {196, 220}},\n    {{880, 100}, {440, 100}, {880, 100}, {440, 100}, {880, 100}, {440, 180}},\n};\nstatic const uint8_t zum_largos[4] = { 4, 4, 4, 6 };\nstruct zum_estado {\n    const zum_nota* notas = nullptr;\n    uint8_t indice = 0, cantidad = 0;\n    uint32_t inicio = 0;\n    zum_nota unica = {0, 0};\n    bool continuo = false;\n};\ninline int zum_numero(const String& texto) {\n    return atoi(texto.c_str());\n}\ninline void zum_detener(zum_estado& estado, int pin) {\n    estado.notas = nullptr;\n    estado.continuo = false;\n    noTone(pin);\n}\ninline void zum_empezar(zum_estado& estado, int pin, const zum_nota* notas, uint8_t cantidad) {\n    estado.notas = notas;\n    estado.cantidad = cantidad;\n    estado.indice = 0;\n    estado.continuo = false;\n    estado.inicio = millis();\n    tone(pin, notas[0].hz);\n}\ninline void zum_tono(zum_estado& estado, int pin, float hz, const char* bloque) {\n    hz = rb_finite(hz, bloque);\n    if (rb_failed) return;\n    if (!(hz >= 31 && hz <= 20000)) {\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\");\n        return;\n    }\n    estado.notas = nullptr;\n    estado.continuo = true;\n    tone(pin, (unsigned int)hz);\n}\ninline void zum_nota_iniciar(zum_estado& estado, int pin, int hz, float ms, const char* bloque) {\n    ms = rb_finite(ms, bloque);\n    if (rb_failed) return;\n    if (!(ms >= 0 && ms <= 60000)) {\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\");\n        return;\n    }\n    estado.unica.hz = uint16_t(hz);\n    estado.unica.ms = uint16_t(ms);\n    zum_empezar(estado, pin, &estado.unica, 1);\n}\ninline void zum_melodia(zum_estado& estado, int pin, int indice) {\n    zum_empezar(estado, pin, zum_melodias[indice], zum_largos[indice]);\n}\n// Se llama en cada vuelta (poll): cambia de nota cuando se cumple su tiempo.\ninline void zum_paso(zum_estado& estado, int pin) {\n    if (!estado.notas) return;\n    if (uint32_t(millis() - estado.inicio) < estado.notas[estado.indice].ms) return;\n    if (++estado.indice >= estado.cantidad) {\n        zum_detener(estado, pin);\n        return;\n    }\n    estado.inicio = millis();\n    tone(pin, estado.notas[estado.indice].hz);\n}\ninline bool zum_sonando(const zum_estado& estado) {\n    return estado.continuo || estado.notas != nullptr;\n}\n",
+          "static zum_estado zum_estado_{PIN};\n"
+        ],
+        "poll": ["zum_paso(zum_estado_{PIN}, {PIN});"],
+        "statement": "zum_tono(zum_estado_{PIN}, {PIN}, {FREQ}, {BLOCK_ID});"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.zumbador:note",
+    "operation": "org.robotblocks.zumbador:note",
+    "category": "org.robotblocks.zumbador:zumbador",
+    "label": { "es": "tocar nota %NOTE durante %MS ms en pin %PIN", "en": "play note %NOTE for %MS ms on pin %PIN" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "NOTE",
+        "type": "string",
+        "default": "523",
+        "options": [
+          { "label": { "es": "Do4", "en": "C4" }, "value": "262" },
+          { "label": { "es": "Do♯4", "en": "C♯4" }, "value": "277" },
+          { "label": { "es": "Re4", "en": "D4" }, "value": "294" },
+          { "label": { "es": "Re♯4", "en": "D♯4" }, "value": "311" },
+          { "label": { "es": "Mi4", "en": "E4" }, "value": "330" },
+          { "label": { "es": "Fa4", "en": "F4" }, "value": "349" },
+          { "label": { "es": "Fa♯4", "en": "F♯4" }, "value": "370" },
+          { "label": { "es": "Sol4", "en": "G4" }, "value": "392" },
+          { "label": { "es": "Sol♯4", "en": "G♯4" }, "value": "415" },
+          { "label": { "es": "La4", "en": "A4" }, "value": "440" },
+          { "label": { "es": "La♯4", "en": "A♯4" }, "value": "466" },
+          { "label": { "es": "Si4", "en": "B4" }, "value": "494" },
+          { "label": { "es": "Do5", "en": "C5" }, "value": "523" },
+          { "label": { "es": "Do♯5", "en": "C♯5" }, "value": "554" },
+          { "label": { "es": "Re5", "en": "D5" }, "value": "587" },
+          { "label": { "es": "Re♯5", "en": "D♯5" }, "value": "622" },
+          { "label": { "es": "Mi5", "en": "E5" }, "value": "659" },
+          { "label": { "es": "Fa5", "en": "F5" }, "value": "698" },
+          { "label": { "es": "Fa♯5", "en": "F♯5" }, "value": "740" },
+          { "label": { "es": "Sol5", "en": "G5" }, "value": "784" },
+          { "label": { "es": "Sol♯5", "en": "G♯5" }, "value": "831" },
+          { "label": { "es": "La5", "en": "A5" }, "value": "880" },
+          { "label": { "es": "La♯5", "en": "A♯5" }, "value": "932" },
+          { "label": { "es": "Si5", "en": "B5" }, "value": "988" }
+        ]
+      },
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [{ "name": "MS", "type": "number", "default": 200, "min": 0, "max": 60000 }],
+    "tooltip": {
+      "es": "No espera: el programa sigue mientras suena. Para tocar algo después, usa «esperar hasta que no (sonando en pin …)». Un sonido nuevo en el mismo pin reemplaza al anterior.",
+      "en": "It does not wait: the program keeps going while it sounds. To play something afterwards, use “wait until not (sounding on pin …)”. A new sound on the same pin replaces the previous one."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["from machine import Pin, PWM, Timer"],
+        "globals": [
+          "ZUM_MELODIAS = (\n    ((523, 100), (659, 100), (784, 100), (1047, 160)),\n    ((659, 100), (784, 100), (1047, 140), (1319, 180)),\n    ((392, 120), (330, 120), (262, 120), (196, 220)),\n    ((880, 100), (440, 100), (880, 100), (440, 100), (880, 100), (440, 180)),\n)\nZUM_TIC_MS = 10\n# Por pin: [PWM, notas que faltan o None, índice, ms que le quedan a la nota, tono continuo].\nzum_estados = {}\nzum_reloj = None\n\ndef zum_estado(pin):\n    if pin not in zum_estados:\n        zum_estados[pin] = [PWM(Pin(pin), freq=440, duty_u16=0), None, 0, 0, False]\n    return zum_estados[pin]\n\ndef zum_sonar(pwm, hz):\n    pwm.freq(int(hz))\n    pwm.duty_u16(32768)\n\ndef zum_callar(estado):\n    estado[0].duty_u16(0)\n    estado[1] = None\n    estado[4] = False\n\n# Corre cada 10 ms con un Timer: avanza las notas sin frenar el programa.\ndef zum_tic(_):\n    for estado in zum_estados.values():\n        if estado[1] is None:\n            continue\n        estado[3] -= ZUM_TIC_MS\n        if estado[3] > 0:\n            continue\n        estado[2] += 1\n        if estado[2] >= len(estado[1]):\n            zum_callar(estado)\n        else:\n            hz, ms = estado[1][estado[2]]\n            zum_sonar(estado[0], hz)\n            estado[3] = ms\n\ndef zum_empezar(pin, notas):\n    global zum_reloj\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[2] = 0\n    estado[3] = notas[0][1]\n    estado[4] = False\n    zum_sonar(estado[0], notas[0][0])\n    estado[1] = notas\n    if zum_reloj is None:\n        zum_reloj = Timer(0)\n        zum_reloj.init(period=ZUM_TIC_MS, mode=Timer.PERIODIC, callback=zum_tic)\n\ndef zum_tono(pin, hz, bloque):\n    hz = rb_finite(hz, bloque)\n    if not 31 <= hz <= 20000:\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\")\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[4] = True\n    zum_sonar(estado[0], hz)\n\ndef zum_nota(pin, hz, ms, bloque):\n    ms = rb_finite(ms, bloque)\n    if not 0 <= ms <= 60000:\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\")\n    zum_empezar(pin, ((hz, ms),))\n\ndef zum_detener(pin):\n    zum_callar(zum_estado(pin))\n\ndef zum_sonando(pin):\n    estado = zum_estados.get(pin)\n    return estado is not None and (estado[4] or estado[1] is not None)\n"
+        ],
+        "statement": "zum_nota({PIN}, int({NOTE}), {MS}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "struct zum_nota { uint16_t hz; uint16_t ms; };\nstatic const zum_nota zum_melodias[4][6] = {\n    {{523, 100}, {659, 100}, {784, 100}, {1047, 160}},\n    {{659, 100}, {784, 100}, {1047, 140}, {1319, 180}},\n    {{392, 120}, {330, 120}, {262, 120}, {196, 220}},\n    {{880, 100}, {440, 100}, {880, 100}, {440, 100}, {880, 100}, {440, 180}},\n};\nstatic const uint8_t zum_largos[4] = { 4, 4, 4, 6 };\nstruct zum_estado {\n    const zum_nota* notas = nullptr;\n    uint8_t indice = 0, cantidad = 0;\n    uint32_t inicio = 0;\n    zum_nota unica = {0, 0};\n    bool continuo = false;\n};\ninline int zum_numero(const String& texto) {\n    return atoi(texto.c_str());\n}\ninline void zum_detener(zum_estado& estado, int pin) {\n    estado.notas = nullptr;\n    estado.continuo = false;\n    noTone(pin);\n}\ninline void zum_empezar(zum_estado& estado, int pin, const zum_nota* notas, uint8_t cantidad) {\n    estado.notas = notas;\n    estado.cantidad = cantidad;\n    estado.indice = 0;\n    estado.continuo = false;\n    estado.inicio = millis();\n    tone(pin, notas[0].hz);\n}\ninline void zum_tono(zum_estado& estado, int pin, float hz, const char* bloque) {\n    hz = rb_finite(hz, bloque);\n    if (rb_failed) return;\n    if (!(hz >= 31 && hz <= 20000)) {\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\");\n        return;\n    }\n    estado.notas = nullptr;\n    estado.continuo = true;\n    tone(pin, (unsigned int)hz);\n}\ninline void zum_nota_iniciar(zum_estado& estado, int pin, int hz, float ms, const char* bloque) {\n    ms = rb_finite(ms, bloque);\n    if (rb_failed) return;\n    if (!(ms >= 0 && ms <= 60000)) {\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\");\n        return;\n    }\n    estado.unica.hz = uint16_t(hz);\n    estado.unica.ms = uint16_t(ms);\n    zum_empezar(estado, pin, &estado.unica, 1);\n}\ninline void zum_melodia(zum_estado& estado, int pin, int indice) {\n    zum_empezar(estado, pin, zum_melodias[indice], zum_largos[indice]);\n}\n// Se llama en cada vuelta (poll): cambia de nota cuando se cumple su tiempo.\ninline void zum_paso(zum_estado& estado, int pin) {\n    if (!estado.notas) return;\n    if (uint32_t(millis() - estado.inicio) < estado.notas[estado.indice].ms) return;\n    if (++estado.indice >= estado.cantidad) {\n        zum_detener(estado, pin);\n        return;\n    }\n    estado.inicio = millis();\n    tone(pin, estado.notas[estado.indice].hz);\n}\ninline bool zum_sonando(const zum_estado& estado) {\n    return estado.continuo || estado.notas != nullptr;\n}\n",
+          "static zum_estado zum_estado_{PIN};\n"
+        ],
+        "poll": ["zum_paso(zum_estado_{PIN}, {PIN});"],
+        "statement": "zum_nota_iniciar(zum_estado_{PIN}, {PIN}, zum_numero({NOTE}), {MS}, {BLOCK_ID});"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.zumbador:melody",
+    "operation": "org.robotblocks.zumbador:melody",
+    "category": "org.robotblocks.zumbador:zumbador",
+    "label": { "es": "tocar melodía %MELODY en pin %PIN", "en": "play melody %MELODY on pin %PIN" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "MELODY",
+        "type": "string",
+        "default": "0",
+        "options": [
+          { "label": { "es": "inicio", "en": "start" }, "value": "0" },
+          { "label": { "es": "éxito", "en": "success" }, "value": "1" },
+          { "label": { "es": "error", "en": "error" }, "value": "2" },
+          { "label": { "es": "alarma", "en": "alarm" }, "value": "3" }
+        ]
+      },
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "No espera: el programa sigue mientras suena. Para tocar algo después, usa «esperar hasta que no (sonando en pin …)». Un sonido nuevo en el mismo pin reemplaza al anterior.",
+      "en": "It does not wait: the program keeps going while it sounds. To play something afterwards, use “wait until not (sounding on pin …)”. A new sound on the same pin replaces the previous one."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["from machine import Pin, PWM, Timer"],
+        "globals": [
+          "ZUM_MELODIAS = (\n    ((523, 100), (659, 100), (784, 100), (1047, 160)),\n    ((659, 100), (784, 100), (1047, 140), (1319, 180)),\n    ((392, 120), (330, 120), (262, 120), (196, 220)),\n    ((880, 100), (440, 100), (880, 100), (440, 100), (880, 100), (440, 180)),\n)\nZUM_TIC_MS = 10\n# Por pin: [PWM, notas que faltan o None, índice, ms que le quedan a la nota, tono continuo].\nzum_estados = {}\nzum_reloj = None\n\ndef zum_estado(pin):\n    if pin not in zum_estados:\n        zum_estados[pin] = [PWM(Pin(pin), freq=440, duty_u16=0), None, 0, 0, False]\n    return zum_estados[pin]\n\ndef zum_sonar(pwm, hz):\n    pwm.freq(int(hz))\n    pwm.duty_u16(32768)\n\ndef zum_callar(estado):\n    estado[0].duty_u16(0)\n    estado[1] = None\n    estado[4] = False\n\n# Corre cada 10 ms con un Timer: avanza las notas sin frenar el programa.\ndef zum_tic(_):\n    for estado in zum_estados.values():\n        if estado[1] is None:\n            continue\n        estado[3] -= ZUM_TIC_MS\n        if estado[3] > 0:\n            continue\n        estado[2] += 1\n        if estado[2] >= len(estado[1]):\n            zum_callar(estado)\n        else:\n            hz, ms = estado[1][estado[2]]\n            zum_sonar(estado[0], hz)\n            estado[3] = ms\n\ndef zum_empezar(pin, notas):\n    global zum_reloj\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[2] = 0\n    estado[3] = notas[0][1]\n    estado[4] = False\n    zum_sonar(estado[0], notas[0][0])\n    estado[1] = notas\n    if zum_reloj is None:\n        zum_reloj = Timer(0)\n        zum_reloj.init(period=ZUM_TIC_MS, mode=Timer.PERIODIC, callback=zum_tic)\n\ndef zum_tono(pin, hz, bloque):\n    hz = rb_finite(hz, bloque)\n    if not 31 <= hz <= 20000:\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\")\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[4] = True\n    zum_sonar(estado[0], hz)\n\ndef zum_nota(pin, hz, ms, bloque):\n    ms = rb_finite(ms, bloque)\n    if not 0 <= ms <= 60000:\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\")\n    zum_empezar(pin, ((hz, ms),))\n\ndef zum_detener(pin):\n    zum_callar(zum_estado(pin))\n\ndef zum_sonando(pin):\n    estado = zum_estados.get(pin)\n    return estado is not None and (estado[4] or estado[1] is not None)\n"
+        ],
+        "statement": "zum_empezar({PIN}, ZUM_MELODIAS[int({MELODY})])"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "struct zum_nota { uint16_t hz; uint16_t ms; };\nstatic const zum_nota zum_melodias[4][6] = {\n    {{523, 100}, {659, 100}, {784, 100}, {1047, 160}},\n    {{659, 100}, {784, 100}, {1047, 140}, {1319, 180}},\n    {{392, 120}, {330, 120}, {262, 120}, {196, 220}},\n    {{880, 100}, {440, 100}, {880, 100}, {440, 100}, {880, 100}, {440, 180}},\n};\nstatic const uint8_t zum_largos[4] = { 4, 4, 4, 6 };\nstruct zum_estado {\n    const zum_nota* notas = nullptr;\n    uint8_t indice = 0, cantidad = 0;\n    uint32_t inicio = 0;\n    zum_nota unica = {0, 0};\n    bool continuo = false;\n};\ninline int zum_numero(const String& texto) {\n    return atoi(texto.c_str());\n}\ninline void zum_detener(zum_estado& estado, int pin) {\n    estado.notas = nullptr;\n    estado.continuo = false;\n    noTone(pin);\n}\ninline void zum_empezar(zum_estado& estado, int pin, const zum_nota* notas, uint8_t cantidad) {\n    estado.notas = notas;\n    estado.cantidad = cantidad;\n    estado.indice = 0;\n    estado.continuo = false;\n    estado.inicio = millis();\n    tone(pin, notas[0].hz);\n}\ninline void zum_tono(zum_estado& estado, int pin, float hz, const char* bloque) {\n    hz = rb_finite(hz, bloque);\n    if (rb_failed) return;\n    if (!(hz >= 31 && hz <= 20000)) {\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\");\n        return;\n    }\n    estado.notas = nullptr;\n    estado.continuo = true;\n    tone(pin, (unsigned int)hz);\n}\ninline void zum_nota_iniciar(zum_estado& estado, int pin, int hz, float ms, const char* bloque) {\n    ms = rb_finite(ms, bloque);\n    if (rb_failed) return;\n    if (!(ms >= 0 && ms <= 60000)) {\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\");\n        return;\n    }\n    estado.unica.hz = uint16_t(hz);\n    estado.unica.ms = uint16_t(ms);\n    zum_empezar(estado, pin, &estado.unica, 1);\n}\ninline void zum_melodia(zum_estado& estado, int pin, int indice) {\n    zum_empezar(estado, pin, zum_melodias[indice], zum_largos[indice]);\n}\n// Se llama en cada vuelta (poll): cambia de nota cuando se cumple su tiempo.\ninline void zum_paso(zum_estado& estado, int pin) {\n    if (!estado.notas) return;\n    if (uint32_t(millis() - estado.inicio) < estado.notas[estado.indice].ms) return;\n    if (++estado.indice >= estado.cantidad) {\n        zum_detener(estado, pin);\n        return;\n    }\n    estado.inicio = millis();\n    tone(pin, estado.notas[estado.indice].hz);\n}\ninline bool zum_sonando(const zum_estado& estado) {\n    return estado.continuo || estado.notas != nullptr;\n}\n",
+          "static zum_estado zum_estado_{PIN};\n"
+        ],
+        "poll": ["zum_paso(zum_estado_{PIN}, {PIN});"],
+        "statement": "zum_melodia(zum_estado_{PIN}, {PIN}, zum_numero({MELODY}));"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.zumbador:stop",
+    "operation": "org.robotblocks.zumbador:stop",
+    "category": "org.robotblocks.zumbador:zumbador",
+    "label": { "es": "detener sonido en pin %PIN", "en": "stop sound on pin %PIN" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Calla el zumbador y cancela la nota o melodía.",
+      "en": "Silences the buzzer and cancels the note or melody."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["from machine import Pin, PWM, Timer"],
+        "globals": [
+          "ZUM_MELODIAS = (\n    ((523, 100), (659, 100), (784, 100), (1047, 160)),\n    ((659, 100), (784, 100), (1047, 140), (1319, 180)),\n    ((392, 120), (330, 120), (262, 120), (196, 220)),\n    ((880, 100), (440, 100), (880, 100), (440, 100), (880, 100), (440, 180)),\n)\nZUM_TIC_MS = 10\n# Por pin: [PWM, notas que faltan o None, índice, ms que le quedan a la nota, tono continuo].\nzum_estados = {}\nzum_reloj = None\n\ndef zum_estado(pin):\n    if pin not in zum_estados:\n        zum_estados[pin] = [PWM(Pin(pin), freq=440, duty_u16=0), None, 0, 0, False]\n    return zum_estados[pin]\n\ndef zum_sonar(pwm, hz):\n    pwm.freq(int(hz))\n    pwm.duty_u16(32768)\n\ndef zum_callar(estado):\n    estado[0].duty_u16(0)\n    estado[1] = None\n    estado[4] = False\n\n# Corre cada 10 ms con un Timer: avanza las notas sin frenar el programa.\ndef zum_tic(_):\n    for estado in zum_estados.values():\n        if estado[1] is None:\n            continue\n        estado[3] -= ZUM_TIC_MS\n        if estado[3] > 0:\n            continue\n        estado[2] += 1\n        if estado[2] >= len(estado[1]):\n            zum_callar(estado)\n        else:\n            hz, ms = estado[1][estado[2]]\n            zum_sonar(estado[0], hz)\n            estado[3] = ms\n\ndef zum_empezar(pin, notas):\n    global zum_reloj\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[2] = 0\n    estado[3] = notas[0][1]\n    estado[4] = False\n    zum_sonar(estado[0], notas[0][0])\n    estado[1] = notas\n    if zum_reloj is None:\n        zum_reloj = Timer(0)\n        zum_reloj.init(period=ZUM_TIC_MS, mode=Timer.PERIODIC, callback=zum_tic)\n\ndef zum_tono(pin, hz, bloque):\n    hz = rb_finite(hz, bloque)\n    if not 31 <= hz <= 20000:\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\")\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[4] = True\n    zum_sonar(estado[0], hz)\n\ndef zum_nota(pin, hz, ms, bloque):\n    ms = rb_finite(ms, bloque)\n    if not 0 <= ms <= 60000:\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\")\n    zum_empezar(pin, ((hz, ms),))\n\ndef zum_detener(pin):\n    zum_callar(zum_estado(pin))\n\ndef zum_sonando(pin):\n    estado = zum_estados.get(pin)\n    return estado is not None and (estado[4] or estado[1] is not None)\n"
+        ],
+        "statement": "zum_detener({PIN})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "struct zum_nota { uint16_t hz; uint16_t ms; };\nstatic const zum_nota zum_melodias[4][6] = {\n    {{523, 100}, {659, 100}, {784, 100}, {1047, 160}},\n    {{659, 100}, {784, 100}, {1047, 140}, {1319, 180}},\n    {{392, 120}, {330, 120}, {262, 120}, {196, 220}},\n    {{880, 100}, {440, 100}, {880, 100}, {440, 100}, {880, 100}, {440, 180}},\n};\nstatic const uint8_t zum_largos[4] = { 4, 4, 4, 6 };\nstruct zum_estado {\n    const zum_nota* notas = nullptr;\n    uint8_t indice = 0, cantidad = 0;\n    uint32_t inicio = 0;\n    zum_nota unica = {0, 0};\n    bool continuo = false;\n};\ninline int zum_numero(const String& texto) {\n    return atoi(texto.c_str());\n}\ninline void zum_detener(zum_estado& estado, int pin) {\n    estado.notas = nullptr;\n    estado.continuo = false;\n    noTone(pin);\n}\ninline void zum_empezar(zum_estado& estado, int pin, const zum_nota* notas, uint8_t cantidad) {\n    estado.notas = notas;\n    estado.cantidad = cantidad;\n    estado.indice = 0;\n    estado.continuo = false;\n    estado.inicio = millis();\n    tone(pin, notas[0].hz);\n}\ninline void zum_tono(zum_estado& estado, int pin, float hz, const char* bloque) {\n    hz = rb_finite(hz, bloque);\n    if (rb_failed) return;\n    if (!(hz >= 31 && hz <= 20000)) {\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\");\n        return;\n    }\n    estado.notas = nullptr;\n    estado.continuo = true;\n    tone(pin, (unsigned int)hz);\n}\ninline void zum_nota_iniciar(zum_estado& estado, int pin, int hz, float ms, const char* bloque) {\n    ms = rb_finite(ms, bloque);\n    if (rb_failed) return;\n    if (!(ms >= 0 && ms <= 60000)) {\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\");\n        return;\n    }\n    estado.unica.hz = uint16_t(hz);\n    estado.unica.ms = uint16_t(ms);\n    zum_empezar(estado, pin, &estado.unica, 1);\n}\ninline void zum_melodia(zum_estado& estado, int pin, int indice) {\n    zum_empezar(estado, pin, zum_melodias[indice], zum_largos[indice]);\n}\n// Se llama en cada vuelta (poll): cambia de nota cuando se cumple su tiempo.\ninline void zum_paso(zum_estado& estado, int pin) {\n    if (!estado.notas) return;\n    if (uint32_t(millis() - estado.inicio) < estado.notas[estado.indice].ms) return;\n    if (++estado.indice >= estado.cantidad) {\n        zum_detener(estado, pin);\n        return;\n    }\n    estado.inicio = millis();\n    tone(pin, estado.notas[estado.indice].hz);\n}\ninline bool zum_sonando(const zum_estado& estado) {\n    return estado.continuo || estado.notas != nullptr;\n}\n",
+          "static zum_estado zum_estado_{PIN};\n"
+        ],
+        "poll": ["zum_paso(zum_estado_{PIN}, {PIN});"],
+        "statement": "zum_detener(zum_estado_{PIN}, {PIN});"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  },
+  {
+    "id": "org.robotblocks.zumbador:playing",
+    "operation": "org.robotblocks.zumbador:playing",
+    "category": "org.robotblocks.zumbador:zumbador",
+    "label": { "es": "sonando en pin %PIN", "en": "sounding on pin %PIN" },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero mientras suena un tono, una nota o una melodía en ese pin. Con «esperar hasta que no (…)» encadenas notas.",
+      "en": "True while a tone, note or melody is sounding on that pin. With “wait until not (…)” you chain notes."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["from machine import Pin, PWM, Timer"],
+        "globals": [
+          "ZUM_MELODIAS = (\n    ((523, 100), (659, 100), (784, 100), (1047, 160)),\n    ((659, 100), (784, 100), (1047, 140), (1319, 180)),\n    ((392, 120), (330, 120), (262, 120), (196, 220)),\n    ((880, 100), (440, 100), (880, 100), (440, 100), (880, 100), (440, 180)),\n)\nZUM_TIC_MS = 10\n# Por pin: [PWM, notas que faltan o None, índice, ms que le quedan a la nota, tono continuo].\nzum_estados = {}\nzum_reloj = None\n\ndef zum_estado(pin):\n    if pin not in zum_estados:\n        zum_estados[pin] = [PWM(Pin(pin), freq=440, duty_u16=0), None, 0, 0, False]\n    return zum_estados[pin]\n\ndef zum_sonar(pwm, hz):\n    pwm.freq(int(hz))\n    pwm.duty_u16(32768)\n\ndef zum_callar(estado):\n    estado[0].duty_u16(0)\n    estado[1] = None\n    estado[4] = False\n\n# Corre cada 10 ms con un Timer: avanza las notas sin frenar el programa.\ndef zum_tic(_):\n    for estado in zum_estados.values():\n        if estado[1] is None:\n            continue\n        estado[3] -= ZUM_TIC_MS\n        if estado[3] > 0:\n            continue\n        estado[2] += 1\n        if estado[2] >= len(estado[1]):\n            zum_callar(estado)\n        else:\n            hz, ms = estado[1][estado[2]]\n            zum_sonar(estado[0], hz)\n            estado[3] = ms\n\ndef zum_empezar(pin, notas):\n    global zum_reloj\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[2] = 0\n    estado[3] = notas[0][1]\n    estado[4] = False\n    zum_sonar(estado[0], notas[0][0])\n    estado[1] = notas\n    if zum_reloj is None:\n        zum_reloj = Timer(0)\n        zum_reloj.init(period=ZUM_TIC_MS, mode=Timer.PERIODIC, callback=zum_tic)\n\ndef zum_tono(pin, hz, bloque):\n    hz = rb_finite(hz, bloque)\n    if not 31 <= hz <= 20000:\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\")\n    estado = zum_estado(pin)\n    estado[1] = None\n    estado[4] = True\n    zum_sonar(estado[0], hz)\n\ndef zum_nota(pin, hz, ms, bloque):\n    ms = rb_finite(ms, bloque)\n    if not 0 <= ms <= 60000:\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\")\n    zum_empezar(pin, ((hz, ms),))\n\ndef zum_detener(pin):\n    zum_callar(zum_estado(pin))\n\ndef zum_sonando(pin):\n    estado = zum_estados.get(pin)\n    return estado is not None and (estado[4] or estado[1] is not None)\n"
+        ],
+        "expression": "zum_sonando({PIN})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "struct zum_nota { uint16_t hz; uint16_t ms; };\nstatic const zum_nota zum_melodias[4][6] = {\n    {{523, 100}, {659, 100}, {784, 100}, {1047, 160}},\n    {{659, 100}, {784, 100}, {1047, 140}, {1319, 180}},\n    {{392, 120}, {330, 120}, {262, 120}, {196, 220}},\n    {{880, 100}, {440, 100}, {880, 100}, {440, 100}, {880, 100}, {440, 180}},\n};\nstatic const uint8_t zum_largos[4] = { 4, 4, 4, 6 };\nstruct zum_estado {\n    const zum_nota* notas = nullptr;\n    uint8_t indice = 0, cantidad = 0;\n    uint32_t inicio = 0;\n    zum_nota unica = {0, 0};\n    bool continuo = false;\n};\ninline int zum_numero(const String& texto) {\n    return atoi(texto.c_str());\n}\ninline void zum_detener(zum_estado& estado, int pin) {\n    estado.notas = nullptr;\n    estado.continuo = false;\n    noTone(pin);\n}\ninline void zum_empezar(zum_estado& estado, int pin, const zum_nota* notas, uint8_t cantidad) {\n    estado.notas = notas;\n    estado.cantidad = cantidad;\n    estado.indice = 0;\n    estado.continuo = false;\n    estado.inicio = millis();\n    tone(pin, notas[0].hz);\n}\ninline void zum_tono(zum_estado& estado, int pin, float hz, const char* bloque) {\n    hz = rb_finite(hz, bloque);\n    if (rb_failed) return;\n    if (!(hz >= 31 && hz <= 20000)) {\n        rb_fail(bloque, \"La frecuencia debe estar entre 31 y 20000 Hz\");\n        return;\n    }\n    estado.notas = nullptr;\n    estado.continuo = true;\n    tone(pin, (unsigned int)hz);\n}\ninline void zum_nota_iniciar(zum_estado& estado, int pin, int hz, float ms, const char* bloque) {\n    ms = rb_finite(ms, bloque);\n    if (rb_failed) return;\n    if (!(ms >= 0 && ms <= 60000)) {\n        rb_fail(bloque, \"La duración debe estar entre 0 y 60000 ms\");\n        return;\n    }\n    estado.unica.hz = uint16_t(hz);\n    estado.unica.ms = uint16_t(ms);\n    zum_empezar(estado, pin, &estado.unica, 1);\n}\ninline void zum_melodia(zum_estado& estado, int pin, int indice) {\n    zum_empezar(estado, pin, zum_melodias[indice], zum_largos[indice]);\n}\n// Se llama en cada vuelta (poll): cambia de nota cuando se cumple su tiempo.\ninline void zum_paso(zum_estado& estado, int pin) {\n    if (!estado.notas) return;\n    if (uint32_t(millis() - estado.inicio) < estado.notas[estado.indice].ms) return;\n    if (++estado.indice >= estado.cantidad) {\n        zum_detener(estado, pin);\n        return;\n    }\n    estado.inicio = millis();\n    tone(pin, estado.notas[estado.indice].hz);\n}\ninline bool zum_sonando(const zum_estado& estado) {\n    return estado.continuo || estado.notas != nullptr;\n}\n",
+          "static zum_estado zum_estado_{PIN};\n"
+        ],
+        "poll": ["zum_paso(zum_estado_{PIN}, {PIN});"],
+        "expression": "zum_sonando(zum_estado_{PIN})"
+      }
+    },
+    "requiredCapabilities": ["digitalOutput"]
+  }
+]

@@ -1,22 +1,21 @@
 {
   "schemaVersion": 2,
   "id": "org.robotblocks.arduino-uno-r4-minima",
-  "name": "Arduino UNO R4 Minima · experimental",
-  "version": "0.1.0",
+  "name": "Arduino UNO R4 Minima",
+  "version": "0.2.0",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.",
+  "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. Probada en hardware con RobotBlocks.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
   "permissions": [],
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "boards",
     "translations": {
       "en": {
-        "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.": "5 V logic. Default 10-bit ADC (up to 14); 8-bit PWM and 12-bit A0 DAC. Native USB, Serial1 free on D0/D1. Experimental C++; upload pending Phase 8 and physical validation.",
+        "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. Probada en hardware con RobotBlocks.": "5 V logic. Default 10-bit ADC (up to 14); 8-bit PWM and 12-bit A0 DAC. Native USB, Serial1 free on D0/D1. Tested on hardware with RobotBlocks.",
         "Serial1 RX; libre porque Serial usa USB nativo.": "Serial1 RX; free because Serial uses native USB.",
         "Serial1 TX; libre porque Serial usa USB nativo.": "Serial1 TX; free because Serial uses native USB.",
         "LED integrado; alto enciende, bajo apaga. Compartido con SPI SCK.": "Built-in LED; high turns it on, low turns it off. Shared with SPI SCK.",
@@ -36,10 +35,9 @@
     "boards": [
       {
         "id": "org.robotblocks.arduino-uno-r4-minima:board",
-        "name": "Arduino UNO R4 Minima · experimental",
+        "name": "Arduino UNO R4 Minima",
         "family": "renesas_uno",
-        "experimental": true,
-        "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. C++ experimental; carga pendiente de Fase 8 y validación física.",
+        "description": "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. Probada en hardware con RobotBlocks.",
         "capabilities": ["digitalInput", "digitalOutput", "analogInput", "pwm", "analogOutput"],
         "logicLevel": 5,
         "adcBits": 10,

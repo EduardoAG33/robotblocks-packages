@@ -1,0 +1,96 @@
+{
+  "titulo": "HuskyLens 2 · ángulo de la línea",
+  "ejemplo": "arduino-giga-r1",
+  "tarjetas": ["arduino-giga-r1"],
+  "pines": {
+    "arduino-giga-r1": {
+      "SDA": "d102",
+      "SCL": "d101"
+    }
+  },
+  "variables": {
+    "angulo": 0
+  },
+  "programa": [
+    [
+      ":configure-i2c",
+      {
+        "SDA": "$SDA",
+        "SCL": "$SCL"
+      }
+    ],
+    [
+      ":algorithm",
+      {
+        "ALGORITHM": "12"
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [":update"],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                ":kind-seen",
+                {
+                  "KIND": "a"
+                }
+              ],
+              "BODY": [
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "angulo"
+                  },
+                  {
+                    "VALUE": [
+                      ":center",
+                      {
+                        "PROP": "2",
+                        "KIND": "a"
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "core:serial-println",
+                  {},
+                  {
+                    "VALUE": [
+                      "core:join",
+                      {},
+                      {
+                        "LEFT": "ángulo de la línea: ",
+                        "RIGHT": [
+                          "core:to-text",
+                          {},
+                          {
+                            "VALUE": {
+                              "var": "angulo"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 50
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}

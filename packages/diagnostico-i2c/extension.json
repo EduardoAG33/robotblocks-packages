@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.diagnostico-i2c",
+  "name": "Diagnóstico I2C",
+  "version": "1.0.1",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Escanea el bus I2C e imprime qué sensores responden, o comprueba si hay algo en una dirección antes de arrancar. Arduino y MicroPython.",
+  "requiredCapabilities": ["digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.diagnostico-i2c:diagnostico", "name": "Diagnóstico", "colour": "#78909C" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "communication",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Diagnóstico I2C": "I2C diagnostics",
+        "Diagnóstico": "Diagnostics",
+        "Escanea el bus I2C e imprime qué sensores responden, o comprueba si hay algo en una dirección antes de arrancar. Arduino y MicroPython.": "Scans the I2C bus and prints which sensors answer, or checks whether something is at an address before starting. Arduino and MicroPython.",
+        "Dirección I2C inválida: usa 0x08 a 0x77": "Invalid I2C address: use 0x08 to 0x77",
+        "No se pudo iniciar I2C en SDA %s / SCL %s: %s": "Could not start I2C on SDA %s / SCL %s: %s"
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
-# FireBeetle ESP32 DFR0478 — experimental
+# FireBeetle ESP32 DFR0478
 
 Descriptor DFR0478 con ESP-WROOM-32 y puente USB-serie CH340; no es FireBeetle 2 ESP32-E.
-MicroPython ESP32 vía Web Serial. No instala drivers ni flashea firmware. Sigue experimental
-hasta confirmar físicamente parpadeo, ADC y error por serie.
+MicroPython ESP32 vía Web Serial. No instala drivers ni flashea firmware.
+Probada en hardware (ver al final).
 
 Pinout: [wiki oficial DFRobot DFR0478](https://wiki.dfrobot.com/dfr0478/)
 y [imagen de pines](https://dfimg.dfrobot.com/62fba4cb025a892c98c6da64/wikien/555ad7fa66fecc61fe288e251ac267ce_0x0.png.webp).
@@ -27,3 +27,10 @@ Arduino queda para Fase 8. `arduino-cli` no está instalado; no se ejecutó `boa
 El candidato `esp32:esp32:firebeetle32` existe en
 [boards.txt oficial](https://github.com/espressif/arduino-esp32/blob/master/boards.txt).
 Se pospone declarar Arduino hasta comprobar core/CLI; no se afirma carga C++ probada.
+
+## Prueba en hardware
+
+- Parpadeo del LED en una placa con MicroPython.
+- 2026-10-17: MicroPython v1.29.0; carga desde la app por Web Serial en Edge; láser VL53L0X
+  (SDA GPIO21, SCL GPIO22, XSHUT GPIO26) leyendo 80–1200 mm, servo en GPIO25 y Monitor serie.
+  Pendiente: ADC.

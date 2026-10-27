@@ -1,0 +1,59 @@
+{
+  "titulo": "HuskyLens 2 · por UART",
+  "tarjetas": ["arduino-giga-r1", "arduino-uno-r4-minima"],
+  "pines": {
+    "arduino-giga-r1": {
+      "RX": "d0",
+      "TX": "d1"
+    },
+    "arduino-uno-r4-minima": {
+      "RX": "d0",
+      "TX": "d1"
+    }
+  },
+  "programa": [
+    [
+      ":configure-uart",
+      {
+        "PORT": "1",
+        "RX": "$RX",
+        "TX": "$TX"
+      }
+    ],
+    [
+      ":algorithm",
+      {
+        "ALGORITHM": "4"
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [":update"],
+          [
+            "core:serial-println",
+            {},
+            {
+              "VALUE": [
+                "core:to-text",
+                {},
+                {
+                  "VALUE": [":count"]
+                }
+              ]
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 200
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}

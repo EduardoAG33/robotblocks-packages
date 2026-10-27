@@ -28,10 +28,13 @@ for (const item of catalog.packages) {
     for (const contribution of manifest.contributes[group]) ownedId(contribution.id);
   for (const board of manifest.contributes.boards) {
     assert.equal(new Set(board.resources.map((pin) => pin.id)).size, board.resources.length);
-    for (const pin of board.resources)
+    for (const pin of board.resources) {
       assert(pin.capabilities.every((capability) => board.capabilities.includes(capability)));
+      // The app shows pin labels in Spanish and English.
+      assert.deepEqual(Object.keys(pin.label ?? {}).sort(), ['en', 'es'], `${board.id} ${pin.id}`);
+    }
     assert(!board.capabilities.includes('digitalGPIO'));
-    if (Object.keys(board.targets ?? {}).length) assert.equal(board.experimental, true);
+    if (board.experimental !== undefined) assert.equal(board.experimental, true);
     if (board.targets?.arduino) assert.match(board.targets.arduino.fqbn, /^[\w-]+:[\w-]+:[\w-]+(?::[\w=,.-]+)?$/);
     if (board.logicLevel !== undefined) assert(board.logicLevel > 0 && board.logicLevel <= 24);
     if (board.adcBits !== undefined)

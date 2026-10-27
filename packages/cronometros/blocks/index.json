@@ -1,0 +1,172 @@
+[
+  {
+    "id": "org.robotblocks.cronometros:configure",
+    "operation": "org.robotblocks.cronometros:configure",
+    "category": "org.robotblocks.cronometros:cronometros",
+    "label": { "es": "configurar cronómetros %TIMERS", "en": "set up stopwatches %TIMERS" },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "variadic": {
+      "input": { "name": "TIMERS", "type": "value" },
+      "min": 1,
+      "max": 8,
+      "row": {
+        "label": { "es": "cronómetro %NAME", "en": "stopwatch %NAME" },
+        "fields": [{ "name": "NAME", "type": "string", "default": "crono {N}" }],
+        "template": "{NAME}"
+      }
+    },
+    "tooltip": {
+      "es": "En «al iniciar». Cada fila es un cronómetro con nombre; + y − añaden o quitan (1–8). Todos empiezan a contar aquí.",
+      "en": "In “when started”. Each row is a named stopwatch; + and − add or remove them (1–8). They all start counting here."
+    },
+    "generators": {
+      "micropython": {
+        "canFail": false,
+        "imports": ["import time"],
+        "globals": [
+          "def crono_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef crono_pasado(desde):\n    return time.ticks_diff(crono_ms(), desde) if hasattr(time, \"ticks_diff\") else crono_ms() - desde\n\ndef crono_sumar(desde, ms):\n    return time.ticks_add(desde, int(ms)) if hasattr(time, \"ticks_add\") else desde + ms\n",
+          "def crono_reiniciar(n):\n    crono_inicio[n - 1] = crono_ms()\n\ndef crono_tiempo(n, unidad):\n    ms = crono_pasado(crono_inicio[n - 1])\n    return ms / 1000 if unidad == \"s\" else ms\n\ndef crono_paso(n, ms):\n    return crono_pasado(crono_inicio[n - 1]) >= ms\n\n# Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ndef crono_cada(n, ms):\n    pasado = crono_pasado(crono_inicio[n - 1])\n    if pasado < ms:\n        return False\n    if ms <= 0 or pasado >= 2 * ms:\n        crono_inicio[n - 1] = crono_ms()\n    else:\n        crono_inicio[n - 1] = crono_sumar(crono_inicio[n - 1], ms)\n    return True\n\ndef crono_configurar(inicio, cantidad):\n    ahora = crono_ms()\n    for n in range(cantidad):\n        crono_inicio[inicio + n] = ahora\n",
+          "crono_inicio = [0] * {TIMERS_TOTAL}\n"
+        ],
+        "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT})"
+      },
+      "pybricks": {
+        "canFail": false,
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ncrono_reloj = StopWatch()\n\ndef crono_ms():\n    return crono_reloj.time()\n\ndef crono_pasado(desde):\n    return crono_ms() - desde\n\ndef crono_sumar(desde, ms):\n    return desde + ms\n",
+          "def crono_reiniciar(n):\n    crono_inicio[n - 1] = crono_ms()\n\ndef crono_tiempo(n, unidad):\n    ms = crono_pasado(crono_inicio[n - 1])\n    return ms / 1000 if unidad == \"s\" else ms\n\ndef crono_paso(n, ms):\n    return crono_pasado(crono_inicio[n - 1]) >= ms\n\n# Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ndef crono_cada(n, ms):\n    pasado = crono_pasado(crono_inicio[n - 1])\n    if pasado < ms:\n        return False\n    if ms <= 0 or pasado >= 2 * ms:\n        crono_inicio[n - 1] = crono_ms()\n    else:\n        crono_inicio[n - 1] = crono_sumar(crono_inicio[n - 1], ms)\n    return True\n\ndef crono_configurar(inicio, cantidad):\n    ahora = crono_ms()\n    for n in range(cantidad):\n        crono_inicio[inicio + n] = ahora\n",
+          "crono_inicio = [0] * {TIMERS_TOTAL}\n"
+        ],
+        "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT})"
+      },
+      "arduino": {
+        "canFail": false,
+        "globals": [
+          "static unsigned long crono_inicio[{TIMERS_TOTAL}];\n",
+          "inline void crono_reiniciar(int n) {\n    crono_inicio[n - 1] = millis();\n}\ninline float crono_tiempo(int n, const String& unidad) {\n    unsigned long ms = millis() - crono_inicio[n - 1];\n    return unidad == \"s\" ? ms / 1000.0f : float(ms);\n}\ninline bool crono_paso(int n, float ms) {\n    return float(millis() - crono_inicio[n - 1]) >= ms;\n}\n// Verdadero cada «ms» milisegundos sin perder el ritmo; si se atrasó más de una vuelta, vuelve a contar desde ahora.\ninline bool crono_cada(int n, float ms) {\n    unsigned long pasado = millis() - crono_inicio[n - 1];\n    if (float(pasado) < ms) return false;\n    if (ms <= 0 || float(pasado) >= 2 * ms) crono_inicio[n - 1] = millis();\n    else crono_inicio[n - 1] += (unsigned long)ms;\n    return true;\n}\ninline void crono_configurar(int inicio, int cantidad) {\n    unsigned long ahora = millis();\n    for (int n = 0; n < cantidad; n++) crono_inicio[inicio + n] = ahora;\n}\n"
+        ],
+        "statement": "crono_configurar({TIMERS_OFFSET}, {TIMERS_COUNT});"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.cronometros:reset",
+    "operation": "org.robotblocks.cronometros:reset",
+    "category": "org.robotblocks.cronometros:cronometros",
+    "label": { "es": "reiniciar cronómetro %T", "en": "reset stopwatch %T" },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "T",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.cronometros:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Vuelve a contar desde 0. Por ejemplo, al empezar a buscar la línea.",
+      "en": "Starts counting from 0 again. For example, when starting to look for the line."
+    },
+    "generators": {
+      "micropython": { "canFail": false, "statement": "crono_reiniciar({T})" },
+      "pybricks": { "canFail": false, "statement": "crono_reiniciar({T})" },
+      "arduino": { "canFail": false, "statement": "crono_reiniciar({T});" }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.cronometros:time",
+    "operation": "org.robotblocks.cronometros:time",
+    "category": "org.robotblocks.cronometros:cronometros",
+    "label": { "es": "tiempo del cronómetro %T en %UNIT", "en": "time of stopwatch %T in %UNIT" },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "T",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.cronometros:configure", "field": "NAME" }
+      },
+      {
+        "name": "UNIT",
+        "type": "string",
+        "default": "ms",
+        "options": [
+          { "label": "ms", "value": "ms" },
+          { "label": { "es": "segundos", "en": "seconds" }, "value": "s" }
+        ]
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Tiempo desde que se configuró o se reinició el cronómetro, en milisegundos o en segundos con decimales.",
+      "en": "Time since the stopwatch was set up or reset, in milliseconds or in seconds with decimals."
+    },
+    "generators": {
+      "micropython": { "canFail": false, "expression": "crono_tiempo({T}, {UNIT})" },
+      "pybricks": { "canFail": false, "expression": "crono_tiempo({T}, {UNIT})" },
+      "arduino": { "canFail": false, "expression": "crono_tiempo({T}, {UNIT})" }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.cronometros:passed",
+    "operation": "org.robotblocks.cronometros:passed",
+    "category": "org.robotblocks.cronometros:cronometros",
+    "label": { "es": "pasaron %MS ms en cronómetro %T", "en": "%MS ms passed on stopwatch %T" },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "T",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.cronometros:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [{ "name": "MS", "type": "number", "default": 1000 }],
+    "tooltip": {
+      "es": "Verdadero cuando el cronómetro llega a ese tiempo, y sigue verdadero hasta que lo reinicies. Sirve para límites de tiempo sin «esperar».",
+      "en": "True when the stopwatch reaches that time, and stays true until you reset it. Use it for time limits without “wait”."
+    },
+    "generators": {
+      "micropython": { "canFail": false, "expression": "crono_paso({T}, {MS})" },
+      "pybricks": { "canFail": false, "expression": "crono_paso({T}, {MS})" },
+      "arduino": { "canFail": false, "expression": "crono_paso({T}, {MS})" }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.cronometros:every",
+    "operation": "org.robotblocks.cronometros:every",
+    "category": "org.robotblocks.cronometros:cronometros",
+    "label": { "es": "cada %MS ms con cronómetro %T", "en": "every %MS ms with stopwatch %T" },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "T",
+        "type": "string",
+        "default": "",
+        "reference": { "kind": "row", "block": "org.robotblocks.cronometros:configure", "field": "NAME" }
+      }
+    ],
+    "inputs": [{ "name": "MS", "type": "number", "default": 500 }],
+    "tooltip": {
+      "es": "Verdadero una vez cada ese tiempo; ponlo en un «si» dentro de «por siempre» para tareas periódicas (imprimir, parpadear) sin frenar el resto. Usa un cronómetro para cada tarea.",
+      "en": "True once every that time; put it in an “if” inside “forever” for periodic tasks (print, blink) without slowing the rest. Use one stopwatch per task."
+    },
+    "generators": {
+      "micropython": { "canFail": false, "expression": "crono_cada({T}, {MS})" },
+      "pybricks": { "canFail": false, "expression": "crono_cada({T}, {MS})" },
+      "arduino": { "canFail": false, "expression": "crono_cada({T}, {MS})" }
+    },
+    "requiredCapabilities": []
+  }
+]

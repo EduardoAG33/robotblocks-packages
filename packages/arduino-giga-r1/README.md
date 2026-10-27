@@ -1,10 +1,10 @@
-# Arduino GIGA R1 WiFi — experimental
+# Arduino GIGA R1 WiFi
 
 Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.
 
 Destino C++/Arduino: `arduino:mbed_giga:giga`. No instala cores ni carga firmware.
 Usa **Copiar código** o **Descargar archivo** en la vista Código: obtienes un único `.ino`
-con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Pendiente de compilación con el core y prueba física.
+con `robotblocks_runtime.h` integrado, listo para Arduino IDE. Probada en hardware (ver al final).
 
 Las capacidades corresponden a pines del pinout oficial y funciones accesibles por el core.
 Un alias analógico comparte el pin físico: no se duplica como recurso digital.
@@ -39,7 +39,7 @@ Motores usa PWM + INA + INB. El bloque EN/DIAG libera D6/D12 con INPUT_PULLUP. V
 
 Pines básicos, Motores, QTR, HC-SR04, TCS34725 y BNO055 tienen plantillas Arduino con APIs del core. Servos usa Servo.h (biblioteca oficial Arduino en AVR/GIGA; incluida en Teensyduino). UART usa los puertos independientes oficiales: no disponible en UNO/Nano, donde Serial comparte USB.
 
-En UNO/Nano, Servos junto con PWM D9/D10 produce diagnóstico por Timer1. GIGA selecciona la implementación mbed de Servo, aunque la biblioteca puede advertir por arquitectura. Todas las tarjetas siguen experimentales, pendientes de compilación del core y prueba física.
+En UNO/Nano, Servos junto con PWM D9/D10 produce diagnóstico por Timer1. GIGA selecciona la implementación mbed de Servo, aunque la biblioteca puede advertir por arquitectura.
 
 ## Fuentes oficiales
 
@@ -170,3 +170,9 @@ Solo se admiten estos pares de pines predeterminados del core. No se remapean pi
 Servo usa `Servo.h`; el core define ARDUINO_ARCH_MBED y selecciona la implementación mbed de Servo 1.3.0. Su library.properties aún omite mbed_giga; Arduino IDE puede advertir sobre la arquitectura. No se ha compilado ni probado físicamente aquí.
 
 Fuentes adicionales: [core GIGA: pines](https://github.com/arduino/ArduinoCore-mbed/blob/main/variants/GIGA/pins_arduino.h), [selección mbed](https://github.com/arduino/ArduinoCore-mbed/blob/main/platform.txt), [Servo oficial](https://github.com/arduino-libraries/Servo/blob/master/src/mbed/Servo.cpp).
+
+## Prueba en hardware
+
+- 2026-10-18: robot Rescue Line de Los Grises (PCB `Gerber_PCB1_2026-10-13`), sketch subido desde la app con
+  arduino-cli (COM7). VNH5019, 11 canales QTR (incluidos A8–A11), 9 VL53L0X con nombre, BNO055 en Wire1 y
+  UART 2/3 con las dos XIAO, todo leído en el Monitor serie.

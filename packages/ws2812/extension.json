@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.ws2812",
+  "name": "Luz RGB WS2812",
+  "version": "1.0.1",
+  "author": {
+    "name": "Los Grises · RobotBlocks"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Tabletas y tiras WS2812 (NeoPixel): colores, brillo, arcoíris, movimiento y barras. Experimental hasta probar en hardware.",
+  "requiredCapabilities": ["digitalOutput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.ws2812:rgb",
+        "name": "Luz RGB",
+        "colour": "#9C27B0"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "actuators",
+    "translations": {
+      "en": {
+        "Luz RGB WS2812": "WS2812 RGB light",
+        "Luz RGB": "RGB light",
+        "Tabletas y tiras WS2812 (NeoPixel): colores, brillo, arcoíris, movimiento y barras. Experimental hasta probar en hardware.": "WS2812 (NeoPixel) boards and strips: colors, brightness, rainbow, movement and bars. Experimental until tested on hardware.",
+        "Inicializa la luz RGB al iniciar": "Initialize the RGB light at start",
+        "No se pudo inicializar la luz RGB": "Could not initialize the RGB light"
+      }
+    }
+  }
+}

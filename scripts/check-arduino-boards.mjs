@@ -14,9 +14,10 @@ for (const [slug, fqbn, logicLevel, count] of expectations) {
   const [board] = manifest.contributes.boards;
   assert.equal(manifest.contributes.boards.length, 1);
   assert.equal(manifest.metadata.group, 'boards');
-  assert.equal(manifest.metadata.experimental, true);
-  assert(manifest.name.endsWith('· experimental'));
-  assert.equal(board.experimental, true);
+  // Todas estas tarjetas ya se probaron en hardware.
+  assert.equal(manifest.metadata.experimental, undefined);
+  assert(!manifest.name.endsWith('· experimental'));
+  assert.equal(board.experimental, undefined);
   assert.equal(board.logicLevel, logicLevel);
   assert.equal(board.adcBits, 10);
   assert.equal(board.pwm.bits, 8);

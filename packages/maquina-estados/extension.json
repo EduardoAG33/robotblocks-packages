@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.maquina-estados",
+  "name": "Máquina de estados",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Estados con nombre para ordenar un robot: cambiar de estado, saber en cuál está, si acaba de entrar y cuánto tiempo lleva. Arduino, MicroPython y Pybricks.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.maquina-estados:estados",
+        "name": "Estados",
+        "colour": "#5C6BC0"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "other",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Máquina de estados": "State machine",
+        "Estados": "States",
+        "Estados con nombre para ordenar un robot: cambiar de estado, saber en cuál está, si acaba de entrar y cuánto tiempo lleva. Arduino, MicroPython y Pybricks.": "Named states to organize a robot: change state, know which one it is in, whether it just entered and how long it has been there. Arduino, MicroPython and Pybricks."
+      }
+    }
+  }
+}

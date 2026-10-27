@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.giros",
+  "name": "Giros con IMU",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Girar a un ángulo con cualquier IMU: velocidad que frena al llegar, «llegó» sin pasarse, diferencia por el camino más corto y ajuste de ángulos. Arduino, MicroPython y Pybricks.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.giros:giros", "name": "Giros", "colour": "#5E35B1" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "other",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Giros con IMU": "Turns with IMU",
+        "Giros": "Turns",
+        "Girar a un ángulo con cualquier IMU: velocidad que frena al llegar, «llegó» sin pasarse, diferencia por el camino más corto y ajuste de ángulos. Arduino, MicroPython y Pybricks.": "Turn to an angle with any IMU: a speed that slows down on arrival, “arrived” without overshooting, shortest-way difference and angle wrapping. Arduino, MicroPython and Pybricks."
+      }
+    }
+  }
+}

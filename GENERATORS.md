@@ -69,4 +69,4 @@ Véase `packages/laser-vl53l0x/blocks/index.json` del catálogo.
 
 ## Esperas cooperativas de sensores (Fase 17)
 
-`waitUntil` en instrucciones Arduino o MicroPython evalúa una función de paso sin bloqueo hasta que devuelva verdadero. Arduino usa PT_WAIT_UNTIL; MicroPython cede con rb_yield entre consultas. No se admite en funciones síncronas ni en Pybricks. Guarda en estado del driver los parámetros al comenzar; no uses entradas de proceso en waitUntil. Ejemplo: configuración/calibración de MPU6050.
+`waitUntil` en instrucciones Arduino evalúa una función de paso sin bloqueo hasta que devuelva verdadero (PT_WAIT_UNTIL). El validador de la app lo rechaza en MicroPython y Pybricks, y no se admite en funciones síncronas. En MicroPython, deja el trabajo en segundo plano (por ejemplo con machine.Timer) y ofrece un booleano para que el alumno use «esperar hasta» del núcleo. Guarda en estado del driver los parámetros al comenzar; no uses entradas de proceso en waitUntil. Ejemplo: configuración/calibración de MPU6050.

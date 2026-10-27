@@ -1,0 +1,52 @@
+{
+  "titulo": "Máquina de estados · prueba de lógica",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32",
+    "lego-spike-prime",
+    "lego-ev3"
+  ],
+  "variables": { "a": 0, "b": 0, "c": 0, "d": 0, "nombre": "", "previo": "" },
+  "programa": [
+    [":configure", { "NAME1": "verde", "NAME2": "amarillo", "NAME3": "rojo" }],
+    [
+      "core:if",
+      {},
+      { "CONDITION": [":entered", { "S": "verde" }], "BODY": [["core:set", { "VARIABLE": "a" }, { "VALUE": 1 }]] }
+    ],
+    [
+      "core:if",
+      {},
+      { "CONDITION": [":entered", { "S": "verde" }], "BODY": [["core:set", { "VARIABLE": "b" }, { "VALUE": 1 }]] }
+    ],
+    [":change", { "S": "amarillo" }],
+    [
+      "core:if",
+      {},
+      {
+        "CONDITION": [
+          "core:and",
+          {},
+          {
+            "LEFT": [":is", { "WHICH": "anterior", "S": "verde" }],
+            "RIGHT": [":is", { "WHICH": "actual", "S": "amarillo" }]
+          }
+        ],
+        "BODY": [["core:set", { "VARIABLE": "c" }, { "VALUE": 1 }]]
+      }
+    ],
+    [":change", { "S": "amarillo" }],
+    [
+      "core:if",
+      {},
+      { "CONDITION": [":entered", { "S": "amarillo" }], "BODY": [["core:set", { "VARIABLE": "d" }, { "VALUE": 1 }]] }
+    ],
+    ["core:set", { "VARIABLE": "nombre" }, { "VALUE": [":name", { "WHICH": "actual" }] }],
+    ["core:set", { "VARIABLE": "previo" }, { "VALUE": [":name", { "WHICH": "anterior" }] }]
+  ],
+  "esperado": { "a": 1, "b": 0, "c": 1, "d": 1, "nombre": "amarillo", "previo": "verde" }
+}

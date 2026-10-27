@@ -1,6 +1,6 @@
 # Seguidor de línea (QTR analógico)
 
-Extensión **experimental** para MicroPython y Arduino/C++, probada en simulación y pendiente de prueba física. Funciona con tabletas Pololu **QTR/QTRX analógicas** (versión «A»), por ejemplo la **QTRX-MD-13A**.
+Extensión para Arduino/C++ y MicroPython. Probada en hardware con Arduino/C++ (ver «Pruebas en hardware»). Las plantillas MicroPython están probadas en simulación, todavía no en una tarjeta. Funciona con tabletas Pololu **QTR/QTRX analógicas** (versión «A»), por ejemplo la **QTRX-MD-13A**.
 
 ## Bloques
 
@@ -25,10 +25,15 @@ Sin calibración usa el rango completo del ADC: 0–4095 en MicroPython ESP32; e
 
 ## Arduino/C++
 
-Plantillas declarativas experimentales, sin código ejecutable en el paquete. Se mantienen las plantillas MicroPython. Copiar código y Descargar archivo dan un único `.ino` con el runtime integrado. Generación verificada; compilación del core y prueba física pendientes.
+Plantillas declarativas, sin código ejecutable en el paquete. Se mantienen las plantillas MicroPython. Copiar código y Descargar archivo dan un único `.ino` con el runtime integrado. Compila con arduino-cli y está probada en hardware (ver «Pruebas en hardware»).
 
-Lee cada canal con analogRead, sin biblioteca QTR. Rango sin calibración: 0…`(2 ** adcBits) − 1` (1023 en las cinco tarjetas actuales). GIGA/Teensy emiten analogReadResolution(adcBits) al iniciar; AVR conserva su ADC fijo de 10 bits. Hasta 16 canales, cada uno elegido entre los recursos ADC oficiales; puedes usar un subconjunto de las 13 salidas QTRX-MD-13A.
+Lee cada canal con analogRead, sin biblioteca QTR. Cada canal guarda su propia función lectora, así también sirven A8–A11 de la GIGA (`PureAnalogPin`, que no se convierten a número). Rango sin calibración: 0…`(2 ** adcBits) − 1` (1023 en las cinco tarjetas actuales). GIGA/Teensy emiten analogReadResolution(adcBits) al iniciar; AVR conserva su ADC fijo de 10 bits. Hasta 16 canales, cada uno elegido entre los recursos ADC oficiales; puedes usar un subconjunto de las 13 salidas QTRX-MD-13A.
 
 Conserva posición −100…100, inversión blanca/negra, calibración mínimo/máximo por canal, umbral de contraste de 50 cuentas ADC, detección >50 % y último lado cuando se pierde la línea. No admite sensores RC. Alimenta las salidas analógicas a tensión compatible con la tarjeta.
 
 Fuente: [Pololu QTRX-MD-13A](https://www.pololu.com/product/4453).
+
+## Pruebas en hardware
+
+- Arduino GIGA R1 (C++) con 11 canales (A8–A11 incluidos) y dos XIAO ESP32-S3 (C++) leyendo QTR en el robot Rescue Line (2026-10-18).
+- MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.
