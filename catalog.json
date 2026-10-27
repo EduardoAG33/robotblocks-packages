@@ -69,8 +69,8 @@
       "path": "packages/imu-bno055"
     },
     {
-      "name": "IMU BNO085 (UART-RVC)",
-      "description": "Ángulo de giro, inclinación y aceleración con BNO085 (GY-BNO085) en modo UART-RVC, sin I2C.",
+      "name": "IMU BNO085 (UART-RVC o I2C)",
+      "description": "Ángulo de giro, inclinación y aceleración con BNO085 (GY-BNO085) por UART-RVC o I2C.",
       "kind": "module",
       "path": "packages/imu-bno085"
     },
