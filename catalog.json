@@ -259,6 +259,12 @@
       "description": "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.",
       "kind": "module",
       "path": "packages/ev3-huskylens-ofdl"
+    },
+    {
+      "name": "Encoder",
+      "description": "Cuentas, vueltas, distancia y velocidad de encoders de cuadratura, independientes del driver de motores.",
+      "kind": "module",
+      "path": "packages/encoder"
     }
   ]
 }

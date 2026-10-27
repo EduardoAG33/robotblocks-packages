@@ -1,0 +1,175 @@
+{
+  "titulo": "Teensy 4.1 · distancias de las dos ruedas (cm)",
+  "tarjetas": ["teensy-41"],
+  "ejemplo": "teensy-41",
+  "pines": {
+    "arduino-uno": {
+      "A1": "d2",
+      "B1": "d4",
+      "A2": "d3",
+      "B2": "d5"
+    },
+    "arduino-uno-r4-minima": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "arduino-giga-r1": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "teensy-40": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "teensy-41": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "seeed-xiao-esp32s3": {
+      "A1": "d0",
+      "B1": "d1",
+      "A2": "d2",
+      "B2": "d3"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "A1": "gpio25",
+      "B1": "gpio26",
+      "A2": "gpio27",
+      "B2": "gpio14"
+    }
+  },
+  "variables": {
+    "izquierda": 0,
+    "derecha": 0,
+    "promedio": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "MODO": "x4",
+        "NOMBRE1": "izquierdo",
+        "PIN_A1": "$A1",
+        "PIN_B1": "$B1",
+        "PPR1": 11,
+        "RED1": 30,
+        "DIAM1": 65,
+        "SENTIDO1": "normal",
+        "NOMBRE2": "derecho",
+        "PIN_A2": "$A2",
+        "PIN_B2": "$B2",
+        "PPR2": 11,
+        "RED2": 30,
+        "DIAM2": 65,
+        "SENTIDO2": "normal"
+      }
+    ],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "izquierda"
+            },
+            {
+              "VALUE": [
+                ":distance",
+                {
+                  "ENC": "izquierdo",
+                  "UNIDAD": "cm"
+                }
+              ]
+            }
+          ],
+          [
+            "core:set",
+            {
+              "VARIABLE": "derecha"
+            },
+            {
+              "VALUE": [
+                ":distance",
+                {
+                  "ENC": "derecho",
+                  "UNIDAD": "cm"
+                }
+              ]
+            }
+          ],
+          [
+            "core:set",
+            {
+              "VARIABLE": "promedio"
+            },
+            {
+              "VALUE": [
+                "core:divide",
+                {},
+                {
+                  "LEFT": [
+                    "core:add",
+                    {},
+                    {
+                      "LEFT": {
+                        "var": "izquierda"
+                      },
+                      "RIGHT": {
+                        "var": "derecha"
+                      }
+                    }
+                  ],
+                  "RIGHT": 2
+                }
+              ]
+            }
+          ],
+          [
+            "core:serial-println",
+            {},
+            {
+              "VALUE": {
+                "var": "izquierda"
+              }
+            }
+          ],
+          [
+            "core:serial-println",
+            {},
+            {
+              "VALUE": {
+                "var": "derecha"
+              }
+            }
+          ],
+          [
+            "core:serial-println",
+            {},
+            {
+              "VALUE": {
+                "var": "promedio"
+              }
+            }
+          ],
+          [
+            "core:wait-value",
+            {},
+            {
+              "SECONDS": 0.2
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}

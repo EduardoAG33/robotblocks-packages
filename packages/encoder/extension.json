@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.encoder",
+  "name": "Encoder",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Cuentas, vueltas, distancia y velocidad de encoders de cuadratura, independientes del driver de motores.",
+  "requiredCapabilities": ["digitalInput"],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.encoder:sensor",
+        "name": "Encoder",
+        "colour": "#00897B"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [
+    {
+      "id": "readme",
+      "path": "README.md",
+      "kind": "documentation"
+    }
+  ],
+  "metadata": {
+    "group": "sensors",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Encoder": "Encoder",
+        "Cuentas, vueltas, distancia y velocidad de encoders de cuadratura, independientes del driver de motores.": "Counts, turns, distance and speed of quadrature encoders, independent of the motor driver.",
+        "Configura los encoders al iniciar": "Configure the encoders when started",
+        "Configura como máximo 6 encoders": "Configure at most 6 encoders",
+        "Configura los encoders una sola vez al iniciar": "Configure the encoders only once when started",
+        "Pon nombres distintos y no vacíos a los encoders": "Give the encoders distinct, non-empty names",
+        "PPR, reducción y diámetro deben ser positivos y finitos": "PPR, gear ratio and diameter must be positive and finite",
+        "Los pines de los encoders no pueden repetirse": "Encoder pins cannot be repeated",
+        "El pin %d no tiene interrupción; usa otro o la lectura ×2": "Pin %d has no interrupt; use another pin or ×2 reading"
+      }
+    }
+  }
+}
