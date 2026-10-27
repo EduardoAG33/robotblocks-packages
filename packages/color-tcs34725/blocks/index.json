@@ -21,8 +21,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
-      "en": "In “when started”. Use the same SDA/SCL as your other I2C sensors. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+      "es": "En «al iniciar». Usa los mismos SDA/SCL que tus otros sensores I2C. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212.",
+      "en": "In “when started”. Use the same SDA/SCL as your other I2C sensors. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -60,8 +60,8 @@
     "fields": [],
     "inputs": [],
     "tooltip": {
-      "es": "negro, blanco, gris, rojo, naranja, amarillo, verde, azul o morado (aproximado). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
-      "en": "black, white, gray, red, orange, yellow, green, blue or purple (approximate). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+      "es": "negro, blanco, gris, rojo, naranja, amarillo, verde, azul o morado (aproximado). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212.",
+      "en": "black, white, gray, red, orange, yellow, green, blue or purple (approximate). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -110,8 +110,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Tono en grados: rojo ≈ 0, amarillo ≈ 60, verde ≈ 120, azul ≈ 240. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
-      "en": "Hue in degrees: red ≈ 0, yellow ≈ 60, green ≈ 120, blue ≈ 240. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+      "es": "Tono en grados: rojo ≈ 0, amarillo ≈ 60, verde ≈ 120, azul ≈ 240. TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212.",
+      "en": "Hue in degrees: red ≈ 0, yellow ≈ 60, green ≈ 120, blue ≈ 240. TCS34725 over I2C (address 0x29), for example DFRobot SEN0212."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -160,8 +160,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Cuentas del sensor (0 a unas 44000). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212. MicroPython experimental.",
-      "en": "Sensor counts (0 to approximately 44000). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212. Experimental MicroPython."
+      "es": "Cuentas del sensor (0 a unas 44000). TCS34725 por I2C (dirección 0x29), por ejemplo DFRobot SEN0212.",
+      "en": "Sensor counts (0 to approximately 44000). TCS34725 over I2C (address 0x29), for example DFRobot SEN0212."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {

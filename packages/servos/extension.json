@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.servos",
   "name": "Servos",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
-  "description": "Servos de 50 Hz eligiendo el pin en el bloque. Plantillas MicroPython experimentales; Arduino pendiente.",
+  "description": "Servos de 50 Hz eligiendo el pin en el bloque. Arduino y MicroPython.",
   "requiredCapabilities": ["pwm"],
   "supportedBoards": [],
   "dependencies": [],
@@ -20,11 +20,10 @@
   },
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "actuators",
     "translations": {
       "en": {
-        "Servos de 50 Hz eligiendo el pin en el bloque. Plantillas MicroPython experimentales; Arduino pendiente.": "50 Hz servos with the pin selected in the block. Experimental MicroPython templates; Arduino pending."
+        "Servos de 50 Hz eligiendo el pin en el bloque. Arduino y MicroPython.": "50 Hz servos choosing the pin in the block. Arduino and MicroPython."
       }
     }
   }

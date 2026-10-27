@@ -15,8 +15,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "En «al iniciar», uno por canal y en orden: el primero es el canal 1. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-      "en": "In “when started”, one per channel in order: the first is channel 1. Analog Pololu QTR/QTRX (for example QTRX-MD-13A). Experimental MicroPython."
+      "es": "En «al iniciar», uno por canal y en orden: el primero es el canal 1. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+      "en": "In “when started”, one per channel in order: the first is channel 1. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
     },
     "requiredCapabilities": ["analogInput"],
     "generators": {
@@ -45,8 +45,8 @@
     "fields": [],
     "inputs": [],
     "tooltip": {
-      "es": "Toma una lectura de calibración. Úsalo dentro de «repetir» mientras el robot pasa todos los sensores sobre la línea y el fondo. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-      "en": "Takes a calibration reading. Use inside “repeat” while passing all sensors over the line and background. Analog Pololu QTR/QTRX (for example QTRX-MD-13A). Experimental MicroPython."
+      "es": "Toma una lectura de calibración. Úsalo dentro de «repetir» mientras el robot pasa todos los sensores sobre la línea y el fondo. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+      "en": "Takes a calibration reading. Use inside “repeat” while passing all sensors over the line and background. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
     },
     "requiredCapabilities": ["analogInput"],
     "generators": {
@@ -87,8 +87,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "De -100 (bajo el canal 1) a 100 (bajo el último canal); 0 es el centro. Si pierde la línea, recuerda de qué lado se fue. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-      "en": "From -100 (under channel 1) to 100 (under the last channel); 0 is the center. If the line is lost, remembers the side it left on. Analog Pololu QTR/QTRX (for example QTRX-MD-13A). Experimental MicroPython."
+      "es": "De -100 (bajo el canal 1) a 100 (bajo el último canal); 0 es el centro. Si pierde la línea, recuerda de qué lado se fue. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+      "en": "From -100 (under channel 1) to 100 (under the last channel); 0 is the center. If the line is lost, remembers the side it left on. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
     },
     "requiredCapabilities": ["analogInput"],
     "generators": {
@@ -130,8 +130,8 @@
     ],
     "inputs": [{ "name": "NUMBER", "type": "number", "default": 1, "min": 1, "integer": true }],
     "tooltip": {
-      "es": "De 0 (fondo) a 100 (línea), ya calibrado. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-      "en": "From 0 (background) to 100 (line), after calibration. Analog Pololu QTR/QTRX (for example QTRX-MD-13A). Experimental MicroPython."
+      "es": "De 0 (fondo) a 100 (línea), ya calibrado. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+      "en": "From 0 (background) to 100 (line), after calibration. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
     },
     "requiredCapabilities": ["analogInput"],
     "generators": {
@@ -173,8 +173,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Verdadero si algún canal ve la línea con más del 50 %. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A). MicroPython experimental.",
-      "en": "True if any channel sees the line above 50%. Analog Pololu QTR/QTRX (for example QTRX-MD-13A). Experimental MicroPython."
+      "es": "Verdadero si algún canal ve la línea con más del 50 %. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+      "en": "True if any channel sees the line above 50%. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
     },
     "requiredCapabilities": ["analogInput"],
     "generators": {
