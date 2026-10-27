@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.openmv-cam-h7",
   "name": "OpenMV Cam H7",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Cámara programable OpenMV Cam H7 (STM32H743) con MicroPython por Web Serial. Se usa con la extensión Visión OpenMV.",
@@ -27,28 +27,68 @@
         "experimental": true,
         "targets": { "micropython": { "upload": "webserial-raw-repl" } },
         "resources": [
-          { "id": "p0", "label": "P0 · SPI2 MOSI", "capabilities": [], "symbol": { "micropython": "P0" } },
-          { "id": "p1", "label": "P1 · SPI2 MISO", "capabilities": [], "symbol": { "micropython": "P1" } },
-          { "id": "p2", "label": "P2 · SPI2 SCLK", "capabilities": [], "symbol": { "micropython": "P2" } },
-          { "id": "p3", "label": "P3 · SPI2 SS", "capabilities": [], "symbol": { "micropython": "P3" } },
+          {
+            "id": "p0",
+            "label": { "es": "P0 · SPI2 MOSI", "en": "P0 · SPI2 MOSI" },
+            "capabilities": [],
+            "symbol": { "micropython": "P0" }
+          },
+          {
+            "id": "p1",
+            "label": { "es": "P1 · SPI2 MISO", "en": "P1 · SPI2 MISO" },
+            "capabilities": [],
+            "symbol": { "micropython": "P1" }
+          },
+          {
+            "id": "p2",
+            "label": { "es": "P2 · SPI2 SCLK", "en": "P2 · SPI2 SCLK" },
+            "capabilities": [],
+            "symbol": { "micropython": "P2" }
+          },
+          {
+            "id": "p3",
+            "label": { "es": "P3 · SPI2 SS", "en": "P3 · SPI2 SS" },
+            "capabilities": [],
+            "symbol": { "micropython": "P3" }
+          },
           {
             "id": "p4",
-            "label": "P4 · UART3 TX · I2C2 SCL",
+            "label": { "es": "P4 · UART3 TX · I2C2 SCL", "en": "P4 · UART3 TX · I2C2 SCL" },
             "capabilities": [],
             "symbol": { "micropython": "P4" },
             "notes": "TX de la UART 3: conéctalo al RX del GIGA. Lo usa «enviar al GIGA» de Visión OpenMV."
           },
           {
             "id": "p5",
-            "label": "P5 · UART3 RX · I2C2 SDA",
+            "label": { "es": "P5 · UART3 RX · I2C2 SDA", "en": "P5 · UART3 RX · I2C2 SDA" },
             "capabilities": [],
             "symbol": { "micropython": "P5" },
             "notes": "RX de la UART 3: conéctalo al TX del GIGA."
           },
-          { "id": "p6", "label": "P6 · ADC · DAC", "capabilities": [], "symbol": { "micropython": "P6" } },
-          { "id": "p7", "label": "P7 · PWM · servo 1", "capabilities": [], "symbol": { "micropython": "P7" } },
-          { "id": "p8", "label": "P8 · PWM · servo 2", "capabilities": [], "symbol": { "micropython": "P8" } },
-          { "id": "p9", "label": "P9 · PWM · servo 3", "capabilities": [], "symbol": { "micropython": "P9" } }
+          {
+            "id": "p6",
+            "label": { "es": "P6 · ADC · DAC", "en": "P6 · ADC · DAC" },
+            "capabilities": [],
+            "symbol": { "micropython": "P6" }
+          },
+          {
+            "id": "p7",
+            "label": { "es": "P7 · PWM · servo 1", "en": "P7 · PWM · servo 1" },
+            "capabilities": [],
+            "symbol": { "micropython": "P7" }
+          },
+          {
+            "id": "p8",
+            "label": { "es": "P8 · PWM · servo 2", "en": "P8 · PWM · servo 2" },
+            "capabilities": [],
+            "symbol": { "micropython": "P8" }
+          },
+          {
+            "id": "p9",
+            "label": { "es": "P9 · PWM · servo 3", "en": "P9 · PWM · servo 3" },
+            "capabilities": [],
+            "symbol": { "micropython": "P9" }
+          }
         ]
       }
     ]
