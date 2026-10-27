@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.huskylens2",
+  "name": "HuskyLens 2",
+  "version": "1.0.0",
+  "author": { "name": "Los Grises · GreyForge" },
+  "minAppVersion": "0.4.0",
+  "description": "Cámara AI HUSKYLENS 2 (DFRobot SEN0638) por I2C o UART: algoritmos, cuadros y flechas, IDs, nombres y texto leído, aprender y olvidar. Solo Arduino/C++, sin librerías.",
+  "requiredCapabilities": [],
+  "supportedBoards": [],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [{ "id": "org.robotblocks.huskylens2:huskylens2", "name": "HuskyLens 2", "colour": "#1E88E5" }],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "sensors",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Cámara AI HUSKYLENS 2 (DFRobot SEN0638) por I2C o UART: algoritmos, cuadros y flechas, IDs, nombres y texto leído, aprender y olvidar. Solo Arduino/C++, sin librerías.": "HUSKYLENS 2 AI camera (DFRobot SEN0638) over I2C or UART: algorithms, frames and arrows, IDs, names and read text, learn and forget. Arduino/C++ only, no libraries.",
+        "HuskyLens 2 está ocupada: usa un solo proceso para comunicar": "HuskyLens 2 is busy: use a single process to talk to it",
+        "No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo": "HuskyLens 2 does not answer: choose I2C in System settings → Protocol",
+        "No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo": "HuskyLens 2 does not answer: choose UART in System settings → Protocol",
+        "Configura la HuskyLens 2 al iniciar y espera a que termine": "Set up HuskyLens 2 at start and wait for it to finish",
+        "No se pudo enviar la trama a la HuskyLens 2": "Could not send the frame to HuskyLens 2",
+        "La HuskyLens 2 no pudo cambiar de algoritmo": "HuskyLens 2 could not switch algorithm",
+        "No responde la HuskyLens 2: trama incompleta o checksum inválido": "HuskyLens 2 does not answer: incomplete frame or invalid checksum",
+        "HuskyLens 2: número o ID fuera de rango, debe ser entero": "HuskyLens 2: number or ID out of range, must be an integer"
+      }
+    }
+  }
+}

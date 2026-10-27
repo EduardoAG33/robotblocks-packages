@@ -223,6 +223,12 @@
       "description": "Controladores PID con nombre: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",
       "kind": "module",
       "path": "packages/control-pid"
+    },
+    {
+      "name": "HuskyLens 2",
+      "description": "Cámara AI HUSKYLENS 2 (SEN0638) por I2C o UART: algoritmos, cuadros, flechas, IDs y texto leído. Solo Arduino/C++; experimental.",
+      "kind": "module",
+      "path": "packages/huskylens2"
     }
   ]
 }
