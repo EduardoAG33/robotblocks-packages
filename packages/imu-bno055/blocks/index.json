@@ -30,8 +30,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-      "en": "In “when started”, with the robot still. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+      "es": "En «al iniciar», con el robot quieto. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253.",
+      "en": "In “when started”, with the robot still. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -78,8 +78,8 @@
     "fields": [],
     "inputs": [],
     "tooltip": {
-      "es": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-      "en": "From -180 to 180 degrees relative to the last “reset heading angle”; positive to the right. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+      "es": "De -180 a 180 grados respecto al último «reiniciar ángulo de giro»; positivo hacia la derecha. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253.",
+      "en": "From -180 to 180 degrees relative to the last “reset heading angle”; positive to the right. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -166,8 +166,8 @@
     "fields": [],
     "inputs": [],
     "tooltip": {
-      "es": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-      "en": "The current heading becomes 0. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+      "es": "La dirección actual pasa a ser 0. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253.",
+      "en": "The current heading becomes 0. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {
@@ -232,8 +232,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253. MicroPython experimental.",
-      "en": "In degrees. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253. Experimental MicroPython."
+      "es": "En grados. BNO055 por I2C (0x28/0x29), por ejemplo DFRobot SEN0253.",
+      "en": "In degrees. BNO055 over I2C (0x28/0x29), for example DFRobot SEN0253."
     },
     "requiredCapabilities": ["digitalOutput"],
     "generators": {

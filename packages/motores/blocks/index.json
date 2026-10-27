@@ -37,8 +37,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
-      "en": "Place in “when started”, once per motor. PWM connects to ENA/PWMA; IN1 and IN2 to the direction pins. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+      "es": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+      "en": "Place in “when started”, once per motor. PWM connects to ENA/PWMA; IN1 and IN2 to the direction pins. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
     },
     "generators": {
       "micropython": {
@@ -81,8 +81,8 @@
     ],
     "inputs": [{ "name": "SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }],
     "tooltip": {
-      "es": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
-      "en": "From -100 (reverse) to 100 (forward); larger values are clamped. 0 makes it coast. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+      "es": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+      "en": "From -100 (reverse) to 100 (forward); larger values are clamped. 0 makes it coast. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
     },
     "generators": {
       "micropython": {
@@ -142,8 +142,8 @@
       { "name": "RIGHT_SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }
     ],
     "tooltip": {
-      "es": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
-      "en": "Moves two motors at once, for example left and right. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+      "es": "Mueve dos motores a la vez, por ejemplo izquierdo y derecho. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+      "en": "Moves two motors at once, for example left and right. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
     },
     "generators": {
       "micropython": {
@@ -196,8 +196,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor». MicroPython experimental.",
-      "en": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”. Experimental MicroPython."
+      "es": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+      "en": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
     },
     "generators": {
       "micropython": {
