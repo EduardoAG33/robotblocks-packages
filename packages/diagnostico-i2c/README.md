@@ -20,7 +20,7 @@ Use the same SDA/SCL pins as your sensors: on Arduino they choose the bus (`Wire
 
 ## Direcciones conocidas / Known addresses
 
-0x0D QMC5883L · 0x1E HMC5883L · 0x28 BNO055 · 0x29 TCS34725 o VL53L0X · 0x32 HuskyLens · 0x39 APDS-9960 · 0x3C/0x3D OLED · 0x40 INA219 o PCA9685 · 0x41/0x44/0x45 INA219 · 0x48 ADS1115 · 0x4A/0x4B BNO085 · 0x50 EEPROM · 0x68/0x69 MPU6050 · 0x70 TCA9548A · 0x76/0x77 BMP280/BME280. Otras direcciones se imprimen sin nombre. / Other addresses print without a name.
+0x0D QMC5883L · 0x1E HMC5883L · 0x28 BNO055 · 0x29 TCS34725 o VL53L0X · 0x32 HuskyLens · 0x39 APDS-9960 · 0x3C/0x3D OLED · 0x40 INA219 o PCA9685 · 0x41/0x44/0x45 INA219 · 0x48 ADS1115 · 0x4A/0x4B BNO085 · 0x50 EEPROM o HuskyLens 2 · 0x68/0x69 MPU6050 · 0x70 TCA9548A · 0x76/0x77 BMP280/BME280. Otras direcciones se imprimen sin nombre. / Other addresses print without a name.
 
 ## Si no aparece nada / If nothing shows up
 

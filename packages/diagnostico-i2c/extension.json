@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.diagnostico-i2c",
   "name": "Diagnóstico I2C",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Escanea el bus I2C e imprime qué sensores responden, o comprueba si hay algo en una dirección antes de arrancar. Arduino y MicroPython.",
