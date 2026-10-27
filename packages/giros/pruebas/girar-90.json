@@ -1,0 +1,173 @@
+{
+  "titulo": "Giros con IMU · girar de 90 en 90",
+  "ejemplo": "arduino-uno",
+  "tarjetas": ["arduino-uno", "arduino-giga-r1"],
+  "pines": {
+    "arduino-uno": {
+      "SDA": "a4",
+      "SCL": "a5",
+      "PA": "d5",
+      "A1": "d7",
+      "A2": "d8",
+      "PB": "d6",
+      "B1": "d9",
+      "B2": "d10"
+    },
+    "arduino-giga-r1": {
+      "SDA": "d20",
+      "SCL": "d21",
+      "PA": "d2",
+      "A1": "d22",
+      "A2": "d24",
+      "PB": "d3",
+      "B1": "d26",
+      "B2": "d28"
+    }
+  },
+  "variables": {
+    "objetivo": 90
+  },
+  "programa": [
+    [
+      "org.robotblocks.imu-bno055:configure",
+      {
+        "SDA": "$SDA",
+        "SCL": "$SCL"
+      }
+    ],
+    [
+      "org.robotblocks.motores:configure",
+      {
+        "MOTOR": "A",
+        "PWM": "$PA",
+        "IN1": "$A1",
+        "IN2": "$A2"
+      }
+    ],
+    [
+      "org.robotblocks.motores:configure",
+      {
+        "MOTOR": "B",
+        "PWM": "$PB",
+        "IN1": "$B1",
+        "IN2": "$B2"
+      }
+    ],
+    ["org.robotblocks.imu-bno055:reset"],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          [
+            "core:repeat-until",
+            {},
+            {
+              "CONDITION": [
+                ":arrived",
+                {},
+                {
+                  "TARGET": {
+                    "var": "objetivo"
+                  },
+                  "ANGLE": ["org.robotblocks.imu-bno055:turn"],
+                  "TOL": 2,
+                  "MS": 150
+                }
+              ],
+              "BODY": [
+                [
+                  "org.robotblocks.motores:pair",
+                  {
+                    "LEFT": "A",
+                    "RIGHT": "B"
+                  },
+                  {
+                    "LEFT_SPEED": [
+                      ":speed",
+                      {},
+                      {
+                        "TARGET": {
+                          "var": "objetivo"
+                        },
+                        "ANGLE": ["org.robotblocks.imu-bno055:turn"],
+                        "MAX": 60,
+                        "MIN": 20
+                      }
+                    ],
+                    "RIGHT_SPEED": [
+                      "core:multiply",
+                      {},
+                      {
+                        "LEFT": -1,
+                        "RIGHT": [
+                          ":speed",
+                          {},
+                          {
+                            "TARGET": {
+                              "var": "objetivo"
+                            },
+                            "ANGLE": ["org.robotblocks.imu-bno055:turn"],
+                            "MAX": 60,
+                            "MIN": 20
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                [
+                  "core:wait-ms",
+                  {},
+                  {
+                    "MS": 10
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "org.robotblocks.motores:stop",
+            {
+              "MOTOR": "todos",
+              "MODE": "frenar"
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 1000
+            }
+          ],
+          [
+            "core:set",
+            {
+              "VARIABLE": "objetivo"
+            },
+            {
+              "VALUE": [
+                ":wrap",
+                {
+                  "RANGE": "180"
+                },
+                {
+                  "ANGLE": [
+                    "core:add",
+                    {},
+                    {
+                      "LEFT": {
+                        "var": "objetivo"
+                      },
+                      "RIGHT": 90
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      }
+    ]
+  ]
+}
