@@ -1,0 +1,187 @@
+[
+  {
+    "id": "org.robotblocks.giros:speed",
+    "operation": "org.robotblocks.giros:speed",
+    "category": "org.robotblocks.giros:giros",
+    "label": {
+      "es": "velocidad para girar a %TARGET ° desde %ANGLE ° máx %MAX mín %MIN",
+      "en": "speed to turn to %TARGET ° from %ANGLE ° max %MAX min %MIN"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [],
+    "inputs": [
+      { "name": "TARGET", "type": "number", "default": 90 },
+      { "name": "ANGLE", "type": "number", "default": 0 },
+      { "name": "MAX", "type": "number", "default": 60, "slider": { "min": 0, "max": 100 } },
+      { "name": "MIN", "type": "number", "default": 20, "slider": { "min": 0, "max": 100 } }
+    ],
+    "tooltip": {
+      "es": "Conecta en «desde» el ángulo de giro de tu IMU. Da la velocidad para girar por el camino más corto: positiva = a la derecha. Úsala en tus motores (izquierdo +velocidad, derecho −velocidad) dentro de «repetir hasta que llegó».",
+      "en": "Plug your IMU turn angle into “from”. Gives the speed to turn the shortest way: positive = right. Use it on your motors (left +speed, right −speed) inside “repeat until arrived”."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+        ],
+        "expression": "giro_velocidad({TARGET}, {ANGLE}, {MAX}, {MIN}, {BLOCK_ID})"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.giros:arrived",
+    "operation": "org.robotblocks.giros:arrived",
+    "category": "org.robotblocks.giros:giros",
+    "label": {
+      "es": "llegó a %TARGET ° con ángulo %ANGLE ° (± %TOL °) durante %MS ms",
+      "en": "arrived at %TARGET ° with angle %ANGLE ° (± %TOL °) for %MS ms"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [],
+    "inputs": [
+      { "name": "TARGET", "type": "number", "default": 90 },
+      { "name": "ANGLE", "type": "number", "default": 0 },
+      { "name": "TOL", "type": "number", "default": 2 },
+      { "name": "MS", "type": "number", "default": 150 }
+    ],
+    "tooltip": {
+      "es": "Verdadero cuando el ángulo lleva ese tiempo dentro de la tolerancia, así no se detiene si solo pasó de largo. Con 0 ms es verdadero en cuanto entra.",
+      "en": "True when the angle has been within the tolerance for that time, so it does not stop if it only overshot. With 0 ms it is true as soon as it enters."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+        ],
+        "expression": "giro_llego({TARGET}, {ANGLE}, {TOL}, {MS}, {BLOCK_ID})"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.giros:difference",
+    "operation": "org.robotblocks.giros:difference",
+    "category": "org.robotblocks.giros:giros",
+    "label": { "es": "diferencia de %ANGLE ° a %TARGET °", "en": "difference from %ANGLE ° to %TARGET °" },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [],
+    "inputs": [
+      { "name": "ANGLE", "type": "number", "default": 0 },
+      { "name": "TARGET", "type": "number", "default": 90 }
+    ],
+    "tooltip": {
+      "es": "Cuántos grados faltan por el camino más corto, entre −180 y 180 (de 350° a 10° son +20, no −340). Sirve como error de un PID para girar o para ir recto.",
+      "en": "How many degrees are left the shortest way, between −180 and 180 (from 350° to 10° is +20, not −340). Use it as the error of a PID to turn or to go straight."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_diferencia({TARGET}, {ANGLE}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_diferencia({TARGET}, {ANGLE}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+        ],
+        "expression": "giro_diferencia({TARGET}, {ANGLE}, {BLOCK_ID})"
+      }
+    },
+    "requiredCapabilities": []
+  },
+  {
+    "id": "org.robotblocks.giros:wrap",
+    "operation": "org.robotblocks.giros:wrap",
+    "category": "org.robotblocks.giros:giros",
+    "label": { "es": "ángulo %ANGLE ° de %RANGE", "en": "angle %ANGLE ° in %RANGE" },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "RANGE",
+        "type": "string",
+        "default": "180",
+        "options": [
+          { "label": { "es": "−180 a 180", "en": "−180 to 180" }, "value": "180" },
+          { "label": { "es": "0 a 360", "en": "0 to 360" }, "value": "360" }
+        ]
+      }
+    ],
+    "inputs": [{ "name": "ANGLE", "type": "number", "default": 0 }],
+    "tooltip": {
+      "es": "Lleva cualquier ángulo (por ejemplo el giro acumulado, 450°) al rango elegido (90°).",
+      "en": "Brings any angle (for example the accumulated turn, 450°) into the chosen range (90°)."
+    },
+    "generators": {
+      "micropython": {
+        "imports": ["import time"],
+        "globals": [
+          "def giro_ms():\n    return time.ticks_ms() if hasattr(time, \"ticks_ms\") else int(time.monotonic() * 1000)\n\ndef giro_pasado(ahora, antes):\n    return time.ticks_diff(ahora, antes) if hasattr(time, \"ticks_diff\") else ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+      },
+      "pybricks": {
+        "imports": ["from pybricks.tools import StopWatch"],
+        "globals": [
+          "# El reloj de Pybricks cuenta milisegundos desde que arranca el programa.\ngiro_reloj = StopWatch()\n\ndef giro_ms():\n    return giro_reloj.time()\n\ndef giro_pasado(ahora, antes):\n    return ahora - antes\n",
+          "def giro_diferencia(objetivo, angulo, bloque):\n    objetivo = rb_finite(objetivo, bloque)\n    angulo = rb_finite(angulo, bloque)\n    return (objetivo - angulo + 180) % 360 - 180\n\ndef giro_ajustar(angulo, rango, bloque):\n    angulo = rb_finite(angulo, bloque)\n    if rango == \"360\":\n        return angulo % 360\n    return (angulo + 180) % 360 - 180\n\n# Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n# (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ndef giro_velocidad(objetivo, angulo, maxima, minima, bloque):\n    diferencia = giro_diferencia(objetivo, angulo, bloque)\n    maxima = abs(rb_finite(maxima, bloque))\n    minima = min(abs(rb_finite(minima, bloque)), maxima)\n    if abs(diferencia) < 0.5:\n        return 0\n    velocidad = max(-maxima, min(maxima, diferencia * maxima / 45))\n    if abs(velocidad) < minima:\n        velocidad = minima if diferencia > 0 else -minima\n    return velocidad\n\n# Un reloj por bloque «llegó»: verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\ngiro_dentro = {}\n\ndef giro_llego(objetivo, angulo, tolerancia, ms, bloque):\n    tolerancia = abs(rb_finite(tolerancia, bloque))\n    ms = rb_finite(ms, bloque)\n    if abs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia:\n        giro_dentro.pop(bloque, None)\n        return False\n    ahora = giro_ms()\n    if bloque not in giro_dentro:\n        giro_dentro[bloque] = ahora\n    return giro_pasado(ahora, giro_dentro[bloque]) >= ms\n"
+        ],
+        "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+      },
+      "arduino": {
+        "globals": [
+          "inline float giro_diferencia(float objetivo, float angulo, const char* bloque) {\n    objetivo = rb_finite(objetivo, bloque);\n    angulo = rb_finite(angulo, bloque);\n    float diferencia = fmod(objetivo - angulo + 180.0f, 360.0f);\n    if (diferencia < 0) diferencia += 360.0f;\n    return diferencia - 180.0f;\n}\ninline float giro_ajustar(float angulo, const String& rango, const char* bloque) {\n    angulo = rb_finite(angulo, bloque);\n    if (rango == \"360\") {\n        float ajustado = fmod(angulo, 360.0f);\n        return ajustado < 0 ? ajustado + 360.0f : ajustado;\n    }\n    return giro_diferencia(angulo, 0, bloque);\n}\n// Velocidad proporcional al error: máxima desde 45° de diferencia y nunca menos que la mínima\n// (para vencer la fricción), salvo a menos de medio grado. Positiva = girar a la derecha.\ninline float giro_velocidad(float objetivo, float angulo, float maxima, float minima, const char* bloque) {\n    float diferencia = giro_diferencia(objetivo, angulo, bloque);\n    maxima = fabs(rb_finite(maxima, bloque));\n    minima = fabs(rb_finite(minima, bloque));\n    if (minima > maxima) minima = maxima;\n    if (fabs(diferencia) < 0.5f) return 0;\n    float velocidad = diferencia * maxima / 45.0f;\n    if (velocidad > maxima) velocidad = maxima;\n    if (velocidad < -maxima) velocidad = -maxima;\n    if (fabs(velocidad) < minima) velocidad = diferencia > 0 ? minima : -minima;\n    return velocidad;\n}\n// Un reloj por bloque «llegó» (hasta 8): verdadero cuando el ángulo lleva «ms» dentro de la tolerancia.\nstruct giro_reloj { const char* bloque; unsigned long desde; bool dentro; };\nstatic giro_reloj giro_relojes[8];\ninline giro_reloj& giro_buscar(const char* bloque) {\n    for (uint8_t i = 0; i < 8; i++)\n        if (giro_relojes[i].bloque && strcmp(giro_relojes[i].bloque, bloque) == 0) return giro_relojes[i];\n    for (uint8_t i = 0; i < 8; i++)\n        if (!giro_relojes[i].bloque) {\n            giro_relojes[i].bloque = bloque;\n            return giro_relojes[i];\n        }\n    return giro_relojes[7];\n}\ninline bool giro_llego(float objetivo, float angulo, float tolerancia, float ms, const char* bloque) {\n    tolerancia = fabs(rb_finite(tolerancia, bloque));\n    ms = rb_finite(ms, bloque);\n    giro_reloj& reloj = giro_buscar(bloque);\n    if (fabs(giro_diferencia(objetivo, angulo, bloque)) > tolerancia) {\n        reloj.dentro = false;\n        return false;\n    }\n    if (!reloj.dentro) {\n        reloj.dentro = true;\n        reloj.desde = millis();\n    }\n    return float(millis() - reloj.desde) >= ms;\n}\n"
+        ],
+        "expression": "giro_ajustar({ANGLE}, {RANGE}, {BLOCK_ID})"
+      }
+    },
+    "requiredCapabilities": []
+  }
+]

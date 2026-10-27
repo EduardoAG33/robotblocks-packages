@@ -1,0 +1,285 @@
+{
+  "titulo": "Giros con IMU · prueba de lógica",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32",
+    "lego-spike-prime",
+    "lego-ev3"
+  ],
+  "variables": {
+    "d1": 0,
+    "d2": 0,
+    "w1": 0,
+    "w2": 0,
+    "v1": 0,
+    "v2": 0,
+    "v3": 0,
+    "v4": 0,
+    "l1": 0,
+    "l2": 0,
+    "estable": 0
+  },
+  "programa": [
+    [
+      "core:set",
+      {
+        "VARIABLE": "d1"
+      },
+      {
+        "VALUE": [
+          ":difference",
+          {},
+          {
+            "ANGLE": 350,
+            "TARGET": 10
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "d2"
+      },
+      {
+        "VALUE": [
+          ":difference",
+          {},
+          {
+            "ANGLE": 90,
+            "TARGET": -90
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "w1"
+      },
+      {
+        "VALUE": [
+          ":wrap",
+          {
+            "RANGE": "180"
+          },
+          {
+            "ANGLE": 450
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "w2"
+      },
+      {
+        "VALUE": [
+          ":wrap",
+          {
+            "RANGE": "360"
+          },
+          {
+            "ANGLE": -30
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "v1"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 0,
+            "MAX": 60,
+            "MIN": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "v2"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 80,
+            "MAX": 60,
+            "MIN": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "v3"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 95,
+            "MAX": 60,
+            "MIN": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "v4"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 89.8,
+            "MAX": 60,
+            "MIN": 20
+          }
+        ]
+      }
+    ],
+    [
+      "core:if",
+      {},
+      {
+        "CONDITION": [
+          ":arrived",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 89,
+            "TOL": 2,
+            "MS": 0
+          }
+        ],
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "l1"
+            },
+            {
+              "VALUE": 1
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      "core:if",
+      {},
+      {
+        "CONDITION": [
+          ":arrived",
+          {},
+          {
+            "TARGET": 90,
+            "ANGLE": 80,
+            "TOL": 2,
+            "MS": 0
+          }
+        ],
+        "BODY": [
+          [
+            "core:set",
+            {
+              "VARIABLE": "l2"
+            },
+            {
+              "VALUE": 1
+            }
+          ]
+        ]
+      }
+    ],
+    [
+      "core:repeat-count",
+      {},
+      {
+        "TIMES": 2,
+        "BODY": [
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                ":arrived",
+                {},
+                {
+                  "TARGET": 90,
+                  "ANGLE": 91,
+                  "TOL": 2,
+                  "MS": 50
+                }
+              ],
+              "BODY": [
+                [
+                  "core:set",
+                  {
+                    "VARIABLE": "estable"
+                  },
+                  {
+                    "VALUE": [
+                      "core:add",
+                      {},
+                      {
+                        "LEFT": {
+                          "var": "estable"
+                        },
+                        "RIGHT": 1
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ],
+          [
+            "core:wait-ms",
+            {},
+            {
+              "MS": 80
+            }
+          ]
+        ]
+      }
+    ]
+  ],
+  "esperado": {
+    "d1": 20,
+    "d2": -180,
+    "w1": 90,
+    "w2": 330,
+    "v1": 60,
+    "v2": 20,
+    "v3": -20,
+    "v4": 0,
+    "l1": 1,
+    "l2": 0,
+    "estable": 1
+  }
+}
