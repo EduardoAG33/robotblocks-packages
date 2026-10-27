@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 const blocks = JSON.parse(await readFile('packages/encoder/blocks/index.json', 'utf8'));
-assert.equal(blocks.length, 7);
+assert.equal(blocks.length, 8);
 assert.equal(blocks[0].variadic.max, 6);
-assert.equal(blocks[0].variadic.row.fields.length, 7);
+assert.equal(blocks[0].variadic.row.fields.length, 6);
 for (const block of blocks) {
   assert(block.generators.arduino && block.generators.micropython && !block.generators.pybricks);
   if (block.fields.some((field) => field.name === 'ENC'))

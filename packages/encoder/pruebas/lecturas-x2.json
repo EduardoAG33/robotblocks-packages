@@ -67,14 +67,26 @@
         "PPR1": 11,
         "RED1": 30,
         "DIAM1": 65,
-        "SENTIDO1": "normal",
         "NOMBRE2": "derecho",
         "PIN_A2": "$A2",
         "PIN_B2": "$B2",
         "PPR2": 11,
         "RED2": 30,
-        "DIAM2": 65,
-        "SENTIDO2": "normal"
+        "DIAM2": 65
+      }
+    ],
+    [
+      ":direction",
+      {
+        "ENC": "izquierdo",
+        "SENTIDO": "normal"
+      }
+    ],
+    [
+      ":direction",
+      {
+        "ENC": "derecho",
+        "SENTIDO": "invertido"
       }
     ],
     [

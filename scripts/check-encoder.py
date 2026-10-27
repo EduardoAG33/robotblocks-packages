@@ -20,9 +20,10 @@ class Pointer:
 
 class Pin:
     IN = 0; PULL_UP = 1; IRQ_RISING = 1; IRQ_FALLING = 2
-    def __init__(self, n, mode, pull): self.n = n; self.level = 0; self.handler = None
+    def __init__(self, n, mode, pull): self.n = n; self.level = 0; self.handler = None; self.irq_calls = 0
     def value(self): return self.level
     def irq(self, trigger, handler):
+        self.irq_calls += 1
         assert trigger == 3
         self.handler = handler
 
@@ -55,12 +56,15 @@ def expect_error(action, message):
 
 expect_error(lambda: call('cuentas',1,'test'), 'Configura los encoders')
 expect_error(lambda: call('todos','test'), 'Configura los encoders')
-expect_error(lambda: call('configurar',0,[('mismo',2,2,11,30,65,'normal')],'x4','test'), 'pines')
-expect_error(lambda: call('configurar',0,[('uno',2,3,0,30,65,'normal')],'x4','test'), 'positivos')
-expect_error(lambda: call('configurar',0,[('uno',2,3,11,30,65,'normal')]*7,'x4','test'), 'máximo')
-expect_error(lambda: call('configurar',0,[('uno',2,3,11,30,65,'normal'),('uno',4,5,11,30,65,'normal')],'x4','test'), 'nombres')
+expect_error(lambda: call('sentido',1,'invertido','test'), 'Configura los encoders')
+expect_error(lambda: call('configurar',0,[('mismo',2,2,11,30,65)],'x4','test'), 'pines')
+expect_error(lambda: call('configurar',0,[('uno',2,3,0,30,65)],'x4','test'), 'positivos')
+expect_error(lambda: call('configurar',0,[('uno',2,3,11,30,65)]*7,'x4','test'), 'máximo')
+expect_error(lambda: call('configurar',0,[('uno',2,3,11,30,65),('uno',4,5,11,30,65)],'x4','test'), 'nombres')
 for i,(mode,sense) in enumerate([('x4','normal'),('x4','invertido'),('x2','normal'),('x2','invertido')]):
-    call('configurar',i,[(str(i),2*i,2*i+1,11,9.7,65,sense)],mode,'test')
+    call('configurar',i,[(str(i),2*i,2*i+1,11,9.7,65)],mode,'test')
+    assert ns['enc_invertido'][i] == 0
+    call('sentido',i+1,sense,'test')
 
 def cycle(i, reverse=False):
     sequence = [2,3,1,0] if reverse else [1,3,2,0]
@@ -113,5 +117,10 @@ ns['enc_a'][0].level=ns['enc_b'][0].level=1
 call('flanco',0)
 assert call('cuentas',1,'test') == 0
 assert irq_depth == 0
-expect_error(lambda: call('configurar',0,[('nuevo',20,21,11,30,65,'normal')],'x4','test'), 'una sola vez')
+expect_error(lambda: call('configurar',0,[('nuevo',20,21,11,30,65)],'x4','test'), 'una sola vez')
+assert sum(p.irq_calls for p in ns['enc_a'] + ns['enc_b'] if p is not None) == 6
+call('sentido',1,'invertido','test')
+assert ns['enc_invertido'][0] == 1
+assert call('velocidad',1,'rpm','test') == 0
+assert sum(p.irq_calls for p in ns['enc_a'] + ns['enc_b'] if p is not None) == 6
 print('Encoder: ×4/×2, ambos sentidos, inversión, transición inválida, distancia 20.42 cm, velocidad 20 ms, reinicios y desbordamientos: OK')
