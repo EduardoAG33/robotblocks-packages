@@ -1,0 +1,524 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "seguir-linea",
+  "name": "HuskyLens 2 · ángulo de la línea",
+  "board": { "definitionId": "org.robotblocks.arduino-giga-r1:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "seguir-linea-arduino-giga-r1-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "seguir-linea-arduino-giga-r1-1",
+            "blockId": "org.robotblocks.huskylens2:configure-i2c",
+            "operation": "org.robotblocks.huskylens2:configure-i2c",
+            "fields": { "SDA": "d102", "SCL": "d101" },
+            "inputs": {},
+            "next": {
+              "id": "seguir-linea-arduino-giga-r1-2",
+              "blockId": "org.robotblocks.huskylens2:algorithm",
+              "operation": "org.robotblocks.huskylens2:algorithm",
+              "fields": { "ALGORITHM": "12" },
+              "inputs": {},
+              "next": {
+                "id": "seguir-linea-arduino-giga-r1-15",
+                "blockId": "core:forever",
+                "operation": "core:forever",
+                "fields": {},
+                "inputs": {
+                  "BODY": {
+                    "id": "seguir-linea-arduino-giga-r1-3",
+                    "blockId": "org.robotblocks.huskylens2:update",
+                    "operation": "org.robotblocks.huskylens2:update",
+                    "fields": {},
+                    "inputs": {},
+                    "next": {
+                      "id": "seguir-linea-arduino-giga-r1-12",
+                      "blockId": "core:if",
+                      "operation": "core:if",
+                      "fields": {},
+                      "inputs": {
+                        "CONDITION": {
+                          "id": "seguir-linea-arduino-giga-r1-4",
+                          "blockId": "org.robotblocks.huskylens2:kind-seen",
+                          "operation": "org.robotblocks.huskylens2:kind-seen",
+                          "fields": { "KIND": "a" },
+                          "inputs": {},
+                          "next": null
+                        },
+                        "BODY": {
+                          "id": "seguir-linea-arduino-giga-r1-6",
+                          "blockId": "core:set",
+                          "operation": "core:set",
+                          "fields": { "VARIABLE": "angulo" },
+                          "inputs": {
+                            "VALUE": {
+                              "id": "seguir-linea-arduino-giga-r1-5",
+                              "blockId": "org.robotblocks.huskylens2:center",
+                              "operation": "org.robotblocks.huskylens2:center",
+                              "fields": { "PROP": "2", "KIND": "a" },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "seguir-linea-arduino-giga-r1-11",
+                            "blockId": "core:serial-println",
+                            "operation": "core:serial-println",
+                            "fields": {},
+                            "inputs": {
+                              "VALUE": {
+                                "id": "seguir-linea-arduino-giga-r1-10",
+                                "blockId": "core:join",
+                                "operation": "core:join",
+                                "fields": {},
+                                "inputs": {
+                                  "LEFT": {
+                                    "id": "seguir-linea-arduino-giga-r1-7",
+                                    "blockId": "core:text",
+                                    "operation": "core:text",
+                                    "fields": { "TEXT": "ángulo de la línea: " },
+                                    "inputs": {},
+                                    "next": null
+                                  },
+                                  "RIGHT": {
+                                    "id": "seguir-linea-arduino-giga-r1-9",
+                                    "blockId": "core:to-text",
+                                    "operation": "core:to-text",
+                                    "fields": {},
+                                    "inputs": {
+                                      "VALUE": {
+                                        "id": "seguir-linea-arduino-giga-r1-8",
+                                        "blockId": "core:variable",
+                                        "operation": "core:variable",
+                                        "fields": { "VARIABLE": "angulo" },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        }
+                      },
+                      "next": {
+                        "id": "seguir-linea-arduino-giga-r1-14",
+                        "blockId": "core:wait-ms",
+                        "operation": "core:wait-ms",
+                        "fields": {},
+                        "inputs": {
+                          "MS": {
+                            "id": "seguir-linea-arduino-giga-r1-13",
+                            "blockId": "core:number",
+                            "operation": "core:number",
+                            "fields": { "NUMBER": 50 },
+                            "inputs": {},
+                            "next": null
+                          }
+                        },
+                        "next": null
+                      }
+                    }
+                  }
+                },
+                "next": null
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [{ "id": "angulo", "name": "angulo", "type": "number", "scope": "project", "initialValue": 0 }],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-giga-r1", "version": "0.3.0" },
+    { "id": "org.robotblocks.huskylens2", "version": "1.0.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "seguir-linea-arduino-giga-r1-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:if",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %BODY", "en": "if %CONDITION then %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "operation": "core:if",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:join",
+        "operation": "core:join",
+        "category": "core:operators",
+        "label": { "es": "unir %LEFT con %RIGHT", "en": "join %LEFT with %RIGHT" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [
+          { "name": "LEFT", "type": "string", "default": "hola" },
+          { "name": "RIGHT", "type": "string", "default": "mundo" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:to-text",
+        "operation": "core:to-text",
+        "category": "core:operators",
+        "label": { "es": "convertir %VALUE a texto", "en": "convert %VALUE to text" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [{ "name": "VALUE", "type": "value", "default": 123 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "core:wait-ms",
+        "operation": "core:wait-ms",
+        "category": "core:time",
+        "label": { "es": "esperar %MS ms", "en": "wait %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647, "integer": true }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        }
+      },
+      {
+        "id": "org.robotblocks.huskylens2:configure-i2c",
+        "category": "org.robotblocks.huskylens2:huskylens2",
+        "label": {
+          "es": "configurar HuskyLens 2 por I2C SDA %SDA SCL %SCL",
+          "en": "set up HuskyLens 2 over I2C SDA %SDA SCL %SCL"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "SDA",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "SCL",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.huskylens2:configure-i2c",
+        "tooltip": {
+          "es": "En «al iniciar». Dirección fija 0x50; I2C es el protocolo de fábrica. Espera hasta 5 s a que la cámara arranque y conteste.",
+          "en": "In “when started”. Fixed address 0x50; I2C is the factory protocol. Waits up to 5 s for the camera to boot and answer."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "arduino": {
+            "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+            "waitUntil": "hl2_start({BLOCK_ID})",
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "// HUSKYLENS 2 (DFRobot SEN0638): frames 55 AA CMD ALGO LEN DATA SUM; no external camera library.\nstruct Hl2Result { int16_t value[4]; uint8_t id; uint8_t kind; char name[13]; char content[25]; };\nstatic Hl2Result hl2_results[6], hl2_pending[6];\nstatic TwoWire* hl2_wire = nullptr;\nstatic HardwareSerial* hl2_serial = nullptr;\nstatic uint8_t hl2_rx[48], hl2_cmd = 0, hl2_len = 0, hl2_sum = 0;\nstatic uint16_t hl2_index = 0;\nstatic uint8_t hl2_count = 0, hl2_saved = 0, hl2_algo = 0, hl2_learned = 0, hl2_command = 0;\nstatic int16_t hl2_detected = 0, hl2_total = 0, hl2_remaining = 0, hl2_maxid = 0;\nstatic uint32_t hl2_started = 0, hl2_sent = 0;\nstatic bool hl2_ready = false, hl2_busy = false, hl2_info = false, hl2_done = false, hl2_ok = false;\ninline int16_t hl2_i16(const uint8_t* data) {\n    return int16_t(uint16_t(data[0]) | (uint16_t(data[1]) << 8));\n}\ninline bool hl2_send(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length) {\n    if (length > 40) return false;\n    uint8_t frame[46];\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = command; frame[3] = algo; frame[4] = length;\n    for (uint8_t i = 0; i < length; i++) frame[5 + i] = data[i];\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length + 5; i++) sum += frame[i];\n    frame[length + 5] = sum;\n    uint8_t size = length + 6;\n    if (hl2_wire) {\n        // In pieces of at most 32 bytes: the Wire buffer of UNO and Nano.\n        hl2_wire->setClock(100000);\n        for (uint8_t start = 0; start < size; start += 32) {\n            hl2_wire->beginTransmission(uint8_t(0x50));\n            for (uint8_t i = start; i < size && i < start + 32; i++) hl2_wire->write(frame[i]);\n            if (hl2_wire->endTransmission() != 0) return false;\n        }\n        return true;\n    }\n    if (hl2_serial) {\n        for (uint8_t i = 0; i < size; i++) if (hl2_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\n// Copies a length-prefixed text of the frame (name or content) if it was kept in hl2_rx.\ninline uint16_t hl2_text(uint16_t at, char* target, uint8_t room) {\n    target[0] = 0;\n    if (at >= hl2_len || at >= sizeof(hl2_rx)) return at;\n    uint8_t length = hl2_rx[at], copied = 0;\n    for (uint8_t i = 0; i < length && copied + 1 < room; i++) {\n        uint16_t index = at + 1 + i;\n        if (index >= sizeof(hl2_rx) || index >= hl2_len) break;\n        target[copied++] = char(hl2_rx[index]);\n    }\n    target[copied] = 0;\n    return at + 1 + length;\n}\ninline void hl2_accept() {\n    if (hl2_cmd == 0x1A && hl2_command != 0x01) {\n        hl2_ok = hl2_len >= 4 && hl2_rx[1] == 0;\n        if (hl2_command == 0x22) hl2_learned = hl2_ok ? uint8_t(hl2_i16(hl2_rx + 2)) : 0;\n        hl2_done = true;\n        return;\n    }\n    if (hl2_command != 0x01 || hl2_len < 10) return;\n    if (hl2_cmd == 0x1B && !hl2_info) {\n        hl2_maxid = hl2_rx[0];\n        hl2_total = hl2_i16(hl2_rx + 2);\n        hl2_remaining = hl2_total < 0 ? 0 : hl2_total;\n        hl2_info = true; hl2_saved = 0; hl2_done = hl2_remaining == 0;\n        return;\n    }\n    if ((hl2_cmd == 0x1C || hl2_cmd == 0x1D) && hl2_info && hl2_remaining > 0) {\n        if (hl2_saved < 6) {\n            Hl2Result& result = hl2_pending[hl2_saved++];\n            result.kind = hl2_cmd; result.id = hl2_rx[0];\n            for (uint8_t i = 0; i < 4; i++) result.value[i] = hl2_i16(hl2_rx + 2 + 2 * i);\n            result.name[0] = 0; result.content[0] = 0;\n            if (hl2_cmd == 0x1C && hl2_len > 10) hl2_text(hl2_text(10, result.name, sizeof(result.name)), result.content, sizeof(result.content));\n        }\n        hl2_done = --hl2_remaining == 0;\n    }\n}\n// Byte by byte: keeps the first 48 data bytes and checks the sum of the whole frame.\ninline void hl2_byte(uint8_t value) {\n    if (hl2_index == 0) {\n        if (value == 0x55) { hl2_sum = value; hl2_index = 1; }\n        return;\n    }\n    if (hl2_index == 1) {\n        if (value == 0xAA) { hl2_sum += value; hl2_index = 2; }\n        else hl2_index = value == 0x55 ? 1 : 0;\n        return;\n    }\n    if (hl2_index == 2) { hl2_cmd = value; hl2_sum += value; hl2_index = 3; return; }\n    if (hl2_index == 3) { hl2_sum += value; hl2_index = 4; return; }\n    if (hl2_index == 4) { hl2_len = value; hl2_sum += value; hl2_index = 5; return; }\n    uint16_t at = hl2_index - 5;\n    if (at < hl2_len) {\n        if (at < sizeof(hl2_rx)) hl2_rx[at] = value;\n        hl2_sum += value; hl2_index++;\n        return;\n    }\n    hl2_index = 0;\n    if (value == hl2_sum) hl2_accept(); // A corrupted frame is dropped; the request has a deadline.\n}\ninline void hl2_poll() {\n    if (hl2_wire) {\n        hl2_wire->setClock(100000);\n        uint8_t received = hl2_wire->requestFrom(uint8_t(0x50), uint8_t(16));\n        for (uint8_t i = 0; i < received && hl2_wire->available(); i++) {\n            int value = hl2_wire->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    } else if (hl2_serial) {\n        for (uint8_t i = 0; i < 64 && hl2_serial->available(); i++) {\n            int value = hl2_serial->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    }\n}\ninline void hl2_reset() {\n    hl2_ready = false; hl2_count = 0; hl2_detected = 0; hl2_busy = true; hl2_command = 0x00;\n    hl2_started = millis(); hl2_sent = millis() - 200; hl2_index = 0; hl2_done = false; hl2_ok = false;\n}\ninline void hl2_i2c(TwoWire& bus, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = &bus; hl2_serial = nullptr; hl2_reset();\n}\ninline void hl2_uart(HardwareSerial& serial, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = nullptr; hl2_serial = &serial; hl2_reset();\n}\n// Handshake (KNOCK) every 200 ms until the camera answers, for up to 5 s while it boots.\ninline bool hl2_start(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done && hl2_ok) { hl2_ready = true; hl2_busy = false; return true; }\n    if (uint32_t(millis() - hl2_started) >= 5000) {\n        rb_fail(block, hl2_wire ? \"No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo\" : \"No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo\");\n        hl2_busy = false; return true;\n    }\n    if (uint32_t(millis() - hl2_sent) >= 200) {\n        uint8_t data[10] = {0};\n        hl2_index = 0; hl2_done = false; hl2_send(0x00, 0, data, 10); hl2_sent = millis();\n    }\n    return false;\n}\ninline bool hl2_available(const char* block) {\n    if (!hl2_ready) { rb_fail(block, \"Configura la HuskyLens 2 al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void hl2_request(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length, const char* block) {\n    if (!hl2_available(block)) return;\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_busy = true; hl2_command = command; hl2_index = 0; hl2_done = false; hl2_info = false; hl2_ok = false;\n    hl2_started = millis();\n    if (!hl2_send(command, algo, data, length)) { hl2_busy = false; rb_fail(block, \"No se pudo enviar la trama a la HuskyLens 2\"); }\n}\ninline bool hl2_wait(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done) {\n        hl2_busy = false;\n        if (hl2_command == 0x01) {\n            for (uint8_t i = 0; i < hl2_saved; i++) hl2_results[i] = hl2_pending[i];\n            hl2_count = hl2_saved; hl2_detected = hl2_total;\n        } else {\n            // Changing the algorithm or what it learned invalidates the cached results.\n            hl2_count = 0; hl2_detected = 0;\n            if (hl2_command == 0x0A && !hl2_ok) rb_fail(block, \"La HuskyLens 2 no pudo cambiar de algoritmo\");\n        }\n        return true;\n    }\n    uint32_t timeout = hl2_command == 0x01 ? 500 : hl2_command == 0x0A ? 5000 : 2000;\n    if (uint32_t(millis() - hl2_started) >= timeout) {\n        hl2_busy = false; rb_fail(block, \"No responde la HuskyLens 2: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void hl2_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[10] = {0};\n    data[0] = uint8_t(atoi(algorithm.c_str()));\n    hl2_algo = data[0];\n    hl2_request(0x0A, 0, data, 10, block);\n}\ninline void hl2_update(const char* block) {\n    hl2_request(0x01, hl2_algo, nullptr, 0, block);\n}\ninline uint8_t hl2_kind(const String& kind) {\n    return kind[0] == 'a' ? 0x1D : 0x1C;\n}\ninline bool hl2_integer(float value, uint16_t minimum, uint16_t maximum, const char* block) {\n    if (!isfinite(value) || value < minimum || value > maximum || value != floorf(value)) {\n        rb_fail(block, \"HuskyLens 2: número o ID fuera de rango, debe ser entero\"); return false;\n    }\n    return true;\n}\ninline float hl2_field(const Hl2Result& result, const String& prop) {\n    return prop[0] == '4' ? float(result.id) : float(result.value[prop[0] - '0']);\n}\ninline int hl2_closest(uint8_t kind) {\n    int closest = -1; float distance = 0;\n    for (uint8_t i = 0; i < hl2_count; i++) {\n        const Hl2Result& result = hl2_results[i];\n        if (result.kind != kind) continue;\n        float dx = result.value[0] - 320.0f, dy = result.value[1] - 240.0f, squared = dx * dx + dy * dy;\n        if (closest < 0 || squared < distance) { closest = i; distance = squared; }\n    }\n    return closest;\n}\ninline int hl2_find_id(float id, const char* block) {\n    if (!hl2_available(block) || !hl2_integer(id, 0, 255, block)) return -1;\n    for (uint8_t i = 0; i < hl2_count; i++)\n        if (id == 0 ? hl2_results[i].id > 0 : hl2_results[i].id == uint8_t(id)) return i;\n    return -1;\n}\ninline float hl2_objects(const char* block) {\n    return hl2_available(block) ? hl2_detected : 0;\n}\ninline bool hl2_kind_seen(const String& kind, const char* block) {\n    return hl2_available(block) && hl2_closest(hl2_kind(kind)) >= 0;\n}\ninline float hl2_center(const String& prop, const String& kind, const char* block) {\n    if (!hl2_available(block)) return -1;\n    int index = hl2_closest(hl2_kind(kind));\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline bool hl2_id_seen(float id, const char* block) {\n    return hl2_find_id(id, block) >= 0;\n}\ninline float hl2_id_prop(float id, const String& prop, const char* block) {\n    int index = hl2_find_id(id, block);\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline String hl2_center_text(const String& what, const char* block) {\n    if (!hl2_available(block)) return String(\"\");\n    int index = hl2_closest(0x1C);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline String hl2_id_text(float id, const String& what, const char* block) {\n    int index = hl2_find_id(id, block);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline float hl2_learned_count(const char* block) {\n    return hl2_available(block) ? hl2_maxid : 0;\n}\ninline float hl2_last_learned(const char* block) {\n    return hl2_available(block) ? hl2_learned : 0;\n}\n"
+            ],
+            "setup": ["rb_wire_begin({I2C_BUS});"],
+            "statement": "hl2_i2c({I2C_BUS}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.huskylens2:algorithm",
+        "category": "org.robotblocks.huskylens2:huskylens2",
+        "label": {
+          "es": "cambiar algoritmo de HuskyLens 2 a %ALGORITHM",
+          "en": "switch HuskyLens 2 algorithm to %ALGORITHM"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "ALGORITHM",
+            "type": "string",
+            "default": "4",
+            "options": [
+              { "label": { "es": "reconocimiento facial", "en": "face recognition" }, "value": "1" },
+              { "label": { "es": "reconocimiento de objetos", "en": "object recognition" }, "value": "2" },
+              { "label": { "es": "seguimiento de objetos", "en": "object tracking" }, "value": "3" },
+              { "label": { "es": "reconocimiento de color", "en": "color recognition" }, "value": "4" },
+              { "label": { "es": "clasificación de objetos", "en": "object classification" }, "value": "5" },
+              { "label": { "es": "clasificación autoaprendida", "en": "self-learning classification" }, "value": "6" },
+              { "label": { "es": "reconocimiento de manos", "en": "hand recognition" }, "value": "8" },
+              { "label": { "es": "reconocimiento de pose", "en": "pose recognition" }, "value": "9" },
+              { "label": { "es": "reconocimiento de placas", "en": "license plate recognition" }, "value": "10" },
+              { "label": { "es": "reconocimiento de texto (OCR)", "en": "text recognition (OCR)" }, "value": "11" },
+              { "label": { "es": "seguimiento de líneas", "en": "line tracking" }, "value": "12" },
+              { "label": { "es": "reconocimiento de emociones", "en": "emotion recognition" }, "value": "13" },
+              { "label": { "es": "reconocimiento de etiquetas", "en": "tag recognition" }, "value": "16" },
+              { "label": { "es": "código de barras", "en": "barcode" }, "value": "17" },
+              { "label": { "es": "código QR", "en": "QR code" }, "value": "18" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.huskylens2:algorithm",
+        "tooltip": {
+          "es": "Abre esa aplicación en la cámara (puede tardar unos segundos en cargar el modelo). Hazlo al iniciar, antes de «actualizar».",
+          "en": "Opens that app on the camera (loading the model can take a few seconds). Do it at start, before “update”."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "arduino": {
+            "waitUntil": "hl2_wait({BLOCK_ID})",
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "// HUSKYLENS 2 (DFRobot SEN0638): frames 55 AA CMD ALGO LEN DATA SUM; no external camera library.\nstruct Hl2Result { int16_t value[4]; uint8_t id; uint8_t kind; char name[13]; char content[25]; };\nstatic Hl2Result hl2_results[6], hl2_pending[6];\nstatic TwoWire* hl2_wire = nullptr;\nstatic HardwareSerial* hl2_serial = nullptr;\nstatic uint8_t hl2_rx[48], hl2_cmd = 0, hl2_len = 0, hl2_sum = 0;\nstatic uint16_t hl2_index = 0;\nstatic uint8_t hl2_count = 0, hl2_saved = 0, hl2_algo = 0, hl2_learned = 0, hl2_command = 0;\nstatic int16_t hl2_detected = 0, hl2_total = 0, hl2_remaining = 0, hl2_maxid = 0;\nstatic uint32_t hl2_started = 0, hl2_sent = 0;\nstatic bool hl2_ready = false, hl2_busy = false, hl2_info = false, hl2_done = false, hl2_ok = false;\ninline int16_t hl2_i16(const uint8_t* data) {\n    return int16_t(uint16_t(data[0]) | (uint16_t(data[1]) << 8));\n}\ninline bool hl2_send(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length) {\n    if (length > 40) return false;\n    uint8_t frame[46];\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = command; frame[3] = algo; frame[4] = length;\n    for (uint8_t i = 0; i < length; i++) frame[5 + i] = data[i];\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length + 5; i++) sum += frame[i];\n    frame[length + 5] = sum;\n    uint8_t size = length + 6;\n    if (hl2_wire) {\n        // In pieces of at most 32 bytes: the Wire buffer of UNO and Nano.\n        hl2_wire->setClock(100000);\n        for (uint8_t start = 0; start < size; start += 32) {\n            hl2_wire->beginTransmission(uint8_t(0x50));\n            for (uint8_t i = start; i < size && i < start + 32; i++) hl2_wire->write(frame[i]);\n            if (hl2_wire->endTransmission() != 0) return false;\n        }\n        return true;\n    }\n    if (hl2_serial) {\n        for (uint8_t i = 0; i < size; i++) if (hl2_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\n// Copies a length-prefixed text of the frame (name or content) if it was kept in hl2_rx.\ninline uint16_t hl2_text(uint16_t at, char* target, uint8_t room) {\n    target[0] = 0;\n    if (at >= hl2_len || at >= sizeof(hl2_rx)) return at;\n    uint8_t length = hl2_rx[at], copied = 0;\n    for (uint8_t i = 0; i < length && copied + 1 < room; i++) {\n        uint16_t index = at + 1 + i;\n        if (index >= sizeof(hl2_rx) || index >= hl2_len) break;\n        target[copied++] = char(hl2_rx[index]);\n    }\n    target[copied] = 0;\n    return at + 1 + length;\n}\ninline void hl2_accept() {\n    if (hl2_cmd == 0x1A && hl2_command != 0x01) {\n        hl2_ok = hl2_len >= 4 && hl2_rx[1] == 0;\n        if (hl2_command == 0x22) hl2_learned = hl2_ok ? uint8_t(hl2_i16(hl2_rx + 2)) : 0;\n        hl2_done = true;\n        return;\n    }\n    if (hl2_command != 0x01 || hl2_len < 10) return;\n    if (hl2_cmd == 0x1B && !hl2_info) {\n        hl2_maxid = hl2_rx[0];\n        hl2_total = hl2_i16(hl2_rx + 2);\n        hl2_remaining = hl2_total < 0 ? 0 : hl2_total;\n        hl2_info = true; hl2_saved = 0; hl2_done = hl2_remaining == 0;\n        return;\n    }\n    if ((hl2_cmd == 0x1C || hl2_cmd == 0x1D) && hl2_info && hl2_remaining > 0) {\n        if (hl2_saved < 6) {\n            Hl2Result& result = hl2_pending[hl2_saved++];\n            result.kind = hl2_cmd; result.id = hl2_rx[0];\n            for (uint8_t i = 0; i < 4; i++) result.value[i] = hl2_i16(hl2_rx + 2 + 2 * i);\n            result.name[0] = 0; result.content[0] = 0;\n            if (hl2_cmd == 0x1C && hl2_len > 10) hl2_text(hl2_text(10, result.name, sizeof(result.name)), result.content, sizeof(result.content));\n        }\n        hl2_done = --hl2_remaining == 0;\n    }\n}\n// Byte by byte: keeps the first 48 data bytes and checks the sum of the whole frame.\ninline void hl2_byte(uint8_t value) {\n    if (hl2_index == 0) {\n        if (value == 0x55) { hl2_sum = value; hl2_index = 1; }\n        return;\n    }\n    if (hl2_index == 1) {\n        if (value == 0xAA) { hl2_sum += value; hl2_index = 2; }\n        else hl2_index = value == 0x55 ? 1 : 0;\n        return;\n    }\n    if (hl2_index == 2) { hl2_cmd = value; hl2_sum += value; hl2_index = 3; return; }\n    if (hl2_index == 3) { hl2_sum += value; hl2_index = 4; return; }\n    if (hl2_index == 4) { hl2_len = value; hl2_sum += value; hl2_index = 5; return; }\n    uint16_t at = hl2_index - 5;\n    if (at < hl2_len) {\n        if (at < sizeof(hl2_rx)) hl2_rx[at] = value;\n        hl2_sum += value; hl2_index++;\n        return;\n    }\n    hl2_index = 0;\n    if (value == hl2_sum) hl2_accept(); // A corrupted frame is dropped; the request has a deadline.\n}\ninline void hl2_poll() {\n    if (hl2_wire) {\n        hl2_wire->setClock(100000);\n        uint8_t received = hl2_wire->requestFrom(uint8_t(0x50), uint8_t(16));\n        for (uint8_t i = 0; i < received && hl2_wire->available(); i++) {\n            int value = hl2_wire->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    } else if (hl2_serial) {\n        for (uint8_t i = 0; i < 64 && hl2_serial->available(); i++) {\n            int value = hl2_serial->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    }\n}\ninline void hl2_reset() {\n    hl2_ready = false; hl2_count = 0; hl2_detected = 0; hl2_busy = true; hl2_command = 0x00;\n    hl2_started = millis(); hl2_sent = millis() - 200; hl2_index = 0; hl2_done = false; hl2_ok = false;\n}\ninline void hl2_i2c(TwoWire& bus, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = &bus; hl2_serial = nullptr; hl2_reset();\n}\ninline void hl2_uart(HardwareSerial& serial, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = nullptr; hl2_serial = &serial; hl2_reset();\n}\n// Handshake (KNOCK) every 200 ms until the camera answers, for up to 5 s while it boots.\ninline bool hl2_start(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done && hl2_ok) { hl2_ready = true; hl2_busy = false; return true; }\n    if (uint32_t(millis() - hl2_started) >= 5000) {\n        rb_fail(block, hl2_wire ? \"No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo\" : \"No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo\");\n        hl2_busy = false; return true;\n    }\n    if (uint32_t(millis() - hl2_sent) >= 200) {\n        uint8_t data[10] = {0};\n        hl2_index = 0; hl2_done = false; hl2_send(0x00, 0, data, 10); hl2_sent = millis();\n    }\n    return false;\n}\ninline bool hl2_available(const char* block) {\n    if (!hl2_ready) { rb_fail(block, \"Configura la HuskyLens 2 al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void hl2_request(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length, const char* block) {\n    if (!hl2_available(block)) return;\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_busy = true; hl2_command = command; hl2_index = 0; hl2_done = false; hl2_info = false; hl2_ok = false;\n    hl2_started = millis();\n    if (!hl2_send(command, algo, data, length)) { hl2_busy = false; rb_fail(block, \"No se pudo enviar la trama a la HuskyLens 2\"); }\n}\ninline bool hl2_wait(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done) {\n        hl2_busy = false;\n        if (hl2_command == 0x01) {\n            for (uint8_t i = 0; i < hl2_saved; i++) hl2_results[i] = hl2_pending[i];\n            hl2_count = hl2_saved; hl2_detected = hl2_total;\n        } else {\n            // Changing the algorithm or what it learned invalidates the cached results.\n            hl2_count = 0; hl2_detected = 0;\n            if (hl2_command == 0x0A && !hl2_ok) rb_fail(block, \"La HuskyLens 2 no pudo cambiar de algoritmo\");\n        }\n        return true;\n    }\n    uint32_t timeout = hl2_command == 0x01 ? 500 : hl2_command == 0x0A ? 5000 : 2000;\n    if (uint32_t(millis() - hl2_started) >= timeout) {\n        hl2_busy = false; rb_fail(block, \"No responde la HuskyLens 2: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void hl2_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[10] = {0};\n    data[0] = uint8_t(atoi(algorithm.c_str()));\n    hl2_algo = data[0];\n    hl2_request(0x0A, 0, data, 10, block);\n}\ninline void hl2_update(const char* block) {\n    hl2_request(0x01, hl2_algo, nullptr, 0, block);\n}\ninline uint8_t hl2_kind(const String& kind) {\n    return kind[0] == 'a' ? 0x1D : 0x1C;\n}\ninline bool hl2_integer(float value, uint16_t minimum, uint16_t maximum, const char* block) {\n    if (!isfinite(value) || value < minimum || value > maximum || value != floorf(value)) {\n        rb_fail(block, \"HuskyLens 2: número o ID fuera de rango, debe ser entero\"); return false;\n    }\n    return true;\n}\ninline float hl2_field(const Hl2Result& result, const String& prop) {\n    return prop[0] == '4' ? float(result.id) : float(result.value[prop[0] - '0']);\n}\ninline int hl2_closest(uint8_t kind) {\n    int closest = -1; float distance = 0;\n    for (uint8_t i = 0; i < hl2_count; i++) {\n        const Hl2Result& result = hl2_results[i];\n        if (result.kind != kind) continue;\n        float dx = result.value[0] - 320.0f, dy = result.value[1] - 240.0f, squared = dx * dx + dy * dy;\n        if (closest < 0 || squared < distance) { closest = i; distance = squared; }\n    }\n    return closest;\n}\ninline int hl2_find_id(float id, const char* block) {\n    if (!hl2_available(block) || !hl2_integer(id, 0, 255, block)) return -1;\n    for (uint8_t i = 0; i < hl2_count; i++)\n        if (id == 0 ? hl2_results[i].id > 0 : hl2_results[i].id == uint8_t(id)) return i;\n    return -1;\n}\ninline float hl2_objects(const char* block) {\n    return hl2_available(block) ? hl2_detected : 0;\n}\ninline bool hl2_kind_seen(const String& kind, const char* block) {\n    return hl2_available(block) && hl2_closest(hl2_kind(kind)) >= 0;\n}\ninline float hl2_center(const String& prop, const String& kind, const char* block) {\n    if (!hl2_available(block)) return -1;\n    int index = hl2_closest(hl2_kind(kind));\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline bool hl2_id_seen(float id, const char* block) {\n    return hl2_find_id(id, block) >= 0;\n}\ninline float hl2_id_prop(float id, const String& prop, const char* block) {\n    int index = hl2_find_id(id, block);\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline String hl2_center_text(const String& what, const char* block) {\n    if (!hl2_available(block)) return String(\"\");\n    int index = hl2_closest(0x1C);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline String hl2_id_text(float id, const String& what, const char* block) {\n    int index = hl2_find_id(id, block);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline float hl2_learned_count(const char* block) {\n    return hl2_available(block) ? hl2_maxid : 0;\n}\ninline float hl2_last_learned(const char* block) {\n    return hl2_available(block) ? hl2_learned : 0;\n}\n"
+            ],
+            "statement": "hl2_algorithm({ALGORITHM}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.huskylens2:update",
+        "category": "org.robotblocks.huskylens2:huskylens2",
+        "label": { "es": "actualizar HuskyLens 2", "en": "update HuskyLens 2" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.huskylens2:update",
+        "tooltip": {
+          "es": "Pide a la cámara lo que ve ahora (hasta 6 resultados). Los demás bloques leen esta foto hasta la siguiente actualización. Úsalo una vez por vuelta.",
+          "en": "Asks the camera what it sees now (up to 6 results). The other blocks read this snapshot until the next update. Use it once per loop."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "arduino": {
+            "waitUntil": "hl2_wait({BLOCK_ID})",
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "// HUSKYLENS 2 (DFRobot SEN0638): frames 55 AA CMD ALGO LEN DATA SUM; no external camera library.\nstruct Hl2Result { int16_t value[4]; uint8_t id; uint8_t kind; char name[13]; char content[25]; };\nstatic Hl2Result hl2_results[6], hl2_pending[6];\nstatic TwoWire* hl2_wire = nullptr;\nstatic HardwareSerial* hl2_serial = nullptr;\nstatic uint8_t hl2_rx[48], hl2_cmd = 0, hl2_len = 0, hl2_sum = 0;\nstatic uint16_t hl2_index = 0;\nstatic uint8_t hl2_count = 0, hl2_saved = 0, hl2_algo = 0, hl2_learned = 0, hl2_command = 0;\nstatic int16_t hl2_detected = 0, hl2_total = 0, hl2_remaining = 0, hl2_maxid = 0;\nstatic uint32_t hl2_started = 0, hl2_sent = 0;\nstatic bool hl2_ready = false, hl2_busy = false, hl2_info = false, hl2_done = false, hl2_ok = false;\ninline int16_t hl2_i16(const uint8_t* data) {\n    return int16_t(uint16_t(data[0]) | (uint16_t(data[1]) << 8));\n}\ninline bool hl2_send(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length) {\n    if (length > 40) return false;\n    uint8_t frame[46];\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = command; frame[3] = algo; frame[4] = length;\n    for (uint8_t i = 0; i < length; i++) frame[5 + i] = data[i];\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length + 5; i++) sum += frame[i];\n    frame[length + 5] = sum;\n    uint8_t size = length + 6;\n    if (hl2_wire) {\n        // In pieces of at most 32 bytes: the Wire buffer of UNO and Nano.\n        hl2_wire->setClock(100000);\n        for (uint8_t start = 0; start < size; start += 32) {\n            hl2_wire->beginTransmission(uint8_t(0x50));\n            for (uint8_t i = start; i < size && i < start + 32; i++) hl2_wire->write(frame[i]);\n            if (hl2_wire->endTransmission() != 0) return false;\n        }\n        return true;\n    }\n    if (hl2_serial) {\n        for (uint8_t i = 0; i < size; i++) if (hl2_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\n// Copies a length-prefixed text of the frame (name or content) if it was kept in hl2_rx.\ninline uint16_t hl2_text(uint16_t at, char* target, uint8_t room) {\n    target[0] = 0;\n    if (at >= hl2_len || at >= sizeof(hl2_rx)) return at;\n    uint8_t length = hl2_rx[at], copied = 0;\n    for (uint8_t i = 0; i < length && copied + 1 < room; i++) {\n        uint16_t index = at + 1 + i;\n        if (index >= sizeof(hl2_rx) || index >= hl2_len) break;\n        target[copied++] = char(hl2_rx[index]);\n    }\n    target[copied] = 0;\n    return at + 1 + length;\n}\ninline void hl2_accept() {\n    if (hl2_cmd == 0x1A && hl2_command != 0x01) {\n        hl2_ok = hl2_len >= 4 && hl2_rx[1] == 0;\n        if (hl2_command == 0x22) hl2_learned = hl2_ok ? uint8_t(hl2_i16(hl2_rx + 2)) : 0;\n        hl2_done = true;\n        return;\n    }\n    if (hl2_command != 0x01 || hl2_len < 10) return;\n    if (hl2_cmd == 0x1B && !hl2_info) {\n        hl2_maxid = hl2_rx[0];\n        hl2_total = hl2_i16(hl2_rx + 2);\n        hl2_remaining = hl2_total < 0 ? 0 : hl2_total;\n        hl2_info = true; hl2_saved = 0; hl2_done = hl2_remaining == 0;\n        return;\n    }\n    if ((hl2_cmd == 0x1C || hl2_cmd == 0x1D) && hl2_info && hl2_remaining > 0) {\n        if (hl2_saved < 6) {\n            Hl2Result& result = hl2_pending[hl2_saved++];\n            result.kind = hl2_cmd; result.id = hl2_rx[0];\n            for (uint8_t i = 0; i < 4; i++) result.value[i] = hl2_i16(hl2_rx + 2 + 2 * i);\n            result.name[0] = 0; result.content[0] = 0;\n            if (hl2_cmd == 0x1C && hl2_len > 10) hl2_text(hl2_text(10, result.name, sizeof(result.name)), result.content, sizeof(result.content));\n        }\n        hl2_done = --hl2_remaining == 0;\n    }\n}\n// Byte by byte: keeps the first 48 data bytes and checks the sum of the whole frame.\ninline void hl2_byte(uint8_t value) {\n    if (hl2_index == 0) {\n        if (value == 0x55) { hl2_sum = value; hl2_index = 1; }\n        return;\n    }\n    if (hl2_index == 1) {\n        if (value == 0xAA) { hl2_sum += value; hl2_index = 2; }\n        else hl2_index = value == 0x55 ? 1 : 0;\n        return;\n    }\n    if (hl2_index == 2) { hl2_cmd = value; hl2_sum += value; hl2_index = 3; return; }\n    if (hl2_index == 3) { hl2_sum += value; hl2_index = 4; return; }\n    if (hl2_index == 4) { hl2_len = value; hl2_sum += value; hl2_index = 5; return; }\n    uint16_t at = hl2_index - 5;\n    if (at < hl2_len) {\n        if (at < sizeof(hl2_rx)) hl2_rx[at] = value;\n        hl2_sum += value; hl2_index++;\n        return;\n    }\n    hl2_index = 0;\n    if (value == hl2_sum) hl2_accept(); // A corrupted frame is dropped; the request has a deadline.\n}\ninline void hl2_poll() {\n    if (hl2_wire) {\n        hl2_wire->setClock(100000);\n        uint8_t received = hl2_wire->requestFrom(uint8_t(0x50), uint8_t(16));\n        for (uint8_t i = 0; i < received && hl2_wire->available(); i++) {\n            int value = hl2_wire->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    } else if (hl2_serial) {\n        for (uint8_t i = 0; i < 64 && hl2_serial->available(); i++) {\n            int value = hl2_serial->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    }\n}\ninline void hl2_reset() {\n    hl2_ready = false; hl2_count = 0; hl2_detected = 0; hl2_busy = true; hl2_command = 0x00;\n    hl2_started = millis(); hl2_sent = millis() - 200; hl2_index = 0; hl2_done = false; hl2_ok = false;\n}\ninline void hl2_i2c(TwoWire& bus, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = &bus; hl2_serial = nullptr; hl2_reset();\n}\ninline void hl2_uart(HardwareSerial& serial, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = nullptr; hl2_serial = &serial; hl2_reset();\n}\n// Handshake (KNOCK) every 200 ms until the camera answers, for up to 5 s while it boots.\ninline bool hl2_start(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done && hl2_ok) { hl2_ready = true; hl2_busy = false; return true; }\n    if (uint32_t(millis() - hl2_started) >= 5000) {\n        rb_fail(block, hl2_wire ? \"No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo\" : \"No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo\");\n        hl2_busy = false; return true;\n    }\n    if (uint32_t(millis() - hl2_sent) >= 200) {\n        uint8_t data[10] = {0};\n        hl2_index = 0; hl2_done = false; hl2_send(0x00, 0, data, 10); hl2_sent = millis();\n    }\n    return false;\n}\ninline bool hl2_available(const char* block) {\n    if (!hl2_ready) { rb_fail(block, \"Configura la HuskyLens 2 al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void hl2_request(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length, const char* block) {\n    if (!hl2_available(block)) return;\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_busy = true; hl2_command = command; hl2_index = 0; hl2_done = false; hl2_info = false; hl2_ok = false;\n    hl2_started = millis();\n    if (!hl2_send(command, algo, data, length)) { hl2_busy = false; rb_fail(block, \"No se pudo enviar la trama a la HuskyLens 2\"); }\n}\ninline bool hl2_wait(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done) {\n        hl2_busy = false;\n        if (hl2_command == 0x01) {\n            for (uint8_t i = 0; i < hl2_saved; i++) hl2_results[i] = hl2_pending[i];\n            hl2_count = hl2_saved; hl2_detected = hl2_total;\n        } else {\n            // Changing the algorithm or what it learned invalidates the cached results.\n            hl2_count = 0; hl2_detected = 0;\n            if (hl2_command == 0x0A && !hl2_ok) rb_fail(block, \"La HuskyLens 2 no pudo cambiar de algoritmo\");\n        }\n        return true;\n    }\n    uint32_t timeout = hl2_command == 0x01 ? 500 : hl2_command == 0x0A ? 5000 : 2000;\n    if (uint32_t(millis() - hl2_started) >= timeout) {\n        hl2_busy = false; rb_fail(block, \"No responde la HuskyLens 2: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void hl2_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[10] = {0};\n    data[0] = uint8_t(atoi(algorithm.c_str()));\n    hl2_algo = data[0];\n    hl2_request(0x0A, 0, data, 10, block);\n}\ninline void hl2_update(const char* block) {\n    hl2_request(0x01, hl2_algo, nullptr, 0, block);\n}\ninline uint8_t hl2_kind(const String& kind) {\n    return kind[0] == 'a' ? 0x1D : 0x1C;\n}\ninline bool hl2_integer(float value, uint16_t minimum, uint16_t maximum, const char* block) {\n    if (!isfinite(value) || value < minimum || value > maximum || value != floorf(value)) {\n        rb_fail(block, \"HuskyLens 2: número o ID fuera de rango, debe ser entero\"); return false;\n    }\n    return true;\n}\ninline float hl2_field(const Hl2Result& result, const String& prop) {\n    return prop[0] == '4' ? float(result.id) : float(result.value[prop[0] - '0']);\n}\ninline int hl2_closest(uint8_t kind) {\n    int closest = -1; float distance = 0;\n    for (uint8_t i = 0; i < hl2_count; i++) {\n        const Hl2Result& result = hl2_results[i];\n        if (result.kind != kind) continue;\n        float dx = result.value[0] - 320.0f, dy = result.value[1] - 240.0f, squared = dx * dx + dy * dy;\n        if (closest < 0 || squared < distance) { closest = i; distance = squared; }\n    }\n    return closest;\n}\ninline int hl2_find_id(float id, const char* block) {\n    if (!hl2_available(block) || !hl2_integer(id, 0, 255, block)) return -1;\n    for (uint8_t i = 0; i < hl2_count; i++)\n        if (id == 0 ? hl2_results[i].id > 0 : hl2_results[i].id == uint8_t(id)) return i;\n    return -1;\n}\ninline float hl2_objects(const char* block) {\n    return hl2_available(block) ? hl2_detected : 0;\n}\ninline bool hl2_kind_seen(const String& kind, const char* block) {\n    return hl2_available(block) && hl2_closest(hl2_kind(kind)) >= 0;\n}\ninline float hl2_center(const String& prop, const String& kind, const char* block) {\n    if (!hl2_available(block)) return -1;\n    int index = hl2_closest(hl2_kind(kind));\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline bool hl2_id_seen(float id, const char* block) {\n    return hl2_find_id(id, block) >= 0;\n}\ninline float hl2_id_prop(float id, const String& prop, const char* block) {\n    int index = hl2_find_id(id, block);\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline String hl2_center_text(const String& what, const char* block) {\n    if (!hl2_available(block)) return String(\"\");\n    int index = hl2_closest(0x1C);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline String hl2_id_text(float id, const String& what, const char* block) {\n    int index = hl2_find_id(id, block);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline float hl2_learned_count(const char* block) {\n    return hl2_available(block) ? hl2_maxid : 0;\n}\ninline float hl2_last_learned(const char* block) {\n    return hl2_available(block) ? hl2_learned : 0;\n}\n"
+            ],
+            "statement": "hl2_update({BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.huskylens2:kind-seen",
+        "category": "org.robotblocks.huskylens2:huskylens2",
+        "label": { "es": "¿hay %KIND en la HuskyLens 2?", "en": "is there a %KIND on HuskyLens 2?" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [
+          {
+            "name": "KIND",
+            "type": "string",
+            "default": "b",
+            "options": [
+              { "label": { "es": "cuadro", "en": "frame" }, "value": "b" },
+              { "label": { "es": "flecha", "en": "arrow" }, "value": "a" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.huskylens2:kind-seen",
+        "tooltip": {
+          "es": "Cuadros: caras, objetos, colores, etiquetas, códigos. Flechas: seguimiento de líneas.",
+          "en": "Frames: faces, objects, colors, tags, codes. Arrows: line tracking."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "arduino": {
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "// HUSKYLENS 2 (DFRobot SEN0638): frames 55 AA CMD ALGO LEN DATA SUM; no external camera library.\nstruct Hl2Result { int16_t value[4]; uint8_t id; uint8_t kind; char name[13]; char content[25]; };\nstatic Hl2Result hl2_results[6], hl2_pending[6];\nstatic TwoWire* hl2_wire = nullptr;\nstatic HardwareSerial* hl2_serial = nullptr;\nstatic uint8_t hl2_rx[48], hl2_cmd = 0, hl2_len = 0, hl2_sum = 0;\nstatic uint16_t hl2_index = 0;\nstatic uint8_t hl2_count = 0, hl2_saved = 0, hl2_algo = 0, hl2_learned = 0, hl2_command = 0;\nstatic int16_t hl2_detected = 0, hl2_total = 0, hl2_remaining = 0, hl2_maxid = 0;\nstatic uint32_t hl2_started = 0, hl2_sent = 0;\nstatic bool hl2_ready = false, hl2_busy = false, hl2_info = false, hl2_done = false, hl2_ok = false;\ninline int16_t hl2_i16(const uint8_t* data) {\n    return int16_t(uint16_t(data[0]) | (uint16_t(data[1]) << 8));\n}\ninline bool hl2_send(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length) {\n    if (length > 40) return false;\n    uint8_t frame[46];\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = command; frame[3] = algo; frame[4] = length;\n    for (uint8_t i = 0; i < length; i++) frame[5 + i] = data[i];\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length + 5; i++) sum += frame[i];\n    frame[length + 5] = sum;\n    uint8_t size = length + 6;\n    if (hl2_wire) {\n        // In pieces of at most 32 bytes: the Wire buffer of UNO and Nano.\n        hl2_wire->setClock(100000);\n        for (uint8_t start = 0; start < size; start += 32) {\n            hl2_wire->beginTransmission(uint8_t(0x50));\n            for (uint8_t i = start; i < size && i < start + 32; i++) hl2_wire->write(frame[i]);\n            if (hl2_wire->endTransmission() != 0) return false;\n        }\n        return true;\n    }\n    if (hl2_serial) {\n        for (uint8_t i = 0; i < size; i++) if (hl2_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\n// Copies a length-prefixed text of the frame (name or content) if it was kept in hl2_rx.\ninline uint16_t hl2_text(uint16_t at, char* target, uint8_t room) {\n    target[0] = 0;\n    if (at >= hl2_len || at >= sizeof(hl2_rx)) return at;\n    uint8_t length = hl2_rx[at], copied = 0;\n    for (uint8_t i = 0; i < length && copied + 1 < room; i++) {\n        uint16_t index = at + 1 + i;\n        if (index >= sizeof(hl2_rx) || index >= hl2_len) break;\n        target[copied++] = char(hl2_rx[index]);\n    }\n    target[copied] = 0;\n    return at + 1 + length;\n}\ninline void hl2_accept() {\n    if (hl2_cmd == 0x1A && hl2_command != 0x01) {\n        hl2_ok = hl2_len >= 4 && hl2_rx[1] == 0;\n        if (hl2_command == 0x22) hl2_learned = hl2_ok ? uint8_t(hl2_i16(hl2_rx + 2)) : 0;\n        hl2_done = true;\n        return;\n    }\n    if (hl2_command != 0x01 || hl2_len < 10) return;\n    if (hl2_cmd == 0x1B && !hl2_info) {\n        hl2_maxid = hl2_rx[0];\n        hl2_total = hl2_i16(hl2_rx + 2);\n        hl2_remaining = hl2_total < 0 ? 0 : hl2_total;\n        hl2_info = true; hl2_saved = 0; hl2_done = hl2_remaining == 0;\n        return;\n    }\n    if ((hl2_cmd == 0x1C || hl2_cmd == 0x1D) && hl2_info && hl2_remaining > 0) {\n        if (hl2_saved < 6) {\n            Hl2Result& result = hl2_pending[hl2_saved++];\n            result.kind = hl2_cmd; result.id = hl2_rx[0];\n            for (uint8_t i = 0; i < 4; i++) result.value[i] = hl2_i16(hl2_rx + 2 + 2 * i);\n            result.name[0] = 0; result.content[0] = 0;\n            if (hl2_cmd == 0x1C && hl2_len > 10) hl2_text(hl2_text(10, result.name, sizeof(result.name)), result.content, sizeof(result.content));\n        }\n        hl2_done = --hl2_remaining == 0;\n    }\n}\n// Byte by byte: keeps the first 48 data bytes and checks the sum of the whole frame.\ninline void hl2_byte(uint8_t value) {\n    if (hl2_index == 0) {\n        if (value == 0x55) { hl2_sum = value; hl2_index = 1; }\n        return;\n    }\n    if (hl2_index == 1) {\n        if (value == 0xAA) { hl2_sum += value; hl2_index = 2; }\n        else hl2_index = value == 0x55 ? 1 : 0;\n        return;\n    }\n    if (hl2_index == 2) { hl2_cmd = value; hl2_sum += value; hl2_index = 3; return; }\n    if (hl2_index == 3) { hl2_sum += value; hl2_index = 4; return; }\n    if (hl2_index == 4) { hl2_len = value; hl2_sum += value; hl2_index = 5; return; }\n    uint16_t at = hl2_index - 5;\n    if (at < hl2_len) {\n        if (at < sizeof(hl2_rx)) hl2_rx[at] = value;\n        hl2_sum += value; hl2_index++;\n        return;\n    }\n    hl2_index = 0;\n    if (value == hl2_sum) hl2_accept(); // A corrupted frame is dropped; the request has a deadline.\n}\ninline void hl2_poll() {\n    if (hl2_wire) {\n        hl2_wire->setClock(100000);\n        uint8_t received = hl2_wire->requestFrom(uint8_t(0x50), uint8_t(16));\n        for (uint8_t i = 0; i < received && hl2_wire->available(); i++) {\n            int value = hl2_wire->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    } else if (hl2_serial) {\n        for (uint8_t i = 0; i < 64 && hl2_serial->available(); i++) {\n            int value = hl2_serial->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    }\n}\ninline void hl2_reset() {\n    hl2_ready = false; hl2_count = 0; hl2_detected = 0; hl2_busy = true; hl2_command = 0x00;\n    hl2_started = millis(); hl2_sent = millis() - 200; hl2_index = 0; hl2_done = false; hl2_ok = false;\n}\ninline void hl2_i2c(TwoWire& bus, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = &bus; hl2_serial = nullptr; hl2_reset();\n}\ninline void hl2_uart(HardwareSerial& serial, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = nullptr; hl2_serial = &serial; hl2_reset();\n}\n// Handshake (KNOCK) every 200 ms until the camera answers, for up to 5 s while it boots.\ninline bool hl2_start(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done && hl2_ok) { hl2_ready = true; hl2_busy = false; return true; }\n    if (uint32_t(millis() - hl2_started) >= 5000) {\n        rb_fail(block, hl2_wire ? \"No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo\" : \"No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo\");\n        hl2_busy = false; return true;\n    }\n    if (uint32_t(millis() - hl2_sent) >= 200) {\n        uint8_t data[10] = {0};\n        hl2_index = 0; hl2_done = false; hl2_send(0x00, 0, data, 10); hl2_sent = millis();\n    }\n    return false;\n}\ninline bool hl2_available(const char* block) {\n    if (!hl2_ready) { rb_fail(block, \"Configura la HuskyLens 2 al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void hl2_request(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length, const char* block) {\n    if (!hl2_available(block)) return;\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_busy = true; hl2_command = command; hl2_index = 0; hl2_done = false; hl2_info = false; hl2_ok = false;\n    hl2_started = millis();\n    if (!hl2_send(command, algo, data, length)) { hl2_busy = false; rb_fail(block, \"No se pudo enviar la trama a la HuskyLens 2\"); }\n}\ninline bool hl2_wait(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done) {\n        hl2_busy = false;\n        if (hl2_command == 0x01) {\n            for (uint8_t i = 0; i < hl2_saved; i++) hl2_results[i] = hl2_pending[i];\n            hl2_count = hl2_saved; hl2_detected = hl2_total;\n        } else {\n            // Changing the algorithm or what it learned invalidates the cached results.\n            hl2_count = 0; hl2_detected = 0;\n            if (hl2_command == 0x0A && !hl2_ok) rb_fail(block, \"La HuskyLens 2 no pudo cambiar de algoritmo\");\n        }\n        return true;\n    }\n    uint32_t timeout = hl2_command == 0x01 ? 500 : hl2_command == 0x0A ? 5000 : 2000;\n    if (uint32_t(millis() - hl2_started) >= timeout) {\n        hl2_busy = false; rb_fail(block, \"No responde la HuskyLens 2: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void hl2_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[10] = {0};\n    data[0] = uint8_t(atoi(algorithm.c_str()));\n    hl2_algo = data[0];\n    hl2_request(0x0A, 0, data, 10, block);\n}\ninline void hl2_update(const char* block) {\n    hl2_request(0x01, hl2_algo, nullptr, 0, block);\n}\ninline uint8_t hl2_kind(const String& kind) {\n    return kind[0] == 'a' ? 0x1D : 0x1C;\n}\ninline bool hl2_integer(float value, uint16_t minimum, uint16_t maximum, const char* block) {\n    if (!isfinite(value) || value < minimum || value > maximum || value != floorf(value)) {\n        rb_fail(block, \"HuskyLens 2: número o ID fuera de rango, debe ser entero\"); return false;\n    }\n    return true;\n}\ninline float hl2_field(const Hl2Result& result, const String& prop) {\n    return prop[0] == '4' ? float(result.id) : float(result.value[prop[0] - '0']);\n}\ninline int hl2_closest(uint8_t kind) {\n    int closest = -1; float distance = 0;\n    for (uint8_t i = 0; i < hl2_count; i++) {\n        const Hl2Result& result = hl2_results[i];\n        if (result.kind != kind) continue;\n        float dx = result.value[0] - 320.0f, dy = result.value[1] - 240.0f, squared = dx * dx + dy * dy;\n        if (closest < 0 || squared < distance) { closest = i; distance = squared; }\n    }\n    return closest;\n}\ninline int hl2_find_id(float id, const char* block) {\n    if (!hl2_available(block) || !hl2_integer(id, 0, 255, block)) return -1;\n    for (uint8_t i = 0; i < hl2_count; i++)\n        if (id == 0 ? hl2_results[i].id > 0 : hl2_results[i].id == uint8_t(id)) return i;\n    return -1;\n}\ninline float hl2_objects(const char* block) {\n    return hl2_available(block) ? hl2_detected : 0;\n}\ninline bool hl2_kind_seen(const String& kind, const char* block) {\n    return hl2_available(block) && hl2_closest(hl2_kind(kind)) >= 0;\n}\ninline float hl2_center(const String& prop, const String& kind, const char* block) {\n    if (!hl2_available(block)) return -1;\n    int index = hl2_closest(hl2_kind(kind));\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline bool hl2_id_seen(float id, const char* block) {\n    return hl2_find_id(id, block) >= 0;\n}\ninline float hl2_id_prop(float id, const String& prop, const char* block) {\n    int index = hl2_find_id(id, block);\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline String hl2_center_text(const String& what, const char* block) {\n    if (!hl2_available(block)) return String(\"\");\n    int index = hl2_closest(0x1C);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline String hl2_id_text(float id, const String& what, const char* block) {\n    int index = hl2_find_id(id, block);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline float hl2_learned_count(const char* block) {\n    return hl2_available(block) ? hl2_maxid : 0;\n}\ninline float hl2_last_learned(const char* block) {\n    return hl2_available(block) ? hl2_learned : 0;\n}\n"
+            ],
+            "expression": "hl2_kind_seen({KIND}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.huskylens2:center",
+        "category": "org.robotblocks.huskylens2:huskylens2",
+        "label": { "es": "%PROP del %KIND más cercano al centro", "en": "%PROP of the %KIND closest to the center" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "PROP",
+            "type": "string",
+            "default": "4",
+            "options": [
+              { "label": { "es": "ID", "en": "ID" }, "value": "4" },
+              { "label": { "es": "X centro / X destino", "en": "X center / X target" }, "value": "0" },
+              { "label": { "es": "Y centro / Y destino", "en": "Y center / Y target" }, "value": "1" },
+              { "label": { "es": "ancho / ángulo", "en": "width / angle" }, "value": "2" },
+              { "label": { "es": "alto / largo", "en": "height / length" }, "value": "3" }
+            ]
+          },
+          {
+            "name": "KIND",
+            "type": "string",
+            "default": "b",
+            "options": [
+              { "label": { "es": "cuadro", "en": "frame" }, "value": "b" },
+              { "label": { "es": "flecha", "en": "arrow" }, "value": "a" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.huskylens2:center",
+        "tooltip": {
+          "es": "Pantalla de 640 × 480 (centro 320, 240). En flechas: punto destino, ángulo (−90 a 90, 0 = recto) y largo. −1 si no hay.",
+          "en": "640 × 480 screen (center 320, 240). For arrows: target point, angle (−90 to 90, 0 = straight) and length. −1 if none."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "arduino": {
+            "includes": ["#include <Wire.h>"],
+            "globals": [
+              "// HUSKYLENS 2 (DFRobot SEN0638): frames 55 AA CMD ALGO LEN DATA SUM; no external camera library.\nstruct Hl2Result { int16_t value[4]; uint8_t id; uint8_t kind; char name[13]; char content[25]; };\nstatic Hl2Result hl2_results[6], hl2_pending[6];\nstatic TwoWire* hl2_wire = nullptr;\nstatic HardwareSerial* hl2_serial = nullptr;\nstatic uint8_t hl2_rx[48], hl2_cmd = 0, hl2_len = 0, hl2_sum = 0;\nstatic uint16_t hl2_index = 0;\nstatic uint8_t hl2_count = 0, hl2_saved = 0, hl2_algo = 0, hl2_learned = 0, hl2_command = 0;\nstatic int16_t hl2_detected = 0, hl2_total = 0, hl2_remaining = 0, hl2_maxid = 0;\nstatic uint32_t hl2_started = 0, hl2_sent = 0;\nstatic bool hl2_ready = false, hl2_busy = false, hl2_info = false, hl2_done = false, hl2_ok = false;\ninline int16_t hl2_i16(const uint8_t* data) {\n    return int16_t(uint16_t(data[0]) | (uint16_t(data[1]) << 8));\n}\ninline bool hl2_send(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length) {\n    if (length > 40) return false;\n    uint8_t frame[46];\n    frame[0] = 0x55; frame[1] = 0xAA; frame[2] = command; frame[3] = algo; frame[4] = length;\n    for (uint8_t i = 0; i < length; i++) frame[5 + i] = data[i];\n    uint8_t sum = 0;\n    for (uint8_t i = 0; i < length + 5; i++) sum += frame[i];\n    frame[length + 5] = sum;\n    uint8_t size = length + 6;\n    if (hl2_wire) {\n        // In pieces of at most 32 bytes: the Wire buffer of UNO and Nano.\n        hl2_wire->setClock(100000);\n        for (uint8_t start = 0; start < size; start += 32) {\n            hl2_wire->beginTransmission(uint8_t(0x50));\n            for (uint8_t i = start; i < size && i < start + 32; i++) hl2_wire->write(frame[i]);\n            if (hl2_wire->endTransmission() != 0) return false;\n        }\n        return true;\n    }\n    if (hl2_serial) {\n        for (uint8_t i = 0; i < size; i++) if (hl2_serial->write(frame[i]) != 1) return false;\n        return true;\n    }\n    return false;\n}\n// Copies a length-prefixed text of the frame (name or content) if it was kept in hl2_rx.\ninline uint16_t hl2_text(uint16_t at, char* target, uint8_t room) {\n    target[0] = 0;\n    if (at >= hl2_len || at >= sizeof(hl2_rx)) return at;\n    uint8_t length = hl2_rx[at], copied = 0;\n    for (uint8_t i = 0; i < length && copied + 1 < room; i++) {\n        uint16_t index = at + 1 + i;\n        if (index >= sizeof(hl2_rx) || index >= hl2_len) break;\n        target[copied++] = char(hl2_rx[index]);\n    }\n    target[copied] = 0;\n    return at + 1 + length;\n}\ninline void hl2_accept() {\n    if (hl2_cmd == 0x1A && hl2_command != 0x01) {\n        hl2_ok = hl2_len >= 4 && hl2_rx[1] == 0;\n        if (hl2_command == 0x22) hl2_learned = hl2_ok ? uint8_t(hl2_i16(hl2_rx + 2)) : 0;\n        hl2_done = true;\n        return;\n    }\n    if (hl2_command != 0x01 || hl2_len < 10) return;\n    if (hl2_cmd == 0x1B && !hl2_info) {\n        hl2_maxid = hl2_rx[0];\n        hl2_total = hl2_i16(hl2_rx + 2);\n        hl2_remaining = hl2_total < 0 ? 0 : hl2_total;\n        hl2_info = true; hl2_saved = 0; hl2_done = hl2_remaining == 0;\n        return;\n    }\n    if ((hl2_cmd == 0x1C || hl2_cmd == 0x1D) && hl2_info && hl2_remaining > 0) {\n        if (hl2_saved < 6) {\n            Hl2Result& result = hl2_pending[hl2_saved++];\n            result.kind = hl2_cmd; result.id = hl2_rx[0];\n            for (uint8_t i = 0; i < 4; i++) result.value[i] = hl2_i16(hl2_rx + 2 + 2 * i);\n            result.name[0] = 0; result.content[0] = 0;\n            if (hl2_cmd == 0x1C && hl2_len > 10) hl2_text(hl2_text(10, result.name, sizeof(result.name)), result.content, sizeof(result.content));\n        }\n        hl2_done = --hl2_remaining == 0;\n    }\n}\n// Byte by byte: keeps the first 48 data bytes and checks the sum of the whole frame.\ninline void hl2_byte(uint8_t value) {\n    if (hl2_index == 0) {\n        if (value == 0x55) { hl2_sum = value; hl2_index = 1; }\n        return;\n    }\n    if (hl2_index == 1) {\n        if (value == 0xAA) { hl2_sum += value; hl2_index = 2; }\n        else hl2_index = value == 0x55 ? 1 : 0;\n        return;\n    }\n    if (hl2_index == 2) { hl2_cmd = value; hl2_sum += value; hl2_index = 3; return; }\n    if (hl2_index == 3) { hl2_sum += value; hl2_index = 4; return; }\n    if (hl2_index == 4) { hl2_len = value; hl2_sum += value; hl2_index = 5; return; }\n    uint16_t at = hl2_index - 5;\n    if (at < hl2_len) {\n        if (at < sizeof(hl2_rx)) hl2_rx[at] = value;\n        hl2_sum += value; hl2_index++;\n        return;\n    }\n    hl2_index = 0;\n    if (value == hl2_sum) hl2_accept(); // A corrupted frame is dropped; the request has a deadline.\n}\ninline void hl2_poll() {\n    if (hl2_wire) {\n        hl2_wire->setClock(100000);\n        uint8_t received = hl2_wire->requestFrom(uint8_t(0x50), uint8_t(16));\n        for (uint8_t i = 0; i < received && hl2_wire->available(); i++) {\n            int value = hl2_wire->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    } else if (hl2_serial) {\n        for (uint8_t i = 0; i < 64 && hl2_serial->available(); i++) {\n            int value = hl2_serial->read(); if (value < 0) break; hl2_byte(uint8_t(value));\n        }\n    }\n}\ninline void hl2_reset() {\n    hl2_ready = false; hl2_count = 0; hl2_detected = 0; hl2_busy = true; hl2_command = 0x00;\n    hl2_started = millis(); hl2_sent = millis() - 200; hl2_index = 0; hl2_done = false; hl2_ok = false;\n}\ninline void hl2_i2c(TwoWire& bus, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = &bus; hl2_serial = nullptr; hl2_reset();\n}\ninline void hl2_uart(HardwareSerial& serial, const char* block) {\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_wire = nullptr; hl2_serial = &serial; hl2_reset();\n}\n// Handshake (KNOCK) every 200 ms until the camera answers, for up to 5 s while it boots.\ninline bool hl2_start(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done && hl2_ok) { hl2_ready = true; hl2_busy = false; return true; }\n    if (uint32_t(millis() - hl2_started) >= 5000) {\n        rb_fail(block, hl2_wire ? \"No responde la HuskyLens 2: elige I2C en Ajustes del sistema → Protocolo\" : \"No responde la HuskyLens 2: elige UART en Ajustes del sistema → Protocolo\");\n        hl2_busy = false; return true;\n    }\n    if (uint32_t(millis() - hl2_sent) >= 200) {\n        uint8_t data[10] = {0};\n        hl2_index = 0; hl2_done = false; hl2_send(0x00, 0, data, 10); hl2_sent = millis();\n    }\n    return false;\n}\ninline bool hl2_available(const char* block) {\n    if (!hl2_ready) { rb_fail(block, \"Configura la HuskyLens 2 al iniciar y espera a que termine\"); return false; }\n    return !rb_failed;\n}\ninline void hl2_request(uint8_t command, uint8_t algo, const uint8_t* data, uint8_t length, const char* block) {\n    if (!hl2_available(block)) return;\n    if (hl2_busy) { rb_fail(block, \"HuskyLens 2 está ocupada: usa un solo proceso para comunicar\"); return; }\n    hl2_busy = true; hl2_command = command; hl2_index = 0; hl2_done = false; hl2_info = false; hl2_ok = false;\n    hl2_started = millis();\n    if (!hl2_send(command, algo, data, length)) { hl2_busy = false; rb_fail(block, \"No se pudo enviar la trama a la HuskyLens 2\"); }\n}\ninline bool hl2_wait(const char* block) {\n    if (rb_failed) return true;\n    hl2_poll();\n    if (hl2_done) {\n        hl2_busy = false;\n        if (hl2_command == 0x01) {\n            for (uint8_t i = 0; i < hl2_saved; i++) hl2_results[i] = hl2_pending[i];\n            hl2_count = hl2_saved; hl2_detected = hl2_total;\n        } else {\n            // Changing the algorithm or what it learned invalidates the cached results.\n            hl2_count = 0; hl2_detected = 0;\n            if (hl2_command == 0x0A && !hl2_ok) rb_fail(block, \"La HuskyLens 2 no pudo cambiar de algoritmo\");\n        }\n        return true;\n    }\n    uint32_t timeout = hl2_command == 0x01 ? 500 : hl2_command == 0x0A ? 5000 : 2000;\n    if (uint32_t(millis() - hl2_started) >= timeout) {\n        hl2_busy = false; rb_fail(block, \"No responde la HuskyLens 2: trama incompleta o checksum inválido\"); return true;\n    }\n    return false;\n}\ninline void hl2_algorithm(const String& algorithm, const char* block) {\n    uint8_t data[10] = {0};\n    data[0] = uint8_t(atoi(algorithm.c_str()));\n    hl2_algo = data[0];\n    hl2_request(0x0A, 0, data, 10, block);\n}\ninline void hl2_update(const char* block) {\n    hl2_request(0x01, hl2_algo, nullptr, 0, block);\n}\ninline uint8_t hl2_kind(const String& kind) {\n    return kind[0] == 'a' ? 0x1D : 0x1C;\n}\ninline bool hl2_integer(float value, uint16_t minimum, uint16_t maximum, const char* block) {\n    if (!isfinite(value) || value < minimum || value > maximum || value != floorf(value)) {\n        rb_fail(block, \"HuskyLens 2: número o ID fuera de rango, debe ser entero\"); return false;\n    }\n    return true;\n}\ninline float hl2_field(const Hl2Result& result, const String& prop) {\n    return prop[0] == '4' ? float(result.id) : float(result.value[prop[0] - '0']);\n}\ninline int hl2_closest(uint8_t kind) {\n    int closest = -1; float distance = 0;\n    for (uint8_t i = 0; i < hl2_count; i++) {\n        const Hl2Result& result = hl2_results[i];\n        if (result.kind != kind) continue;\n        float dx = result.value[0] - 320.0f, dy = result.value[1] - 240.0f, squared = dx * dx + dy * dy;\n        if (closest < 0 || squared < distance) { closest = i; distance = squared; }\n    }\n    return closest;\n}\ninline int hl2_find_id(float id, const char* block) {\n    if (!hl2_available(block) || !hl2_integer(id, 0, 255, block)) return -1;\n    for (uint8_t i = 0; i < hl2_count; i++)\n        if (id == 0 ? hl2_results[i].id > 0 : hl2_results[i].id == uint8_t(id)) return i;\n    return -1;\n}\ninline float hl2_objects(const char* block) {\n    return hl2_available(block) ? hl2_detected : 0;\n}\ninline bool hl2_kind_seen(const String& kind, const char* block) {\n    return hl2_available(block) && hl2_closest(hl2_kind(kind)) >= 0;\n}\ninline float hl2_center(const String& prop, const String& kind, const char* block) {\n    if (!hl2_available(block)) return -1;\n    int index = hl2_closest(hl2_kind(kind));\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline bool hl2_id_seen(float id, const char* block) {\n    return hl2_find_id(id, block) >= 0;\n}\ninline float hl2_id_prop(float id, const String& prop, const char* block) {\n    int index = hl2_find_id(id, block);\n    return index < 0 ? -1 : hl2_field(hl2_results[index], prop);\n}\ninline String hl2_center_text(const String& what, const char* block) {\n    if (!hl2_available(block)) return String(\"\");\n    int index = hl2_closest(0x1C);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline String hl2_id_text(float id, const String& what, const char* block) {\n    int index = hl2_find_id(id, block);\n    if (index < 0) return String(\"\");\n    return String(what[0] == 'n' ? hl2_results[index].name : hl2_results[index].content);\n}\ninline float hl2_learned_count(const char* block) {\n    return hl2_available(block) ? hl2_maxid : 0;\n}\ninline float hl2_last_learned(const char* block) {\n    return hl2_available(block) ? hl2_learned : 0;\n}\n"
+            ],
+            "expression": "hl2_center({PROP}, {KIND}, {BLOCK_ID})"
+          }
+        }
+      }
+    ]
+  }
+}
