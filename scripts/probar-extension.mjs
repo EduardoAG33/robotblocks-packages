@@ -5,12 +5,13 @@
 //   node package-catalog/scripts/probar-extension.mjs <paquete> --sin-compilar
 //   node package-catalog/scripts/probar-extension.mjs <paquete> --tarjetas arduino-uno,lego-ev3
 //   node package-catalog/scripts/probar-extension.mjs <paquete> --bloques [prefijo]
+//   node package-catalog/scripts/probar-extension.mjs <paquete> --con package-catalog/packages/mi-tarjeta
 //
 // Lee las pruebas de <paquete>/pruebas/*.json (formato en CREAR_EXTENSIONES.md), genera el código de cada
 // tarjeta y destino, revisa la sintaxis de Python, ejecuta el programa en la computadora cuando la prueba
 // espera valores y compila los sketches con arduino-cli. Los archivos quedan en artifacts/probar-extension/.
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { basename, resolve, sep } from 'node:path';
@@ -90,11 +91,22 @@ try {
   const { singleArduinoSketch } = await server.ssrLoadModule('/src/codegen/exportArduino.ts');
   const { Names } = await server.ssrLoadModule('/src/codegen/names.ts');
 
-  // Every catalog package of the app plus this folder (it replaces an older copy with the same ID).
+  // Every catalog package of the app plus this folder and the --con folders (a board or a dependency that the
+  // app does not ship yet); each one replaces an older copy with the same ID.
+  const extra = await Promise.all(
+    (option('--con') ?? '')
+      .split(',')
+      .filter(Boolean)
+      .map((dir) => readPackage(resolve(dir))),
+  );
+  const local = [...extra, { manifest, files }];
   const bundled = Object.entries(bundledCatalog)
-    .filter(([id]) => id !== manifest.id)
+    .filter(([id]) => !local.some((item) => item.manifest.id === id))
     .map(([, packageFiles]) => packageFiles);
-  const runtime = buildRuntime([files], bundled);
+  const runtime = buildRuntime(
+    local.map((item) => item.files),
+    bundled,
+  );
   if (!runtime.installed.some((item) => item.manifest.id === manifest.id))
     throw new Error(`El paquete no se pudo instalar:\n${runtime.errors.join('\n')}`);
   const snapshot = runtime.registry.snapshot();
@@ -226,13 +238,19 @@ try {
           continue;
         }
         for (const [path, text] of Object.entries(result.files)) await writeFile(resolve(directory, path), text);
+        // Simulated device modules (for example sensor.py of a camera) that only exist on the board.
+        if (test.simulados) {
+          const fakes = resolve(testsDir, test.simulados);
+          for (const name of (await readdir(fakes)).filter((file) => file.endsWith('.py')))
+            await copyFile(resolve(fakes, name), resolve(directory, name));
+        }
         const python_files = Object.keys(result.files).filter((path) => path.endsWith('.py'));
         const syntax = run(python, ['-m', 'py_compile', ...python_files], directory);
         if (!syntax.ok) {
           report(name, false, syntax.output);
           continue;
         }
-        if (!test.esperado && test.salida === undefined) {
+        if (!test.esperado && test.salida === undefined && !test.evaluar) {
           report(name, true, '  sintaxis de Python');
           continue;
         }
@@ -248,6 +266,7 @@ try {
           ...(test.tiempo ? { timeout: test.tiempo } : {}),
           ...(test.salida !== undefined ? { serialOutput: test.salida } : {}),
           ...(test.fallo ? { fault: `${project.id}-${test.fallo}` } : {}),
+          ...(test.evaluar ? { evaluate: test.evaluar } : {}),
         };
         await writeFile(resolve(directory, 'checks.json'), JSON.stringify(checks));
         const runner =

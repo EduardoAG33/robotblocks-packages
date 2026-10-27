@@ -235,6 +235,18 @@
       "description": "Cámara AI HUSKYLENS 2 (SEN0638) por I2C o UART: algoritmos, cuadros, flechas, IDs y texto leído. Solo Arduino/C++; experimental.",
       "kind": "module",
       "path": "packages/huskylens2"
+    },
+    {
+      "name": "OpenMV Cam H7",
+      "description": "Cámara programable OpenMV Cam H7 con MicroPython por Web Serial. Experimental.",
+      "kind": "board",
+      "path": "packages/openmv-cam-h7"
+    },
+    {
+      "name": "Visión OpenMV",
+      "description": "Manchas de color, línea, AprilTags, QR, LED y envío al GIGA por UART en la OpenMV Cam. MicroPython; experimental.",
+      "kind": "module",
+      "path": "packages/openmv-vision"
     }
   ]
 }

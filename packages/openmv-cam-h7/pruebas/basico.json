@@ -1,0 +1,20 @@
+{
+  "titulo": "OpenMV Cam H7 · bloques básicos",
+  "tarjetas": ["openmv-cam-h7"],
+  "variables": { "suma": 0 },
+  "programa": [
+    [
+      "core:repeat-count",
+      {},
+      {
+        "TIMES": 3,
+        "BODY": [
+          ["core:set", { "VARIABLE": "suma" }, { "VALUE": ["core:add", {}, { "LEFT": { "var": "suma" }, "RIGHT": 2 }] }]
+        ]
+      }
+    ],
+    ["core:serial-println", {}, { "VALUE": "hola OpenMV" }]
+  ],
+  "esperado": { "suma": 6 },
+  "salida": "hola OpenMV\n"
+}
