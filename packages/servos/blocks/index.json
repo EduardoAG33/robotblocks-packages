@@ -11,8 +11,8 @@
     ],
     "inputs": [{ "name": "ANGLE", "type": "number", "default": 90, "slider": { "min": 0, "max": 180 } }],
     "tooltip": {
-      "es": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
-      "en": "Angle from 0 to 180; out-of-range values are clamped. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds. Experimental MicroPython."
+      "es": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras.",
+      "en": "Angle from 0 to 180; out-of-range values are clamped. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds."
     },
     "generators": {
       "micropython": {
@@ -47,8 +47,8 @@
     ],
     "inputs": [],
     "tooltip": {
-      "es": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras. MicroPython experimental.",
-      "en": "Stops sending pulses: the servo no longer holds its position. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds. Experimental MicroPython."
+      "es": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras.",
+      "en": "Stops sending pulses: the servo no longer holds its position. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds."
     },
     "generators": {
       "micropython": {

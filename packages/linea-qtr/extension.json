@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.linea-qtr",
   "name": "Seguidor de línea (QTR analógico)",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Tabletas de sensores de reflectancia analógicos (Pololu QTR/QTRX): calibración, posición de la línea y lectura por canal.",
@@ -20,7 +20,6 @@
   },
   "assets": [],
   "metadata": {
-    "experimental": true,
     "group": "sensors",
     "translations": {
       "en": {

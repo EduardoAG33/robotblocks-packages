@@ -34,13 +34,13 @@
     },
     {
       "name": "Motores DC (puente H)",
-      "description": "Hasta cuatro motores con TB6612FNG o L298N. MicroPython experimental; pendiente de validación física.",
+      "description": "Hasta cuatro motores con TB6612FNG, L298N o VNH5019. Arduino y MicroPython; probada en GIGA.",
       "kind": "module",
       "path": "packages/motores"
     },
     {
       "name": "Servos",
-      "description": "Servos de 50 Hz con el pin elegido en el bloque. MicroPython experimental; pendiente de validación física.",
+      "description": "Servos de 50 Hz con el pin elegido en el bloque. Arduino y MicroPython; probada en UNO R3 y UNO R4.",
       "kind": "module",
       "path": "packages/servos"
     },

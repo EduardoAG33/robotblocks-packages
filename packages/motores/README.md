@@ -1,6 +1,6 @@
 # Motores DC (puente H)
 
-Extensión **experimental** para MicroPython (probada en simulación; pendiente de prueba física). Funciona con **TB6612FNG**, **L298N** y el shield **Pololu Dual VNH5019** (#2507), o con cualquier puente H que use PWM + IN1 + IN2. Las plantillas de Arduino llegarán con la fase de compilación.
+Extensión para Arduino/C++ y MicroPython. Probada en hardware con Arduino/C++ (ver «Pruebas en hardware»). Las plantillas MicroPython están probadas en simulación, todavía no en una tarjeta. Funciona con **TB6612FNG**, **L298N** y el shield **Pololu Dual VNH5019** (#2507), o con cualquier puente H que use PWM + IN1 + IN2.
 
 ## Bloques
 
@@ -41,7 +41,7 @@ Es la misma convención que el bloque `MOTORES` de Los Grises en Mind+. Frena en
 
 ## Arduino/C++
 
-Plantillas declarativas experimentales, sin código ejecutable en el paquete. Se mantienen las plantillas MicroPython. Copiar código y Descargar archivo dan un único `.ino` con el runtime integrado. Generación verificada; compilación del core y prueba física pendientes.
+Plantillas declarativas, sin código ejecutable en el paquete. Se mantienen las plantillas MicroPython. Copiar código y Descargar archivo dan un único `.ino` con el runtime integrado. Compila con arduino-cli y está probada en hardware (ver «Pruebas en hardware»).
 
 TB6612FNG y VNH5019 usan PWM + INA + INB. Velocidad limitada a −100…100; PWM escalado a `(2 ** pwm.bits) − 1`. Cero/libre: PWM 0 e INA/INB bajos; frenar: ambas entradas altas y PWM máximo. TB6612 requiere STBY alto; no se controla automáticamente.
 
@@ -52,3 +52,8 @@ VDD alimenta los pull-ups del shield: debe ser **3.3 V al conectar EN/DIAG a GIG
 En UNO/Nano Servo.h toma Timer1: combinar Servos con PWM D9/D10 produce diagnóstico y no genera sketch. Usa D3/D5/D6/D11 para motores.
 
 Fuentes: [Pololu: pines del shield](https://www.pololu.com/docs/0J49/3.c), [Pololu: PWM, EN/DIAG y VDD](https://www.pololu.com/docs/0J49/4.b), [Toshiba TB6612FNG](https://toshiba.semicon-storage.com/info/docget.jsp?did=10660&prodName=TB6612FNG).
+
+## Pruebas en hardware
+
+- Arduino GIGA R1 (C++) con el shield Pololu Dual VNH5019: los motores se movieron.
+- MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.
