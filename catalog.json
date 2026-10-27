@@ -225,6 +225,18 @@
       "path": "packages/control-pid"
     },
     {
+      "name": "Giros con IMU",
+      "description": "Girar a un ángulo con cualquier IMU: velocidad que frena al llegar, «llegó» sin pasarse y diferencia por el camino más corto. Arduino, MicroPython y Pybricks.",
+      "kind": "module",
+      "path": "packages/giros"
+    },
+    {
+      "name": "HuskyLens 2",
+      "description": "Cámara AI HUSKYLENS 2 (SEN0638) por I2C o UART: algoritmos, cuadros, flechas, IDs y texto leído. Solo Arduino/C++; experimental.",
+      "kind": "module",
+      "path": "packages/huskylens2"
+    },
+    {
       "name": "OpenMV Cam H7",
       "description": "Cámara programable OpenMV Cam H7 con MicroPython por Web Serial. Experimental.",
       "kind": "board",
