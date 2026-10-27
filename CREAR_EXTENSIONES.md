@@ -106,6 +106,9 @@ Cada archivo es un programa pequeño que `scripts/probar-extension.mjs` genera p
 - Un bloque es `[id, campos, entradas]`. `":leer"` es un bloque de tu paquete; `"core:…"` es del núcleo. Un número es un bloque número, un texto es un bloque texto y `{ "var": "x" }` lee una variable. Una entrada de instrucciones (`BODY`) es una lista de bloques.
 - `"$PIN"` se cambia por el pin de `pines` de cada tarjeta (usa los IDs de recurso de la tarjeta, por ejemplo `d7`).
 - `esperado` (opcional): después de correr el programa en la computadora, con los módulos simulados de la app, las variables deben valer eso (`{ "minimum": 0 }` para un mínimo). Sin `esperado`, solo se revisa la sintaxis. Para programas con «por siempre» agrega `"tiempo": 0.5` (segundos). `"salida"` compara lo impreso.
+- `simulados`: carpeta dentro de `pruebas/` con módulos de Python falsos (por ejemplo `sensor.py` de una cámara) que se copian junto al programa para ejecutarlo en la computadora.
+- `evaluar`: lista de `[expresión de Python, valor esperado]` que se comprueban después de correr, por ejemplo lo que se mandó por UART.
+- Si la prueba usa una tarjeta u otro paquete que la app todavía no trae, agrégalo con `--con package-catalog/packages/<paquete>`.
 - `ejemplo`: guarda ese programa como `examples/<archivo>.blocks.json` para esa tarjeta. Haz un ejemplo real para el alumno, no solo la prueba de lógica.
 
 Desde la carpeta de la app:
