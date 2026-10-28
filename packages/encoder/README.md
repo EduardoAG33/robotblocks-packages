@@ -30,4 +30,6 @@ Máximo seis encoders **en total**. Configurar y sentido van directamente en «a
 
 En Arduino, el contador interno es un `long` con signo de 32 bits, pero GreyForge 0.4.0 procesa los valores de los bloques como `float`: las cuentas dejan de ser exactas por encima de ±16 777 216. Reinicia los encoders entre recorridos si necesitas precisión de una cuenta.
 
+En MicroPython (ESP32) las interrupciones son diferidas: con motores rápidos (miles de flancos por segundo) pueden perderse cuentas. Sirve para pruebas y encoders lentos; para el robot de competencia usa Arduino/C++.
+
 `npm test` en el catálogo ejecuta la simulación. Desde la app: `node package-catalog/scripts/probar-extension.mjs package-catalog/packages/encoder`. Compilaciones, prueba de Viper, restauración Blockly y límites de la comprobación visual: **[VALIDACION.md](VALIDACION.md)**. No se ha cargado en hardware.
