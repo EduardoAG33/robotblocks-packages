@@ -1,0 +1,188 @@
+{
+  "titulo": "Encoder · lecturas x2",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "teensy-41",
+    "seeed-xiao-esp32s3",
+    "dfrobot-firebeetle-esp32"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "A1": "d2",
+      "B1": "d4",
+      "A2": "d3",
+      "B2": "d5"
+    },
+    "arduino-uno-r4-minima": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "arduino-giga-r1": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "teensy-40": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "teensy-41": {
+      "A1": "d2",
+      "B1": "d3",
+      "A2": "d4",
+      "B2": "d5"
+    },
+    "seeed-xiao-esp32s3": {
+      "A1": "d0",
+      "B1": "d1",
+      "A2": "d2",
+      "B2": "d3"
+    },
+    "dfrobot-firebeetle-esp32": {
+      "A1": "gpio25",
+      "B1": "gpio26",
+      "A2": "gpio27",
+      "B2": "gpio14"
+    }
+  },
+  "variables": {
+    "valor": 0
+  },
+  "programa": [
+    [
+      ":configure",
+      {
+        "MODO": "x2",
+        "NOMBRE1": "izquierdo",
+        "PIN_A1": "$A1",
+        "PIN_B1": "$B1",
+        "PPR1": 11,
+        "RED1": 30,
+        "DIAM1": 65,
+        "NOMBRE2": "derecho",
+        "PIN_A2": "$A2",
+        "PIN_B2": "$B2",
+        "PPR2": 11,
+        "RED2": 30,
+        "DIAM2": 65
+      }
+    ],
+    [
+      ":direction",
+      {
+        "ENC": "izquierdo",
+        "SENTIDO": "normal"
+      }
+    ],
+    [
+      ":direction",
+      {
+        "ENC": "derecho",
+        "SENTIDO": "invertido"
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":counts",
+          {
+            "ENC": "izquierdo"
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":turns",
+          {
+            "ENC": "izquierdo"
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":distance",
+          {
+            "ENC": "izquierdo",
+            "UNIDAD": "cm"
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":distance",
+          {
+            "ENC": "izquierdo",
+            "UNIDAD": "mm"
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {
+            "ENC": "izquierdo",
+            "UNIDAD": "cm/s"
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":speed",
+          {
+            "ENC": "izquierdo",
+            "UNIDAD": "rpm"
+          }
+        ]
+      }
+    ],
+    [
+      ":reset",
+      {
+        "ENC": "izquierdo"
+      }
+    ],
+    [":reset-all"]
+  ]
+}

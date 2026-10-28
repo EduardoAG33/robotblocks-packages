@@ -8,12 +8,8 @@
   },
   "minAppVersion": "0.4.0",
   "description": "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.",
-  "requiredCapabilities": [
-    "ev3SensorPort"
-  ],
-  "supportedBoards": [
-    "org.robotblocks.lego-ev3:board"
-  ],
+  "requiredCapabilities": ["ev3SensorPort"],
+  "supportedBoards": ["org.robotblocks.lego-ev3:board"],
   "dependencies": [],
   "permissions": [],
   "contributes": {
@@ -24,9 +20,7 @@
         "colour": "#247BA0"
       }
     ],
-    "blocks": [
-      "blocks/index.json"
-    ],
+    "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],
     "generators": [],

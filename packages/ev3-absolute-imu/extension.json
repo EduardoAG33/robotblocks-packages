@@ -8,12 +8,8 @@
   },
   "minAppVersion": "0.4.0",
   "description": "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.",
-  "requiredCapabilities": [
-    "ev3SensorPort"
-  ],
-  "supportedBoards": [
-    "org.robotblocks.lego-ev3:board"
-  ],
+  "requiredCapabilities": ["ev3SensorPort"],
+  "supportedBoards": ["org.robotblocks.lego-ev3:board"],
   "dependencies": [],
   "permissions": [],
   "contributes": {
@@ -24,9 +20,7 @@
         "colour": "#5CB1D6"
       }
     ],
-    "blocks": [
-      "blocks/index.json"
-    ],
+    "blocks": ["blocks/index.json"],
     "devices": [],
     "boards": [],
     "generators": [],

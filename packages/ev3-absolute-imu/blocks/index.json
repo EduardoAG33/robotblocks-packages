@@ -15,9 +15,7 @@
         "default": "s2",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "ev3SensorPort"
-          ]
+          "capabilities": ["ev3SensorPort"]
         }
       }
     ],
@@ -31,9 +29,7 @@
         "integer": true
       }
     ],
-    "requiredCapabilities": [
-      "ev3SensorPort"
-    ],
+    "requiredCapabilities": ["ev3SensorPort"],
     "tooltip": {
       "es": "Promedia el cero del eje Z con el robot inmóvil (600 muestras ≈ 2 s) y pone el ángulo en 0. Úsalo una vez al iniciar; si el robot se mueve, el ángulo derivará. AbsoluteIMU de mindsensors (I2C 0x11) en EV3 microSD / Pybricks 2.0 · experimental.",
       "en": "Averages the Z-axis zero with the robot still (600 samples ≈ 2 s) and sets the angle to 0. Use it once at start; if the robot moves, the angle will drift. mindsensors AbsoluteIMU (I2C 0x11) on EV3 microSD / Pybricks 2.0 · experimental."
@@ -70,16 +66,12 @@
         "default": "s2",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "ev3SensorPort"
-          ]
+          "capabilities": ["ev3SensorPort"]
         }
       }
     ],
     "inputs": [],
-    "requiredCapabilities": [
-      "ev3SensorPort"
-    ],
+    "requiredCapabilities": ["ev3SensorPort"],
     "tooltip": {
       "es": "Ángulo acumulado del eje Z: a la derecha suma, a la izquierda resta, y sigue después de 360. Lo integra un hilo cada 10 ms aunque el programa esté esperando. AbsoluteIMU de mindsensors (I2C 0x11) en EV3 microSD / Pybricks 2.0 · experimental.",
       "en": "Accumulated Z-axis angle: right turns add, left turns subtract, and it continues past 360. A thread integrates it every 10 ms even while the program waits. mindsensors AbsoluteIMU (I2C 0x11) on EV3 microSD / Pybricks 2.0 · experimental."
@@ -114,9 +106,7 @@
         "default": "s2",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "ev3SensorPort"
-          ]
+          "capabilities": ["ev3SensorPort"]
         }
       }
     ],
@@ -127,9 +117,7 @@
         "default": 0
       }
     ],
-    "requiredCapabilities": [
-      "ev3SensorPort"
-    ],
+    "requiredCapabilities": ["ev3SensorPort"],
     "tooltip": {
       "es": "Cambia el ángulo acumulado sin volver a calibrar. AbsoluteIMU de mindsensors (I2C 0x11) en EV3 microSD / Pybricks 2.0 · experimental.",
       "en": "Changes the accumulated angle without recalibrating. mindsensors AbsoluteIMU (I2C 0x11) on EV3 microSD / Pybricks 2.0 · experimental."
@@ -165,16 +153,12 @@
         "default": "s2",
         "reference": {
           "kind": "resource",
-          "capabilities": [
-            "ev3SensorPort"
-          ]
+          "capabilities": ["ev3SensorPort"]
         }
       }
     ],
     "inputs": [],
-    "requiredCapabilities": [
-      "ev3SensorPort"
-    ],
+    "requiredCapabilities": ["ev3SensorPort"],
     "tooltip": {
       "es": "Velocidad de giro calibrada del eje Z; menos de 0.3 grados/s cuenta como quieto. AbsoluteIMU de mindsensors (I2C 0x11) en EV3 microSD / Pybricks 2.0 · experimental.",
       "en": "Calibrated Z-axis turn rate; under 0.3 degrees/s counts as still. mindsensors AbsoluteIMU (I2C 0x11) on EV3 microSD / Pybricks 2.0 · experimental."
