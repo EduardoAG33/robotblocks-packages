@@ -1,0 +1,558 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "teensy-distancias",
+  "name": "Teensy 4.1 · distancias de las dos ruedas (cm)",
+  "board": { "definitionId": "org.robotblocks.teensy-41:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "teensy-distancias-teensy-41-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "teensy-distancias-teensy-41-1",
+            "blockId": "org.robotblocks.encoder:configure",
+            "operation": "org.robotblocks.encoder:configure",
+            "fields": {
+              "MODO": "x4",
+              "NOMBRE1": "izquierdo",
+              "PIN_A1": "d2",
+              "PIN_B1": "d3",
+              "PPR1": 11,
+              "RED1": 30,
+              "DIAM1": 65,
+              "NOMBRE2": "derecho",
+              "PIN_A2": "d4",
+              "PIN_B2": "d5",
+              "PPR2": 11,
+              "RED2": 30,
+              "DIAM2": 65
+            },
+            "inputs": {},
+            "next": {
+              "id": "teensy-distancias-teensy-41-2",
+              "blockId": "org.robotblocks.encoder:direction",
+              "operation": "org.robotblocks.encoder:direction",
+              "fields": { "ENC": "izquierdo", "SENTIDO": "normal" },
+              "inputs": {},
+              "next": {
+                "id": "teensy-distancias-teensy-41-3",
+                "blockId": "org.robotblocks.encoder:direction",
+                "operation": "org.robotblocks.encoder:direction",
+                "fields": { "ENC": "derecho", "SENTIDO": "invertido" },
+                "inputs": {},
+                "next": {
+                  "id": "teensy-distancias-teensy-41-22",
+                  "blockId": "core:forever",
+                  "operation": "core:forever",
+                  "fields": {},
+                  "inputs": {
+                    "BODY": {
+                      "id": "teensy-distancias-teensy-41-5",
+                      "blockId": "core:set",
+                      "operation": "core:set",
+                      "fields": { "VARIABLE": "izquierda" },
+                      "inputs": {
+                        "VALUE": {
+                          "id": "teensy-distancias-teensy-41-4",
+                          "blockId": "org.robotblocks.encoder:distance",
+                          "operation": "org.robotblocks.encoder:distance",
+                          "fields": { "ENC": "izquierdo", "UNIDAD": "cm" },
+                          "inputs": {},
+                          "next": null
+                        }
+                      },
+                      "next": {
+                        "id": "teensy-distancias-teensy-41-7",
+                        "blockId": "core:set",
+                        "operation": "core:set",
+                        "fields": { "VARIABLE": "derecha" },
+                        "inputs": {
+                          "VALUE": {
+                            "id": "teensy-distancias-teensy-41-6",
+                            "blockId": "org.robotblocks.encoder:distance",
+                            "operation": "org.robotblocks.encoder:distance",
+                            "fields": { "ENC": "derecho", "UNIDAD": "cm" },
+                            "inputs": {},
+                            "next": null
+                          }
+                        },
+                        "next": {
+                          "id": "teensy-distancias-teensy-41-13",
+                          "blockId": "core:set",
+                          "operation": "core:set",
+                          "fields": { "VARIABLE": "promedio" },
+                          "inputs": {
+                            "VALUE": {
+                              "id": "teensy-distancias-teensy-41-12",
+                              "blockId": "core:divide",
+                              "operation": "core:divide",
+                              "fields": {},
+                              "inputs": {
+                                "LEFT": {
+                                  "id": "teensy-distancias-teensy-41-10",
+                                  "blockId": "core:add",
+                                  "operation": "core:add",
+                                  "fields": {},
+                                  "inputs": {
+                                    "LEFT": {
+                                      "id": "teensy-distancias-teensy-41-8",
+                                      "blockId": "core:variable",
+                                      "operation": "core:variable",
+                                      "fields": { "VARIABLE": "izquierda" },
+                                      "inputs": {},
+                                      "next": null
+                                    },
+                                    "RIGHT": {
+                                      "id": "teensy-distancias-teensy-41-9",
+                                      "blockId": "core:variable",
+                                      "operation": "core:variable",
+                                      "fields": { "VARIABLE": "derecha" },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                },
+                                "RIGHT": {
+                                  "id": "teensy-distancias-teensy-41-11",
+                                  "blockId": "core:number",
+                                  "operation": "core:number",
+                                  "fields": { "NUMBER": 2 },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "teensy-distancias-teensy-41-15",
+                            "blockId": "core:serial-println",
+                            "operation": "core:serial-println",
+                            "fields": {},
+                            "inputs": {
+                              "VALUE": {
+                                "id": "teensy-distancias-teensy-41-14",
+                                "blockId": "core:variable",
+                                "operation": "core:variable",
+                                "fields": { "VARIABLE": "izquierda" },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "teensy-distancias-teensy-41-17",
+                              "blockId": "core:serial-println",
+                              "operation": "core:serial-println",
+                              "fields": {},
+                              "inputs": {
+                                "VALUE": {
+                                  "id": "teensy-distancias-teensy-41-16",
+                                  "blockId": "core:variable",
+                                  "operation": "core:variable",
+                                  "fields": { "VARIABLE": "derecha" },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": {
+                                "id": "teensy-distancias-teensy-41-19",
+                                "blockId": "core:serial-println",
+                                "operation": "core:serial-println",
+                                "fields": {},
+                                "inputs": {
+                                  "VALUE": {
+                                    "id": "teensy-distancias-teensy-41-18",
+                                    "blockId": "core:variable",
+                                    "operation": "core:variable",
+                                    "fields": { "VARIABLE": "promedio" },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                },
+                                "next": {
+                                  "id": "teensy-distancias-teensy-41-21",
+                                  "blockId": "core:wait-value",
+                                  "operation": "core:wait-value",
+                                  "fields": {},
+                                  "inputs": {
+                                    "SECONDS": {
+                                      "id": "teensy-distancias-teensy-41-20",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 0.2 },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "next": null
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [
+    { "id": "izquierda", "name": "izquierda", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "derecha", "name": "derecha", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "promedio", "name": "promedio", "type": "number", "scope": "project", "initialValue": 0 }
+  ],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.encoder", "version": "1.0.0" },
+    { "id": "org.robotblocks.teensy-41", "version": "0.3.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "teensy-distancias-teensy-41-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:add",
+        "operation": "core:add",
+        "category": "core:operators",
+        "label": { "es": "%LEFT + %RIGHT", "en": "%LEFT + %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:divide",
+        "operation": "core:divide",
+        "category": "core:operators",
+        "label": { "es": "%LEFT ÷ %RIGHT", "en": "%LEFT ÷ %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:wait-value",
+        "operation": "core:wait-value",
+        "category": "core:control",
+        "label": { "es": "esperar %SECONDS segundos", "en": "wait %SECONDS seconds" },
+        "kind": "command",
+        "inputs": [{ "name": "SECONDS", "type": "number", "default": 1, "min": 0 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Estructura de control del programa. No ejecuta ni bloquea el navegador.",
+          "en": "Program control structure. Does not execute or block the browser."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "org.robotblocks.encoder:configure",
+        "category": "org.robotblocks.encoder:sensor",
+        "label": {
+          "es": "configurar encoders lectura %MODO %ENCODERS",
+          "en": "configure encoders reading %MODO %ENCODERS"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MODO",
+            "type": "string",
+            "default": "x4",
+            "options": [
+              { "label": { "es": "×4 (A y B con interrupción)", "en": "×4 (interrupts on A and B)" }, "value": "x4" },
+              { "label": { "es": "×2 (solo A con interrupción)", "en": "×2 (interrupts on A only)" }, "value": "x2" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.encoder:configure",
+        "tooltip": {
+          "es": "Solo en «al iniciar», fuera de bucles. Máximo 6 encoders entre todos los bloques. PPR por canal del eje del motor; cuentas/vuelta de rueda = PPR × reducción × 4 o 2. Pines distintos con pull-up.",
+          "en": "Only in “when started”, outside loops. Up to 6 encoders across all blocks. PPR is per channel of the motor shaft; counts/wheel turn = PPR × gear ratio × 4 or 2. Distinct pins with pull-ups."
+        },
+        "requiredCapabilities": ["digitalInput"],
+        "variadic": {
+          "input": { "name": "ENCODERS", "type": "value" },
+          "min": 1,
+          "max": 6,
+          "row": {
+            "label": {
+              "es": "%NOMBRE A %PIN_A B %PIN_B %PPR pulsos del motor reducción %RED : 1 rueda %DIAM mm",
+              "en": "%NOMBRE A %PIN_A B %PIN_B %PPR motor pulses gear ratio %RED : 1 wheel %DIAM mm"
+            },
+            "fields": [
+              { "name": "NOMBRE", "type": "string", "default": "encoder{N}" },
+              {
+                "name": "PIN_A",
+                "type": "string",
+                "default": "",
+                "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
+              },
+              {
+                "name": "PIN_B",
+                "type": "string",
+                "default": "",
+                "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
+              },
+              { "name": "PPR", "type": "number", "default": 11 },
+              { "name": "RED", "type": "number", "default": 30 },
+              { "name": "DIAM", "type": "number", "default": 65 }
+            ],
+            "template": "{ {NOMBRE}, {PIN_A}, {PIN_B}, {PPR}, {RED}, {DIAM} }",
+            "templates": { "micropython": "({NOMBRE}, {PIN_A}, {PIN_B}, {PPR}, {RED}, {DIAM})" }
+          }
+        },
+        "generators": {
+          "micropython": {
+            "imports": [
+              "import machine",
+              "import time",
+              "import math",
+              "import micropython",
+              "from array import array"
+            ],
+            "globals": [
+              "enc_cuenta = array('l', [0] * 6)\nenc_previo = bytearray(6)\nenc_modo = bytearray(6)\nenc_invertido = bytearray(6)\nenc_tabla = bytes((0, 1, 255, 0, 255, 0, 0, 1, 1, 0, 0, 255, 0, 255, 1, 0))\nenc_a = [None] * 6\nenc_b = [None] * 6\nenc_estado = [None] * 6\nenc_handlers = [None] * 6\n\n# Viper mantiene la suma en 32 bits nativos, sin crear enteros grandes en la IRQ.\n@micropython.viper\ndef enc_flanco(i: int):\n    actual = (int(enc_a[i].value()) << 1) | int(enc_b[i].value())\n    previo = ptr8(enc_previo)\n    modo = ptr8(enc_modo)\n    invertido = ptr8(enc_invertido)\n    tabla = ptr8(enc_tabla)\n    cuentas = ptr32(enc_cuenta)\n    paso = 0\n    if modo[i] == 4:\n        paso = int(tabla[(previo[i] << 2) | actual])\n        if paso == 255:\n            paso = -1\n    else:\n        paso = 1 if (actual >> 1) == (actual & 1) else -1\n    if invertido[i]:\n        paso = 0 - paso\n    previo[i] = actual\n    cuentas[i] = cuentas[i] + paso\n\ndef enc_handler(i):\n    def handler(pin):\n        enc_flanco(i)\n    return handler\n\ndef enc_control(n, bloque):\n    if n < 1 or n > 6 or enc_estado[n - 1] is None:\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    return enc_estado[n - 1]\n\ndef enc_cuentas(n, bloque):\n    enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        return enc_cuenta[n - 1]\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_reiniciar(n, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_cuenta[n - 1] = 0\n        estado[2] = 0\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_todos(bloque):\n    if not any(e is not None for e in enc_estado):\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    for i in range(6):\n        if enc_estado[i] is not None:\n            enc_reiniciar(i + 1, bloque)\n\ndef enc_configurar(inicio, filas, modo, bloque):\n    if inicio < 0 or not filas or inicio + len(filas) > 6:\n        rb_fail(bloque, \"Configura como máximo 6 encoders\")\n    factor = 2 if modo == \"x2\" else 4\n    nombres = [e[5] for e in enc_estado if e is not None]\n    pines = [p for e in enc_estado if e is not None for p in e[6:8]]\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        if enc_estado[inicio + i] is not None:\n            rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\")\n        if not nombre.strip() or nombre in nombres:\n            rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\")\n        if not (ppr > 0 and red > 0 and diam > 0 and math.isfinite(ppr * red * factor) and math.isfinite(diam)):\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\")\n        if a == b or a in pines or b in pines:\n            rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\")\n        nombres.append(nombre)\n        pines.extend((a, b))\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        slot = inicio + i\n        enc_a[slot] = machine.Pin(a, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_b[slot] = machine.Pin(b, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_modo[slot] = factor\n        enc_invertido[slot] = 0\n        enc_previo[slot] = (enc_a[slot].value() << 1) | enc_b[slot].value()\n        enc_estado[slot] = [ppr * red * factor, diam, 0, time.ticks_us(), 0.0, nombre, a, b]\n        enc_reiniciar(slot + 1, bloque)\n        enc_handlers[slot] = enc_handler(slot)\n        trigger = machine.Pin.IRQ_RISING | machine.Pin.IRQ_FALLING\n        enc_a[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n        if factor == 4:\n            enc_b[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n\ndef enc_vueltas(n, bloque):\n    return enc_cuentas(n, bloque) / enc_control(n, bloque)[0]\n\ndef enc_distancia(n, unidad, bloque):\n    return enc_vueltas(n, bloque) * math.pi * enc_control(n, bloque)[1] / (10 if unidad == \"cm\" else 1)\n\ndef enc_velocidad(n, unidad, bloque):\n    estado = enc_control(n, bloque)\n    cuentas = enc_cuentas(n, bloque)\n    ahora = time.ticks_us()\n    dt = time.ticks_diff(ahora, estado[3])\n    if dt >= 20000:\n        diferencia = ((cuentas - estado[2] + 0x80000000) & 0xffffffff) - 0x80000000\n        estado[4] = diferencia / estado[0] * 1000000 / dt\n        estado[2] = cuentas\n        estado[3] = ahora\n    return estado[4] * (60 if unidad == \"rpm\" else math.pi * estado[1] / 10)\n\ndef enc_sentido(n, sentido, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_invertido[n - 1] = sentido == \"invertido\"\n        estado[2] = enc_cuenta[n - 1]\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n"
+            ],
+            "statement": "enc_configurar({ENCODERS_OFFSET}, [{ENCODERS}], {MODO}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": ["#include <math.h>", "#include <stdio.h>", "#include <string.h>"],
+            "globals": [
+              "// Encoder de cuadratura: seis slots e ISR fijas, independientes del driver de motores.\n#if defined(ARDUINO_ARCH_ESP32)\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR IRAM_ATTR\n#endif\nstatic portMUX_TYPE enc_mux = portMUX_INITIALIZER_UNLOCKED;\n#else\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR\n#endif\n#endif\nstruct enc_t {\n    volatile long cuentas = 0;\n    volatile uint8_t previo = 0;\n    int a = -1, b = -1, modo = 4;\n    volatile int signo = 1;\n    double cpr = 1, diam = 0;\n    long muestra = 0;\n    unsigned long tiempo = 0;\n    double rps = 0;\n    bool activo = false;\n    const char* nombre = \"\";\n};\nstruct enc_fila_t { const char* nombre; int a; int b; double ppr; double red; double diam; };\nstatic enc_t enc_estado[6];\n// RAM en ESP32: la tabla sigue accesible con la cache de flash deshabilitada.\nstatic int8_t enc_tabla[16] = {0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};\nvoid ARDUINO_ISR_ATTR enc_flanco(uint8_t i) {\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL_ISR(&enc_mux);\n#endif\n    enc_t& e = enc_estado[i];\n    uint8_t actual = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n    int paso = e.modo == 4 ? enc_tabla[(e.previo << 2) | actual] : (((actual >> 1) == (actual & 1)) ? 1 : -1);\n    e.previo = actual;\n    e.cuentas = (long)((unsigned long)e.cuentas + (unsigned long)(paso * e.signo));\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL_ISR(&enc_mux);\n#endif\n}\nvoid ARDUINO_ISR_ATTR enc_isr_a0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_b0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_a1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_b1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_a2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_b2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_a3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_b3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_a4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_b4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_a5() { enc_flanco(5); }\nvoid ARDUINO_ISR_ATTR enc_isr_b5() { enc_flanco(5); }\nstatic void (*const enc_isrs_a[6])() = {enc_isr_a0, enc_isr_a1, enc_isr_a2, enc_isr_a3, enc_isr_a4, enc_isr_a5};\nstatic void (*const enc_isrs_b[6])() = {enc_isr_b0, enc_isr_b1, enc_isr_b2, enc_isr_b3, enc_isr_b4, enc_isr_b5};\ninline bool enc_pin_irq(int pin, const char* bloque) {\n    bool valido = true;\n#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)\n    valido = pin == 2 || pin == 3;\n#endif\n#ifdef NOT_AN_INTERRUPT\n    valido = valido && digitalPinToInterrupt(pin) != NOT_AN_INTERRUPT;\n#endif\n    if (!valido) {\n        static char enc_mensaje[100];\n        snprintf(enc_mensaje, sizeof(enc_mensaje), \"El pin %d no tiene interrupción; usa otro o la lectura ×2\", pin);\n        rb_fail(bloque, enc_mensaje);\n    }\n    return valido;\n}\ninline bool enc_control(int n, const char* bloque) {\n    if (n < 1 || n > 6 || !enc_estado[n - 1].activo) {\n        rb_fail(bloque, \"Configura los encoders al iniciar\");\n        return false;\n    }\n    return true;\n}\ninline long enc_cuentas(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    long valor = enc_estado[n - 1].cuentas;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n    return valor;\n}\ninline void enc_reiniciar(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.cuentas = 0;\n    e.muestra = 0;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\ninline void enc_todos(const char* bloque) {\n    bool alguno = false;\n    for (int i = 0; i < 6; i++) if (enc_estado[i].activo) { alguno = true; enc_reiniciar(i + 1, bloque); }\n    if (!alguno) rb_fail(bloque, \"Configura los encoders al iniciar\");\n}\ninline void enc_configurar(int inicio, const enc_fila_t* filas, int cantidad, const String& modo, const char* bloque) {\n    if (inicio < 0 || cantidad < 1 || inicio + cantidad > 6) { rb_fail(bloque, \"Configura como máximo 6 encoders\"); return; }\n    int factor = modo == \"x2\" ? 2 : 4;\n    // Valida todas las filas antes de instalar interrupciones.\n    for (int i = 0; i < cantidad; i++) {\n        const enc_fila_t& f = filas[i];\n        if (enc_estado[inicio + i].activo) { rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\"); return; }\n        if (!f.nombre[0]) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n        if (!(f.ppr > 0) || !(f.red > 0) || !(f.diam > 0) || !isfinite(f.ppr * f.red * factor) || !isfinite(f.diam)) {\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\"); return;\n        }\n        if (!enc_pin_irq(f.a, bloque) || (factor == 4 && !enc_pin_irq(f.b, bloque))) return;\n        if (f.a == f.b) { rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return; }\n        for (int j = 0; j < 6; j++) if (enc_estado[j].activo) {\n            if (!strcmp(f.nombre, enc_estado[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == enc_estado[j].a || f.a == enc_estado[j].b || f.b == enc_estado[j].a || f.b == enc_estado[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n        for (int j = 0; j < i; j++) {\n            if (!strcmp(f.nombre, filas[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == filas[j].a || f.a == filas[j].b || f.b == filas[j].a || f.b == filas[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n    }\n    for (int i = 0; i < cantidad; i++) {\n        int slot = inicio + i;\n        const enc_fila_t& f = filas[i];\n        enc_t& e = enc_estado[slot];\n        e.a = f.a; e.b = f.b; e.nombre = f.nombre;\n        e.signo = 1;\n        e.modo = factor; e.cpr = f.ppr * f.red * factor; e.diam = f.diam;\n        pinMode(e.a, INPUT_PULLUP);\n        pinMode(e.b, INPUT_PULLUP);\n        e.previo = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n        e.activo = true;\n        enc_reiniciar(slot + 1, bloque);\n        attachInterrupt(digitalPinToInterrupt(e.a), enc_isrs_a[slot], CHANGE);\n        if (factor == 4) attachInterrupt(digitalPinToInterrupt(e.b), enc_isrs_b[slot], CHANGE);\n    }\n}\ninline double enc_vueltas(int n, const char* bloque) {\n    long cuentas = enc_cuentas(n, bloque);\n    return enc_control(n, bloque) ? cuentas / enc_estado[n - 1].cpr : 0;\n}\ninline double enc_distancia(int n, const String& unidad, const char* bloque) {\n    double vueltas = enc_vueltas(n, bloque);\n    if (!enc_control(n, bloque)) return 0;\n    return vueltas * 3.141592653589793 * enc_estado[n - 1].diam / (unidad == \"cm\" ? 10.0 : 1.0);\n}\ninline double enc_velocidad(int n, const String& unidad, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n    enc_t& e = enc_estado[n - 1];\n    long cuentas = enc_cuentas(n, bloque);\n    unsigned long ahora = micros();\n    unsigned long dt = ahora - e.tiempo;\n    if (dt >= 20000UL) {\n        long diferencia = (long)((unsigned long)cuentas - (unsigned long)e.muestra);\n        e.rps = (double)diferencia / e.cpr * 1000000.0 / dt;\n        e.muestra = cuentas; e.tiempo = ahora;\n    }\n    return unidad == \"rpm\" ? e.rps * 60.0 : e.rps * 3.141592653589793 * e.diam / 10.0;\n}\ninline void enc_sentido(int n, const String& sentido, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.signo = sentido == \"invertido\" ? -1 : 1;\n    // Conserva las cuentas y reinicia solo la muestra de velocidad.\n    e.muestra = e.cuentas;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\n",
+              "static const enc_fila_t enc_filas_{ENCODERS_OFFSET}[] = { {ENCODERS} };"
+            ],
+            "statement": "enc_configurar({ENCODERS_OFFSET}, enc_filas_{ENCODERS_OFFSET}, {ENCODERS_COUNT}, {MODO}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.encoder:direction",
+        "category": "org.robotblocks.encoder:sensor",
+        "label": { "es": "sentido del encoder %ENC %SENTIDO", "en": "encoder %ENC direction %SENTIDO" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "ENC",
+            "type": "string",
+            "default": "izquierdo",
+            "reference": { "kind": "row", "block": "org.robotblocks.encoder:configure", "field": "NOMBRE" }
+          },
+          {
+            "name": "SENTIDO",
+            "type": "string",
+            "default": "normal",
+            "options": [
+              { "label": { "es": "normal", "en": "normal" }, "value": "normal" },
+              { "label": { "es": "invertido", "en": "inverted" }, "value": "invertido" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.encoder:direction",
+        "tooltip": {
+          "es": "En «al iniciar», después de configurar y antes de mover. Normal por defecto; invierte el lado montado en espejo. Afecta los siguientes flancos, conserva las cuentas y reinicia la muestra de velocidad.",
+          "en": "In “when started”, after configuring and before moving. Normal by default; invert the side mounted as a mirror image. Affects future edges, preserves counts and resets the speed sample."
+        },
+        "requiredCapabilities": ["digitalInput"],
+        "generators": {
+          "micropython": {
+            "imports": [
+              "import machine",
+              "import time",
+              "import math",
+              "import micropython",
+              "from array import array"
+            ],
+            "globals": [
+              "enc_cuenta = array('l', [0] * 6)\nenc_previo = bytearray(6)\nenc_modo = bytearray(6)\nenc_invertido = bytearray(6)\nenc_tabla = bytes((0, 1, 255, 0, 255, 0, 0, 1, 1, 0, 0, 255, 0, 255, 1, 0))\nenc_a = [None] * 6\nenc_b = [None] * 6\nenc_estado = [None] * 6\nenc_handlers = [None] * 6\n\n# Viper mantiene la suma en 32 bits nativos, sin crear enteros grandes en la IRQ.\n@micropython.viper\ndef enc_flanco(i: int):\n    actual = (int(enc_a[i].value()) << 1) | int(enc_b[i].value())\n    previo = ptr8(enc_previo)\n    modo = ptr8(enc_modo)\n    invertido = ptr8(enc_invertido)\n    tabla = ptr8(enc_tabla)\n    cuentas = ptr32(enc_cuenta)\n    paso = 0\n    if modo[i] == 4:\n        paso = int(tabla[(previo[i] << 2) | actual])\n        if paso == 255:\n            paso = -1\n    else:\n        paso = 1 if (actual >> 1) == (actual & 1) else -1\n    if invertido[i]:\n        paso = 0 - paso\n    previo[i] = actual\n    cuentas[i] = cuentas[i] + paso\n\ndef enc_handler(i):\n    def handler(pin):\n        enc_flanco(i)\n    return handler\n\ndef enc_control(n, bloque):\n    if n < 1 or n > 6 or enc_estado[n - 1] is None:\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    return enc_estado[n - 1]\n\ndef enc_cuentas(n, bloque):\n    enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        return enc_cuenta[n - 1]\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_reiniciar(n, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_cuenta[n - 1] = 0\n        estado[2] = 0\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_todos(bloque):\n    if not any(e is not None for e in enc_estado):\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    for i in range(6):\n        if enc_estado[i] is not None:\n            enc_reiniciar(i + 1, bloque)\n\ndef enc_configurar(inicio, filas, modo, bloque):\n    if inicio < 0 or not filas or inicio + len(filas) > 6:\n        rb_fail(bloque, \"Configura como máximo 6 encoders\")\n    factor = 2 if modo == \"x2\" else 4\n    nombres = [e[5] for e in enc_estado if e is not None]\n    pines = [p for e in enc_estado if e is not None for p in e[6:8]]\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        if enc_estado[inicio + i] is not None:\n            rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\")\n        if not nombre.strip() or nombre in nombres:\n            rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\")\n        if not (ppr > 0 and red > 0 and diam > 0 and math.isfinite(ppr * red * factor) and math.isfinite(diam)):\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\")\n        if a == b or a in pines or b in pines:\n            rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\")\n        nombres.append(nombre)\n        pines.extend((a, b))\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        slot = inicio + i\n        enc_a[slot] = machine.Pin(a, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_b[slot] = machine.Pin(b, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_modo[slot] = factor\n        enc_invertido[slot] = 0\n        enc_previo[slot] = (enc_a[slot].value() << 1) | enc_b[slot].value()\n        enc_estado[slot] = [ppr * red * factor, diam, 0, time.ticks_us(), 0.0, nombre, a, b]\n        enc_reiniciar(slot + 1, bloque)\n        enc_handlers[slot] = enc_handler(slot)\n        trigger = machine.Pin.IRQ_RISING | machine.Pin.IRQ_FALLING\n        enc_a[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n        if factor == 4:\n            enc_b[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n\ndef enc_vueltas(n, bloque):\n    return enc_cuentas(n, bloque) / enc_control(n, bloque)[0]\n\ndef enc_distancia(n, unidad, bloque):\n    return enc_vueltas(n, bloque) * math.pi * enc_control(n, bloque)[1] / (10 if unidad == \"cm\" else 1)\n\ndef enc_velocidad(n, unidad, bloque):\n    estado = enc_control(n, bloque)\n    cuentas = enc_cuentas(n, bloque)\n    ahora = time.ticks_us()\n    dt = time.ticks_diff(ahora, estado[3])\n    if dt >= 20000:\n        diferencia = ((cuentas - estado[2] + 0x80000000) & 0xffffffff) - 0x80000000\n        estado[4] = diferencia / estado[0] * 1000000 / dt\n        estado[2] = cuentas\n        estado[3] = ahora\n    return estado[4] * (60 if unidad == \"rpm\" else math.pi * estado[1] / 10)\n\ndef enc_sentido(n, sentido, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_invertido[n - 1] = sentido == \"invertido\"\n        estado[2] = enc_cuenta[n - 1]\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n"
+            ],
+            "statement": "enc_sentido({ENC}, {SENTIDO}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": ["#include <math.h>", "#include <stdio.h>", "#include <string.h>"],
+            "globals": [
+              "// Encoder de cuadratura: seis slots e ISR fijas, independientes del driver de motores.\n#if defined(ARDUINO_ARCH_ESP32)\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR IRAM_ATTR\n#endif\nstatic portMUX_TYPE enc_mux = portMUX_INITIALIZER_UNLOCKED;\n#else\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR\n#endif\n#endif\nstruct enc_t {\n    volatile long cuentas = 0;\n    volatile uint8_t previo = 0;\n    int a = -1, b = -1, modo = 4;\n    volatile int signo = 1;\n    double cpr = 1, diam = 0;\n    long muestra = 0;\n    unsigned long tiempo = 0;\n    double rps = 0;\n    bool activo = false;\n    const char* nombre = \"\";\n};\nstruct enc_fila_t { const char* nombre; int a; int b; double ppr; double red; double diam; };\nstatic enc_t enc_estado[6];\n// RAM en ESP32: la tabla sigue accesible con la cache de flash deshabilitada.\nstatic int8_t enc_tabla[16] = {0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};\nvoid ARDUINO_ISR_ATTR enc_flanco(uint8_t i) {\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL_ISR(&enc_mux);\n#endif\n    enc_t& e = enc_estado[i];\n    uint8_t actual = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n    int paso = e.modo == 4 ? enc_tabla[(e.previo << 2) | actual] : (((actual >> 1) == (actual & 1)) ? 1 : -1);\n    e.previo = actual;\n    e.cuentas = (long)((unsigned long)e.cuentas + (unsigned long)(paso * e.signo));\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL_ISR(&enc_mux);\n#endif\n}\nvoid ARDUINO_ISR_ATTR enc_isr_a0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_b0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_a1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_b1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_a2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_b2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_a3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_b3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_a4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_b4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_a5() { enc_flanco(5); }\nvoid ARDUINO_ISR_ATTR enc_isr_b5() { enc_flanco(5); }\nstatic void (*const enc_isrs_a[6])() = {enc_isr_a0, enc_isr_a1, enc_isr_a2, enc_isr_a3, enc_isr_a4, enc_isr_a5};\nstatic void (*const enc_isrs_b[6])() = {enc_isr_b0, enc_isr_b1, enc_isr_b2, enc_isr_b3, enc_isr_b4, enc_isr_b5};\ninline bool enc_pin_irq(int pin, const char* bloque) {\n    bool valido = true;\n#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)\n    valido = pin == 2 || pin == 3;\n#endif\n#ifdef NOT_AN_INTERRUPT\n    valido = valido && digitalPinToInterrupt(pin) != NOT_AN_INTERRUPT;\n#endif\n    if (!valido) {\n        static char enc_mensaje[100];\n        snprintf(enc_mensaje, sizeof(enc_mensaje), \"El pin %d no tiene interrupción; usa otro o la lectura ×2\", pin);\n        rb_fail(bloque, enc_mensaje);\n    }\n    return valido;\n}\ninline bool enc_control(int n, const char* bloque) {\n    if (n < 1 || n > 6 || !enc_estado[n - 1].activo) {\n        rb_fail(bloque, \"Configura los encoders al iniciar\");\n        return false;\n    }\n    return true;\n}\ninline long enc_cuentas(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    long valor = enc_estado[n - 1].cuentas;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n    return valor;\n}\ninline void enc_reiniciar(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.cuentas = 0;\n    e.muestra = 0;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\ninline void enc_todos(const char* bloque) {\n    bool alguno = false;\n    for (int i = 0; i < 6; i++) if (enc_estado[i].activo) { alguno = true; enc_reiniciar(i + 1, bloque); }\n    if (!alguno) rb_fail(bloque, \"Configura los encoders al iniciar\");\n}\ninline void enc_configurar(int inicio, const enc_fila_t* filas, int cantidad, const String& modo, const char* bloque) {\n    if (inicio < 0 || cantidad < 1 || inicio + cantidad > 6) { rb_fail(bloque, \"Configura como máximo 6 encoders\"); return; }\n    int factor = modo == \"x2\" ? 2 : 4;\n    // Valida todas las filas antes de instalar interrupciones.\n    for (int i = 0; i < cantidad; i++) {\n        const enc_fila_t& f = filas[i];\n        if (enc_estado[inicio + i].activo) { rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\"); return; }\n        if (!f.nombre[0]) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n        if (!(f.ppr > 0) || !(f.red > 0) || !(f.diam > 0) || !isfinite(f.ppr * f.red * factor) || !isfinite(f.diam)) {\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\"); return;\n        }\n        if (!enc_pin_irq(f.a, bloque) || (factor == 4 && !enc_pin_irq(f.b, bloque))) return;\n        if (f.a == f.b) { rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return; }\n        for (int j = 0; j < 6; j++) if (enc_estado[j].activo) {\n            if (!strcmp(f.nombre, enc_estado[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == enc_estado[j].a || f.a == enc_estado[j].b || f.b == enc_estado[j].a || f.b == enc_estado[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n        for (int j = 0; j < i; j++) {\n            if (!strcmp(f.nombre, filas[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == filas[j].a || f.a == filas[j].b || f.b == filas[j].a || f.b == filas[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n    }\n    for (int i = 0; i < cantidad; i++) {\n        int slot = inicio + i;\n        const enc_fila_t& f = filas[i];\n        enc_t& e = enc_estado[slot];\n        e.a = f.a; e.b = f.b; e.nombre = f.nombre;\n        e.signo = 1;\n        e.modo = factor; e.cpr = f.ppr * f.red * factor; e.diam = f.diam;\n        pinMode(e.a, INPUT_PULLUP);\n        pinMode(e.b, INPUT_PULLUP);\n        e.previo = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n        e.activo = true;\n        enc_reiniciar(slot + 1, bloque);\n        attachInterrupt(digitalPinToInterrupt(e.a), enc_isrs_a[slot], CHANGE);\n        if (factor == 4) attachInterrupt(digitalPinToInterrupt(e.b), enc_isrs_b[slot], CHANGE);\n    }\n}\ninline double enc_vueltas(int n, const char* bloque) {\n    long cuentas = enc_cuentas(n, bloque);\n    return enc_control(n, bloque) ? cuentas / enc_estado[n - 1].cpr : 0;\n}\ninline double enc_distancia(int n, const String& unidad, const char* bloque) {\n    double vueltas = enc_vueltas(n, bloque);\n    if (!enc_control(n, bloque)) return 0;\n    return vueltas * 3.141592653589793 * enc_estado[n - 1].diam / (unidad == \"cm\" ? 10.0 : 1.0);\n}\ninline double enc_velocidad(int n, const String& unidad, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n    enc_t& e = enc_estado[n - 1];\n    long cuentas = enc_cuentas(n, bloque);\n    unsigned long ahora = micros();\n    unsigned long dt = ahora - e.tiempo;\n    if (dt >= 20000UL) {\n        long diferencia = (long)((unsigned long)cuentas - (unsigned long)e.muestra);\n        e.rps = (double)diferencia / e.cpr * 1000000.0 / dt;\n        e.muestra = cuentas; e.tiempo = ahora;\n    }\n    return unidad == \"rpm\" ? e.rps * 60.0 : e.rps * 3.141592653589793 * e.diam / 10.0;\n}\ninline void enc_sentido(int n, const String& sentido, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.signo = sentido == \"invertido\" ? -1 : 1;\n    // Conserva las cuentas y reinicia solo la muestra de velocidad.\n    e.muestra = e.cuentas;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\n"
+            ],
+            "statement": "enc_sentido({ENC}, {SENTIDO}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.encoder:distance",
+        "category": "org.robotblocks.encoder:sensor",
+        "label": { "es": "distancia del encoder %ENC en %UNIDAD", "en": "distance of encoder %ENC in %UNIDAD" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "ENC",
+            "type": "string",
+            "default": "izquierdo",
+            "reference": { "kind": "row", "block": "org.robotblocks.encoder:configure", "field": "NOMBRE" }
+          },
+          {
+            "name": "UNIDAD",
+            "type": "string",
+            "default": "cm",
+            "options": [
+              { "label": { "es": "cm", "en": "cm" }, "value": "cm" },
+              { "label": { "es": "mm", "en": "mm" }, "value": "mm" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.encoder:distance",
+        "tooltip": {
+          "es": "Cuentas / cuentas por vuelta × π × diámetro; conserva el signo.",
+          "en": "Counts / counts per turn × π × diameter; preserves the sign."
+        },
+        "requiredCapabilities": ["digitalInput"],
+        "generators": {
+          "micropython": {
+            "imports": [
+              "import machine",
+              "import time",
+              "import math",
+              "import micropython",
+              "from array import array"
+            ],
+            "globals": [
+              "enc_cuenta = array('l', [0] * 6)\nenc_previo = bytearray(6)\nenc_modo = bytearray(6)\nenc_invertido = bytearray(6)\nenc_tabla = bytes((0, 1, 255, 0, 255, 0, 0, 1, 1, 0, 0, 255, 0, 255, 1, 0))\nenc_a = [None] * 6\nenc_b = [None] * 6\nenc_estado = [None] * 6\nenc_handlers = [None] * 6\n\n# Viper mantiene la suma en 32 bits nativos, sin crear enteros grandes en la IRQ.\n@micropython.viper\ndef enc_flanco(i: int):\n    actual = (int(enc_a[i].value()) << 1) | int(enc_b[i].value())\n    previo = ptr8(enc_previo)\n    modo = ptr8(enc_modo)\n    invertido = ptr8(enc_invertido)\n    tabla = ptr8(enc_tabla)\n    cuentas = ptr32(enc_cuenta)\n    paso = 0\n    if modo[i] == 4:\n        paso = int(tabla[(previo[i] << 2) | actual])\n        if paso == 255:\n            paso = -1\n    else:\n        paso = 1 if (actual >> 1) == (actual & 1) else -1\n    if invertido[i]:\n        paso = 0 - paso\n    previo[i] = actual\n    cuentas[i] = cuentas[i] + paso\n\ndef enc_handler(i):\n    def handler(pin):\n        enc_flanco(i)\n    return handler\n\ndef enc_control(n, bloque):\n    if n < 1 or n > 6 or enc_estado[n - 1] is None:\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    return enc_estado[n - 1]\n\ndef enc_cuentas(n, bloque):\n    enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        return enc_cuenta[n - 1]\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_reiniciar(n, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_cuenta[n - 1] = 0\n        estado[2] = 0\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n\ndef enc_todos(bloque):\n    if not any(e is not None for e in enc_estado):\n        rb_fail(bloque, \"Configura los encoders al iniciar\")\n    for i in range(6):\n        if enc_estado[i] is not None:\n            enc_reiniciar(i + 1, bloque)\n\ndef enc_configurar(inicio, filas, modo, bloque):\n    if inicio < 0 or not filas or inicio + len(filas) > 6:\n        rb_fail(bloque, \"Configura como máximo 6 encoders\")\n    factor = 2 if modo == \"x2\" else 4\n    nombres = [e[5] for e in enc_estado if e is not None]\n    pines = [p for e in enc_estado if e is not None for p in e[6:8]]\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        if enc_estado[inicio + i] is not None:\n            rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\")\n        if not nombre.strip() or nombre in nombres:\n            rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\")\n        if not (ppr > 0 and red > 0 and diam > 0 and math.isfinite(ppr * red * factor) and math.isfinite(diam)):\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\")\n        if a == b or a in pines or b in pines:\n            rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\")\n        nombres.append(nombre)\n        pines.extend((a, b))\n    for i, (nombre, a, b, ppr, red, diam) in enumerate(filas):\n        slot = inicio + i\n        enc_a[slot] = machine.Pin(a, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_b[slot] = machine.Pin(b, machine.Pin.IN, machine.Pin.PULL_UP)\n        enc_modo[slot] = factor\n        enc_invertido[slot] = 0\n        enc_previo[slot] = (enc_a[slot].value() << 1) | enc_b[slot].value()\n        enc_estado[slot] = [ppr * red * factor, diam, 0, time.ticks_us(), 0.0, nombre, a, b]\n        enc_reiniciar(slot + 1, bloque)\n        enc_handlers[slot] = enc_handler(slot)\n        trigger = machine.Pin.IRQ_RISING | machine.Pin.IRQ_FALLING\n        enc_a[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n        if factor == 4:\n            enc_b[slot].irq(trigger=trigger, handler=enc_handlers[slot])\n\ndef enc_vueltas(n, bloque):\n    return enc_cuentas(n, bloque) / enc_control(n, bloque)[0]\n\ndef enc_distancia(n, unidad, bloque):\n    return enc_vueltas(n, bloque) * math.pi * enc_control(n, bloque)[1] / (10 if unidad == \"cm\" else 1)\n\ndef enc_velocidad(n, unidad, bloque):\n    estado = enc_control(n, bloque)\n    cuentas = enc_cuentas(n, bloque)\n    ahora = time.ticks_us()\n    dt = time.ticks_diff(ahora, estado[3])\n    if dt >= 20000:\n        diferencia = ((cuentas - estado[2] + 0x80000000) & 0xffffffff) - 0x80000000\n        estado[4] = diferencia / estado[0] * 1000000 / dt\n        estado[2] = cuentas\n        estado[3] = ahora\n    return estado[4] * (60 if unidad == \"rpm\" else math.pi * estado[1] / 10)\n\ndef enc_sentido(n, sentido, bloque):\n    estado = enc_control(n, bloque)\n    irq = machine.disable_irq()\n    try:\n        enc_invertido[n - 1] = sentido == \"invertido\"\n        estado[2] = enc_cuenta[n - 1]\n        estado[3] = time.ticks_us()\n        estado[4] = 0.0\n    finally:\n        machine.enable_irq(irq)\n"
+            ],
+            "expression": "enc_distancia({ENC}, {UNIDAD}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": ["#include <math.h>", "#include <stdio.h>", "#include <string.h>"],
+            "globals": [
+              "// Encoder de cuadratura: seis slots e ISR fijas, independientes del driver de motores.\n#if defined(ARDUINO_ARCH_ESP32)\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR IRAM_ATTR\n#endif\nstatic portMUX_TYPE enc_mux = portMUX_INITIALIZER_UNLOCKED;\n#else\n#ifndef ARDUINO_ISR_ATTR\n#define ARDUINO_ISR_ATTR\n#endif\n#endif\nstruct enc_t {\n    volatile long cuentas = 0;\n    volatile uint8_t previo = 0;\n    int a = -1, b = -1, modo = 4;\n    volatile int signo = 1;\n    double cpr = 1, diam = 0;\n    long muestra = 0;\n    unsigned long tiempo = 0;\n    double rps = 0;\n    bool activo = false;\n    const char* nombre = \"\";\n};\nstruct enc_fila_t { const char* nombre; int a; int b; double ppr; double red; double diam; };\nstatic enc_t enc_estado[6];\n// RAM en ESP32: la tabla sigue accesible con la cache de flash deshabilitada.\nstatic int8_t enc_tabla[16] = {0, 1, -1, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, -1, 1, 0};\nvoid ARDUINO_ISR_ATTR enc_flanco(uint8_t i) {\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL_ISR(&enc_mux);\n#endif\n    enc_t& e = enc_estado[i];\n    uint8_t actual = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n    int paso = e.modo == 4 ? enc_tabla[(e.previo << 2) | actual] : (((actual >> 1) == (actual & 1)) ? 1 : -1);\n    e.previo = actual;\n    e.cuentas = (long)((unsigned long)e.cuentas + (unsigned long)(paso * e.signo));\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL_ISR(&enc_mux);\n#endif\n}\nvoid ARDUINO_ISR_ATTR enc_isr_a0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_b0() { enc_flanco(0); }\nvoid ARDUINO_ISR_ATTR enc_isr_a1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_b1() { enc_flanco(1); }\nvoid ARDUINO_ISR_ATTR enc_isr_a2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_b2() { enc_flanco(2); }\nvoid ARDUINO_ISR_ATTR enc_isr_a3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_b3() { enc_flanco(3); }\nvoid ARDUINO_ISR_ATTR enc_isr_a4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_b4() { enc_flanco(4); }\nvoid ARDUINO_ISR_ATTR enc_isr_a5() { enc_flanco(5); }\nvoid ARDUINO_ISR_ATTR enc_isr_b5() { enc_flanco(5); }\nstatic void (*const enc_isrs_a[6])() = {enc_isr_a0, enc_isr_a1, enc_isr_a2, enc_isr_a3, enc_isr_a4, enc_isr_a5};\nstatic void (*const enc_isrs_b[6])() = {enc_isr_b0, enc_isr_b1, enc_isr_b2, enc_isr_b3, enc_isr_b4, enc_isr_b5};\ninline bool enc_pin_irq(int pin, const char* bloque) {\n    bool valido = true;\n#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__)\n    valido = pin == 2 || pin == 3;\n#endif\n#ifdef NOT_AN_INTERRUPT\n    valido = valido && digitalPinToInterrupt(pin) != NOT_AN_INTERRUPT;\n#endif\n    if (!valido) {\n        static char enc_mensaje[100];\n        snprintf(enc_mensaje, sizeof(enc_mensaje), \"El pin %d no tiene interrupción; usa otro o la lectura ×2\", pin);\n        rb_fail(bloque, enc_mensaje);\n    }\n    return valido;\n}\ninline bool enc_control(int n, const char* bloque) {\n    if (n < 1 || n > 6 || !enc_estado[n - 1].activo) {\n        rb_fail(bloque, \"Configura los encoders al iniciar\");\n        return false;\n    }\n    return true;\n}\ninline long enc_cuentas(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    long valor = enc_estado[n - 1].cuentas;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n    return valor;\n}\ninline void enc_reiniciar(int n, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.cuentas = 0;\n    e.muestra = 0;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\ninline void enc_todos(const char* bloque) {\n    bool alguno = false;\n    for (int i = 0; i < 6; i++) if (enc_estado[i].activo) { alguno = true; enc_reiniciar(i + 1, bloque); }\n    if (!alguno) rb_fail(bloque, \"Configura los encoders al iniciar\");\n}\ninline void enc_configurar(int inicio, const enc_fila_t* filas, int cantidad, const String& modo, const char* bloque) {\n    if (inicio < 0 || cantidad < 1 || inicio + cantidad > 6) { rb_fail(bloque, \"Configura como máximo 6 encoders\"); return; }\n    int factor = modo == \"x2\" ? 2 : 4;\n    // Valida todas las filas antes de instalar interrupciones.\n    for (int i = 0; i < cantidad; i++) {\n        const enc_fila_t& f = filas[i];\n        if (enc_estado[inicio + i].activo) { rb_fail(bloque, \"Configura los encoders una sola vez al iniciar\"); return; }\n        if (!f.nombre[0]) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n        if (!(f.ppr > 0) || !(f.red > 0) || !(f.diam > 0) || !isfinite(f.ppr * f.red * factor) || !isfinite(f.diam)) {\n            rb_fail(bloque, \"PPR, reducción y diámetro deben ser positivos y finitos\"); return;\n        }\n        if (!enc_pin_irq(f.a, bloque) || (factor == 4 && !enc_pin_irq(f.b, bloque))) return;\n        if (f.a == f.b) { rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return; }\n        for (int j = 0; j < 6; j++) if (enc_estado[j].activo) {\n            if (!strcmp(f.nombre, enc_estado[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == enc_estado[j].a || f.a == enc_estado[j].b || f.b == enc_estado[j].a || f.b == enc_estado[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n        for (int j = 0; j < i; j++) {\n            if (!strcmp(f.nombre, filas[j].nombre)) { rb_fail(bloque, \"Pon nombres distintos y no vacíos a los encoders\"); return; }\n            if (f.a == filas[j].a || f.a == filas[j].b || f.b == filas[j].a || f.b == filas[j].b) {\n                rb_fail(bloque, \"Los pines de los encoders no pueden repetirse\"); return;\n            }\n        }\n    }\n    for (int i = 0; i < cantidad; i++) {\n        int slot = inicio + i;\n        const enc_fila_t& f = filas[i];\n        enc_t& e = enc_estado[slot];\n        e.a = f.a; e.b = f.b; e.nombre = f.nombre;\n        e.signo = 1;\n        e.modo = factor; e.cpr = f.ppr * f.red * factor; e.diam = f.diam;\n        pinMode(e.a, INPUT_PULLUP);\n        pinMode(e.b, INPUT_PULLUP);\n        e.previo = (digitalRead(e.a) ? 2 : 0) | (digitalRead(e.b) ? 1 : 0);\n        e.activo = true;\n        enc_reiniciar(slot + 1, bloque);\n        attachInterrupt(digitalPinToInterrupt(e.a), enc_isrs_a[slot], CHANGE);\n        if (factor == 4) attachInterrupt(digitalPinToInterrupt(e.b), enc_isrs_b[slot], CHANGE);\n    }\n}\ninline double enc_vueltas(int n, const char* bloque) {\n    long cuentas = enc_cuentas(n, bloque);\n    return enc_control(n, bloque) ? cuentas / enc_estado[n - 1].cpr : 0;\n}\ninline double enc_distancia(int n, const String& unidad, const char* bloque) {\n    double vueltas = enc_vueltas(n, bloque);\n    if (!enc_control(n, bloque)) return 0;\n    return vueltas * 3.141592653589793 * enc_estado[n - 1].diam / (unidad == \"cm\" ? 10.0 : 1.0);\n}\ninline double enc_velocidad(int n, const String& unidad, const char* bloque) {\n    if (!enc_control(n, bloque)) return 0;\n    enc_t& e = enc_estado[n - 1];\n    long cuentas = enc_cuentas(n, bloque);\n    unsigned long ahora = micros();\n    unsigned long dt = ahora - e.tiempo;\n    if (dt >= 20000UL) {\n        long diferencia = (long)((unsigned long)cuentas - (unsigned long)e.muestra);\n        e.rps = (double)diferencia / e.cpr * 1000000.0 / dt;\n        e.muestra = cuentas; e.tiempo = ahora;\n    }\n    return unidad == \"rpm\" ? e.rps * 60.0 : e.rps * 3.141592653589793 * e.diam / 10.0;\n}\ninline void enc_sentido(int n, const String& sentido, const char* bloque) {\n    if (!enc_control(n, bloque)) return;\n    enc_t& e = enc_estado[n - 1];\n#if defined(ARDUINO_ARCH_ESP32)\n    portENTER_CRITICAL(&enc_mux);\n#else\n    noInterrupts();\n#endif\n    e.signo = sentido == \"invertido\" ? -1 : 1;\n    // Conserva las cuentas y reinicia solo la muestra de velocidad.\n    e.muestra = e.cuentas;\n    e.tiempo = micros();\n    e.rps = 0;\n#if defined(ARDUINO_ARCH_ESP32)\n    portEXIT_CRITICAL(&enc_mux);\n#else\n    interrupts();\n#endif\n}\n"
+            ],
+            "expression": "enc_distancia({ENC}, {UNIDAD}, {BLOCK_ID})"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -28,4 +28,6 @@ Para avance del maze usa **(izquierda + derecha) / 2**. Para ángulo, mejor la *
 
 Máximo seis encoders **en total**. Configurar y sentido van directamente en «al iniciar»; no hay un diagnóstico específico de ubicación. Usar uno sin configurar da `Configura los encoders al iniciar`. Reconfigurar un slot activo da error y **no vuelve a registrar interrupciones**.
 
+En Arduino, el contador interno es un `long` con signo de 32 bits, pero GreyForge 0.4.0 procesa los valores de los bloques como `float`: las cuentas dejan de ser exactas por encima de ±16 777 216. Reinicia los encoders entre recorridos si necesitas precisión de una cuenta.
+
 `npm test` en el catálogo ejecuta la simulación. Desde la app: `node package-catalog/scripts/probar-extension.mjs package-catalog/packages/encoder`. Compilaciones, prueba de Viper, restauración Blockly y límites de la comprobación visual: **[VALIDACION.md](VALIDACION.md)**. No se ha cargado en hardware.
