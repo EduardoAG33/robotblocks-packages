@@ -46,7 +46,7 @@
         "Pon nombres distintos y no vacíos a los encoders": "Give the encoders distinct, non-empty names",
         "PPR, reducción y diámetro deben ser positivos y finitos": "PPR, gear ratio and diameter must be positive and finite",
         "Los pines de los encoders no pueden repetirse": "Encoder pins cannot be repeated",
-        "El pin %d no tiene interrupción; usa otro o la lectura ×2": "Pin %d has no interrupt; use another pin or ×2 reading"
+        "Un pin del encoder no tiene interrupción; cámbialo (en UNO/Nano solo D2 y D3)": "An encoder pin has no interrupt; change it (on UNO/Nano only D2 and D3)"
       }
     }
   }
