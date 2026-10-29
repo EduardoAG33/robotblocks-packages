@@ -1,5 +1,21 @@
 # EV3: motores, sensores y ladrillo · experimental
 
+## Bloques para EV3-G y WRO (0.4.0)
+
+| EV3-G                         | GreyForge                                          |
+| ----------------------------- | -------------------------------------------------- |
+| Motor encendido a potencia    | motor encender a potencia; girar grados a potencia |
+| RawMotorOn                    | motor potencia sin regular                         |
+| Velocidad del motor           | velocidad del motor (grados/s)                     |
+| Motor hasta atascarse         | motor girar hasta atascarse                        |
+| Archivo de calibración        | guardar número, número del archivo, borrar archivo |
+| Pantalla, texto en cuadrícula | pantalla escribir en fila y columna                |
+| Detener programa              | detener programa                                   |
+
+La potencia regulada usa la velocidad máxima nominal de 1050 grados/s para el motor grande y 1560 para el mediano. Se identifica por sysfs; si falla la lectura se usa 1050. La potencia sin regular usa `Motor.dc`. Las maniobras bloqueantes ceden a las demás pilas. No compartas un motor ocupado entre procesos.
+
+Los archivos se guardan en `/home/robot/robotblocks/datos/`, con nombres de 1 a 32 letras ASCII, números, guion o guion bajo. La escritura usa un archivo temporal y renombrado; leer un archivo ausente, vacío o no numérico devuelve el valor predeterminado. La cuadrícula usa celdas de 8 × 10 píxeles y no borra la fila antes de escribir. Para detener todas las pilas se detienen también los motores. Estas funciones siguen pendientes de prueba en el EV3 real.
+
 ## I2C entre tarjetas (fase 11b)
 
 La categoría **EV3 · I2C** permite leer registros, escribir valores y consultar el

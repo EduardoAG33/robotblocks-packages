@@ -1,0 +1,105 @@
+{
+  "titulo": "EV3 · bloques WRO",
+  "tarjetas": ["lego-ev3"],
+  "variables": {
+    "velocidad": 0,
+    "valor": 0
+  },
+  "programa": [
+    [
+      ":motor-power",
+      {
+        "PORT": "a"
+      },
+      {
+        "POWER": 50
+      }
+    ],
+    [
+      ":motor-angle-power",
+      {
+        "PORT": "a",
+        "THEN": "brake"
+      },
+      {
+        "ANGLE": 90,
+        "POWER": 50
+      }
+    ],
+    [
+      ":motor-dc",
+      {
+        "PORT": "a"
+      },
+      {
+        "POWER": 20
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "velocidad"
+      },
+      {
+        "VALUE": [
+          ":motor-speed",
+          {
+            "PORT": "a"
+          }
+        ]
+      }
+    ],
+    [
+      ":motor-stalled",
+      {
+        "PORT": "a"
+      },
+      {
+        "SPEED": 200,
+        "DUTY": 40
+      }
+    ],
+    [
+      ":file-save",
+      {},
+      {
+        "VALUE": 12,
+        "NAME": "calibracion"
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "valor"
+      },
+      {
+        "VALUE": [
+          ":file-read",
+          {},
+          {
+            "NAME": "calibracion",
+            "DEFAULT": 0
+          }
+        ]
+      }
+    ],
+    [
+      ":file-delete",
+      {},
+      {
+        "NAME": "calibracion"
+      }
+    ],
+    [
+      ":screen-grid",
+      {},
+      {
+        "TEXT": "Hola",
+        "ROW": 1,
+        "COL": 2
+      }
+    ],
+    [":program-stop", {}]
+  ],
+  "ejemplo": "lego-ev3"
+}
