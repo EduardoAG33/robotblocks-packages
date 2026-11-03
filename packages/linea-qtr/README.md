@@ -35,5 +35,5 @@ Fuente: [Pololu QTRX-MD-13A](https://www.pololu.com/product/4453).
 
 ## Pruebas en hardware
 
-- Arduino GIGA R1 (C++) con 11 canales (A8–A11 incluidos) y dos XIAO ESP32-S3 (C++) leyendo QTR en el robot Rescue Line (2026-10-18).
+- Arduino GIGA R1 (C++) con 11 canales (A8–A11 incluidos) y dos XIAO ESP32-S3 (C++) leyendo QTR en un robot (2026-10-18).
 - MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.

@@ -1,6 +1,6 @@
 # EV3: motores, sensores y ladrillo · experimental
 
-## Bloques para EV3-G y WRO (0.4.0)
+## Bloques para EV3-G (0.4.0)
 
 | EV3-G                         | GreyForge                                          |
 | ----------------------------- | -------------------------------------------------- |

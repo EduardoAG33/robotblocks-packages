@@ -2,7 +2,7 @@
 
 Estados con nombre para ordenar lo que hace un robot: «esperando», «siguiendo línea», «rescate»… En vez de muchas variables sueltas, el programa siempre está en un estado, cambia de uno a otro y cada rama del «por siempre» se ocupa de uno. Funciona en Arduino (C++), MicroPython (ESP32) y Pybricks (SPIKE y EV3), sin bibliotecas externas.
 
-Named states to organize what a robot does: “waiting”, “following the line”, “rescue”… Instead of many loose variables, the program is always in one state, changes from one to another and each branch of the “forever” handles one. Works on Arduino (C++), MicroPython (ESP32) and Pybricks (SPIKE and EV3), without external libraries.
+Named states to organize what a robot does: “waiting”, “following the line”, “turning”… Instead of many loose variables, the program is always in one state, changes from one to another and each branch of the “forever” handles one. Works on Arduino (C++), MicroPython (ESP32) and Pybricks (SPIKE and EV3), without external libraries.
 
 ## Bloques / Blocks
 

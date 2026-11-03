@@ -18,11 +18,11 @@ Conecta GND común, A/B a sus pines y alimentación según la ficha. **Señales 
 
 **UNO R3/Nano:** solo D2/D3 tienen interrupción. Para dos encoders: ×2, A en D2/D3 y B en otros pines. Para uno en ×4: A2/B3. En otras tarjetas, ambos pines deben admitir interrupción para ×4.
 
-## Maze y ejemplo
+## Distancia y ejemplo
 
 Abre `examples/teensy-distancias.blocks.json`: **Teensy 4.1**, izquierdo A2/B3, derecho A4/B5, PPR 11, reducción 30, rueda 65 mm. Cada **200 ms** imprime por serie ambas distancias en cm y su promedio; ajusta el sentido según el montaje.
 
-Para avance del maze usa **(izquierda + derecha) / 2**. Para ángulo, mejor la **IMU**: las llantas patinan al girar. Corrige con los láseres contra las paredes en cada celda de **30 cm**.
+Para medir el avance usa **(izquierda + derecha) / 2**. Para ángulo, mejor la **IMU**: las llantas patinan al girar.
 
 ## Límites y pruebas
 

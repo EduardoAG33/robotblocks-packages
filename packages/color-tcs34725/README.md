@@ -27,5 +27,5 @@ Fuente: [datasheet oficial ams OSRAM TCS3472, registros y protocolo I2C](https:/
 
 ## Pruebas en hardware
 
-- Arduino GIGA R1 (C++), sensores de color del robot Rescue Line (2026-10-18).
+- Arduino GIGA R1 (C++), sensores de color del robot (2026-10-18).
 - MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.

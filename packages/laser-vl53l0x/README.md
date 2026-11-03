@@ -1,7 +1,7 @@
 # Láser VL53L0X con XSHUT
 
 Extensión **Arduino/C++ y MicroPython** para varios VL53L0X en un bus I2C, probada en hardware (ver «Pruebas en hardware»).
-Prioridad: robot de laberinto Teensy 4.0/4.1 con 9–10 sensores. También genera
+Pensado para hasta 12 sensores en un bus. También genera
 para UNO, Nano, GIGA R1 y UNO R4 Minima con los pares Wire oficiales, y en
 MicroPython para ESP32 (FireBeetle, XIAO ESP32-S3).
 No requiere Adafruit ni bibliotecas externas: el sketch incluye un port del
@@ -114,7 +114,6 @@ emite: `RB_ERROR <id-bloque> No responde el láser VL53L0X <n> durante la config
 El nombre identifica al láser en cualquier bloque; se aplica el mecanismo de
 fallo existente. No se usan lecturas single-shot.
 
-Ejemplo de la aplicación: **examples/teensy-41-laberinto-10-laseres.blocks.json**.
 Cinco láseres en Wire (18/19, XSHUT 2…6) y cinco en Wire1 (17/16, XSHUT 7…11). Imprime diez distancias y
 espera 100 ms entre conjuntos. Sin OLED ni otro módulo en 0x29.
 
@@ -199,5 +198,5 @@ conditions are met:
 
 ## Pruebas en hardware
 
-- Arduino GIGA R1 (C++), 9 láseres con XSHUT en el robot Rescue Line, de 125 a 890 mm (2026-10-18).
+- Arduino GIGA R1 (C++), 9 láseres con XSHUT en un robot, de 125 a 890 mm (2026-10-18).
 - MicroPython en una ESP32 (ESP32-D0WD) con un láser y XSHUT, de 80 a 300 mm, y vuelve a leer tras reiniciar la ESP32 (2026-10-17). La XIAO ESP32-S3 solo se probó en simulación.

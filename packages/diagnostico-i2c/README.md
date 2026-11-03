@@ -24,12 +24,12 @@ Use the same SDA/SCL pins as your sensors: on Arduino they choose the bus (`Wire
 
 ## Si no aparece nada / If nothing shows up
 
-1. ¿El sensor tiene alimentación? En el robot Rescue Line el riel de 3.3 V solo se enciende con el interruptor de la batería.
+1. ¿El sensor tiene alimentación? En un robot el riel de 3.3 V solo se enciende con el interruptor de la batería.
 2. SDA con SDA y SCL con SCL, y GND común.
 3. Pull-ups: la mayoría de los módulos ya los traen; sin ninguno el bus no funciona.
 4. Dos sensores con la misma dirección se estorban (por ejemplo varios VL53L0X sin cambiar su dirección con XSHUT).
 
-- Does the sensor have power? On the Rescue Line robot the 3.3 V rail only turns on with the battery switch.
+- Does the sensor have power? On a robot the 3.3 V rail only turns on with the battery switch.
 - SDA to SDA and SCL to SCL, and a common GND.
 - Pull-ups: most modules already have them; with none the bus does not work.
 - Two sensors with the same address get in each other's way (for example several VL53L0X without changing their address with XSHUT).
