@@ -5,7 +5,7 @@
   "version": "1.3.0",
   "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
-  "description": "Pines digitales, ADC y PWM. MicroPython ESP32 y API básica C++/Arduino experimental; carga Arduino pendiente.",
+  "description": "Pines digitales, ADC y PWM. MicroPython ESP32 y API básica C++/Arduino experimental; carga a Arduino desde GreyForge.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
@@ -25,7 +25,7 @@
     "translations": {
       "en": {
         "Pines digitales, analógicos y PWM": "Digital, analog and PWM pins",
-        "Pines digitales, ADC y PWM. MicroPython ESP32 y API básica C++/Arduino experimental; carga Arduino pendiente.": "Digital pins, ADC and PWM. ESP32 MicroPython and experimental basic C++/Arduino API; Arduino upload pending.",
+        "Pines digitales, ADC y PWM. MicroPython ESP32 y API básica C++/Arduino experimental; carga a Arduino desde GreyForge.": "Digital pins, ADC and PWM. ESP32 MicroPython and experimental basic C++/Arduino API; upload to Arduino from GreyForge.",
         "Pines de la tarjeta": "Board pins"
       }
     }
