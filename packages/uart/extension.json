@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.uart",
   "name": "UART: OpenMV y otras placas",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": { "name": "Los Grises · RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Comunicación por UART con mensajes de varios números separados por comas, con tipo y checksum opcionales; por ejemplo «160,2400,2» desde una cámara OpenMV o «2:120,-30*39» entre tarjetas.",
