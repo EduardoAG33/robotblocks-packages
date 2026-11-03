@@ -8,11 +8,11 @@ USER_LED GPIO21 es **activo en bajo**. Strapping: GPIO0/45/46 internos (BOOT/mod
 
 ## MicroPython por USB nativo / Web Serial
 
-El conector USB-C usa USB nativo (USB CDC/Serial-JTAG), **sin CH340**. Firmware oficial: descarga el `.bin` de **ESP32_GENERIC_S3 / spiram-oct** para la PSRAM octal; la familia admite al menos 4 MiB de flash y es compatible con los 8 MB de esta placa. No usar ESP32_GENERIC del ESP32 clásico ni firmware de cámara de terceros. El firmware de fábrica Arduino no es MicroPython. Flashear es un paso externo y manual (dirección 0 indicada por micropython.org), no una acción de RobotBlocks.
+El conector USB-C usa USB nativo (USB CDC/Serial-JTAG), **sin CH340**. Firmware oficial: descarga el `.bin` de **ESP32_GENERIC_S3 / spiram-oct** para la PSRAM octal; la familia admite al menos 4 MiB de flash y es compatible con los 8 MB de esta placa. No usar ESP32_GENERIC del ESP32 clásico ni firmware de cámara de terceros. El firmware de fábrica Arduino no es MicroPython. Flashear es un paso externo y manual (dirección 0 indicada por micropython.org), no una acción de GreyForge.
 
 Después de flashear: pulsa RESET, cierra Thonny/Arduino, conecta en Chrome/Edge a 115200 y elige el puerto USB de MicroPython. Si no aparece, usa cable de datos y mantén BOOT mientras pulsas RESET; suelta BOOT para recuperar el puerto de flasheo. BOOT es el cargador ROM, no raw REPL: tras instalar MicroPython vuelve a RESET normal y selecciona su puerto, que puede cambiar. No instalar driver CH340. USB19/20 deben permanecer reservados.
 
-El REPL USB estándar acepta Ctrl-C/Ctrl-A/raw REPL; RobotBlocks transfiere main.py y robotblocks_runtime.py y reinicia suavemente con Ctrl-D. Compatibilidad verificada por documentación/código y pruebas con puerto simulado; **carga física con este firmware pendiente**, no se afirma que se haya probado una placa conectada.
+El REPL USB estándar acepta Ctrl-C/Ctrl-A/raw REPL; GreyForge transfiere main.py y robotblocks_runtime.py y reinicia suavemente con Ctrl-D. Compatibilidad verificada por documentación/código y pruebas con puerto simulado; **carga física con este firmware pendiente**, no se afirma que se haya probado una placa conectada.
 
 ## Extensiones
 

@@ -3,7 +3,7 @@
   "id": "org.robotblocks.lego-spike-prime",
   "name": "SPIKE Prime / Pybricks · experimental",
   "version": "0.1.1",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Hub con firmware Pybricks 3.6.1+ (compatible con 4.0). La app solo carga programas por Bluetooth, no instala firmware. Pendiente de prueba física.",
   "requiredCapabilities": [],

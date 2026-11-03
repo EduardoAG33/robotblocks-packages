@@ -4,7 +4,7 @@
   "name": "Láser VL53L0X",
   "version": "1.2.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Varios láseres VL53L0X con XSHUT y distancia continua sin bloquear, en Arduino y MicroPython (ESP32).",

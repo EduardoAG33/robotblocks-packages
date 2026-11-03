@@ -3,7 +3,7 @@
   "id": "org.robotblocks.lego-ev3",
   "name": "EV3 / microSD Pybricks 2.0 · experimental",
   "version": "0.1.1",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "EV3 con microSD LEGO Education EV3 MicroPython (ev3dev + Pybricks 2.0). Descarga manual de main.py; firmware original conservado. Experimental.",
   "requiredCapabilities": [],

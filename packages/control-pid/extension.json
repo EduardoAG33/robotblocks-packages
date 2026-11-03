@@ -4,7 +4,7 @@
   "name": "Control PID",
   "version": "1.0.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Controladores PID con nombre para seguir líneas, paredes o un ángulo: tiempo real entre vueltas, anti-windup y salida limitada. Arduino, MicroPython y Pybricks.",

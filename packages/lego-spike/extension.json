@@ -3,7 +3,7 @@
   "id": "org.robotblocks.lego-spike",
   "name": "SPIKE: motores, sensores y hub · experimental",
   "version": "0.1.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Plantillas Pybricks declarativas para SPIKE Prime. Motor, base motriz, sensores y hub; sin ejecución de código de paquetes en el navegador.",
   "requiredCapabilities": ["poweredUpPort"],

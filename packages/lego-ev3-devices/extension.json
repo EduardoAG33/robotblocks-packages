@@ -3,7 +3,7 @@
   "id": "org.robotblocks.lego-ev3-devices",
   "name": "EV3: motores, sensores y ladrillo · experimental",
   "version": "0.4.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.",
   "requiredCapabilities": ["ev3MotorPort", "ev3SensorPort"],

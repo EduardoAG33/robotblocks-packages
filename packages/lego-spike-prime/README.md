@@ -2,7 +2,7 @@
 
 Hub SPIKE Prime con firmware Pybricks. Destino `pybricks`, carga
 `webbluetooth-pybricks` por Chrome/Edge en HTTPS o localhost. No es el Python del
-firmware original de LEGO. RobotBlocks no instala ni restaura firmware.
+firmware original de LEGO. GreyForge no instala ni restaura firmware.
 
 Instala Pybricks manualmente en [Pybricks Code](https://code.pybricks.com/) y activa
 Bluetooth en el hub. La app SPIKE de LEGO puede restaurar el firmware original.

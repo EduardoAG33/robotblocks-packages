@@ -4,7 +4,7 @@
   "name": "Luz RGB WS2812",
   "version": "1.0.1",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Tabletas y tiras WS2812 (NeoPixel): colores, brillo, arcoíris, movimiento y barras. Experimental hasta probar en hardware.",

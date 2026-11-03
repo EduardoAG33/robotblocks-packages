@@ -1,6 +1,6 @@
 # IMU MPU6050
 
-Extensión **experimental** para Arduino/C++ y MicroPython, con Wire/I2C directo y sin librerías externas. Pendiente de prueba física. Está basada en la extensión de Mind+ del equipo WRO Arath, licencia MIT («MPU6050 - Bloques para alumnos», versión 1.0.1). Las plantillas RobotBlocks están escritas para su generador declarativo; se conserva el comportamiento de calibración, zona muerta y sentido del giro de la referencia.
+Extensión **experimental** para Arduino/C++ y MicroPython, con Wire/I2C directo y sin librerías externas. Pendiente de prueba física. Está basada en la extensión de Mind+ del equipo WRO Arath, licencia MIT («MPU6050 - Bloques para alumnos», versión 1.0.1). Las plantillas GreyForge están escritas para su generador declarativo; se conserva el comportamiento de calibración, zona muerta y sentido del giro de la referencia.
 
 ## Bloques
 

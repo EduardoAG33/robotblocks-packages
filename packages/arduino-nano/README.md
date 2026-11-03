@@ -76,4 +76,4 @@ Fuentes adicionales: [Servo oficial y Timer1](https://github.com/arduino-librari
 
 ## Prueba en hardware
 
-- 2026-10-17: el equipo cargó un programa de RobotBlocks y funcionó en la placa.
+- 2026-10-17: el equipo cargó un programa de GreyForge y funcionó en la placa.

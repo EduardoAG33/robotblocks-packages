@@ -3,9 +3,9 @@
   "id": "org.robotblocks.arduino-uno",
   "name": "Arduino UNO R3",
   "version": "0.3.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
-  "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
+  "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con GreyForge.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
@@ -15,7 +15,7 @@
     "group": "boards",
     "translations": {
       "en": {
-        "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Tested on hardware with RobotBlocks.",
+        "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con GreyForge.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Tested on hardware with GreyForge.",
         "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial.",
         "Reservado para serie USB (RX/TX del puente USB-UART). No seleccionable.": "Reserved for USB serial (USB-UART bridge RX/TX). Not selectable.",
         "LED integrado; alto enciende, bajo apaga. Compartido con SPI SCK.": "Built-in LED; high turns it on, low turns it off. Shared with SPI SCK.",

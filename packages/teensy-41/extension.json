@@ -3,9 +3,9 @@
   "id": "org.robotblocks.teensy-41",
   "name": "Teensy 4.1",
   "version": "0.3.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
-  "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
+  "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con GreyForge.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
@@ -15,7 +15,7 @@
     "group": "boards",
     "translations": {
       "en": {
-        "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.": "i.MX RT1062. 3.3 V logic; NOT 5 V tolerant. ADC read at 10 bits (12-bit hardware), 8-bit PWM by default. Built-in LED on pin 13. Tested on hardware with RobotBlocks.",
+        "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con GreyForge.": "i.MX RT1062. 3.3 V logic; NOT 5 V tolerant. ADC read at 10 bits (12-bit hardware), 8-bit PWM by default. Built-in LED on pin 13. Tested on hardware with GreyForge.",
         "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13.": "i.MX RT1062. 3.3 V logic; NOT 5 V tolerant. ADC read at 10 bits (12-bit hardware), 8-bit PWM by default. Built-in LED on pin 13.",
         "PWM por defecto: 4482 Hz (aprox.).": "Default PWM: 4482 Hz (approx.).",
         "PWM por defecto: 3611 Hz (aprox.).": "Default PWM: 3611 Hz (approx.).",

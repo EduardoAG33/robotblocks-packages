@@ -4,7 +4,7 @@
   "name": "IMU MPU6050",
   "version": "1.0.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Giro acumulado, inclinación, aceleración y velocidad de giro con MPU6050 por I2C.",

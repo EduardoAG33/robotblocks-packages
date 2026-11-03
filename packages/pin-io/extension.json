@@ -3,7 +3,7 @@
   "id": "org.robotblocks.demo-board-io",
   "name": "Pines digitales, analógicos y PWM",
   "version": "1.3.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Pines digitales, ADC y PWM. MicroPython ESP32 y API básica C++/Arduino experimental; carga Arduino pendiente.",
   "requiredCapabilities": [],
