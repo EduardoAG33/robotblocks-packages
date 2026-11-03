@@ -3,7 +3,7 @@
   "id": "org.robotblocks.servos",
   "name": "Servos",
   "version": "1.1.2",
-  "author": { "name": "Los Grises · RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Servos de 50 Hz eligiendo el pin en el bloque. Arduino y MicroPython.",
   "requiredCapabilities": ["pwm"],

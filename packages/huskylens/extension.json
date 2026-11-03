@@ -4,7 +4,7 @@
   "name": "HuskyLens",
   "version": "1.1.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Cámara AI HUSKYLENS v1 (DFRobot SEN0305) por I2C o UART de hardware. Solo Arduino/C++; experimental.",

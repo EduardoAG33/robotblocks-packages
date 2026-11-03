@@ -1,4 +1,4 @@
-# RobotBlocks · tarjetas y extensiones
+# GreyForge · tarjetas y extensiones
 
 Catálogo independiente del editor, inspirado en la organización de Mind+: bloques generales fijos, tarjetas seleccionables y módulos opcionales. Es el catálogo público oficial de GreyForge, con licencia MIT. No contiene proyectos personales ni el instalador del programa.
 

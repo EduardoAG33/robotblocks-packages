@@ -3,9 +3,9 @@
   "id": "org.robotblocks.arduino-giga-r1",
   "name": "Arduino GIGA R1 WiFi",
   "version": "0.3.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
-  "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.",
+  "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con GreyForge.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
@@ -15,7 +15,7 @@
     "group": "boards",
     "translations": {
       "en": {
-        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default. Tested on hardware with RobotBlocks.",
+        "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con GreyForge.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default. Tested on hardware with GreyForge.",
         "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto.": "3.3 V logic; NOT 5 V tolerant. Built-in active-low RGB LED (LEDR/LEDG/LEDB). ADC read at 10 bits and 8-bit PWM by default.",
         "UART hardware; la serie USB usa un puerto independiente.": "Hardware UART; USB serial uses a separate port.",
         "Conector de cámara; no usar como GPIO mientras se utiliza la cámara.": "Camera connector; do not use as GPIO while the camera is active.",

@@ -4,7 +4,7 @@
   "name": "EV3 · AbsoluteIMU de mindsensors · experimental",
   "version": "1.0.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Giroscopio del AbsoluteIMU de mindsensors en el EV3 con Pybricks 2.0: ángulo Z acumulado, calibración y velocidad de giro.",

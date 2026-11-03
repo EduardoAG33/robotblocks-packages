@@ -3,7 +3,7 @@
   "id": "org.robotblocks.color-tcs34725",
   "name": "Sensor de color TCS34725",
   "version": "1.1.3",
-  "author": { "name": "Los Grises · RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Tono, saturación, brillo y nombre aproximado del color con el TCS34725 por I2C.",
   "requiredCapabilities": ["digitalOutput"],

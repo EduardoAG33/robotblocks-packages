@@ -3,7 +3,7 @@
   "id": "org.robotblocks.ultrasonico",
   "name": "Ultrasónico HC-SR04",
   "version": "1.1.0",
-  "author": { "name": "Los Grises · RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Distancia en centímetros con sensores ultrasónicos de 4 pines (TRIG y ECHO).",
   "requiredCapabilities": ["digitalOutput", "digitalInput"],

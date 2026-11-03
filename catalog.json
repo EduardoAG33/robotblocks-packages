@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "name": "RobotBlocks · tarjetas y extensiones",
+  "name": "GreyForge · tarjetas y extensiones",
   "packages": [
     {
       "name": "Tarjetas virtuales",
@@ -28,7 +28,7 @@
     },
     {
       "name": "FireBeetle ESP32 DFR0478",
-      "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con RobotBlocks.",
+      "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/dfrobot-firebeetle-esp32"
     },
@@ -88,31 +88,31 @@
     },
     {
       "name": "Arduino UNO R3",
-      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/arduino-uno"
     },
     {
       "name": "Arduino Nano (ATmega328P)",
-      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con RobotBlocks.",
+      "description": "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/arduino-nano"
     },
     {
       "name": "Arduino GIGA R1 WiFi",
-      "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con RobotBlocks.",
+      "description": "Lógica de 3.3 V; NO tolerante a 5 V. LED RGB integrado (LEDR/LEDG/LEDB), activo en bajo. ADC leído a 10 bits y PWM de 8 bits por defecto. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/arduino-giga-r1"
     },
     {
       "name": "Teensy 4.0",
-      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/teensy-40"
     },
     {
       "name": "Teensy 4.1",
-      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con RobotBlocks.",
+      "description": "i.MX RT1062. Lógica de 3.3 V; NO tolerante a 5 V. ADC leído a 10 bits (hardware 12 bits), PWM de 8 bits por defecto. LED integrado pin 13. Probada en hardware con GreyForge.",
       "kind": "board",
       "path": "packages/teensy-41"
     },
@@ -124,7 +124,7 @@
     },
     {
       "name": "Seeed Studio XIAO ESP32-S3",
-      "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. C++ probado en hardware con RobotBlocks; MicroPython pendiente de prueba física.",
+      "description": "Lógica de 3.3 V, NO tolerante a 5 V. USB nativo sin CH340. MicroPython ESP32_GENERIC_S3 spiram-oct por Web Serial y C++; LED GPIO21 activo en bajo. C++ probado en hardware con GreyForge; MicroPython pendiente de prueba física.",
       "kind": "board",
       "path": "packages/seeed-xiao-esp32s3"
     },

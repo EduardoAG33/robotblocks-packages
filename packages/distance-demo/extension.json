@@ -3,7 +3,7 @@
   "id": "org.robotblocks.demo-distance-sensor",
   "name": "Sensor de distancia · demo",
   "version": "1.2.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
   "description": "Un bloque de lectura para demostrar el registro de extensiones. No contiene un driver ni devuelve telemetría real.",
   "requiredCapabilities": [],

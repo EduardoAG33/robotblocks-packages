@@ -4,7 +4,7 @@
   "name": "EV3 · HuskyLens (adaptador OFDL) · experimental",
   "version": "1.0.0",
   "author": {
-    "name": "Los Grises · RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "HuskyLens 1 en un puerto de sensor del EV3 con el adaptador OFDL y Pybricks 2.0: estado, ID visto, X, Y, ancho y alto.",

@@ -4,7 +4,7 @@
   "name": "I2C entre tarjetas · experimental",
   "version": "0.1.0",
   "author": {
-    "name": "RobotBlocks"
+    "name": "Los Grises · GreyForge"
   },
   "minAppVersion": "0.4.0",
   "description": "Registros de 16 bits entre Arduino, ESP32 y EV3; Nano esclavo con cinco HC-SR04.",

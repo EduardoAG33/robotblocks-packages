@@ -3,9 +3,9 @@
   "id": "org.robotblocks.dfrobot-firebeetle-esp32",
   "name": "FireBeetle ESP32 DFR0478",
   "version": "0.2.0",
-  "author": { "name": "RobotBlocks" },
+  "author": { "name": "Los Grises · GreyForge" },
   "minAppVersion": "0.4.0",
-  "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con RobotBlocks.",
+  "description": "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con GreyForge.",
   "requiredCapabilities": [],
   "supportedBoards": [],
   "dependencies": [],
@@ -15,7 +15,7 @@
     "group": "boards",
     "translations": {
       "en": {
-        "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con RobotBlocks.": "DFRobot DFR0478, ESP-WROOM-32 and CH340. MicroPython over Web Serial. Tested on hardware with RobotBlocks.",
+        "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con GreyForge.": "DFRobot DFR0478, ESP-WROOM-32 and CH340. MicroPython over Web Serial. Tested on hardware with GreyForge.",
         "Lógica de 3.3 V. LED D9/GPIO2. USB CH340. Pines flash y UART0 excluidos de selección.": "3.3 V logic. LED D9/GPIO2. CH340 USB. Flash and UART0 pins excluded from selection.",
         "Reservado para la consola USB/UART0. No utilizar durante Web Serial.": "Reserved for the USB/UART0 console. Do not use during Web Serial.",
         "ADC2: no disponible con WiFi activo.": "ADC2: unavailable with WiFi active.",
