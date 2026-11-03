@@ -1,0 +1,553 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "wro",
+  "name": "EV3 · bloques WRO",
+  "board": { "definitionId": "org.robotblocks.lego-ev3:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "wro-lego-ev3-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "wro-lego-ev3-2",
+            "blockId": "org.robotblocks.lego-ev3-devices:motor-power",
+            "operation": "org.robotblocks.lego-ev3-devices:motor-power",
+            "fields": { "PORT": "a" },
+            "inputs": {
+              "POWER": {
+                "id": "wro-lego-ev3-1",
+                "blockId": "core:number",
+                "operation": "core:number",
+                "fields": { "NUMBER": 50 },
+                "inputs": {},
+                "next": null
+              }
+            },
+            "next": {
+              "id": "wro-lego-ev3-5",
+              "blockId": "org.robotblocks.lego-ev3-devices:motor-angle-power",
+              "operation": "org.robotblocks.lego-ev3-devices:motor-angle-power",
+              "fields": { "PORT": "a", "THEN": "brake" },
+              "inputs": {
+                "ANGLE": {
+                  "id": "wro-lego-ev3-3",
+                  "blockId": "core:number",
+                  "operation": "core:number",
+                  "fields": { "NUMBER": 90 },
+                  "inputs": {},
+                  "next": null
+                },
+                "POWER": {
+                  "id": "wro-lego-ev3-4",
+                  "blockId": "core:number",
+                  "operation": "core:number",
+                  "fields": { "NUMBER": 50 },
+                  "inputs": {},
+                  "next": null
+                }
+              },
+              "next": {
+                "id": "wro-lego-ev3-7",
+                "blockId": "org.robotblocks.lego-ev3-devices:motor-dc",
+                "operation": "org.robotblocks.lego-ev3-devices:motor-dc",
+                "fields": { "PORT": "a" },
+                "inputs": {
+                  "POWER": {
+                    "id": "wro-lego-ev3-6",
+                    "blockId": "core:number",
+                    "operation": "core:number",
+                    "fields": { "NUMBER": 20 },
+                    "inputs": {},
+                    "next": null
+                  }
+                },
+                "next": {
+                  "id": "wro-lego-ev3-9",
+                  "blockId": "core:set",
+                  "operation": "core:set",
+                  "fields": { "VARIABLE": "velocidad" },
+                  "inputs": {
+                    "VALUE": {
+                      "id": "wro-lego-ev3-8",
+                      "blockId": "org.robotblocks.lego-ev3-devices:motor-speed",
+                      "operation": "org.robotblocks.lego-ev3-devices:motor-speed",
+                      "fields": { "PORT": "a" },
+                      "inputs": {},
+                      "next": null
+                    }
+                  },
+                  "next": {
+                    "id": "wro-lego-ev3-12",
+                    "blockId": "org.robotblocks.lego-ev3-devices:motor-stalled",
+                    "operation": "org.robotblocks.lego-ev3-devices:motor-stalled",
+                    "fields": { "PORT": "a" },
+                    "inputs": {
+                      "SPEED": {
+                        "id": "wro-lego-ev3-10",
+                        "blockId": "core:number",
+                        "operation": "core:number",
+                        "fields": { "NUMBER": 200 },
+                        "inputs": {},
+                        "next": null
+                      },
+                      "DUTY": {
+                        "id": "wro-lego-ev3-11",
+                        "blockId": "core:number",
+                        "operation": "core:number",
+                        "fields": { "NUMBER": 40 },
+                        "inputs": {},
+                        "next": null
+                      }
+                    },
+                    "next": {
+                      "id": "wro-lego-ev3-15",
+                      "blockId": "org.robotblocks.lego-ev3-devices:file-save",
+                      "operation": "org.robotblocks.lego-ev3-devices:file-save",
+                      "fields": {},
+                      "inputs": {
+                        "VALUE": {
+                          "id": "wro-lego-ev3-13",
+                          "blockId": "core:number",
+                          "operation": "core:number",
+                          "fields": { "NUMBER": 12 },
+                          "inputs": {},
+                          "next": null
+                        },
+                        "NAME": {
+                          "id": "wro-lego-ev3-14",
+                          "blockId": "core:text",
+                          "operation": "core:text",
+                          "fields": { "TEXT": "calibracion" },
+                          "inputs": {},
+                          "next": null
+                        }
+                      },
+                      "next": {
+                        "id": "wro-lego-ev3-19",
+                        "blockId": "core:set",
+                        "operation": "core:set",
+                        "fields": { "VARIABLE": "valor" },
+                        "inputs": {
+                          "VALUE": {
+                            "id": "wro-lego-ev3-18",
+                            "blockId": "org.robotblocks.lego-ev3-devices:file-read",
+                            "operation": "org.robotblocks.lego-ev3-devices:file-read",
+                            "fields": {},
+                            "inputs": {
+                              "NAME": {
+                                "id": "wro-lego-ev3-16",
+                                "blockId": "core:text",
+                                "operation": "core:text",
+                                "fields": { "TEXT": "calibracion" },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "DEFAULT": {
+                                "id": "wro-lego-ev3-17",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 0 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        },
+                        "next": {
+                          "id": "wro-lego-ev3-21",
+                          "blockId": "org.robotblocks.lego-ev3-devices:file-delete",
+                          "operation": "org.robotblocks.lego-ev3-devices:file-delete",
+                          "fields": {},
+                          "inputs": {
+                            "NAME": {
+                              "id": "wro-lego-ev3-20",
+                              "blockId": "core:text",
+                              "operation": "core:text",
+                              "fields": { "TEXT": "calibracion" },
+                              "inputs": {},
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "wro-lego-ev3-25",
+                            "blockId": "org.robotblocks.lego-ev3-devices:screen-grid",
+                            "operation": "org.robotblocks.lego-ev3-devices:screen-grid",
+                            "fields": {},
+                            "inputs": {
+                              "TEXT": {
+                                "id": "wro-lego-ev3-22",
+                                "blockId": "core:text",
+                                "operation": "core:text",
+                                "fields": { "TEXT": "Hola" },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "ROW": {
+                                "id": "wro-lego-ev3-23",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 1 },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "COL": {
+                                "id": "wro-lego-ev3-24",
+                                "blockId": "core:number",
+                                "operation": "core:number",
+                                "fields": { "NUMBER": 2 },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": {
+                              "id": "wro-lego-ev3-26",
+                              "blockId": "org.robotblocks.lego-ev3-devices:program-stop",
+                              "operation": "org.robotblocks.lego-ev3-devices:program-stop",
+                              "fields": {},
+                              "inputs": {},
+                              "next": null
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [
+    { "id": "velocidad", "name": "velocidad", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "valor", "name": "valor", "type": "number", "scope": "project", "initialValue": 0 }
+  ],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.lego-ev3", "version": "0.1.1" },
+    { "id": "org.robotblocks.lego-ev3-devices", "version": "0.4.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "wro-lego-ev3-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:motor-power",
+        "category": "org.robotblocks.lego-ev3-devices:motors",
+        "label": { "es": "motor %PORT encender a potencia %POWER %", "en": "motor %PORT run at power %POWER %" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "a",
+            "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
+          }
+        ],
+        "inputs": [{ "name": "POWER", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }],
+        "operation": "org.robotblocks.lego-ev3-devices:motor-power",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": ["ev3MotorPort"],
+        "generators": {
+          "pybricks": {
+            "globals": [
+              "try:\n    import os as ev3_os\nexcept ImportError:\n    import uos as ev3_os\n",
+              "_ev3_power_max = {}\n\ndef ev3_power_speed(port, power):\n    # Potencia de EV3-G: al 100 % el grande va a unos 1050 grados/s y el mediano a 1560.\n    # El tipo de motor se lee una sola vez por puerto (leer sysfs en cada vuelta de un PD es lento).\n    if port not in _ev3_power_max:\n        maximum = 1050\n        try:\n            suffix = {Port.A: 'outA', Port.B: 'outB', Port.C: 'outC', Port.D: 'outD'}[port]\n            for entry in ev3_os.listdir('/sys/class/tacho-motor'):\n                path = '/sys/class/tacho-motor/' + entry + '/'\n                with open(path + 'address') as f:\n                    address = f.read().strip()\n                if address.endswith(suffix):\n                    with open(path + 'driver_name') as f:\n                        if f.read().strip() == 'lego-ev3-m-motor':\n                            maximum = 1560\n                    break\n        except (OSError, KeyError):\n            pass\n        _ev3_power_max[port] = maximum\n    return max(-100, min(100, power)) * _ev3_power_max[port] / 100\n"
+            ],
+            "statement": "rb_motor({PORT}, {BLOCK_ID}).run(ev3_power_speed({PORT}, {POWER}))"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:motor-angle-power",
+        "category": "org.robotblocks.lego-ev3-devices:motors",
+        "label": {
+          "es": "motor %PORT girar %ANGLE grados a potencia %POWER % y %THEN",
+          "en": "motor %PORT run %ANGLE degrees at power %POWER % and %THEN"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "a",
+            "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
+          },
+          {
+            "name": "THEN",
+            "type": "string",
+            "default": "brake",
+            "options": [
+              { "label": { "es": "frenar", "en": "brake" }, "value": "brake" },
+              { "label": { "es": "mantener", "en": "hold" }, "value": "hold" },
+              { "label": { "es": "soltar", "en": "coast" }, "value": "coast" }
+            ]
+          }
+        ],
+        "inputs": [
+          { "name": "ANGLE", "type": "number", "default": 90 },
+          { "name": "POWER", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:motor-angle-power",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": ["ev3MotorPort"],
+        "generators": {
+          "pybricks": {
+            "cooperative": true,
+            "globals": [
+              "try:\n    import os as ev3_os\nexcept ImportError:\n    import uos as ev3_os\n",
+              "_ev3_power_max = {}\n\ndef ev3_power_speed(port, power):\n    # Potencia de EV3-G: al 100 % el grande va a unos 1050 grados/s y el mediano a 1560.\n    # El tipo de motor se lee una sola vez por puerto (leer sysfs en cada vuelta de un PD es lento).\n    if port not in _ev3_power_max:\n        maximum = 1050\n        try:\n            suffix = {Port.A: 'outA', Port.B: 'outB', Port.C: 'outC', Port.D: 'outD'}[port]\n            for entry in ev3_os.listdir('/sys/class/tacho-motor'):\n                path = '/sys/class/tacho-motor/' + entry + '/'\n                with open(path + 'address') as f:\n                    address = f.read().strip()\n                if address.endswith(suffix):\n                    with open(path + 'driver_name') as f:\n                        if f.read().strip() == 'lego-ev3-m-motor':\n                            maximum = 1560\n                    break\n        except (OSError, KeyError):\n            pass\n        _ev3_power_max[port] = maximum\n    return max(-100, min(100, power)) * _ev3_power_max[port] / 100\n",
+              "from pybricks.parameters import Stop",
+              "def ev3_stop_mode(mode):\n    return {'brake': Stop.BRAKE, 'hold': Stop.HOLD, 'coast': Stop.COAST}[mode]\n"
+            ],
+            "statement": "await rb_blocking(({PORT},), {BLOCK_ID}, rb_motor({PORT}, {BLOCK_ID}).run_angle, ev3_power_speed({PORT}, {POWER}), {ANGLE}, ev3_stop_mode({THEN}))"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:motor-dc",
+        "category": "org.robotblocks.lego-ev3-devices:motors",
+        "label": { "es": "motor %PORT potencia sin regular %POWER %", "en": "motor %PORT unregulated power %POWER %" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "a",
+            "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
+          }
+        ],
+        "inputs": [{ "name": "POWER", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }],
+        "operation": "org.robotblocks.lego-ev3-devices:motor-dc",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": ["ev3MotorPort"],
+        "generators": { "pybricks": { "statement": "rb_motor({PORT}, {BLOCK_ID}).dc(max(-100, min(100, {POWER})))" } }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:motor-speed",
+        "category": "org.robotblocks.lego-ev3-devices:motors",
+        "label": { "es": "velocidad del motor %PORT (grados/s)", "en": "motor %PORT speed (degrees/s)" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "a",
+            "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.lego-ev3-devices:motor-speed",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": ["ev3MotorPort"],
+        "generators": { "pybricks": { "expression": "rb_motor({PORT}, {BLOCK_ID}).speed()" } }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:motor-stalled",
+        "category": "org.robotblocks.lego-ev3-devices:motors",
+        "label": {
+          "es": "motor %PORT girar a %SPEED grados/s hasta atascarse (fuerza %DUTY %)",
+          "en": "motor %PORT run at %SPEED degrees/s until stalled (duty %DUTY %)"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "a",
+            "reference": { "kind": "resource", "capabilities": ["ev3MotorPort"] }
+          }
+        ],
+        "inputs": [
+          { "name": "SPEED", "type": "number", "default": 200 },
+          { "name": "DUTY", "type": "number", "default": 40, "slider": { "min": 10, "max": 100 } }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:motor-stalled",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": ["ev3MotorPort"],
+        "generators": {
+          "pybricks": {
+            "cooperative": true,
+            "globals": ["from pybricks.parameters import Stop"],
+            "statement": "await rb_blocking(({PORT},), {BLOCK_ID}, rb_motor({PORT}, {BLOCK_ID}).run_until_stalled, {SPEED}, Stop.COAST, max(10, min(100, {DUTY})))"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:file-save",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "guardar número %VALUE en el archivo %NAME", "en": "save number %VALUE in file %NAME" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "VALUE", "type": "number", "default": 0 },
+          { "name": "NAME", "type": "string", "default": "calibracion" }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:file-save",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": [],
+        "generators": {
+          "pybricks": {
+            "globals": [
+              "try:\n    import os as ev3_os\nexcept ImportError:\n    import uos as ev3_os\n",
+              "def ev3_file_path(name, block):\n    if not isinstance(name, str) or not 1 <= len(name) <= 32 or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in name):\n        rb_fail(block, 'Nombre de archivo inválido: usa 1 a 32 letras, números, guion o guion bajo')\n    return '/home/robot/robotblocks/datos/' + name + '.txt'\n\ndef ev3_file_save(value, name, block):\n    path = ev3_file_path(name, block)\n    for directory in ('/home/robot/robotblocks', '/home/robot/robotblocks/datos'):\n        try:\n            ev3_os.mkdir(directory)\n        except OSError:\n            try:\n                ev3_os.stat(directory)\n            except OSError:\n                rb_fail(block, 'No se pudo crear la carpeta de datos')\n    try:\n        with open(path + '.tmp', 'w') as f:\n            f.write(str(value))\n        ev3_os.rename(path + '.tmp', path)\n    except OSError:\n        rb_fail(block, 'No se pudo guardar el archivo')\n\ndef ev3_file_read(name, default, block):\n    path = ev3_file_path(name, block)\n    try:\n        with open(path) as f:\n            return float(f.read())\n    except (OSError, ValueError):\n        return default\n\ndef ev3_file_delete(name, block):\n    path = ev3_file_path(name, block)\n    try:\n        ev3_os.remove(path)\n    except OSError:\n        try:\n            ev3_os.stat(path)\n        except OSError:\n            return\n        rb_fail(block, 'No se pudo borrar el archivo')\n"
+            ],
+            "statement": "ev3_file_save({VALUE}, {NAME}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:file-read",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": {
+          "es": "número del archivo %NAME (si no existe: %DEFAULT)",
+          "en": "number from file %NAME (if missing: %DEFAULT)"
+        },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [
+          { "name": "NAME", "type": "string", "default": "calibracion" },
+          { "name": "DEFAULT", "type": "number", "default": 0 }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:file-read",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": [],
+        "generators": {
+          "pybricks": {
+            "globals": [
+              "try:\n    import os as ev3_os\nexcept ImportError:\n    import uos as ev3_os\n",
+              "def ev3_file_path(name, block):\n    if not isinstance(name, str) or not 1 <= len(name) <= 32 or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in name):\n        rb_fail(block, 'Nombre de archivo inválido: usa 1 a 32 letras, números, guion o guion bajo')\n    return '/home/robot/robotblocks/datos/' + name + '.txt'\n\ndef ev3_file_save(value, name, block):\n    path = ev3_file_path(name, block)\n    for directory in ('/home/robot/robotblocks', '/home/robot/robotblocks/datos'):\n        try:\n            ev3_os.mkdir(directory)\n        except OSError:\n            try:\n                ev3_os.stat(directory)\n            except OSError:\n                rb_fail(block, 'No se pudo crear la carpeta de datos')\n    try:\n        with open(path + '.tmp', 'w') as f:\n            f.write(str(value))\n        ev3_os.rename(path + '.tmp', path)\n    except OSError:\n        rb_fail(block, 'No se pudo guardar el archivo')\n\ndef ev3_file_read(name, default, block):\n    path = ev3_file_path(name, block)\n    try:\n        with open(path) as f:\n            return float(f.read())\n    except (OSError, ValueError):\n        return default\n\ndef ev3_file_delete(name, block):\n    path = ev3_file_path(name, block)\n    try:\n        ev3_os.remove(path)\n    except OSError:\n        try:\n            ev3_os.stat(path)\n        except OSError:\n            return\n        rb_fail(block, 'No se pudo borrar el archivo')\n"
+            ],
+            "expression": "ev3_file_read({NAME}, {DEFAULT}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:file-delete",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "borrar archivo %NAME", "en": "delete file %NAME" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "NAME", "type": "string", "default": "calibracion" }],
+        "operation": "org.robotblocks.lego-ev3-devices:file-delete",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": [],
+        "generators": {
+          "pybricks": {
+            "globals": [
+              "try:\n    import os as ev3_os\nexcept ImportError:\n    import uos as ev3_os\n",
+              "def ev3_file_path(name, block):\n    if not isinstance(name, str) or not 1 <= len(name) <= 32 or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in name):\n        rb_fail(block, 'Nombre de archivo inválido: usa 1 a 32 letras, números, guion o guion bajo')\n    return '/home/robot/robotblocks/datos/' + name + '.txt'\n\ndef ev3_file_save(value, name, block):\n    path = ev3_file_path(name, block)\n    for directory in ('/home/robot/robotblocks', '/home/robot/robotblocks/datos'):\n        try:\n            ev3_os.mkdir(directory)\n        except OSError:\n            try:\n                ev3_os.stat(directory)\n            except OSError:\n                rb_fail(block, 'No se pudo crear la carpeta de datos')\n    try:\n        with open(path + '.tmp', 'w') as f:\n            f.write(str(value))\n        ev3_os.rename(path + '.tmp', path)\n    except OSError:\n        rb_fail(block, 'No se pudo guardar el archivo')\n\ndef ev3_file_read(name, default, block):\n    path = ev3_file_path(name, block)\n    try:\n        with open(path) as f:\n            return float(f.read())\n    except (OSError, ValueError):\n        return default\n\ndef ev3_file_delete(name, block):\n    path = ev3_file_path(name, block)\n    try:\n        ev3_os.remove(path)\n    except OSError:\n        try:\n            ev3_os.stat(path)\n        except OSError:\n            return\n        rb_fail(block, 'No se pudo borrar el archivo')\n"
+            ],
+            "statement": "ev3_file_delete({NAME}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:screen-grid",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": {
+          "es": "pantalla escribir %TEXT en fila %ROW columna %COL",
+          "en": "screen write %TEXT at row %ROW column %COL"
+        },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "TEXT", "type": "string", "default": "Hola" },
+          { "name": "ROW", "type": "number", "default": 0, "slider": { "min": 0, "max": 11 } },
+          { "name": "COL", "type": "number", "default": 0, "slider": { "min": 0, "max": 21 } }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:screen-grid",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": [],
+        "generators": {
+          "pybricks": {
+            "statement": "rb_hub.screen.draw_text(max(0, min(21, int({COL}))) * 8, max(0, min(11, int({ROW}))) * 10, str({TEXT}))"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:program-stop",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "detener programa", "en": "stop program" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.lego-ev3-devices:program-stop",
+        "tooltip": { "es": "EV3 Pybricks 2.0 experimental.", "en": "Experimental EV3 Pybricks 2.0." },
+        "requiredCapabilities": [],
+        "generators": { "pybricks": { "statement": "raise SystemExit" } }
+      }
+    ]
+  }
+}

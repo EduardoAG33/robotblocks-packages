@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.lego-ev3-devices",
   "name": "EV3: motores, sensores y ladrillo · experimental",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": { "name": "RobotBlocks" },
   "minAppVersion": "0.4.0",
   "description": "Plantillas declarativas para la microSD EV3 MicroPython / Pybricks 2.0.",
@@ -21,7 +21,11 @@
         "EV3 · Motores": "EV3 · Motors",
         "EV3 · Sensores": "EV3 · Sensors",
         "EV3 · Ladrillo": "EV3 · Brick",
-        "EV3 · I2C": "EV3 · I2C"
+        "EV3 · I2C": "EV3 · I2C",
+        "Nombre de archivo inválido: usa 1 a 32 letras, números, guion o guion bajo": "Invalid file name: use 1 to 32 letters, digits, hyphens or underscores",
+        "No se pudo crear la carpeta de datos": "Could not create the data directory",
+        "No se pudo guardar el archivo": "Could not save the file",
+        "No se pudo borrar el archivo": "Could not delete the file"
       }
     }
   },
