@@ -62,6 +62,6 @@ El informe y las salidas están en docs/TARJETAS_R4_XIAO.md del repo de la app.
 
 ## Prueba en hardware
 
-- 2026-10-18: dos XIAO del robot Rescue Line cargadas en C++ desde la app con arduino-cli (COM9 y COM10):
+- 2026-10-18: dos XIAO de un robot cargadas en C++ desde la app con arduino-cli (COM9 y COM10):
   QTR en GPIO1, TCS34725 en D4/D5 y mensajes por UART1 (D6/D7) que el GIGA recibe. La carga MicroPython en
   una placa física sigue pendiente.

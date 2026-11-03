@@ -36,5 +36,5 @@ En Arduino/C++ y MicroPython, cada lectura de cualquier bloque IMU lee Euler y a
 
 ## Pruebas en hardware
 
-- Arduino GIGA R1 (C++), BNO055 en `Wire1` del robot Rescue Line: ángulo de giro e inclinación (2026-10-18).
+- Arduino GIGA R1 (C++), BNO055 en `Wire1` del robot: ángulo de giro e inclinación (2026-10-18).
 - MicroPython: generado y ejecutado en simulación; falta probarlo en una tarjeta.

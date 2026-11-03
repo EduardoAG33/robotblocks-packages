@@ -1,6 +1,6 @@
 # IMU MPU6050
 
-Extensión **experimental** para Arduino/C++ y MicroPython, con Wire/I2C directo y sin librerías externas. Pendiente de prueba física. Está basada en la extensión de Mind+ del equipo WRO Arath, licencia MIT («MPU6050 - Bloques para alumnos», versión 1.0.1). Las plantillas GreyForge están escritas para su generador declarativo; se conserva el comportamiento de calibración, zona muerta y sentido del giro de la referencia.
+Extensión **experimental** para Arduino/C++ y MicroPython, con Wire/I2C directo y sin librerías externas. Pendiente de prueba física. Está basada en la extensión de Mind+ del equipo Arath, licencia MIT («MPU6050 - Bloques para alumnos», versión 1.0.1). Las plantillas GreyForge están escritas para su generador declarativo; se conserva el comportamiento de calibración, zona muerta y sentido del giro de la referencia.
 
 ## Bloques
 
@@ -33,4 +33,4 @@ Configuración y calibración: espera 100 ms tras despertar; la calibración esp
 - SDA/SCL empiezan vacíos como BNO055: main no admite los tokens @i2c.sda/@i2c.scl.
 - Ejemplo: [UNO: tres vueltas](../../../examples/uno-mpu6050-tres-vueltas.blocks.json). Calibra, imprime el acumulado y al llegar a |giro| ≥1080 imprime «fin» y detiene el programa. No configura motores: gira el sensor o añade tu control de movimiento.
 
-Referencia local: artifacts/referencia-mpu6050/ en la aplicación. Crédito: **Equipo WRO Arath — MIT**. Configuración y escalas se verifican contra ese código. Pruebas de simulación no certifican cableado, signo ni precisión del hardware.
+Referencia local: artifacts/referencia-mpu6050/ en la aplicación. Crédito: **Equipo Arath — MIT**. Configuración y escalas se verifican contra ese código. Pruebas de simulación no certifican cableado, signo ni precisión del hardware.

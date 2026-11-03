@@ -27,7 +27,7 @@ unos 49 ms de leer ocho valores por separado).
 
 **Orden medido en el robot, distinto del README del adaptador:**
 X, Y, ancho, alto, ID, estado, 0, 0. Con estado distinto de 1 los demás valores
-se ignoran. Medido por Los Grises en el robot WRO Futuros Ingenieros (S3).
+se ignoran. Medido por Los Grises en el robot (S3).
 
 ## Límites
 

@@ -1,8 +1,8 @@
 {
   "formatVersion": 4,
   "irVersion": 2,
-  "id": "wro",
-  "name": "EV3 · bloques WRO",
+  "id": "motores-archivos-pantalla",
+  "name": "EV3 · motores, archivos y pantalla",
   "board": { "definitionId": "org.robotblocks.lego-ev3:board", "bindings": {} },
   "devices": [],
   "programs": [
@@ -11,16 +11,16 @@
       "name": "Programa principal",
       "processes": [
         {
-          "id": "wro-lego-ev3-inicio",
+          "id": "motores-archivos-pantalla-lego-ev3-inicio",
           "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
           "body": {
-            "id": "wro-lego-ev3-2",
+            "id": "motores-archivos-pantalla-lego-ev3-2",
             "blockId": "org.robotblocks.lego-ev3-devices:motor-power",
             "operation": "org.robotblocks.lego-ev3-devices:motor-power",
             "fields": { "PORT": "a" },
             "inputs": {
               "POWER": {
-                "id": "wro-lego-ev3-1",
+                "id": "motores-archivos-pantalla-lego-ev3-1",
                 "blockId": "core:number",
                 "operation": "core:number",
                 "fields": { "NUMBER": 50 },
@@ -29,13 +29,13 @@
               }
             },
             "next": {
-              "id": "wro-lego-ev3-5",
+              "id": "motores-archivos-pantalla-lego-ev3-5",
               "blockId": "org.robotblocks.lego-ev3-devices:motor-angle-power",
               "operation": "org.robotblocks.lego-ev3-devices:motor-angle-power",
               "fields": { "PORT": "a", "THEN": "brake" },
               "inputs": {
                 "ANGLE": {
-                  "id": "wro-lego-ev3-3",
+                  "id": "motores-archivos-pantalla-lego-ev3-3",
                   "blockId": "core:number",
                   "operation": "core:number",
                   "fields": { "NUMBER": 90 },
@@ -43,7 +43,7 @@
                   "next": null
                 },
                 "POWER": {
-                  "id": "wro-lego-ev3-4",
+                  "id": "motores-archivos-pantalla-lego-ev3-4",
                   "blockId": "core:number",
                   "operation": "core:number",
                   "fields": { "NUMBER": 50 },
@@ -52,13 +52,13 @@
                 }
               },
               "next": {
-                "id": "wro-lego-ev3-7",
+                "id": "motores-archivos-pantalla-lego-ev3-7",
                 "blockId": "org.robotblocks.lego-ev3-devices:motor-dc",
                 "operation": "org.robotblocks.lego-ev3-devices:motor-dc",
                 "fields": { "PORT": "a" },
                 "inputs": {
                   "POWER": {
-                    "id": "wro-lego-ev3-6",
+                    "id": "motores-archivos-pantalla-lego-ev3-6",
                     "blockId": "core:number",
                     "operation": "core:number",
                     "fields": { "NUMBER": 20 },
@@ -67,13 +67,13 @@
                   }
                 },
                 "next": {
-                  "id": "wro-lego-ev3-9",
+                  "id": "motores-archivos-pantalla-lego-ev3-9",
                   "blockId": "core:set",
                   "operation": "core:set",
                   "fields": { "VARIABLE": "velocidad" },
                   "inputs": {
                     "VALUE": {
-                      "id": "wro-lego-ev3-8",
+                      "id": "motores-archivos-pantalla-lego-ev3-8",
                       "blockId": "org.robotblocks.lego-ev3-devices:motor-speed",
                       "operation": "org.robotblocks.lego-ev3-devices:motor-speed",
                       "fields": { "PORT": "a" },
@@ -82,13 +82,13 @@
                     }
                   },
                   "next": {
-                    "id": "wro-lego-ev3-12",
+                    "id": "motores-archivos-pantalla-lego-ev3-12",
                     "blockId": "org.robotblocks.lego-ev3-devices:motor-stalled",
                     "operation": "org.robotblocks.lego-ev3-devices:motor-stalled",
                     "fields": { "PORT": "a" },
                     "inputs": {
                       "SPEED": {
-                        "id": "wro-lego-ev3-10",
+                        "id": "motores-archivos-pantalla-lego-ev3-10",
                         "blockId": "core:number",
                         "operation": "core:number",
                         "fields": { "NUMBER": 200 },
@@ -96,7 +96,7 @@
                         "next": null
                       },
                       "DUTY": {
-                        "id": "wro-lego-ev3-11",
+                        "id": "motores-archivos-pantalla-lego-ev3-11",
                         "blockId": "core:number",
                         "operation": "core:number",
                         "fields": { "NUMBER": 40 },
@@ -105,13 +105,13 @@
                       }
                     },
                     "next": {
-                      "id": "wro-lego-ev3-15",
+                      "id": "motores-archivos-pantalla-lego-ev3-15",
                       "blockId": "org.robotblocks.lego-ev3-devices:file-save",
                       "operation": "org.robotblocks.lego-ev3-devices:file-save",
                       "fields": {},
                       "inputs": {
                         "VALUE": {
-                          "id": "wro-lego-ev3-13",
+                          "id": "motores-archivos-pantalla-lego-ev3-13",
                           "blockId": "core:number",
                           "operation": "core:number",
                           "fields": { "NUMBER": 12 },
@@ -119,7 +119,7 @@
                           "next": null
                         },
                         "NAME": {
-                          "id": "wro-lego-ev3-14",
+                          "id": "motores-archivos-pantalla-lego-ev3-14",
                           "blockId": "core:text",
                           "operation": "core:text",
                           "fields": { "TEXT": "calibracion" },
@@ -128,19 +128,19 @@
                         }
                       },
                       "next": {
-                        "id": "wro-lego-ev3-19",
+                        "id": "motores-archivos-pantalla-lego-ev3-19",
                         "blockId": "core:set",
                         "operation": "core:set",
                         "fields": { "VARIABLE": "valor" },
                         "inputs": {
                           "VALUE": {
-                            "id": "wro-lego-ev3-18",
+                            "id": "motores-archivos-pantalla-lego-ev3-18",
                             "blockId": "org.robotblocks.lego-ev3-devices:file-read",
                             "operation": "org.robotblocks.lego-ev3-devices:file-read",
                             "fields": {},
                             "inputs": {
                               "NAME": {
-                                "id": "wro-lego-ev3-16",
+                                "id": "motores-archivos-pantalla-lego-ev3-16",
                                 "blockId": "core:text",
                                 "operation": "core:text",
                                 "fields": { "TEXT": "calibracion" },
@@ -148,7 +148,7 @@
                                 "next": null
                               },
                               "DEFAULT": {
-                                "id": "wro-lego-ev3-17",
+                                "id": "motores-archivos-pantalla-lego-ev3-17",
                                 "blockId": "core:number",
                                 "operation": "core:number",
                                 "fields": { "NUMBER": 0 },
@@ -160,13 +160,13 @@
                           }
                         },
                         "next": {
-                          "id": "wro-lego-ev3-21",
+                          "id": "motores-archivos-pantalla-lego-ev3-21",
                           "blockId": "org.robotblocks.lego-ev3-devices:file-delete",
                           "operation": "org.robotblocks.lego-ev3-devices:file-delete",
                           "fields": {},
                           "inputs": {
                             "NAME": {
-                              "id": "wro-lego-ev3-20",
+                              "id": "motores-archivos-pantalla-lego-ev3-20",
                               "blockId": "core:text",
                               "operation": "core:text",
                               "fields": { "TEXT": "calibracion" },
@@ -175,13 +175,13 @@
                             }
                           },
                           "next": {
-                            "id": "wro-lego-ev3-25",
+                            "id": "motores-archivos-pantalla-lego-ev3-25",
                             "blockId": "org.robotblocks.lego-ev3-devices:screen-grid",
                             "operation": "org.robotblocks.lego-ev3-devices:screen-grid",
                             "fields": {},
                             "inputs": {
                               "TEXT": {
-                                "id": "wro-lego-ev3-22",
+                                "id": "motores-archivos-pantalla-lego-ev3-22",
                                 "blockId": "core:text",
                                 "operation": "core:text",
                                 "fields": { "TEXT": "Hola" },
@@ -189,7 +189,7 @@
                                 "next": null
                               },
                               "ROW": {
-                                "id": "wro-lego-ev3-23",
+                                "id": "motores-archivos-pantalla-lego-ev3-23",
                                 "blockId": "core:number",
                                 "operation": "core:number",
                                 "fields": { "NUMBER": 1 },
@@ -197,7 +197,7 @@
                                 "next": null
                               },
                               "COL": {
-                                "id": "wro-lego-ev3-24",
+                                "id": "motores-archivos-pantalla-lego-ev3-24",
                                 "blockId": "core:number",
                                 "operation": "core:number",
                                 "fields": { "NUMBER": 2 },
@@ -206,12 +206,44 @@
                               }
                             },
                             "next": {
-                              "id": "wro-lego-ev3-26",
-                              "blockId": "org.robotblocks.lego-ev3-devices:program-stop",
-                              "operation": "org.robotblocks.lego-ev3-devices:program-stop",
+                              "id": "motores-archivos-pantalla-lego-ev3-27",
+                              "blockId": "core:serial-println",
+                              "operation": "core:serial-println",
                               "fields": {},
-                              "inputs": {},
-                              "next": null
+                              "inputs": {
+                                "VALUE": {
+                                  "id": "motores-archivos-pantalla-lego-ev3-26",
+                                  "blockId": "core:variable",
+                                  "operation": "core:variable",
+                                  "fields": { "VARIABLE": "velocidad" },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": {
+                                "id": "motores-archivos-pantalla-lego-ev3-29",
+                                "blockId": "core:serial-println",
+                                "operation": "core:serial-println",
+                                "fields": {},
+                                "inputs": {
+                                  "VALUE": {
+                                    "id": "motores-archivos-pantalla-lego-ev3-28",
+                                    "blockId": "core:variable",
+                                    "operation": "core:variable",
+                                    "fields": { "VARIABLE": "valor" },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                },
+                                "next": {
+                                  "id": "motores-archivos-pantalla-lego-ev3-30",
+                                  "blockId": "org.robotblocks.lego-ev3-devices:program-stop",
+                                  "operation": "org.robotblocks.lego-ev3-devices:program-stop",
+                                  "fields": {},
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              }
                             }
                           }
                         }
@@ -239,7 +271,7 @@
   ],
   "editor": {
     "adapter": "scratch-blocks",
-    "positions": { "wro-lego-ev3-inicio": { "x": 52, "y": 64 } },
+    "positions": { "motores-archivos-pantalla-lego-ev3-inicio": { "x": 52, "y": 64 } },
     "blockDefinitions": [
       {
         "id": "core:start",
@@ -271,6 +303,22 @@
         "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
       },
       {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
         "id": "core:number",
         "category": "core:operators",
         "label": { "es": "%NUMBER", "en": "%NUMBER" },
@@ -299,6 +347,25 @@
         },
         "requiredCapabilities": [],
         "output": "string"
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
       },
       {
         "id": "org.robotblocks.lego-ev3-devices:motor-power",

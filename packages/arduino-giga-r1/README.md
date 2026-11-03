@@ -173,6 +173,6 @@ Fuentes adicionales: [core GIGA: pines](https://github.com/arduino/ArduinoCore-m
 
 ## Prueba en hardware
 
-- 2026-10-18: robot Rescue Line de Los Grises (PCB `Gerber_PCB1_2026-10-13`), sketch subido desde la app con
+- 2026-10-18: robot de Los Grises (PCB `Gerber_PCB1_2026-10-13`), sketch subido desde la app con
   arduino-cli (COM7). VNH5019, 11 canales QTR (incluidos A8–A11), 9 VL53L0X con nombre, BNO055 en Wire1 y
   UART 2/3 con las dos XIAO, todo leído en el Monitor serie.

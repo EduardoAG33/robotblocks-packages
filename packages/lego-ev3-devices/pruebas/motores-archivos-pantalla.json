@@ -1,5 +1,5 @@
 {
-  "titulo": "EV3 · bloques WRO",
+  "titulo": "EV3 · motores, archivos y pantalla",
   "tarjetas": ["lego-ev3"],
   "variables": {
     "velocidad": 0,
@@ -97,6 +97,30 @@
         "TEXT": "Hola",
         "ROW": 1,
         "COL": 2
+      }
+    ],
+    [
+      "core:serial-println",
+      {},
+      {
+        "VALUE": [
+          "core:variable",
+          {
+            "VARIABLE": "velocidad"
+          }
+        ]
+      }
+    ],
+    [
+      "core:serial-println",
+      {},
+      {
+        "VALUE": [
+          "core:variable",
+          {
+            "VARIABLE": "valor"
+          }
+        ]
       }
     ],
     [":program-stop", {}]

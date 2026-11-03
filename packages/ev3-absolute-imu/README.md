@@ -26,7 +26,7 @@ microSD **EV3 MicroPython / Pybricks 2.0**. Solo para la tarjeta `lego-ev3`.
 - La calibración corre como una maniobra: el proceso que la llama espera, los
   demás siguen. 600 muestras tardan unos 2 s.
 
-Valores medidos en el robot WRO Futuros Ingenieros de Los Grises (sensor en S2):
+Valores medidos en el robot de Los Grises (sensor en S2):
 escala 0.1 confirmada con una vuelta completa (0.098, 2 %), eje Z vertical y
 **girando a la derecha el ángulo sube**. Si el sensor va montado de otra forma,
 el signo o el eje pueden cambiar.
