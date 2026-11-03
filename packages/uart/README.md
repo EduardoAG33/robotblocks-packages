@@ -7,6 +7,8 @@ UART1 se enruta a D7/GPIO44 RX y D6/GPIO43 TX; la plantilla declarativa usa
 
 Extensión **experimental** para MicroPython y Arduino/C++, probada en simulación y pendiente de prueba física. Comunica la placa con una **cámara OpenMV** (u otra placa) mediante **líneas de texto con datos separados por comas**.
 
+La OpenMV se programa en **OpenMV IDE**. GreyForge programa la tarjeta que recibe sus datos, por ejemplo el **GIGA** o un **ESP32**; la cámara se conecta como periférico por UART.
+
 ## Bloques
 
 | Bloque                                                         | Uso                                                                                 |
@@ -59,7 +61,7 @@ while True:
     time.sleep_ms(20)
 ```
 
-En RobotBlocks: «si ¿llegó una línea por UART 2?» → «fijar x a dato 1 de la última línea de UART 2».
+En GreyForge: «si ¿llegó una línea por UART 2?» → «fijar x a dato 1 de la última línea de UART 2».
 
 ## Arduino/C++
 

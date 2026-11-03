@@ -1,6 +1,6 @@
 # RobotBlocks · tarjetas y extensiones
 
-Catálogo independiente del editor, inspirado en la organización de Mind+: bloques generales fijos, tarjetas seleccionables y módulos opcionales. Es un repositorio privado de desarrollo. No contiene proyectos personales ni el instalador del programa.
+Catálogo independiente del editor, inspirado en la organización de Mind+: bloques generales fijos, tarjetas seleccionables y módulos opcionales. Es el catálogo público oficial de GreyForge, con licencia MIT. No contiene proyectos personales ni el instalador del programa.
 
 ## Estado actual
 
@@ -19,7 +19,6 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)          | Arduino y MicroPython; probada en GIGA                             |
 | `packages/huskylens`          | Cámara AI DFRobot SEN0305                        | Arduino/C++ por I2C o UART de hardware; experimental               |
 | `packages/huskylens2`         | Cámara AI HUSKYLENS 2 (SEN0638)                  | Arduino/C++ por I2C o UART; experimental                           |
-| `packages/openmv-vision`      | Visión en la OpenMV: color, línea, tags, QR      | MicroPython en la OpenMV Cam; experimental                         |
 | `packages/uart`               | Líneas de texto por UART (OpenMV)                | MicroPython experimental, opcional; pendiente de prueba física     |
 | `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo       | Arduino/C++; probada en GIGA (9 láseres)                           |
 | `packages/i2c`                | Registros entre tarjetas por I2C                 | Arduino maestro/esclavo y MicroPython maestro; experimental        |
@@ -38,15 +37,14 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 | `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                             | Arduino experimental, sin carga                                    |
 | `packages/teensy-40`          | Teensy 4.0 (pinout propio)                       | Arduino experimental, sin carga                                    |
 | `packages/teensy-41`          | Teensy 4.1 (pinout propio)                       | Arduino experimental, sin carga                                    |
-| `packages/openmv-cam-h7`      | OpenMV Cam H7                                    | MicroPython por Web Serial; experimental                           |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 
 ## Usar la copia local
 
-Descarga o clona este repositorio con tu cuenta. En RobotBlocks 0.4 abre **Tarjetas y extensiones → Extensiones/Tarjetas → Instalar desde carpeta** y selecciona la carpeta del paquete, por ejemplo `packages/robotics`. Instalar un ID ya presente se rechaza; no sobrescribe silenciosamente sus bloques.
+Descarga o clona este repositorio. En GreyForge abre **Extensiones → Carpeta y GitHub → Instalar desde carpeta** y selecciona la carpeta del paquete, por ejemplo `packages/robotics`. Instalar un ID ya presente se rechaza; no sobrescribe silenciosamente sus bloques.
 
-El prototipo admite descarga directa por URL de repositorios públicos. Como este catálogo es privado, por ahora usa la copia local. El acceso autenticado a repositorios privados desde el programa está pendiente. El acceso de Codex a GitHub no se comparte con el editor.
+También puedes instalar desde GitHub: abre **Extensiones → Carpeta y GitHub → Ver catálogo**. La URL del catálogo oficial viene escrita; **Catálogo oficial** la restaura si la cambiaste. Los paquetes instalados quedan disponibles sin conexión.
 
 ## Aportar una tarjeta
 
