@@ -1,0 +1,1578 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "memoria-qtr-giga",
+  "name": "Memoria · QTR · GIGA 8 canales",
+  "board": { "definitionId": "org.robotblocks.arduino-giga-r1:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "memoria-qtr-giga-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "memoria-qtr-giga-46",
+            "blockId": "core:serial-begin",
+            "operation": "core:serial-begin",
+            "fields": {},
+            "inputs": {
+              "BAUD": {
+                "id": "memoria-qtr-giga-45",
+                "blockId": "core:number",
+                "operation": "core:number",
+                "fields": { "NUMBER": 115200 },
+                "inputs": {},
+                "next": null
+              }
+            },
+            "next": {
+              "id": "memoria-qtr-giga-47",
+              "blockId": "org.robotblocks.motores:enable-vnh5019",
+              "operation": "org.robotblocks.motores:enable-vnh5019",
+              "fields": { "EN": "d6" },
+              "inputs": {},
+              "next": {
+                "id": "memoria-qtr-giga-48",
+                "blockId": "org.robotblocks.motores:enable-vnh5019",
+                "operation": "org.robotblocks.motores:enable-vnh5019",
+                "fields": { "EN": "d12" },
+                "inputs": {},
+                "next": {
+                  "id": "memoria-qtr-giga-49",
+                  "blockId": "org.robotblocks.motores:configure",
+                  "operation": "org.robotblocks.motores:configure",
+                  "fields": { "MOTOR": "A", "PWM": "d9", "IN1": "d4", "IN2": "d2" },
+                  "inputs": {},
+                  "next": {
+                    "id": "memoria-qtr-giga-50",
+                    "blockId": "org.robotblocks.motores:configure",
+                    "operation": "org.robotblocks.motores:configure",
+                    "fields": { "MOTOR": "B", "PWM": "d10", "IN1": "d7", "IN2": "d8" },
+                    "inputs": {},
+                    "next": {
+                      "id": "memoria-qtr-giga-51",
+                      "blockId": "org.robotblocks.motores:stop",
+                      "operation": "org.robotblocks.motores:stop",
+                      "fields": { "MOTOR": "todos", "MODE": "frenar" },
+                      "inputs": {},
+                      "next": {
+                        "id": "memoria-qtr-giga-52",
+                        "blockId": "org.robotblocks.linea-qtr:add-channel",
+                        "operation": "org.robotblocks.linea-qtr:add-channel",
+                        "fields": { "PIN": "a10" },
+                        "inputs": {},
+                        "next": {
+                          "id": "memoria-qtr-giga-53",
+                          "blockId": "org.robotblocks.linea-qtr:add-channel",
+                          "operation": "org.robotblocks.linea-qtr:add-channel",
+                          "fields": { "PIN": "a0" },
+                          "inputs": {},
+                          "next": {
+                            "id": "memoria-qtr-giga-54",
+                            "blockId": "org.robotblocks.linea-qtr:add-channel",
+                            "operation": "org.robotblocks.linea-qtr:add-channel",
+                            "fields": { "PIN": "a9" },
+                            "inputs": {},
+                            "next": {
+                              "id": "memoria-qtr-giga-55",
+                              "blockId": "org.robotblocks.linea-qtr:add-channel",
+                              "operation": "org.robotblocks.linea-qtr:add-channel",
+                              "fields": { "PIN": "a1" },
+                              "inputs": {},
+                              "next": {
+                                "id": "memoria-qtr-giga-56",
+                                "blockId": "org.robotblocks.linea-qtr:add-channel",
+                                "operation": "org.robotblocks.linea-qtr:add-channel",
+                                "fields": { "PIN": "a8" },
+                                "inputs": {},
+                                "next": {
+                                  "id": "memoria-qtr-giga-57",
+                                  "blockId": "org.robotblocks.linea-qtr:add-channel",
+                                  "operation": "org.robotblocks.linea-qtr:add-channel",
+                                  "fields": { "PIN": "a2" },
+                                  "inputs": {},
+                                  "next": {
+                                    "id": "memoria-qtr-giga-58",
+                                    "blockId": "org.robotblocks.linea-qtr:add-channel",
+                                    "operation": "org.robotblocks.linea-qtr:add-channel",
+                                    "fields": { "PIN": "a7" },
+                                    "inputs": {},
+                                    "next": {
+                                      "id": "memoria-qtr-giga-59",
+                                      "blockId": "org.robotblocks.linea-qtr:add-channel",
+                                      "operation": "org.robotblocks.linea-qtr:add-channel",
+                                      "fields": { "PIN": "a3" },
+                                      "inputs": {},
+                                      "next": {
+                                        "id": "memoria-qtr-giga-78",
+                                        "blockId": "core:if",
+                                        "operation": "core:if",
+                                        "fields": {},
+                                        "inputs": {
+                                          "CONDITION": {
+                                            "id": "memoria-qtr-giga-64",
+                                            "blockId": "core:or",
+                                            "operation": "core:or",
+                                            "fields": {},
+                                            "inputs": {
+                                              "LEFT": {
+                                                "id": "memoria-qtr-giga-60",
+                                                "blockId": "org.robotblocks.demo-board-io:digital-read",
+                                                "operation": "org.robotblocks.demo-board-io:digital-read",
+                                                "fields": { "PIN": "d22" },
+                                                "inputs": {},
+                                                "next": null,
+                                                "comment": "Botón activo alto: resistencia externa de 10 kΩ a GND; pulsador a 3.3 V en GIGA o 5 V en UNO."
+                                              },
+                                              "RIGHT": {
+                                                "id": "memoria-qtr-giga-63",
+                                                "blockId": "core:not",
+                                                "operation": "core:not",
+                                                "fields": {},
+                                                "inputs": {
+                                                  "VALUE": {
+                                                    "id": "memoria-qtr-giga-62",
+                                                    "blockId": "org.robotblocks.memoria:exists",
+                                                    "operation": "org.robotblocks.memoria:exists",
+                                                    "fields": {},
+                                                    "inputs": {
+                                                      "NOMBRE": {
+                                                        "id": "memoria-qtr-giga-61",
+                                                        "blockId": "core:text",
+                                                        "operation": "core:text",
+                                                        "fields": { "TEXT": "qtr_min_1" },
+                                                        "inputs": {},
+                                                        "next": null
+                                                      }
+                                                    },
+                                                    "next": null
+                                                  }
+                                                },
+                                                "next": null
+                                              }
+                                            },
+                                            "next": null
+                                          },
+                                          "BODY": {
+                                            "id": "memoria-qtr-giga-65",
+                                            "blockId": "core:timer-reset",
+                                            "operation": "core:timer-reset",
+                                            "fields": {},
+                                            "inputs": {},
+                                            "next": {
+                                              "id": "memoria-qtr-giga-67",
+                                              "blockId": "org.robotblocks.motores:speed",
+                                              "operation": "org.robotblocks.motores:speed",
+                                              "fields": { "MOTOR": "A" },
+                                              "inputs": {
+                                                "SPEED": {
+                                                  "id": "memoria-qtr-giga-66",
+                                                  "blockId": "core:number",
+                                                  "operation": "core:number",
+                                                  "fields": { "NUMBER": 20 },
+                                                  "inputs": {},
+                                                  "next": null
+                                                }
+                                              },
+                                              "next": {
+                                                "id": "memoria-qtr-giga-69",
+                                                "blockId": "org.robotblocks.motores:speed",
+                                                "operation": "org.robotblocks.motores:speed",
+                                                "fields": { "MOTOR": "B" },
+                                                "inputs": {
+                                                  "SPEED": {
+                                                    "id": "memoria-qtr-giga-68",
+                                                    "blockId": "core:number",
+                                                    "operation": "core:number",
+                                                    "fields": { "NUMBER": -20 },
+                                                    "inputs": {},
+                                                    "next": null
+                                                  }
+                                                },
+                                                "next": {
+                                                  "id": "memoria-qtr-giga-76",
+                                                  "blockId": "core:repeat-until",
+                                                  "operation": "core:repeat-until",
+                                                  "fields": {},
+                                                  "inputs": {
+                                                    "CONDITION": {
+                                                      "id": "memoria-qtr-giga-72",
+                                                      "blockId": "core:greater-equal",
+                                                      "operation": "core:greater-equal",
+                                                      "fields": {},
+                                                      "inputs": {
+                                                        "LEFT": {
+                                                          "id": "memoria-qtr-giga-70",
+                                                          "blockId": "core:timer",
+                                                          "operation": "core:timer",
+                                                          "fields": {},
+                                                          "inputs": {},
+                                                          "next": null
+                                                        },
+                                                        "RIGHT": {
+                                                          "id": "memoria-qtr-giga-71",
+                                                          "blockId": "core:number",
+                                                          "operation": "core:number",
+                                                          "fields": { "NUMBER": 5 },
+                                                          "inputs": {},
+                                                          "next": null
+                                                        }
+                                                      },
+                                                      "next": null
+                                                    },
+                                                    "BODY": {
+                                                      "id": "memoria-qtr-giga-73",
+                                                      "blockId": "org.robotblocks.linea-qtr:calibrate",
+                                                      "operation": "org.robotblocks.linea-qtr:calibrate",
+                                                      "fields": {},
+                                                      "inputs": {},
+                                                      "next": {
+                                                        "id": "memoria-qtr-giga-75",
+                                                        "blockId": "core:wait-ms",
+                                                        "operation": "core:wait-ms",
+                                                        "fields": {},
+                                                        "inputs": {
+                                                          "MS": {
+                                                            "id": "memoria-qtr-giga-74",
+                                                            "blockId": "core:number",
+                                                            "operation": "core:number",
+                                                            "fields": { "NUMBER": 10 },
+                                                            "inputs": {},
+                                                            "next": null
+                                                          }
+                                                        },
+                                                        "next": null
+                                                      }
+                                                    }
+                                                  },
+                                                  "next": {
+                                                    "id": "memoria-qtr-giga-77",
+                                                    "blockId": "org.robotblocks.motores:stop",
+                                                    "operation": "org.robotblocks.motores:stop",
+                                                    "fields": { "MOTOR": "todos", "MODE": "frenar" },
+                                                    "inputs": {},
+                                                    "next": {
+                                                      "id": "memoria-qtr-giga-16",
+                                                      "blockId": "core:set",
+                                                      "operation": "core:set",
+                                                      "fields": { "VARIABLE": "canal" },
+                                                      "inputs": {
+                                                        "VALUE": {
+                                                          "id": "memoria-qtr-giga-15",
+                                                          "blockId": "core:number",
+                                                          "operation": "core:number",
+                                                          "fields": { "NUMBER": 1 },
+                                                          "inputs": {},
+                                                          "next": null
+                                                        }
+                                                      },
+                                                      "next": {
+                                                        "id": "memoria-qtr-giga-22",
+                                                        "blockId": "core:repeat-count",
+                                                        "operation": "core:repeat-count",
+                                                        "fields": {},
+                                                        "inputs": {
+                                                          "TIMES": {
+                                                            "id": "memoria-qtr-giga-17",
+                                                            "blockId": "core:number",
+                                                            "operation": "core:number",
+                                                            "fields": { "NUMBER": 8 },
+                                                            "inputs": {},
+                                                            "next": null
+                                                          },
+                                                          "BODY": {
+                                                            "id": "memoria-qtr-giga-7",
+                                                            "blockId": "org.robotblocks.memoria:save",
+                                                            "operation": "org.robotblocks.memoria:save",
+                                                            "fields": {},
+                                                            "inputs": {
+                                                              "NOMBRE": {
+                                                                "id": "memoria-qtr-giga-4",
+                                                                "blockId": "core:join",
+                                                                "operation": "core:join",
+                                                                "fields": {},
+                                                                "inputs": {
+                                                                  "LEFT": {
+                                                                    "id": "memoria-qtr-giga-1",
+                                                                    "blockId": "core:text",
+                                                                    "operation": "core:text",
+                                                                    "fields": { "TEXT": "qtr_min_" },
+                                                                    "inputs": {},
+                                                                    "next": null
+                                                                  },
+                                                                  "RIGHT": {
+                                                                    "id": "memoria-qtr-giga-3",
+                                                                    "blockId": "core:to-text",
+                                                                    "operation": "core:to-text",
+                                                                    "fields": {},
+                                                                    "inputs": {
+                                                                      "VALUE": {
+                                                                        "id": "memoria-qtr-giga-2",
+                                                                        "blockId": "core:variable",
+                                                                        "operation": "core:variable",
+                                                                        "fields": { "VARIABLE": "canal" },
+                                                                        "inputs": {},
+                                                                        "next": null
+                                                                      }
+                                                                    },
+                                                                    "next": null
+                                                                  }
+                                                                },
+                                                                "next": null
+                                                              },
+                                                              "VALOR": {
+                                                                "id": "memoria-qtr-giga-6",
+                                                                "blockId": "org.robotblocks.linea-qtr:calibration",
+                                                                "operation": "org.robotblocks.linea-qtr:calibration",
+                                                                "fields": { "TIPO": "minima" },
+                                                                "inputs": {
+                                                                  "NUMBER": {
+                                                                    "id": "memoria-qtr-giga-5",
+                                                                    "blockId": "core:variable",
+                                                                    "operation": "core:variable",
+                                                                    "fields": { "VARIABLE": "canal" },
+                                                                    "inputs": {},
+                                                                    "next": null
+                                                                  }
+                                                                },
+                                                                "next": null
+                                                              }
+                                                            },
+                                                            "next": {
+                                                              "id": "memoria-qtr-giga-14",
+                                                              "blockId": "org.robotblocks.memoria:save",
+                                                              "operation": "org.robotblocks.memoria:save",
+                                                              "fields": {},
+                                                              "inputs": {
+                                                                "NOMBRE": {
+                                                                  "id": "memoria-qtr-giga-11",
+                                                                  "blockId": "core:join",
+                                                                  "operation": "core:join",
+                                                                  "fields": {},
+                                                                  "inputs": {
+                                                                    "LEFT": {
+                                                                      "id": "memoria-qtr-giga-8",
+                                                                      "blockId": "core:text",
+                                                                      "operation": "core:text",
+                                                                      "fields": { "TEXT": "qtr_max_" },
+                                                                      "inputs": {},
+                                                                      "next": null
+                                                                    },
+                                                                    "RIGHT": {
+                                                                      "id": "memoria-qtr-giga-10",
+                                                                      "blockId": "core:to-text",
+                                                                      "operation": "core:to-text",
+                                                                      "fields": {},
+                                                                      "inputs": {
+                                                                        "VALUE": {
+                                                                          "id": "memoria-qtr-giga-9",
+                                                                          "blockId": "core:variable",
+                                                                          "operation": "core:variable",
+                                                                          "fields": { "VARIABLE": "canal" },
+                                                                          "inputs": {},
+                                                                          "next": null
+                                                                        }
+                                                                      },
+                                                                      "next": null
+                                                                    }
+                                                                  },
+                                                                  "next": null
+                                                                },
+                                                                "VALOR": {
+                                                                  "id": "memoria-qtr-giga-13",
+                                                                  "blockId": "org.robotblocks.linea-qtr:calibration",
+                                                                  "operation": "org.robotblocks.linea-qtr:calibration",
+                                                                  "fields": { "TIPO": "maxima" },
+                                                                  "inputs": {
+                                                                    "NUMBER": {
+                                                                      "id": "memoria-qtr-giga-12",
+                                                                      "blockId": "core:variable",
+                                                                      "operation": "core:variable",
+                                                                      "fields": { "VARIABLE": "canal" },
+                                                                      "inputs": {},
+                                                                      "next": null
+                                                                    }
+                                                                  },
+                                                                  "next": null
+                                                                }
+                                                              },
+                                                              "next": {
+                                                                "id": "memoria-qtr-giga-21",
+                                                                "blockId": "core:set",
+                                                                "operation": "core:set",
+                                                                "fields": { "VARIABLE": "canal" },
+                                                                "inputs": {
+                                                                  "VALUE": {
+                                                                    "id": "memoria-qtr-giga-20",
+                                                                    "blockId": "core:add",
+                                                                    "operation": "core:add",
+                                                                    "fields": {},
+                                                                    "inputs": {
+                                                                      "LEFT": {
+                                                                        "id": "memoria-qtr-giga-18",
+                                                                        "blockId": "core:variable",
+                                                                        "operation": "core:variable",
+                                                                        "fields": { "VARIABLE": "canal" },
+                                                                        "inputs": {},
+                                                                        "next": null
+                                                                      },
+                                                                      "RIGHT": {
+                                                                        "id": "memoria-qtr-giga-19",
+                                                                        "blockId": "core:number",
+                                                                        "operation": "core:number",
+                                                                        "fields": { "NUMBER": 1 },
+                                                                        "inputs": {},
+                                                                        "next": null
+                                                                      }
+                                                                    },
+                                                                    "next": null
+                                                                  }
+                                                                },
+                                                                "next": null
+                                                              }
+                                                            }
+                                                          }
+                                                        },
+                                                        "next": null
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "ELSE": {
+                                            "id": "memoria-qtr-giga-38",
+                                            "blockId": "core:set",
+                                            "operation": "core:set",
+                                            "fields": { "VARIABLE": "canal" },
+                                            "inputs": {
+                                              "VALUE": {
+                                                "id": "memoria-qtr-giga-37",
+                                                "blockId": "core:number",
+                                                "operation": "core:number",
+                                                "fields": { "NUMBER": 1 },
+                                                "inputs": {},
+                                                "next": null
+                                              }
+                                            },
+                                            "next": {
+                                              "id": "memoria-qtr-giga-44",
+                                              "blockId": "core:repeat-count",
+                                              "operation": "core:repeat-count",
+                                              "fields": {},
+                                              "inputs": {
+                                                "TIMES": {
+                                                  "id": "memoria-qtr-giga-39",
+                                                  "blockId": "core:number",
+                                                  "operation": "core:number",
+                                                  "fields": { "NUMBER": 8 },
+                                                  "inputs": {},
+                                                  "next": null
+                                                },
+                                                "BODY": {
+                                                  "id": "memoria-qtr-giga-36",
+                                                  "blockId": "org.robotblocks.linea-qtr:use-calibration",
+                                                  "operation": "org.robotblocks.linea-qtr:use-calibration",
+                                                  "fields": {},
+                                                  "inputs": {
+                                                    "NUMBER": {
+                                                      "id": "memoria-qtr-giga-23",
+                                                      "blockId": "core:variable",
+                                                      "operation": "core:variable",
+                                                      "fields": { "VARIABLE": "canal" },
+                                                      "inputs": {},
+                                                      "next": null
+                                                    },
+                                                    "A": {
+                                                      "id": "memoria-qtr-giga-29",
+                                                      "blockId": "org.robotblocks.memoria:read",
+                                                      "operation": "org.robotblocks.memoria:read",
+                                                      "fields": {},
+                                                      "inputs": {
+                                                        "NOMBRE": {
+                                                          "id": "memoria-qtr-giga-27",
+                                                          "blockId": "core:join",
+                                                          "operation": "core:join",
+                                                          "fields": {},
+                                                          "inputs": {
+                                                            "LEFT": {
+                                                              "id": "memoria-qtr-giga-24",
+                                                              "blockId": "core:text",
+                                                              "operation": "core:text",
+                                                              "fields": { "TEXT": "qtr_min_" },
+                                                              "inputs": {},
+                                                              "next": null
+                                                            },
+                                                            "RIGHT": {
+                                                              "id": "memoria-qtr-giga-26",
+                                                              "blockId": "core:to-text",
+                                                              "operation": "core:to-text",
+                                                              "fields": {},
+                                                              "inputs": {
+                                                                "VALUE": {
+                                                                  "id": "memoria-qtr-giga-25",
+                                                                  "blockId": "core:variable",
+                                                                  "operation": "core:variable",
+                                                                  "fields": { "VARIABLE": "canal" },
+                                                                  "inputs": {},
+                                                                  "next": null
+                                                                }
+                                                              },
+                                                              "next": null
+                                                            }
+                                                          },
+                                                          "next": null
+                                                        },
+                                                        "PREDETERMINADO": {
+                                                          "id": "memoria-qtr-giga-28",
+                                                          "blockId": "core:number",
+                                                          "operation": "core:number",
+                                                          "fields": { "NUMBER": 0 },
+                                                          "inputs": {},
+                                                          "next": null
+                                                        }
+                                                      },
+                                                      "next": null
+                                                    },
+                                                    "B": {
+                                                      "id": "memoria-qtr-giga-35",
+                                                      "blockId": "org.robotblocks.memoria:read",
+                                                      "operation": "org.robotblocks.memoria:read",
+                                                      "fields": {},
+                                                      "inputs": {
+                                                        "NOMBRE": {
+                                                          "id": "memoria-qtr-giga-33",
+                                                          "blockId": "core:join",
+                                                          "operation": "core:join",
+                                                          "fields": {},
+                                                          "inputs": {
+                                                            "LEFT": {
+                                                              "id": "memoria-qtr-giga-30",
+                                                              "blockId": "core:text",
+                                                              "operation": "core:text",
+                                                              "fields": { "TEXT": "qtr_max_" },
+                                                              "inputs": {},
+                                                              "next": null
+                                                            },
+                                                            "RIGHT": {
+                                                              "id": "memoria-qtr-giga-32",
+                                                              "blockId": "core:to-text",
+                                                              "operation": "core:to-text",
+                                                              "fields": {},
+                                                              "inputs": {
+                                                                "VALUE": {
+                                                                  "id": "memoria-qtr-giga-31",
+                                                                  "blockId": "core:variable",
+                                                                  "operation": "core:variable",
+                                                                  "fields": { "VARIABLE": "canal" },
+                                                                  "inputs": {},
+                                                                  "next": null
+                                                                }
+                                                              },
+                                                              "next": null
+                                                            }
+                                                          },
+                                                          "next": null
+                                                        },
+                                                        "PREDETERMINADO": {
+                                                          "id": "memoria-qtr-giga-34",
+                                                          "blockId": "core:number",
+                                                          "operation": "core:number",
+                                                          "fields": { "NUMBER": 1023 },
+                                                          "inputs": {},
+                                                          "next": null
+                                                        }
+                                                      },
+                                                      "next": null
+                                                    }
+                                                  },
+                                                  "next": {
+                                                    "id": "memoria-qtr-giga-43",
+                                                    "blockId": "core:set",
+                                                    "operation": "core:set",
+                                                    "fields": { "VARIABLE": "canal" },
+                                                    "inputs": {
+                                                      "VALUE": {
+                                                        "id": "memoria-qtr-giga-42",
+                                                        "blockId": "core:add",
+                                                        "operation": "core:add",
+                                                        "fields": {},
+                                                        "inputs": {
+                                                          "LEFT": {
+                                                            "id": "memoria-qtr-giga-40",
+                                                            "blockId": "core:variable",
+                                                            "operation": "core:variable",
+                                                            "fields": { "VARIABLE": "canal" },
+                                                            "inputs": {},
+                                                            "next": null
+                                                          },
+                                                          "RIGHT": {
+                                                            "id": "memoria-qtr-giga-41",
+                                                            "blockId": "core:number",
+                                                            "operation": "core:number",
+                                                            "fields": { "NUMBER": 1 },
+                                                            "inputs": {},
+                                                            "next": null
+                                                          }
+                                                        },
+                                                        "next": null
+                                                      }
+                                                    },
+                                                    "next": null
+                                                  }
+                                                }
+                                              },
+                                              "next": null
+                                            }
+                                          }
+                                        },
+                                        "next": {
+                                          "id": "memoria-qtr-giga-83",
+                                          "blockId": "core:forever",
+                                          "operation": "core:forever",
+                                          "fields": {},
+                                          "inputs": {
+                                            "BODY": {
+                                              "id": "memoria-qtr-giga-80",
+                                              "blockId": "core:serial-println",
+                                              "operation": "core:serial-println",
+                                              "fields": {},
+                                              "inputs": {
+                                                "VALUE": {
+                                                  "id": "memoria-qtr-giga-79",
+                                                  "blockId": "org.robotblocks.linea-qtr:position",
+                                                  "operation": "org.robotblocks.linea-qtr:position",
+                                                  "fields": { "COLOR": "negra" },
+                                                  "inputs": {},
+                                                  "next": null
+                                                }
+                                              },
+                                              "next": {
+                                                "id": "memoria-qtr-giga-82",
+                                                "blockId": "core:wait-ms",
+                                                "operation": "core:wait-ms",
+                                                "fields": {},
+                                                "inputs": {
+                                                  "MS": {
+                                                    "id": "memoria-qtr-giga-81",
+                                                    "blockId": "core:number",
+                                                    "operation": "core:number",
+                                                    "fields": { "NUMBER": 100 },
+                                                    "inputs": {},
+                                                    "next": null
+                                                  }
+                                                },
+                                                "next": null
+                                              }
+                                            }
+                                          },
+                                          "next": null
+                                        },
+                                        "comment": "Calibra girando durante 5 segundos; coloca todos los sensores sobre la línea y el fondo. Guarda solo al terminar."
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [{ "id": "canal", "name": "canal", "type": "number", "scope": "project", "initialValue": 1 }],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-giga-r1", "version": "0.3.0" },
+    { "id": "org.robotblocks.demo-board-io", "version": "1.3.0" },
+    { "id": "org.robotblocks.linea-qtr", "version": "1.2.0" },
+    { "id": "org.robotblocks.memoria", "version": "1.0.0" },
+    { "id": "org.robotblocks.motores", "version": "1.1.2" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "memoria-qtr-giga-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:if",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %BODY", "en": "if %CONDITION then %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "operation": "core:if",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:add",
+        "operation": "core:add",
+        "category": "core:operators",
+        "label": { "es": "%LEFT + %RIGHT", "en": "%LEFT + %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:greater-equal",
+        "operation": "core:greater-equal",
+        "category": "core:operators",
+        "label": { "es": "%LEFT ≥ %RIGHT", "en": "%LEFT ≥ %RIGHT" },
+        "kind": "boolean",
+        "output": "boolean",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 0 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:or",
+        "operation": "core:or",
+        "category": "core:operators",
+        "label": { "es": "%LEFT o %RIGHT", "en": "%LEFT or %RIGHT" },
+        "kind": "boolean",
+        "output": "boolean",
+        "inputs": [
+          { "name": "LEFT", "type": "boolean" },
+          { "name": "RIGHT", "type": "boolean" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:not",
+        "operation": "core:not",
+        "category": "core:operators",
+        "label": { "es": "no %VALUE", "en": "not %VALUE" },
+        "kind": "boolean",
+        "output": "boolean",
+        "inputs": [{ "name": "VALUE", "type": "boolean" }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:join",
+        "operation": "core:join",
+        "category": "core:operators",
+        "label": { "es": "unir %LEFT con %RIGHT", "en": "join %LEFT with %RIGHT" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [
+          { "name": "LEFT", "type": "string", "default": "hola" },
+          { "name": "RIGHT", "type": "string", "default": "mundo" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:to-text",
+        "operation": "core:to-text",
+        "category": "core:operators",
+        "label": { "es": "convertir %VALUE a texto", "en": "convert %VALUE to text" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [{ "name": "VALUE", "type": "value", "default": 123 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:repeat-count",
+        "operation": "core:repeat-count",
+        "category": "core:control",
+        "label": { "es": "repetir %TIMES veces %BODY", "en": "repeat %TIMES times %BODY" },
+        "kind": "loop",
+        "inputs": [
+          { "name": "TIMES", "type": "number", "default": 10, "min": 0, "integer": true },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Estructura de control del programa. No ejecuta ni bloquea el navegador.",
+          "en": "Program control structure. Does not execute or block the browser."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:repeat-until",
+        "operation": "core:repeat-until",
+        "category": "core:control",
+        "label": { "es": "repetir hasta que %CONDITION %BODY", "en": "repeat until %CONDITION %BODY" },
+        "kind": "loop",
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Estructura de control del programa. No ejecuta ni bloquea el navegador.",
+          "en": "Program control structure. Does not execute or block the browser."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:serial-begin",
+        "operation": "core:serial-begin",
+        "category": "core:serial",
+        "label": { "es": "iniciar serie a %BAUD baudios", "en": "begin serial at %BAUD baud" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "BAUD", "type": "number", "default": 115200, "min": 300, "max": 2000000, "integer": true }
+        ],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "rb_console_baud({BAUD}, {BLOCK_ID})" },
+          "arduino": { "statement": "Serial.begin({BAUD});", "canFail": false },
+          "pybricks": { "statement": "rb_console_baud({BAUD}, {BLOCK_ID})" }
+        }
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "core:wait-ms",
+        "operation": "core:wait-ms",
+        "category": "core:time",
+        "label": { "es": "esperar %MS ms", "en": "wait %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647, "integer": true }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        }
+      },
+      {
+        "id": "core:timer",
+        "operation": "core:timer",
+        "category": "core:time",
+        "label": { "es": "temporizador en ms", "en": "timer in ms" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "expression": "rb_timer()", "canFail": false },
+          "arduino": { "expression": "rb_timer()", "canFail": false },
+          "pybricks": { "expression": "rb_timer()", "canFail": false }
+        }
+      },
+      {
+        "id": "core:timer-reset",
+        "operation": "core:timer-reset",
+        "category": "core:time",
+        "label": { "es": "reiniciar temporizador", "en": "reset timer" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "rb_timer_reset()", "canFail": false },
+          "arduino": { "statement": "rb_timer_reset();", "canFail": false },
+          "pybricks": { "statement": "rb_timer_reset()", "canFail": false }
+        }
+      },
+      {
+        "id": "org.robotblocks.demo-board-io:digital-read",
+        "category": "org.robotblocks.demo-board-io:pins",
+        "label": { "es": "pin digital %PIN está alto", "en": "digital pin %PIN is high" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.demo-board-io:digital-read",
+        "tooltip": {
+          "es": "MicroPython ESP32 experimental. Revisa las capacidades y las notas del pin antes de cargar. Arduino experimental: API del core, sin librerías externas.",
+          "en": "Experimental ESP32 MicroPython. Check pin capabilities and notes before uploading. Experimental Arduino: core API, no external libraries."
+        },
+        "requiredCapabilities": ["digitalInput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "setup": ["input_pin_{PIN} = Pin({PIN}, Pin.IN)"],
+            "expression": "input_pin_{PIN}.value() != 0"
+          },
+          "arduino": { "canFail": false, "setup": ["pinMode({PIN}, INPUT);"], "expression": "digitalRead({PIN}) != 0" }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:configure",
+        "category": "org.robotblocks.motores:motores",
+        "label": {
+          "es": "configurar motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2",
+          "en": "configure motor %MOTOR PWM %PWM IN1 %IN1 IN2 %IN2"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MOTOR",
+            "type": "string",
+            "default": "A",
+            "options": [
+              { "label": { "es": "A", "en": "A" }, "value": "A" },
+              { "label": { "es": "B", "en": "B" }, "value": "B" },
+              { "label": { "es": "C", "en": "C" }, "value": "C" },
+              { "label": { "es": "D", "en": "D" }, "value": "D" }
+            ]
+          },
+          {
+            "name": "PWM",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["pwm"] }
+          },
+          {
+            "name": "IN1",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "IN2",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.motores:configure",
+        "tooltip": {
+          "es": "Ponlo en «al iniciar», una vez por motor. PWM va a ENA/PWMA; IN1 e IN2 a los pines de dirección. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+          "en": "Place in “when started”, once per motor. PWM connects to ENA/PWMA; IN1 and IN2 to the direction pins. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_configurar(motor, pwm, in1, in2):\n    motores_puente[motor] = (PWM(Pin(pwm), freq=1000, duty_u16=0), Pin(in1, Pin.OUT, value=0), Pin(in2, Pin.OUT, value=0))\n"
+            ],
+            "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_configurar({MOTOR}, {PWM}, {IN1}, {IN2});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:speed",
+        "category": "org.robotblocks.motores:motores",
+        "label": { "es": "motor %MOTOR a %SPEED %", "en": "motor %MOTOR at %SPEED %" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MOTOR",
+            "type": "string",
+            "default": "A",
+            "options": [
+              { "label": { "es": "A", "en": "A" }, "value": "A" },
+              { "label": { "es": "B", "en": "B" }, "value": "B" },
+              { "label": { "es": "C", "en": "C" }, "value": "C" },
+              { "label": { "es": "D", "en": "D" }, "value": "D" }
+            ]
+          }
+        ],
+        "inputs": [{ "name": "SPEED", "type": "number", "default": 50, "slider": { "min": -100, "max": 100 } }],
+        "operation": "org.robotblocks.motores:speed",
+        "tooltip": {
+          "es": "De -100 (reversa) a 100 (adelante); valores mayores se limitan. 0 lo deja en libre. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+          "en": "From -100 (reverse) to 100 (forward); larger values are clamped. 0 makes it coast. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+              "def motores_velocidad(motor, velocidad, bloque):\n    salidas = motores_puente.get(motor)\n    if salidas is None:\n        rb_fail(bloque, \"Motor %s sin configurar: usa configurar motor al iniciar\" % motor)\n    velocidad = max(-100, min(100, velocidad))\n    if velocidad == 0:\n        motores_parar(salidas, \"libre\")\n        return\n    pwm, in1, in2 = salidas\n    in1.value(1 if velocidad > 0 else 0)\n    in2.value(0 if velocidad > 0 else 1)\n    pwm.duty_u16(int(abs(velocidad) * 65535 / 100))\n"
+            ],
+            "statement": "motores_velocidad({MOTOR}, {SPEED}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_velocidad({MOTOR}, {SPEED}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:stop",
+        "category": "org.robotblocks.motores:motores",
+        "label": { "es": "detener %MOTOR %MODE", "en": "stop %MOTOR %MODE" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "MOTOR",
+            "type": "string",
+            "default": "todos",
+            "options": [
+              { "label": { "es": "todos los motores", "en": "all motors" }, "value": "todos" },
+              { "label": { "es": "motor A", "en": "motor A" }, "value": "A" },
+              { "label": { "es": "motor B", "en": "motor B" }, "value": "B" },
+              { "label": { "es": "motor C", "en": "motor C" }, "value": "C" },
+              { "label": { "es": "motor D", "en": "motor D" }, "value": "D" }
+            ]
+          },
+          {
+            "name": "MODE",
+            "type": "string",
+            "default": "frenar",
+            "options": [
+              { "label": { "es": "frenando", "en": "brake" }, "value": "frenar" },
+              { "label": { "es": "en libre", "en": "coast" }, "value": "libre" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.motores:stop",
+        "tooltip": {
+          "es": "Frenando: se detiene enseguida. En libre: gira hasta pararse solo. TB6612FNG o L298N. Si el motor gira al revés, intercambia IN1 e IN2 en «configurar motor».",
+          "en": "Braking: stops immediately. Coasting: spins until it stops on its own. TB6612FNG or L298N. If the motor spins backward, swap IN1 and IN2 in “configure motor”."
+        },
+        "requiredCapabilities": ["pwm", "digitalOutput"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "motores_puente = {}\n",
+              "def motores_parar(salidas, modo):\n    pwm, in1, in2 = salidas\n    # Frenar: IN1 e IN2 en alto. Libre: PWM en 0 e IN1/IN2 en bajo (TB6612FNG y L298N).\n    frenar = modo == \"frenar\"\n    in1.value(1 if frenar else 0)\n    in2.value(1 if frenar else 0)\n    pwm.duty_u16(65535 if frenar else 0)\n",
+              "def motores_detener(motor, modo):\n    for letra, salidas in motores_puente.items():\n        if motor == \"todos\" or motor == letra:\n            motores_parar(salidas, modo)\n"
+            ],
+            "statement": "motores_detener({MOTOR}, {MODE})"
+          },
+          "arduino": {
+            "hardware": { "features": ["pwm"] },
+            "globals": [
+              "struct RbMotor { int pwm = -1, ina = -1, inb = -1; };\nstatic RbMotor motores_puente[4];\ninline int motores_indice(const String& motor) { return motor.length() == 1 ? motor[0] - 'A' : -1; }\ninline void motores_configurar(const String& motor, int pwm, int ina, int inb) {\n    int i = motores_indice(motor); if (i < 0 || i > 3) return;\n    motores_puente[i].pwm = pwm; motores_puente[i].ina = ina; motores_puente[i].inb = inb;\n    pinMode(pwm, OUTPUT); pinMode(ina, OUTPUT); pinMode(inb, OUTPUT);\n    digitalWrite(ina, LOW); digitalWrite(inb, LOW); analogWrite(pwm, 0);\n}\ninline void motores_parar(RbMotor& m, bool frenar) {\n    digitalWrite(m.ina, frenar ? HIGH : LOW); digitalWrite(m.inb, frenar ? HIGH : LOW);\n    analogWrite(m.pwm, frenar ? {PWM_MAX} : 0);\n}\ninline void motores_velocidad(const String& motor, float velocidad, const char* bloque) {\n    int i = motores_indice(motor);\n    if (i < 0 || i > 3 || motores_puente[i].pwm < 0) { rb_fail(bloque, \"Motor sin configurar: usa configurar motor al iniciar\"); return; }\n    velocidad = fmaxf(-100, fminf(100, rb_finite(velocidad, bloque)));\n    RbMotor& m = motores_puente[i];\n    if (velocidad == 0) { motores_parar(m, false); return; }\n    digitalWrite(m.ina, velocidad > 0 ? HIGH : LOW); digitalWrite(m.inb, velocidad > 0 ? LOW : HIGH);\n    analogWrite(m.pwm, uint32_t(fabsf(velocidad) * {PWM_MAX} / 100.0f));\n}\ninline void motores_detener(const String& motor, const String& modo) {\n    for (int i = 0; i < 4; i++) if (motores_puente[i].pwm >= 0 && (motor == \"todos\" || motores_indice(motor) == i)) motores_parar(motores_puente[i], modo == \"frenar\");\n}"
+            ],
+            "statement": "motores_detener({MOTOR}, {MODE});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.motores:enable-vnh5019",
+        "category": "org.robotblocks.motores:motores",
+        "label": { "es": "habilitar VNH5019 EN/DIAG %EN", "en": "enable VNH5019 EN/DIAG %EN" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "EN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalInput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.motores:enable-vnh5019",
+        "tooltip": {
+          "es": "Libera EN/DIAG con pull-up. El shield ya tiene pull-up: no fuerces HIGH contra una falla. M1 D6, M2 D12 en GIGA.",
+          "en": "Release EN/DIAG with a pull-up. The shield already has pull-ups: do not force HIGH against a fault. M1 D6, M2 D12 on GIGA."
+        },
+        "requiredCapabilities": ["digitalInput"],
+        "generators": {
+          "micropython": {
+            "imports": ["from machine import Pin"],
+            "globals": ["def motores_habilitar_vnh(en):\n    Pin(en, Pin.IN, Pin.PULL_UP)"],
+            "statement": "motores_habilitar_vnh({EN})"
+          },
+          "arduino": { "canFail": false, "statement": "pinMode({EN}, INPUT_PULLUP);" }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:save",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": { "es": "guardar número %VALOR como %NOMBRE", "en": "save number %VALOR as %NOMBRE" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "VALOR", "type": "number", "default": 0 },
+          { "name": "NOMBRE", "type": "string", "default": "qtr_min_1" }
+        ],
+        "operation": "org.robotblocks.memoria:save",
+        "tooltip": {
+          "es": "Guarda al terminar de calibrar; el valor sigue ahí al apagar. Nombre: 1–12 letras A–Z/a–z, dígitos o _.",
+          "en": "Save after calibration; the value remains after powering off. Name: 1–12 A–Z/a–z letters, digits or _."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "statement": "memoria_guardar({NOMBRE}, {VALOR}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_buscar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_buscar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_buscar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "statement": "memoria_guardar({NOMBRE}, {VALOR}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:read",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": {
+          "es": "número guardado %NOMBRE si no existe %PREDETERMINADO",
+          "en": "saved number %NOMBRE if missing %PREDETERMINADO"
+        },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [
+          { "name": "NOMBRE", "type": "string", "default": "qtr_min_1" },
+          { "name": "PREDETERMINADO", "type": "number", "default": 0 }
+        ],
+        "operation": "org.robotblocks.memoria:read",
+        "tooltip": {
+          "es": "Recupera el número por su nombre; si falta, devuelve el predeterminado. Usa el mismo nombre al guardar y leer.",
+          "en": "Retrieve a number by name; return the default if missing. Use the same name to save and read."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "expression": "memoria_leer({NOMBRE}, {PREDETERMINADO}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_buscar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_buscar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_buscar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "expression": "memoria_leer({NOMBRE}, {PREDETERMINADO}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:exists",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": { "es": "¿hay número guardado %NOMBRE?", "en": "is there a saved number %NOMBRE?" },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [],
+        "inputs": [{ "name": "NOMBRE", "type": "string", "default": "qtr_min_1" }],
+        "operation": "org.robotblocks.memoria:exists",
+        "tooltip": {
+          "es": "Verdadero si ya guardaste ese nombre. Nombre: 1–12 letras A–Z/a–z, dígitos o _.",
+          "en": "True if that name was saved. Name: 1–12 A–Z/a–z letters, digits or _."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "expression": "memoria_hay({NOMBRE}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_buscar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_buscar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_buscar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "expression": "memoria_hay({NOMBRE}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.linea-qtr:add-channel",
+        "category": "org.robotblocks.linea-qtr:linea",
+        "label": { "es": "agregar canal del sensor de línea en pin %PIN", "en": "add line sensor channel on pin %PIN" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["analogInput"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.linea-qtr:add-channel",
+        "tooltip": {
+          "es": "En «al iniciar», uno por canal y en orden: el primero es el canal 1. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+          "en": "In “when started”, one per channel in order: the first is channel 1. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "globals": [
+              "linea_canales = []\nlinea_ultima = 0\n",
+              "def linea_agregar(pin, bloque):\n    # [ADC, mínimo calibrado, máximo calibrado]\n    linea_canales.append([rb_adc(pin, bloque), 4095, 0])\n"
+            ],
+            "statement": "linea_agregar({PIN}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["adc"] },
+            "globals": [
+              "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+            ],
+            "statement": "linea_agregar([]() -> int { return analogRead({PIN}); }, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.linea-qtr:calibrate",
+        "category": "org.robotblocks.linea-qtr:linea",
+        "label": { "es": "calibrar sensor de línea", "en": "calibrate line sensor" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.linea-qtr:calibrate",
+        "tooltip": {
+          "es": "Toma una lectura de calibración. Úsalo dentro de «repetir» mientras el robot pasa todos los sensores sobre la línea y el fondo. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+          "en": "Takes a calibration reading. Use inside “repeat” while passing all sensors over the line and background. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "globals": [
+              "linea_canales = []\nlinea_ultima = 0\n",
+              "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+              "def linea_calibrar(bloque):\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        canal[1] = min(canal[1], valor)\n        canal[2] = max(canal[2], valor)\n"
+            ],
+            "statement": "linea_calibrar({BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["adc"] },
+            "globals": [
+              "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+            ],
+            "statement": "linea_calibrar({BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.linea-qtr:position",
+        "category": "org.robotblocks.linea-qtr:linea",
+        "label": { "es": "posición de la línea %COLOR", "en": "%COLOR line position" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "COLOR",
+            "type": "string",
+            "default": "negra",
+            "options": [
+              { "label": { "es": "negra", "en": "black" }, "value": "negra" },
+              { "label": { "es": "blanca", "en": "white" }, "value": "blanca" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.linea-qtr:position",
+        "tooltip": {
+          "es": "De -100 (bajo el canal 1) a 100 (bajo el último canal); 0 es el centro. Si pierde la línea, recuerda de qué lado se fue. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
+          "en": "From -100 (under channel 1) to 100 (under the last channel); 0 is the center. If the line is lost, remembers the side it left on. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "globals": [
+              "linea_canales = []\nlinea_ultima = 0\n",
+              "def linea_crudo(bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    return [rb_adc_read(canal[0], bloque) for canal in linea_canales]\n",
+              "def linea_niveles(color, bloque):\n    # 0 = sin línea, 100 = línea. Las QTR analógicas dan más voltaje sobre negro.\n    niveles = []\n    for canal, valor in zip(linea_canales, linea_crudo(bloque)):\n        minimo, maximo = canal[1], canal[2]\n        if maximo - minimo < 50:\n            minimo, maximo = 0, 4095\n        nivel = max(0, min(100, (valor - minimo) * 100 / (maximo - minimo)))\n        niveles.append(nivel if color == \"negra\" else 100 - nivel)\n    return niveles\n",
+              "def linea_posicion(color, bloque):\n    # -100 bajo el canal 1, 0 al centro, 100 bajo el último canal.\n    global linea_ultima\n    niveles = linea_niveles(color, bloque)\n    total = sum(nivel for nivel in niveles if nivel > 10)\n    if total == 0:\n        return -100 if linea_ultima < 0 else 100\n    if len(niveles) == 1:\n        return 0\n    paso = 200 / (len(niveles) - 1)\n    suma = sum(nivel * (i * paso - 100) for i, nivel in enumerate(niveles) if nivel > 10)\n    linea_ultima = suma / total\n    return round(linea_ultima, 1)\n"
+            ],
+            "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["adc"] },
+            "globals": [
+              "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
+            ],
+            "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.linea-qtr:calibration",
+        "category": "org.robotblocks.linea-qtr:linea",
+        "label": { "es": "calibración %TIPO del canal %NUMBER", "en": "%TIPO calibration of channel %NUMBER" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "TIPO",
+            "type": "string",
+            "default": "minima",
+            "options": [
+              { "label": { "es": "mínima", "en": "minimum" }, "value": "minima" },
+              { "label": { "es": "máxima", "en": "maximum" }, "value": "maxima" }
+            ]
+          }
+        ],
+        "inputs": [{ "name": "NUMBER", "type": "number", "default": 1, "min": 1, "integer": true }],
+        "operation": "org.robotblocks.linea-qtr:calibration",
+        "tooltip": {
+          "es": "Lee el mínimo o máximo crudo del ADC para guardar la calibración. Los canales empiezan en 1.",
+          "en": "Read the raw ADC minimum or maximum to save calibration. Channels start at 1."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "globals": [
+              "linea_canales = []\nlinea_ultima = 0\n",
+              "def linea_validar_canal(numero, bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    if not 1 <= numero <= len(linea_canales) or numero != int(numero):\n        rb_fail(bloque, \"Canal QTR fuera de rango\")\n    return linea_canales[int(numero) - 1]\n\ndef linea_calibracion(numero, tipo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    return canal[1 if tipo == \"minima\" else 2]\n\ndef linea_usar_calibracion(numero, minimo, maximo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    if not 0 <= minimo <= maximo <= 4095:\n        rb_fail(bloque, \"Calibracion QTR invalida\")\n    canal[1], canal[2] = int(minimo), int(maximo)\n"
+            ],
+            "expression": "linea_calibracion({NUMBER}, {TIPO}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["adc"] },
+            "globals": [
+              "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}",
+              "inline bool linea_validar_canal(float numero, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    if (!isfinite(numero) || numero < 1 || numero > linea_count || numero != floorf(numero)) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return false; }\n    return true;\n}\ninline float linea_calibracion(float numero, const String& tipo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return 0;\n    const RbQtrChannel& canal = linea_canales[int(numero) - 1];\n    return tipo == \"minima\" ? canal.minimo : canal.maximo;\n}\ninline void linea_usar_calibracion(float numero, float minimo, float maximo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return;\n    if (!isfinite(minimo) || !isfinite(maximo) || minimo < 0 || maximo < minimo || maximo > {ADC_MAX}) { rb_fail(bloque, \"Calibracion QTR invalida\"); return; }\n    linea_canales[int(numero) - 1].minimo = uint32_t(minimo);\n    linea_canales[int(numero) - 1].maximo = uint32_t(maximo);\n}\n"
+            ],
+            "expression": "linea_calibracion({NUMBER}, {TIPO}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.linea-qtr:use-calibration",
+        "category": "org.robotblocks.linea-qtr:linea",
+        "label": {
+          "es": "usar calibración del canal %NUMBER mínimo %A máximo %B",
+          "en": "use calibration of channel %NUMBER minimum %A maximum %B"
+        },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "NUMBER", "type": "number", "default": 1, "min": 1, "integer": true },
+          { "name": "A", "type": "number", "default": 0, "min": 0 },
+          { "name": "B", "type": "number", "default": 1023, "min": 0 }
+        ],
+        "operation": "org.robotblocks.linea-qtr:use-calibration",
+        "tooltip": {
+          "es": "Después de agregar los canales, restaura su mínimo y máximo crudos. Deben estar en el rango del ADC y mínimo ≤ máximo.",
+          "en": "After adding channels, restore their raw minimum and maximum. Both must fit the ADC range and minimum ≤ maximum."
+        },
+        "requiredCapabilities": ["analogInput"],
+        "generators": {
+          "micropython": {
+            "globals": [
+              "linea_canales = []\nlinea_ultima = 0\n",
+              "def linea_validar_canal(numero, bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    if not 1 <= numero <= len(linea_canales) or numero != int(numero):\n        rb_fail(bloque, \"Canal QTR fuera de rango\")\n    return linea_canales[int(numero) - 1]\n\ndef linea_calibracion(numero, tipo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    return canal[1 if tipo == \"minima\" else 2]\n\ndef linea_usar_calibracion(numero, minimo, maximo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    if not 0 <= minimo <= maximo <= 4095:\n        rb_fail(bloque, \"Calibracion QTR invalida\")\n    canal[1], canal[2] = int(minimo), int(maximo)\n"
+            ],
+            "statement": "linea_usar_calibracion({NUMBER}, {A}, {B}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "hardware": { "features": ["adc"] },
+            "globals": [
+              "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}",
+              "inline bool linea_validar_canal(float numero, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    if (!isfinite(numero) || numero < 1 || numero > linea_count || numero != floorf(numero)) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return false; }\n    return true;\n}\ninline float linea_calibracion(float numero, const String& tipo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return 0;\n    const RbQtrChannel& canal = linea_canales[int(numero) - 1];\n    return tipo == \"minima\" ? canal.minimo : canal.maximo;\n}\ninline void linea_usar_calibracion(float numero, float minimo, float maximo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return;\n    if (!isfinite(minimo) || !isfinite(maximo) || minimo < 0 || maximo < minimo || maximo > {ADC_MAX}) { rb_fail(bloque, \"Calibracion QTR invalida\"); return; }\n    linea_canales[int(numero) - 1].minimo = uint32_t(minimo);\n    linea_canales[int(numero) - 1].maximo = uint32_t(maximo);\n}\n"
+            ],
+            "statement": "linea_usar_calibracion({NUMBER}, {A}, {B}, {BLOCK_ID});"
+          }
+        }
+      }
+    ]
+  }
+}

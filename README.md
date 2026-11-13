@@ -4,39 +4,40 @@ Catálogo independiente del editor, inspirado en la organización de Mind+: bloq
 
 ## Estado actual
 
-| Paquete                       | Función                                          | Estado                                                             |
-| ----------------------------- | ------------------------------------------------ | ------------------------------------------------------------------ |
-| `packages/virtual-boards`     | Descriptores de dos tarjetas ficticias           | Ejemplo de arranque incluido; no reinstalar sobre el mismo ejemplo |
-| `packages/pin-io`             | Digital, analógico y PWM                         | MicroPython ESP32 y API Arduino experimental                       |
-| `packages/robotics`           | Movimiento, motores y lecturas lógicas           | Módulo opcional, valores ovalados conectables                      |
-| `packages/distance-demo`      | Ejemplo de sensor independiente                  | Sin driver real                                                    |
-| `packages/motores`            | Motores DC con puente H (TB6612FNG/L298N)        | Arduino y MicroPython; probada en GIGA (VNH5019)                   |
-| `packages/servos`             | Servos con el pin elegido en el bloque           | Arduino y MicroPython; probada en UNO R3 y UNO R4                  |
-| `packages/linea-qtr`          | Seguidor de línea Pololu QTR/QTRX analógico      | Arduino y MicroPython; probada en GIGA y XIAO                      |
-| `packages/ultrasonico-hcsr04` | Distancia con HC-SR04                            | MicroPython experimental, opcional; pendiente de prueba física     |
-| `packages/color-tcs34725`     | Color con TCS34725 (DFRobot SEN0212)             | Arduino y MicroPython; probada en GIGA                             |
-| `packages/imu-mpu6050`        | Giro acumulado y sensores MPU6050 por I2C        | Arduino/C++ y MicroPython experimentales                           |
-| `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)          | Arduino y MicroPython; probada en GIGA                             |
-| `packages/huskylens`          | Cámara AI DFRobot SEN0305                        | Arduino/C++ por I2C o UART de hardware; experimental               |
-| `packages/huskylens2`         | Cámara AI HUSKYLENS 2 (SEN0638)                  | Arduino/C++ por I2C o UART; experimental                           |
-| `packages/uart`               | Líneas de texto por UART (OpenMV)                | MicroPython experimental, opcional; pendiente de prueba física     |
-| `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo       | Arduino/C++; probada en GIGA (9 láseres)                           |
-| `packages/i2c`                | Registros entre tarjetas por I2C                 | Arduino maestro/esclavo y MicroPython maestro; experimental        |
-| `packages/maquina-estados`    | Estados con nombre para ordenar el robot         | Arduino, MicroPython y Pybricks; experimental                      |
-| `packages/cronometros`        | Cronómetros con nombre y tareas periódicas       | Arduino, MicroPython y Pybricks; experimental                      |
-| `packages/diagnostico-i2c`    | Escanear el bus I2C y revisar direcciones        | Arduino y MicroPython; experimental                                |
-| `packages/pantalla-oled`      | Pantalla OLED I2C: texto, barras y borrar        | Arduino y MicroPython; experimental                                |
-| `packages/zumbador`           | Tonos, notas y melodías en segundo plano         | Arduino y MicroPython; experimental                                |
-| `packages/bateria`            | Voltaje con divisor e INA219 sin librería        | Arduino y MicroPython; experimental                                |
-| `packages/filtros`            | Promedio móvil, mediana y exponencial            | Arduino, MicroPython y Pybricks; experimental                      |
-| `packages/encoder`            | Cuentas, vueltas, distancia y velocidad de rueda | Arduino/C++ y MicroPython ESP32; experimental                      |
-| `packages/control-pid`        | Controladores PID con nombre                     | Arduino, MicroPython y Pybricks; experimental                      |
-| `packages/giros`              | Girar a un ángulo con cualquier IMU              | Arduino, MicroPython y Pybricks; experimental                      |
-| `packages/arduino-uno`        | Arduino UNO R3                                   | Arduino experimental, sin carga                                    |
-| `packages/arduino-nano`       | Arduino Nano ATmega328P                          | Arduino experimental, sin carga                                    |
-| `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                             | Arduino experimental, sin carga                                    |
-| `packages/teensy-40`          | Teensy 4.0 (pinout propio)                       | Arduino experimental, sin carga                                    |
-| `packages/teensy-41`          | Teensy 4.1 (pinout propio)                       | Arduino experimental, sin carga                                    |
+| Paquete                       | Función                                           | Estado                                                             |
+| ----------------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
+| `packages/virtual-boards`     | Descriptores de dos tarjetas ficticias            | Ejemplo de arranque incluido; no reinstalar sobre el mismo ejemplo |
+| `packages/pin-io`             | Digital, analógico y PWM                          | MicroPython ESP32 y API Arduino experimental                       |
+| `packages/robotics`           | Movimiento, motores y lecturas lógicas            | Módulo opcional, valores ovalados conectables                      |
+| `packages/distance-demo`      | Ejemplo de sensor independiente                   | Sin driver real                                                    |
+| `packages/motores`            | Motores DC con puente H (TB6612FNG/L298N)         | Arduino y MicroPython; probada en GIGA (VNH5019)                   |
+| `packages/servos`             | Servos con el pin elegido en el bloque            | Arduino y MicroPython; probada en UNO R3 y UNO R4                  |
+| `packages/linea-qtr`          | Seguidor de línea Pololu QTR/QTRX analógico       | Arduino y MicroPython; probada en GIGA y XIAO                      |
+| `packages/ultrasonico-hcsr04` | Distancia con HC-SR04                             | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/color-tcs34725`     | Color con TCS34725 (DFRobot SEN0212)              | Arduino y MicroPython; probada en GIGA                             |
+| `packages/imu-mpu6050`        | Giro acumulado y sensores MPU6050 por I2C         | Arduino/C++ y MicroPython experimentales                           |
+| `packages/imu-bno055`         | Giro e inclinación con BNO055 (SEN0253)           | Arduino y MicroPython; probada en GIGA                             |
+| `packages/huskylens`          | Cámara AI DFRobot SEN0305                         | Arduino/C++ por I2C o UART de hardware; experimental               |
+| `packages/huskylens2`         | Cámara AI HUSKYLENS 2 (SEN0638)                   | Arduino/C++ por I2C o UART; experimental                           |
+| `packages/uart`               | Líneas de texto por UART (OpenMV)                 | MicroPython experimental, opcional; pendiente de prueba física     |
+| `packages/laser-vl53l0x`      | Láseres VL53L0X con XSHUT y rango continuo        | Arduino/C++; probada en GIGA (9 láseres)                           |
+| `packages/i2c`                | Registros entre tarjetas por I2C                  | Arduino maestro/esclavo y MicroPython maestro; experimental        |
+| `packages/maquina-estados`    | Estados con nombre para ordenar el robot          | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/cronometros`        | Cronómetros con nombre y tareas periódicas        | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/memoria`            | Números que sobreviven al apagar; calibración QTR | Arduino y MicroPython; experimental                                |
+| `packages/diagnostico-i2c`    | Escanear el bus I2C y revisar direcciones         | Arduino y MicroPython; experimental                                |
+| `packages/pantalla-oled`      | Pantalla OLED I2C: texto, barras y borrar         | Arduino y MicroPython; experimental                                |
+| `packages/zumbador`           | Tonos, notas y melodías en segundo plano          | Arduino y MicroPython; experimental                                |
+| `packages/bateria`            | Voltaje con divisor e INA219 sin librería         | Arduino y MicroPython; experimental                                |
+| `packages/filtros`            | Promedio móvil, mediana y exponencial             | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/encoder`            | Cuentas, vueltas, distancia y velocidad de rueda  | Arduino/C++ y MicroPython ESP32; experimental                      |
+| `packages/control-pid`        | Controladores PID con nombre                      | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/giros`              | Girar a un ángulo con cualquier IMU               | Arduino, MicroPython y Pybricks; experimental                      |
+| `packages/arduino-uno`        | Arduino UNO R3                                    | Arduino experimental, sin carga                                    |
+| `packages/arduino-nano`       | Arduino Nano ATmega328P                           | Arduino experimental, sin carga                                    |
+| `packages/arduino-giga-r1`    | Arduino GIGA R1 WiFi                              | Arduino experimental, sin carga                                    |
+| `packages/teensy-40`          | Teensy 4.0 (pinout propio)                        | Arduino experimental, sin carga                                    |
+| `packages/teensy-41`          | Teensy 4.1 (pinout propio)                        | Arduino experimental, sin carga                                    |
 
 El catálogo está en `catalog.json` (versión 1). Cada carpeta usa manifiesto declarativo v2 y sus archivos declarados. Este repositorio es la fuente editable; la aplicación versiona su copia offline. Los dispositivos declaran ranuras `pins`; los pines digitales distinguen entrada y salida.
 

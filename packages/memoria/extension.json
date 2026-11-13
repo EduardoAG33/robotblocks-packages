@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.memoria",
+  "name": "Memoria",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "Guarda números con nombre que sobreviven al apagar la tarjeta.",
+  "requiredCapabilities": [],
+  "supportedBoards": [
+    "org.robotblocks.arduino-uno:board",
+    "org.robotblocks.arduino-nano:board",
+    "org.robotblocks.arduino-uno-r4-minima:board",
+    "org.robotblocks.arduino-giga-r1:board",
+    "org.robotblocks.teensy-40:board",
+    "org.robotblocks.teensy-41:board",
+    "org.robotblocks.dfrobot-firebeetle-esp32:board",
+    "org.robotblocks.seeed-xiao-esp32s3:board"
+  ],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.memoria:memoria",
+        "name": "Memoria",
+        "colour": "#8D6E63"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "group": "other",
+    "experimental": true,
+    "translations": {
+      "en": {
+        "Memoria": "Memory",
+        "Guarda números con nombre que sobreviven al apagar la tarjeta.": "Save named numbers that survive powering off the board.",
+        "Nombre de memoria invalido: usa 1 a 12 letras, digitos o _": "Invalid memory name: use 1 to 12 letters, digits or _",
+        "No se pudo acceder a la memoria": "Could not access memory",
+        "Memoria llena: maximo 16 numeros": "Memory full: maximum 16 numbers",
+        "Memoria danada: borra los numeros guardados": "Damaged memory: clear saved numbers"
+      }
+    }
+  }
+}

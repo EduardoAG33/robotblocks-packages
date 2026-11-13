@@ -3,14 +3,20 @@
     "id": "org.robotblocks.linea-qtr:add-channel",
     "operation": "org.robotblocks.linea-qtr:add-channel",
     "category": "org.robotblocks.linea-qtr:linea",
-    "label": { "es": "agregar canal del sensor de línea en pin %PIN", "en": "add line sensor channel on pin %PIN" },
+    "label": {
+      "es": "agregar canal del sensor de línea en pin %PIN",
+      "en": "add line sensor channel on pin %PIN"
+    },
     "kind": "command",
     "fields": [
       {
         "name": "PIN",
         "type": "string",
         "default": "",
-        "reference": { "kind": "resource", "capabilities": ["analogInput"] }
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["analogInput"]
+        }
       }
     ],
     "inputs": [],
@@ -31,7 +37,9 @@
         "globals": [
           "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
         ],
-        "hardware": { "features": ["adc"] },
+        "hardware": {
+          "features": ["adc"]
+        },
         "statement": "linea_agregar([]() -> int { return analogRead({PIN}); }, {BLOCK_ID});"
       }
     }
@@ -40,7 +48,10 @@
     "id": "org.robotblocks.linea-qtr:calibrate",
     "operation": "org.robotblocks.linea-qtr:calibrate",
     "category": "org.robotblocks.linea-qtr:linea",
-    "label": { "es": "calibrar sensor de línea", "en": "calibrate line sensor" },
+    "label": {
+      "es": "calibrar sensor de línea",
+      "en": "calibrate line sensor"
+    },
     "kind": "command",
     "fields": [],
     "inputs": [],
@@ -62,7 +73,9 @@
         "globals": [
           "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
         ],
-        "hardware": { "features": ["adc"] },
+        "hardware": {
+          "features": ["adc"]
+        },
         "statement": "linea_calibrar({BLOCK_ID});"
       }
     }
@@ -71,7 +84,10 @@
     "id": "org.robotblocks.linea-qtr:position",
     "operation": "org.robotblocks.linea-qtr:position",
     "category": "org.robotblocks.linea-qtr:linea",
-    "label": { "es": "posición de la línea %COLOR", "en": "%COLOR line position" },
+    "label": {
+      "es": "posición de la línea %COLOR",
+      "en": "%COLOR line position"
+    },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -80,8 +96,20 @@
         "type": "string",
         "default": "negra",
         "options": [
-          { "label": { "es": "negra", "en": "black" }, "value": "negra" },
-          { "label": { "es": "blanca", "en": "white" }, "value": "blanca" }
+          {
+            "label": {
+              "es": "negra",
+              "en": "black"
+            },
+            "value": "negra"
+          },
+          {
+            "label": {
+              "es": "blanca",
+              "en": "white"
+            },
+            "value": "blanca"
+          }
         ]
       }
     ],
@@ -105,7 +133,9 @@
         "globals": [
           "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
         ],
-        "hardware": { "features": ["adc"] },
+        "hardware": {
+          "features": ["adc"]
+        },
         "expression": "linea_posicion({COLOR}, {BLOCK_ID})"
       }
     }
@@ -114,7 +144,10 @@
     "id": "org.robotblocks.linea-qtr:channel",
     "operation": "org.robotblocks.linea-qtr:channel",
     "category": "org.robotblocks.linea-qtr:linea",
-    "label": { "es": "canal %NUMBER del sensor de línea %COLOR", "en": "channel %NUMBER of %COLOR line sensor" },
+    "label": {
+      "es": "canal %NUMBER del sensor de línea %COLOR",
+      "en": "channel %NUMBER of %COLOR line sensor"
+    },
     "kind": "reporter",
     "output": "number",
     "fields": [
@@ -123,12 +156,32 @@
         "type": "string",
         "default": "negra",
         "options": [
-          { "label": { "es": "negra", "en": "black" }, "value": "negra" },
-          { "label": { "es": "blanca", "en": "white" }, "value": "blanca" }
+          {
+            "label": {
+              "es": "negra",
+              "en": "black"
+            },
+            "value": "negra"
+          },
+          {
+            "label": {
+              "es": "blanca",
+              "en": "white"
+            },
+            "value": "blanca"
+          }
         ]
       }
     ],
-    "inputs": [{ "name": "NUMBER", "type": "number", "default": 1, "min": 1, "integer": true }],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
     "tooltip": {
       "es": "De 0 (fondo) a 100 (línea), ya calibrado. Pololu QTR/QTRX analógica (por ejemplo QTRX-MD-13A).",
       "en": "From 0 (background) to 100 (line), after calibration. Analog Pololu QTR/QTRX (for example QTRX-MD-13A)."
@@ -148,7 +201,9 @@
         "globals": [
           "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
         ],
-        "hardware": { "features": ["adc"] },
+        "hardware": {
+          "features": ["adc"]
+        },
         "expression": "linea_canal({NUMBER}, {COLOR}, {BLOCK_ID})"
       }
     }
@@ -157,7 +212,10 @@
     "id": "org.robotblocks.linea-qtr:detected",
     "operation": "org.robotblocks.linea-qtr:detected",
     "category": "org.robotblocks.linea-qtr:linea",
-    "label": { "es": "¿línea %COLOR detectada?", "en": "%COLOR line detected?" },
+    "label": {
+      "es": "¿línea %COLOR detectada?",
+      "en": "%COLOR line detected?"
+    },
     "kind": "boolean",
     "output": "boolean",
     "fields": [
@@ -166,8 +224,20 @@
         "type": "string",
         "default": "negra",
         "options": [
-          { "label": { "es": "negra", "en": "black" }, "value": "negra" },
-          { "label": { "es": "blanca", "en": "white" }, "value": "blanca" }
+          {
+            "label": {
+              "es": "negra",
+              "en": "black"
+            },
+            "value": "negra"
+          },
+          {
+            "label": {
+              "es": "blanca",
+              "en": "white"
+            },
+            "value": "blanca"
+          }
         ]
       }
     ],
@@ -190,8 +260,133 @@
         "globals": [
           "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}"
         ],
-        "hardware": { "features": ["adc"] },
+        "hardware": {
+          "features": ["adc"]
+        },
         "expression": "linea_detectada({COLOR}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:calibration",
+    "operation": "org.robotblocks.linea-qtr:calibration",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": {
+      "es": "calibración %TIPO del canal %NUMBER",
+      "en": "%TIPO calibration of channel %NUMBER"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "TIPO",
+        "type": "string",
+        "default": "minima",
+        "options": [
+          {
+            "label": {
+              "es": "mínima",
+              "en": "minimum"
+            },
+            "value": "minima"
+          },
+          {
+            "label": {
+              "es": "máxima",
+              "en": "maximum"
+            },
+            "value": "maxima"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Lee el mínimo o máximo crudo del ADC para guardar la calibración. Los canales empiezan en 1.",
+      "en": "Read the raw ADC minimum or maximum to save calibration. Channels start at 1."
+    },
+    "requiredCapabilities": ["analogInput"],
+    "generators": {
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}",
+          "inline bool linea_validar_canal(float numero, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    if (!isfinite(numero) || numero < 1 || numero > linea_count || numero != floorf(numero)) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return false; }\n    return true;\n}\ninline float linea_calibracion(float numero, const String& tipo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return 0;\n    const RbQtrChannel& canal = linea_canales[int(numero) - 1];\n    return tipo == \"minima\" ? canal.minimo : canal.maximo;\n}\ninline void linea_usar_calibracion(float numero, float minimo, float maximo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return;\n    if (!isfinite(minimo) || !isfinite(maximo) || minimo < 0 || maximo < minimo || maximo > {ADC_MAX}) { rb_fail(bloque, \"Calibracion QTR invalida\"); return; }\n    linea_canales[int(numero) - 1].minimo = uint32_t(minimo);\n    linea_canales[int(numero) - 1].maximo = uint32_t(maximo);\n}\n"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
+        "expression": "linea_calibracion({NUMBER}, {TIPO}, {BLOCK_ID})"
+      },
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_validar_canal(numero, bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    if not 1 <= numero <= len(linea_canales) or numero != int(numero):\n        rb_fail(bloque, \"Canal QTR fuera de rango\")\n    return linea_canales[int(numero) - 1]\n\ndef linea_calibracion(numero, tipo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    return canal[1 if tipo == \"minima\" else 2]\n\ndef linea_usar_calibracion(numero, minimo, maximo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    if not 0 <= minimo <= maximo <= 4095:\n        rb_fail(bloque, \"Calibracion QTR invalida\")\n    canal[1], canal[2] = int(minimo), int(maximo)\n"
+        ],
+        "expression": "linea_calibracion({NUMBER}, {TIPO}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.linea-qtr:use-calibration",
+    "operation": "org.robotblocks.linea-qtr:use-calibration",
+    "category": "org.robotblocks.linea-qtr:linea",
+    "label": {
+      "es": "usar calibración del canal %NUMBER mínimo %A máximo %B",
+      "en": "use calibration of channel %NUMBER minimum %A maximum %B"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      },
+      {
+        "name": "A",
+        "type": "number",
+        "default": 0,
+        "min": 0
+      },
+      {
+        "name": "B",
+        "type": "number",
+        "default": 1023,
+        "min": 0
+      }
+    ],
+    "tooltip": {
+      "es": "Después de agregar los canales, restaura su mínimo y máximo crudos. Deben estar en el rango del ADC y mínimo ≤ máximo.",
+      "en": "After adding channels, restore their raw minimum and maximum. Both must fit the ADC range and minimum ≤ maximum."
+    },
+    "requiredCapabilities": ["analogInput"],
+    "generators": {
+      "arduino": {
+        "globals": [
+          "struct RbQtrChannel { int (*leer)(); uint32_t minimo, maximo; };\nstatic RbQtrChannel linea_canales[16];\nstatic int linea_count = 0;\nstatic float linea_ultima = 0;\ninline void linea_agregar(int (*leer)(), const char* bloque) {\n    if (linea_count == 16) { rb_fail(bloque, \"Maximo 16 canales QTR\"); return; }\n    linea_canales[linea_count++] = {leer, {ADC_MAX}, 0};\n}\ninline bool linea_lista(const char* bloque) {\n    if (linea_count) return true; rb_fail(bloque, \"Agrega los canales del sensor de linea al iniciar\"); return false;\n}\ninline void linea_calibrar(const char* bloque) {\n    if (!linea_lista(bloque)) return;\n    for (int i = 0; i < linea_count; i++) { uint32_t v = linea_canales[i].leer(); if (v < linea_canales[i].minimo) linea_canales[i].minimo = v; if (v > linea_canales[i].maximo) linea_canales[i].maximo = v; }\n}\ninline float linea_nivel(int i, const String& color) {\n    const RbQtrChannel& c = linea_canales[i];\n    float minimo = c.minimo, maximo = c.maximo;\n    if (maximo - minimo < 50) { minimo = 0; maximo = {ADC_MAX}; }\n    float nivel = fmaxf(0, fminf(100, (c.leer() - minimo) * 100 / (maximo - minimo)));\n    return color == \"negra\" ? nivel : 100 - nivel;\n}\ninline float linea_posicion(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    float total = 0, suma = 0;\n    for (int i = 0; i < linea_count; i++) { float n = linea_nivel(i, color); if (n > 10) { total += n; suma += n * (linea_count == 1 ? 0 : i * 200.0f / (linea_count - 1) - 100); } }\n    if (total == 0) return linea_ultima < 0 ? -100 : 100;\n    if (linea_count == 1) return 0;\n    linea_ultima = suma / total; return roundf(linea_ultima * 10) / 10;\n}\ninline float linea_canal(float numero, const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return 0;\n    if (numero < 1 || numero > linea_count) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return 0; }\n    return roundf(linea_nivel(int(numero) - 1, color) * 10) / 10;\n}\ninline bool linea_detectada(const String& color, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    bool found = false; for (int i = 0; i < linea_count; i++) if (linea_nivel(i, color) > 50) found = true; return found;\n}",
+          "inline bool linea_validar_canal(float numero, const char* bloque) {\n    if (!linea_lista(bloque)) return false;\n    if (!isfinite(numero) || numero < 1 || numero > linea_count || numero != floorf(numero)) { rb_fail(bloque, \"Canal QTR fuera de rango\"); return false; }\n    return true;\n}\ninline float linea_calibracion(float numero, const String& tipo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return 0;\n    const RbQtrChannel& canal = linea_canales[int(numero) - 1];\n    return tipo == \"minima\" ? canal.minimo : canal.maximo;\n}\ninline void linea_usar_calibracion(float numero, float minimo, float maximo, const char* bloque) {\n    if (!linea_validar_canal(numero, bloque)) return;\n    if (!isfinite(minimo) || !isfinite(maximo) || minimo < 0 || maximo < minimo || maximo > {ADC_MAX}) { rb_fail(bloque, \"Calibracion QTR invalida\"); return; }\n    linea_canales[int(numero) - 1].minimo = uint32_t(minimo);\n    linea_canales[int(numero) - 1].maximo = uint32_t(maximo);\n}\n"
+        ],
+        "hardware": {
+          "features": ["adc"]
+        },
+        "statement": "linea_usar_calibracion({NUMBER}, {A}, {B}, {BLOCK_ID});"
+      },
+      "micropython": {
+        "globals": [
+          "linea_canales = []\nlinea_ultima = 0\n",
+          "def linea_validar_canal(numero, bloque):\n    if not linea_canales:\n        rb_fail(bloque, \"Agrega los canales del sensor de línea al iniciar\")\n    if not 1 <= numero <= len(linea_canales) or numero != int(numero):\n        rb_fail(bloque, \"Canal QTR fuera de rango\")\n    return linea_canales[int(numero) - 1]\n\ndef linea_calibracion(numero, tipo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    return canal[1 if tipo == \"minima\" else 2]\n\ndef linea_usar_calibracion(numero, minimo, maximo, bloque):\n    canal = linea_validar_canal(numero, bloque)\n    if not 0 <= minimo <= maximo <= 4095:\n        rb_fail(bloque, \"Calibracion QTR invalida\")\n    canal[1], canal[2] = int(minimo), int(maximo)\n"
+        ],
+        "statement": "linea_usar_calibracion({NUMBER}, {A}, {B}, {BLOCK_ID})"
       }
     }
   }

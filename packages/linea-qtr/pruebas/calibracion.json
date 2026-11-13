@@ -1,0 +1,29 @@
+{
+  "titulo": "QTR · recuperar calibración por canal",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-41",
+    "dfrobot-firebeetle-esp32",
+    "seeed-xiao-esp32s3"
+  ],
+  "pines": {
+    "arduino-uno": { "PIN": "a0" },
+    "arduino-uno-r4-minima": { "PIN": "a0" },
+    "arduino-giga-r1": { "PIN": "a10" },
+    "teensy-41": { "PIN": "d14" },
+    "dfrobot-firebeetle-esp32": { "PIN": "gpio36" },
+    "seeed-xiao-esp32s3": { "PIN": "d0" }
+  },
+  "variables": { "minimo": 0, "maximo": 0 },
+  "programa": [
+    [":add-channel", { "PIN": "$PIN" }],
+    [":calibrate"],
+    [":use-calibration", {}, { "NUMBER": 1, "A": 100, "B": 900 }],
+    ["core:set", { "VARIABLE": "minimo" }, { "VALUE": [":calibration", { "TIPO": "minima" }, { "NUMBER": 1 }] }],
+    ["core:set", { "VARIABLE": "maximo" }, { "VALUE": [":calibration", { "TIPO": "maxima" }, { "NUMBER": 1 }] }],
+    ["core:serial-println", {}, { "VALUE": [":position", { "COLOR": "negra" }] }]
+  ],
+  "ejemplo": "arduino-uno"
+}

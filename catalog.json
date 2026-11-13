@@ -253,6 +253,12 @@
       "description": "Cuentas, vueltas, distancia y velocidad de encoders de cuadratura, independientes del driver de motores.",
       "kind": "module",
       "path": "packages/encoder"
+    },
+    {
+      "name": "Memoria",
+      "description": "Guarda números con nombre que sobreviven al apagar la tarjeta.",
+      "kind": "module",
+      "path": "packages/memoria"
     }
   ]
 }
