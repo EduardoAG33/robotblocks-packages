@@ -19,6 +19,11 @@ si el mapa de la tarjeta ofrece SoftwareSerial, da un diagnóstico genérico.
 Los valores usan `expression`; las instrucciones, `statement`. Los arrays
 `imports`, `includes`, `globals`, `setup` se deduplican. Arduino admite además `poll`: llamadas rápidas sin bloqueo, deduplicadas y ejecutadas antes de los procesos en cada vuelta de `loop()`, incluso durante esperas cooperativas. No admite entradas de proceso ni variables privadas; el driver debe comprobar si ya fue configurado. `{CAMPO}` se escapa o
 resuelve a símbolo/identificador; `{ENTRADA}` conserva paréntesis solo cuando protege precedencia.
+En Arduino, las ramas `#if defined(ESP32)` / `#else` / `#endif` se seleccionan por
+el prefijo `esp32:` del FQBN antes de sustituir campos, deduplicar y crear prototipos.
+Las demás directivas se conservan para C++; sin FQBN o con `#elif` en esa condición,
+el fragmento completo queda para el preprocesador. Servos usa este patrón para
+generar LEDC sin Servo.h en ESP32 y conservar el C++ de las demás tarjetas.
 Los literales simples, identificadores y llamadas completas no los necesitan. `{DEVICE.trig}` resuelve
 una ranura. Los cuerpos `{BODY}`/`{THEN}` deben ocupar líneas completas y el motor
 aplica su indentación. No uses entradas de proceso en inicializaciones ni cesiones

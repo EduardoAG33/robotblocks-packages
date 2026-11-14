@@ -55,7 +55,12 @@ assert.equal(b.resources.find((r) => r.id === 'd2').strapping, true);
 assert(b.resources.find((r) => r.id === 'led').notes.includes('bajo'));
 for (const id of ['usb19', 'usb20']) assert.deepEqual(b.resources.find((r) => r.id === id).capabilities, []);
 assert.equal(b.uart[0].pinsInBegin, true);
-assert.equal(b.arduinoApis.servo, false);
+assert.equal(b.arduinoApis.servo, true);
+assert.equal(b.arduinoApis.servoDiagnostic, undefined);
+assert.deepEqual(
+  b.resources.filter((r) => r.capabilities.includes('pwm')).map((r) => r.id),
+  [...Array.from({ length: 11 }, (_, i) => `d${i}`), 'led'],
+);
 const readme = await readFile('packages/seeed-xiao-esp32s3/README.md', 'utf8');
 for (const word of ['spiram-oct', 'ADC2', 'WiFi', 'BOOT', 'sin CH340', 'carga física', 'Sense'])
   assert(readme.includes(word));

@@ -1,0 +1,86 @@
+{
+  "titulo": "Servos: mover, soltar y volver a mover",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-nano",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "teensy-41",
+    "seeed-xiao-esp32s3"
+  ],
+  "pines": {
+    "arduino-uno": {
+      "PIN": "d3"
+    },
+    "arduino-nano": {
+      "PIN": "d3"
+    },
+    "arduino-uno-r4-minima": {
+      "PIN": "d3"
+    },
+    "arduino-giga-r1": {
+      "PIN": "d3"
+    },
+    "teensy-40": {
+      "PIN": "d3"
+    },
+    "teensy-41": {
+      "PIN": "d3"
+    },
+    "seeed-xiao-esp32s3": {
+      "PIN": "d3"
+    }
+  },
+  "programa": [
+    [
+      ":move",
+      {
+        "PIN": "$PIN"
+      },
+      {
+        "ANGLE": 0
+      }
+    ],
+    [
+      ":move",
+      {
+        "PIN": "$PIN"
+      },
+      {
+        "ANGLE": 90
+      }
+    ],
+    [
+      ":move",
+      {
+        "PIN": "$PIN"
+      },
+      {
+        "ANGLE": 180
+      }
+    ],
+    [
+      ":release",
+      {
+        "PIN": "$PIN"
+      }
+    ],
+    [
+      ":move",
+      {
+        "PIN": "$PIN"
+      },
+      {
+        "ANGLE": 90
+      }
+    ],
+    [
+      ":release",
+      {
+        "PIN": "$PIN"
+      }
+    ]
+  ],
+  "ejemplo": "seeed-xiao-esp32s3"
+}
