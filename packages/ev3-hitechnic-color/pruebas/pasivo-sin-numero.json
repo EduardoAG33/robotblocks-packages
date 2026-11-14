@@ -1,0 +1,13 @@
+{
+  "titulo": "HT Color V2 · el número de color no existe en modo pasivo",
+  "tarjetas": ["lego-ev3"],
+  "variables": { "rojo": 0, "numero": 0 },
+  "programa": [
+    [":configure", { "PORT": "s2", "MODE": "pasivo" }],
+    ["core:set", { "VARIABLE": "rojo" }, { "VALUE": [":channel", { "PORT": "s2", "CHANNEL": "rojo" }] }],
+    ["core:serial-println", {}, { "VALUE": { "var": "rojo" } }],
+    ["core:set", { "VARIABLE": "numero" }, { "VALUE": [":color-number", { "PORT": "s2" }] }]
+  ],
+  "fallo": "6",
+  "salida": "1034\n"
+}

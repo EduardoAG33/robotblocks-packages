@@ -1,0 +1,96 @@
+{
+  "titulo": "HT Color V2 · ver colores en la pantalla",
+  "tarjetas": ["lego-ev3"],
+  "variables": { "rojos": 0 },
+  "programa": [
+    [":configure", { "PORT": "s1", "MODE": "activo" }],
+    [
+      "core:forever",
+      {},
+      {
+        "BODY": [
+          ["org.robotblocks.lego-ev3-devices:screen-clear", {}],
+          [
+            "org.robotblocks.lego-ev3-devices:screen-text",
+            {},
+            {
+              "TEXT": [
+                "core:join",
+                {},
+                { "LEFT": "color ", "RIGHT": ["core:to-text", {}, { "VALUE": [":color-number", { "PORT": "s1" }] }] }
+              ]
+            }
+          ],
+          [
+            "org.robotblocks.lego-ev3-devices:screen-text",
+            {},
+            {
+              "TEXT": [
+                "core:join",
+                {},
+                {
+                  "LEFT": "R ",
+                  "RIGHT": ["core:to-text", {}, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "rojo" }] }]
+                }
+              ]
+            }
+          ],
+          [
+            "org.robotblocks.lego-ev3-devices:screen-text",
+            {},
+            {
+              "TEXT": [
+                "core:join",
+                {},
+                {
+                  "LEFT": "V ",
+                  "RIGHT": ["core:to-text", {}, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "verde" }] }]
+                }
+              ]
+            }
+          ],
+          [
+            "org.robotblocks.lego-ev3-devices:screen-text",
+            {},
+            {
+              "TEXT": [
+                "core:join",
+                {},
+                {
+                  "LEFT": "A ",
+                  "RIGHT": ["core:to-text", {}, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "azul" }] }]
+                }
+              ]
+            }
+          ],
+          [
+            "core:if",
+            {},
+            {
+              "CONDITION": [
+                "core:or",
+                {},
+                {
+                  "LEFT": [":sees-color", { "PORT": "s1" }, { "NUMBER": 8 }],
+                  "RIGHT": [":sees-color", { "PORT": "s1" }, { "NUMBER": 9 }]
+                }
+              ],
+              "BODY": [
+                [
+                  "core:set",
+                  { "VARIABLE": "rojos" },
+                  { "VALUE": ["core:add", {}, { "LEFT": { "var": "rojos" }, "RIGHT": 1 }] }
+                ],
+                ["org.robotblocks.lego-ev3-devices:beep", {}, { "HZ": 880, "MS": 100 }]
+              ]
+            }
+          ],
+          ["core:wait-ms", {}, { "MS": 200 }]
+        ]
+      }
+    ]
+  ],
+  "tiempo": 0.5,
+  "esperado": { "rojos": { "minimum": 1 } },
+  "ejemplo": "lego-ev3"
+}

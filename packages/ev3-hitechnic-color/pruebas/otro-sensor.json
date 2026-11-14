@@ -1,0 +1,8 @@
+{
+  "titulo": "HT Color V2 · otro fabricante en 0x01 no se confunde con el HiTechnic",
+  "tarjetas": ["lego-ev3"],
+  "programa": [[":configure", { "PORT": "s3", "MODE": "activo" }]],
+  "fallo": "1",
+  "salida": "",
+  "evaluar": [["_rb_devices[Port.S3][2].writes", []]]
+}

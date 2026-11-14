@@ -249,6 +249,12 @@
       "path": "packages/ev3-huskylens-ofdl"
     },
     {
+      "name": "EV3 · HiTechnic Color V2 · experimental",
+      "description": "HiTechnic NXT Color Sensor V2 en el EV3 con Pybricks 2.0: modo activo, pasivo o crudo, número de color 0–17 y rojo, verde, azul y blanco.",
+      "kind": "module",
+      "path": "packages/ev3-hitechnic-color"
+    },
+    {
       "name": "Encoder",
       "description": "Cuentas, vueltas, distancia y velocidad de encoders de cuadratura, independientes del driver de motores.",
       "kind": "module",
