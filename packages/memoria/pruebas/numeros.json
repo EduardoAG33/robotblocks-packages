@@ -1,0 +1,91 @@
+{
+  "titulo": "Memoria · guardar y recuperar",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-nano",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "teensy-41",
+    "dfrobot-firebeetle-esp32",
+    "seeed-xiao-esp32s3"
+  ],
+  "variables": {
+    "numero": 0,
+    "falta": 0,
+    "borrado": false
+  },
+  "programa": [
+    [":clear"],
+    [
+      ":save",
+      {},
+      {
+        "VALOR": 123.25,
+        "NOMBRE": "qtr_min_1"
+      }
+    ],
+    [
+      ":save",
+      {},
+      {
+        "VALOR": 123.25,
+        "NOMBRE": "qtr_min_1"
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "numero"
+      },
+      {
+        "VALUE": [
+          ":read",
+          {},
+          {
+            "NOMBRE": "qtr_min_1",
+            "PREDETERMINADO": -1
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "falta"
+      },
+      {
+        "VALUE": [
+          ":read",
+          {},
+          {
+            "NOMBRE": "ausente",
+            "PREDETERMINADO": 42
+          }
+        ]
+      }
+    ],
+    [":clear"],
+    [
+      "core:set",
+      {
+        "VARIABLE": "borrado"
+      },
+      {
+        "VALUE": [
+          ":exists",
+          {},
+          {
+            "NOMBRE": "qtr_min_1"
+          }
+        ]
+      }
+    ]
+  ],
+  "esperado": {
+    "numero": 123.25,
+    "falta": 42,
+    "borrado": false
+  },
+  "ejemplo": "arduino-uno"
+}
