@@ -16,15 +16,15 @@ El REPL USB estándar acepta Ctrl-C/Ctrl-A/raw REPL; GreyForge transfiere main.p
 
 ## Extensiones
 
-Motores, QTR, HC-SR04, UART, TCS34725 y BNO055 usan APIs del core y Wire directo en C++ y generan MicroPython. HC-SR04 necesita adaptar ECHO de 5 V a 3.3 V. Servos genera MicroPython PWM; en C++ emite diagnóstico **requiere librería compatible**: Servo 1.3.0 usa ledcSetup/ledcAttachPin retirados en ESP32 3.x. No se añade ESP32Servo ni drivers nuevos. Las pruebas golden y ejecución simulada no certifican hardware ni compilación real del core.
+Motores, QTR, HC-SR04, UART, TCS34725 y BNO055 usan APIs del core y Wire directo en C++ y generan MicroPython. HC-SR04 necesita adaptar ECHO de 5 V a 3.3 V. Servos genera MicroPython PWM y C++ con LEDC del core ESP32 3.x: 50 Hz, 14 bits y pulsos de 500–2500 μs, sin biblioteca adicional. Soltar desconecta el canal; mover lo vuelve a activar. Selecciona un recurso PWM; USB19/20 permanecen reservados. Servos C++ compila con el core 3.3.12 (2026-11-13); falta probarlo con un servo real. Las pruebas golden y ejecución simulada no certifican hardware ni compilación real del core.
 
 Ejemplo en la app: `examples/seeed-xiao-esp32s3-parpadeo.blocks.json`, golden main.py y .ino. Copiar/Descargar Arduino incluye runtime en un solo .ino; la carga C++ queda para Fase 8.
 
 ## Validación de generación — 2026-10-03
 
 Arduino CLI 1.5.1 y core esp32:esp32 3.3.11: **siete sketches compilados**
-(seis extensiones habilitadas y el parpadeo). Servos C++ conserva su diagnóstico
-de librería incompatible. Las siete extensiones MicroPython y el LED activo en
+(seis extensiones habilitadas y el parpadeo). En esa revisión, Servos C++ conservaba su diagnóstico
+de librería incompatible; desde el paquete 0.3.0 usa LEDC del núcleo (validación física pendiente). Las siete extensiones MicroPython y el LED activo en
 bajo pasan sintaxis/ejecución con machine y puerto raw REPL simulados.
 No se cargó firmware ni se comprobó USB en hardware físico.
 El informe y las salidas están en docs/TARJETAS_R4_XIAO.md del repo de la app.

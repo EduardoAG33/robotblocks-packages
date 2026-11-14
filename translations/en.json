@@ -217,7 +217,6 @@
   "Serial1 RX; libre porque Serial usa USB nativo.": "Serial1 RX; free because Serial uses native USB.",
   "Serial1 TX; libre porque Serial usa USB nativo.": "Serial1 TX; free because Serial uses native USB.",
   "Servos": "Servos",
-  "Servos C++ requiere librería compatible con ESP32 core 3.x: Servo.h 1.3.0 usa LEDC retirado. No soportada en esta tarjeta; usa MicroPython o instala/adapta una librería compatible fuera de esta tarea.": "C++ servos require a library compatible with ESP32 core 3.x: Servo.h 1.3.0 uses removed LEDC APIs. Unsupported on this board; use MicroPython or install/adapt a compatible library separately.",
   "Servos de 50 Hz eligiendo el pin en el bloque. Plantillas MicroPython experimentales; Arduino pendiente.": "50 Hz servos with the pin selected in the block. Experimental MicroPython templates; Arduino pending.",
   "Sin ADC; A6 no existe. UART TX.": "No ADC; A6 does not exist. UART TX.",
   "Sin ADC; A7 no existe. UART RX.": "No ADC; A7 does not exist. UART RX.",
@@ -367,5 +366,7 @@
   "última línea de UART %PORT": "UART %PORT last line",
   "Lógica de 5 V. ADC 10 bits y PWM 8 bits. LED integrado D13. D0/D1 reservados a serie USB. Probada en hardware con GreyForge.": "5 V logic. 10-bit ADC and 8-bit PWM. Built-in D13 LED. D0/D1 reserved for USB serial. Tested on hardware with GreyForge.",
   "Lógica de 5 V. ADC por defecto 10 bits (hasta 14); PWM 8 bits y DAC A0 de 12 bits. USB nativo, Serial1 libre en D0/D1. Probada en hardware con GreyForge.": "5 V logic. Default 10-bit ADC (up to 14); 8-bit PWM and 12-bit A0 DAC. Native USB, Serial1 free on D0/D1. Tested on hardware with GreyForge.",
-  "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con GreyForge.": "DFRobot DFR0478, ESP-WROOM-32 and CH340. MicroPython over Web Serial. Tested on hardware with GreyForge."
+  "DFRobot DFR0478, ESP-WROOM-32 y CH340. MicroPython vía Web Serial. Probada en hardware con GreyForge.": "DFRobot DFR0478, ESP-WROOM-32 and CH340. MicroPython over Web Serial. Tested on hardware with GreyForge.",
+  "No se pudo activar el servo": "Could not activate the servo",
+  "No se pudo activar Servo.h": "Could not activate Servo.h"
 }

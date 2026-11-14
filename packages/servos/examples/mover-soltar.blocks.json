@@ -1,0 +1,221 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "mover-soltar",
+  "name": "Servos: mover, soltar y volver a mover",
+  "board": { "definitionId": "org.robotblocks.seeed-xiao-esp32s3:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "mover-soltar-seeed-xiao-esp32s3-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "mover-soltar-seeed-xiao-esp32s3-2",
+            "blockId": "org.robotblocks.servos:move",
+            "operation": "org.robotblocks.servos:move",
+            "fields": { "PIN": "d3" },
+            "inputs": {
+              "ANGLE": {
+                "id": "mover-soltar-seeed-xiao-esp32s3-1",
+                "blockId": "core:number",
+                "operation": "core:number",
+                "fields": { "NUMBER": 0 },
+                "inputs": {},
+                "next": null
+              }
+            },
+            "next": {
+              "id": "mover-soltar-seeed-xiao-esp32s3-4",
+              "blockId": "org.robotblocks.servos:move",
+              "operation": "org.robotblocks.servos:move",
+              "fields": { "PIN": "d3" },
+              "inputs": {
+                "ANGLE": {
+                  "id": "mover-soltar-seeed-xiao-esp32s3-3",
+                  "blockId": "core:number",
+                  "operation": "core:number",
+                  "fields": { "NUMBER": 90 },
+                  "inputs": {},
+                  "next": null
+                }
+              },
+              "next": {
+                "id": "mover-soltar-seeed-xiao-esp32s3-6",
+                "blockId": "org.robotblocks.servos:move",
+                "operation": "org.robotblocks.servos:move",
+                "fields": { "PIN": "d3" },
+                "inputs": {
+                  "ANGLE": {
+                    "id": "mover-soltar-seeed-xiao-esp32s3-5",
+                    "blockId": "core:number",
+                    "operation": "core:number",
+                    "fields": { "NUMBER": 180 },
+                    "inputs": {},
+                    "next": null
+                  }
+                },
+                "next": {
+                  "id": "mover-soltar-seeed-xiao-esp32s3-7",
+                  "blockId": "org.robotblocks.servos:release",
+                  "operation": "org.robotblocks.servos:release",
+                  "fields": { "PIN": "d3" },
+                  "inputs": {},
+                  "next": {
+                    "id": "mover-soltar-seeed-xiao-esp32s3-9",
+                    "blockId": "org.robotblocks.servos:move",
+                    "operation": "org.robotblocks.servos:move",
+                    "fields": { "PIN": "d3" },
+                    "inputs": {
+                      "ANGLE": {
+                        "id": "mover-soltar-seeed-xiao-esp32s3-8",
+                        "blockId": "core:number",
+                        "operation": "core:number",
+                        "fields": { "NUMBER": 90 },
+                        "inputs": {},
+                        "next": null
+                      }
+                    },
+                    "next": {
+                      "id": "mover-soltar-seeed-xiao-esp32s3-10",
+                      "blockId": "org.robotblocks.servos:release",
+                      "operation": "org.robotblocks.servos:release",
+                      "fields": { "PIN": "d3" },
+                      "inputs": {},
+                      "next": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.seeed-xiao-esp32s3", "version": "0.3.0" },
+    { "id": "org.robotblocks.servos", "version": "1.2.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "mover-soltar-seeed-xiao-esp32s3-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "org.robotblocks.servos:move",
+        "category": "org.robotblocks.servos:servos",
+        "label": { "es": "servo en pin %PIN a %ANGLE grados", "en": "servo on pin %PIN to %ANGLE degrees" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["pwm"] }
+          }
+        ],
+        "inputs": [{ "name": "ANGLE", "type": "number", "default": 90, "slider": { "min": 0, "max": 180 } }],
+        "operation": "org.robotblocks.servos:move",
+        "tooltip": {
+          "es": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras.",
+          "en": "Angle from 0 to 180; out-of-range values are clamped. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds."
+        },
+        "requiredCapabilities": ["pwm"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "globals": [
+              "def servos_mover(servo, angulo):\n    angulo = max(0, min(180, angulo))\n    # Pulso de 0.5 ms (0°) a 2.5 ms (180°) cada 20 ms.\n    servo.duty_ns(int(500000 + angulo * 2000000 / 180))\n"
+            ],
+            "setup": ["servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"],
+            "statement": "servos_mover(servo_{PIN}, {ANGLE})"
+          },
+          "arduino": {
+            "hardware": { "features": ["servo"] },
+            "includes": ["#if defined(ESP32)\n#else\n#include <Servo.h>\n#endif"],
+            "globals": [
+              "#if defined(ESP32)\nstruct servos_canal { bool activo; };\ninline void servos_mover(servos_canal& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.activo) {\n        if (!ledcAttach(pin, 50, 14)) { rb_fail(bloque, \"No se pudo activar el servo\"); return; }\n        servo.activo = true;\n    }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    int pulso = int(500 + angulo * 2000 / 180);\n    ledcWrite(pin, uint32_t(pulso) * 16383UL / 20000UL);\n}\n#else\ninline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}\n#endif",
+              "#if defined(ESP32)\nstatic servos_canal servo_{PIN} = {};\n#else\nstatic Servo servo_{PIN};\n#endif"
+            ],
+            "statement": "servos_mover(servo_{PIN}, {PIN}, {ANGLE}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.servos:release",
+        "category": "org.robotblocks.servos:servos",
+        "label": { "es": "soltar servo en pin %PIN", "en": "release servo on pin %PIN" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PIN",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["pwm"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.servos:release",
+        "tooltip": {
+          "es": "Deja de enviar pulsos: el servo ya no mantiene su posición. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras.",
+          "en": "Stops sending pulses: the servo no longer holds its position. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds."
+        },
+        "requiredCapabilities": ["pwm"],
+        "generators": {
+          "micropython": {
+            "canFail": false,
+            "imports": ["from machine import Pin, PWM"],
+            "setup": ["servo_{PIN} = PWM(Pin({PIN}), freq=50, duty_u16=0)"],
+            "statement": "servo_{PIN}.duty_ns(0)"
+          },
+          "arduino": {
+            "hardware": { "features": ["servo"] },
+            "includes": ["#if defined(ESP32)\n#else\n#include <Servo.h>\n#endif"],
+            "globals": [
+              "#if defined(ESP32)\nstruct servos_canal { bool activo; };\ninline void servos_mover(servos_canal& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.activo) {\n        if (!ledcAttach(pin, 50, 14)) { rb_fail(bloque, \"No se pudo activar el servo\"); return; }\n        servo.activo = true;\n    }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    int pulso = int(500 + angulo * 2000 / 180);\n    ledcWrite(pin, uint32_t(pulso) * 16383UL / 20000UL);\n}\n#else\ninline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}\n#endif",
+              "#if defined(ESP32)\nstatic servos_canal servo_{PIN} = {};\n#else\nstatic Servo servo_{PIN};\n#endif"
+            ],
+            "statement": "#if defined(ESP32)\nif (servo_{PIN}.activo) { ledcDetach({PIN}); servo_{PIN}.activo = false; }\n#else\nif (servo_{PIN}.attached()) servo_{PIN}.detach();\n#endif"
+          }
+        }
+      }
+    ]
+  }
+}

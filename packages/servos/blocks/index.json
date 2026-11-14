@@ -3,13 +3,34 @@
     "id": "org.robotblocks.servos:move",
     "operation": "org.robotblocks.servos:move",
     "category": "org.robotblocks.servos:servos",
-    "label": { "es": "servo en pin %PIN a %ANGLE grados", "en": "servo on pin %PIN to %ANGLE degrees" },
+    "label": {
+      "es": "servo en pin %PIN a %ANGLE grados",
+      "en": "servo on pin %PIN to %ANGLE degrees"
+    },
     "kind": "command",
     "requiredCapabilities": ["pwm"],
     "fields": [
-      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["pwm"]
+        }
+      }
     ],
-    "inputs": [{ "name": "ANGLE", "type": "number", "default": 90, "slider": { "min": 0, "max": 180 } }],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90,
+        "slider": {
+          "min": 0,
+          "max": 180
+        }
+      }
+    ],
     "tooltip": {
       "es": "Ángulo de 0 a 180; valores fuera de rango se limitan. Servo de 50 Hz (SG90, MG90S, MG996R). Aliméntalo con 5 V externos y une las tierras.",
       "en": "Angle from 0 to 180; out-of-range values are clamped. 50 Hz servo (SG90, MG90S, MG996R). Supply external 5 V and connect the grounds."
@@ -26,11 +47,13 @@
       },
       "arduino": {
         "globals": [
-          "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
-          "static Servo servo_{PIN};"
+          "#if defined(ESP32)\nstruct servos_canal { bool activo; };\ninline void servos_mover(servos_canal& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.activo) {\n        if (!ledcAttach(pin, 50, 14)) { rb_fail(bloque, \"No se pudo activar el servo\"); return; }\n        servo.activo = true;\n    }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    int pulso = int(500 + angulo * 2000 / 180);\n    ledcWrite(pin, uint32_t(pulso) * 16383UL / 20000UL);\n}\n#else\ninline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}\n#endif",
+          "#if defined(ESP32)\nstatic servos_canal servo_{PIN} = {};\n#else\nstatic Servo servo_{PIN};\n#endif"
         ],
-        "hardware": { "features": ["servo"] },
-        "includes": ["#include <Servo.h>"],
+        "hardware": {
+          "features": ["servo"]
+        },
+        "includes": ["#if defined(ESP32)\n#else\n#include <Servo.h>\n#endif"],
         "statement": "servos_mover(servo_{PIN}, {PIN}, {ANGLE}, {BLOCK_ID});"
       }
     }
@@ -39,11 +62,22 @@
     "id": "org.robotblocks.servos:release",
     "operation": "org.robotblocks.servos:release",
     "category": "org.robotblocks.servos:servos",
-    "label": { "es": "soltar servo en pin %PIN", "en": "release servo on pin %PIN" },
+    "label": {
+      "es": "soltar servo en pin %PIN",
+      "en": "release servo on pin %PIN"
+    },
     "kind": "command",
     "requiredCapabilities": ["pwm"],
     "fields": [
-      { "name": "PIN", "type": "string", "default": "", "reference": { "kind": "resource", "capabilities": ["pwm"] } }
+      {
+        "name": "PIN",
+        "type": "string",
+        "default": "",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["pwm"]
+        }
+      }
     ],
     "inputs": [],
     "tooltip": {
@@ -59,12 +93,14 @@
       },
       "arduino": {
         "globals": [
-          "inline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}",
-          "static Servo servo_{PIN};"
+          "#if defined(ESP32)\nstruct servos_canal { bool activo; };\ninline void servos_mover(servos_canal& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.activo) {\n        if (!ledcAttach(pin, 50, 14)) { rb_fail(bloque, \"No se pudo activar el servo\"); return; }\n        servo.activo = true;\n    }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    int pulso = int(500 + angulo * 2000 / 180);\n    ledcWrite(pin, uint32_t(pulso) * 16383UL / 20000UL);\n}\n#else\ninline void servos_mover(Servo& servo, int pin, float angulo, const char* bloque) {\n    if (!servo.attached()) servo.attach(pin, 500, 2500);\n    if (!servo.attached()) { rb_fail(bloque, \"No se pudo activar Servo.h\"); return; }\n    angulo = fmaxf(0, fminf(180, rb_finite(angulo, bloque)));\n    servo.writeMicroseconds(int(500 + angulo * 2000 / 180));\n}\n#endif",
+          "#if defined(ESP32)\nstatic servos_canal servo_{PIN} = {};\n#else\nstatic Servo servo_{PIN};\n#endif"
         ],
-        "hardware": { "features": ["servo"] },
-        "includes": ["#include <Servo.h>"],
-        "statement": "if (servo_{PIN}.attached()) servo_{PIN}.detach();"
+        "hardware": {
+          "features": ["servo"]
+        },
+        "includes": ["#if defined(ESP32)\n#else\n#include <Servo.h>\n#endif"],
+        "statement": "#if defined(ESP32)\nif (servo_{PIN}.activo) { ledcDetach({PIN}); servo_{PIN}.activo = false; }\n#else\nif (servo_{PIN}.attached()) servo_{PIN}.detach();\n#endif"
       }
     }
   }
