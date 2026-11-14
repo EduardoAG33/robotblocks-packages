@@ -1,0 +1,742 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "ver-colores",
+  "name": "HT Color V2 · ver colores en la pantalla",
+  "board": { "definitionId": "org.robotblocks.lego-ev3:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "ver-colores-lego-ev3-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "ver-colores-lego-ev3-1",
+            "blockId": "org.robotblocks.ev3-hitechnic-color:configure",
+            "operation": "org.robotblocks.ev3-hitechnic-color:configure",
+            "fields": { "PORT": "s1", "MODE": "activo" },
+            "inputs": {},
+            "next": {
+              "id": "ver-colores-lego-ev3-38",
+              "blockId": "core:forever",
+              "operation": "core:forever",
+              "fields": {},
+              "inputs": {
+                "BODY": {
+                  "id": "ver-colores-lego-ev3-2",
+                  "blockId": "org.robotblocks.lego-ev3-devices:screen-clear",
+                  "operation": "org.robotblocks.lego-ev3-devices:screen-clear",
+                  "fields": {},
+                  "inputs": {},
+                  "next": {
+                    "id": "ver-colores-lego-ev3-7",
+                    "blockId": "org.robotblocks.lego-ev3-devices:screen-text",
+                    "operation": "org.robotblocks.lego-ev3-devices:screen-text",
+                    "fields": {},
+                    "inputs": {
+                      "TEXT": {
+                        "id": "ver-colores-lego-ev3-6",
+                        "blockId": "core:join",
+                        "operation": "core:join",
+                        "fields": {},
+                        "inputs": {
+                          "LEFT": {
+                            "id": "ver-colores-lego-ev3-3",
+                            "blockId": "core:text",
+                            "operation": "core:text",
+                            "fields": { "TEXT": "color " },
+                            "inputs": {},
+                            "next": null
+                          },
+                          "RIGHT": {
+                            "id": "ver-colores-lego-ev3-5",
+                            "blockId": "core:to-text",
+                            "operation": "core:to-text",
+                            "fields": {},
+                            "inputs": {
+                              "VALUE": {
+                                "id": "ver-colores-lego-ev3-4",
+                                "blockId": "org.robotblocks.ev3-hitechnic-color:color-number",
+                                "operation": "org.robotblocks.ev3-hitechnic-color:color-number",
+                                "fields": { "PORT": "s1" },
+                                "inputs": {},
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        },
+                        "next": null
+                      }
+                    },
+                    "next": {
+                      "id": "ver-colores-lego-ev3-12",
+                      "blockId": "org.robotblocks.lego-ev3-devices:screen-text",
+                      "operation": "org.robotblocks.lego-ev3-devices:screen-text",
+                      "fields": {},
+                      "inputs": {
+                        "TEXT": {
+                          "id": "ver-colores-lego-ev3-11",
+                          "blockId": "core:join",
+                          "operation": "core:join",
+                          "fields": {},
+                          "inputs": {
+                            "LEFT": {
+                              "id": "ver-colores-lego-ev3-8",
+                              "blockId": "core:text",
+                              "operation": "core:text",
+                              "fields": { "TEXT": "R " },
+                              "inputs": {},
+                              "next": null
+                            },
+                            "RIGHT": {
+                              "id": "ver-colores-lego-ev3-10",
+                              "blockId": "core:to-text",
+                              "operation": "core:to-text",
+                              "fields": {},
+                              "inputs": {
+                                "VALUE": {
+                                  "id": "ver-colores-lego-ev3-9",
+                                  "blockId": "org.robotblocks.ev3-hitechnic-color:channel",
+                                  "operation": "org.robotblocks.ev3-hitechnic-color:channel",
+                                  "fields": { "PORT": "s1", "CHANNEL": "rojo" },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          },
+                          "next": null
+                        }
+                      },
+                      "next": {
+                        "id": "ver-colores-lego-ev3-17",
+                        "blockId": "org.robotblocks.lego-ev3-devices:screen-text",
+                        "operation": "org.robotblocks.lego-ev3-devices:screen-text",
+                        "fields": {},
+                        "inputs": {
+                          "TEXT": {
+                            "id": "ver-colores-lego-ev3-16",
+                            "blockId": "core:join",
+                            "operation": "core:join",
+                            "fields": {},
+                            "inputs": {
+                              "LEFT": {
+                                "id": "ver-colores-lego-ev3-13",
+                                "blockId": "core:text",
+                                "operation": "core:text",
+                                "fields": { "TEXT": "V " },
+                                "inputs": {},
+                                "next": null
+                              },
+                              "RIGHT": {
+                                "id": "ver-colores-lego-ev3-15",
+                                "blockId": "core:to-text",
+                                "operation": "core:to-text",
+                                "fields": {},
+                                "inputs": {
+                                  "VALUE": {
+                                    "id": "ver-colores-lego-ev3-14",
+                                    "blockId": "org.robotblocks.ev3-hitechnic-color:channel",
+                                    "operation": "org.robotblocks.ev3-hitechnic-color:channel",
+                                    "fields": { "PORT": "s1", "CHANNEL": "verde" },
+                                    "inputs": {},
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              }
+                            },
+                            "next": null
+                          }
+                        },
+                        "next": {
+                          "id": "ver-colores-lego-ev3-22",
+                          "blockId": "org.robotblocks.lego-ev3-devices:screen-text",
+                          "operation": "org.robotblocks.lego-ev3-devices:screen-text",
+                          "fields": {},
+                          "inputs": {
+                            "TEXT": {
+                              "id": "ver-colores-lego-ev3-21",
+                              "blockId": "core:join",
+                              "operation": "core:join",
+                              "fields": {},
+                              "inputs": {
+                                "LEFT": {
+                                  "id": "ver-colores-lego-ev3-18",
+                                  "blockId": "core:text",
+                                  "operation": "core:text",
+                                  "fields": { "TEXT": "A " },
+                                  "inputs": {},
+                                  "next": null
+                                },
+                                "RIGHT": {
+                                  "id": "ver-colores-lego-ev3-20",
+                                  "blockId": "core:to-text",
+                                  "operation": "core:to-text",
+                                  "fields": {},
+                                  "inputs": {
+                                    "VALUE": {
+                                      "id": "ver-colores-lego-ev3-19",
+                                      "blockId": "org.robotblocks.ev3-hitechnic-color:channel",
+                                      "operation": "org.robotblocks.ev3-hitechnic-color:channel",
+                                      "fields": { "PORT": "s1", "CHANNEL": "azul" },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          },
+                          "next": {
+                            "id": "ver-colores-lego-ev3-35",
+                            "blockId": "core:if",
+                            "operation": "core:if",
+                            "fields": {},
+                            "inputs": {
+                              "CONDITION": {
+                                "id": "ver-colores-lego-ev3-27",
+                                "blockId": "core:or",
+                                "operation": "core:or",
+                                "fields": {},
+                                "inputs": {
+                                  "LEFT": {
+                                    "id": "ver-colores-lego-ev3-24",
+                                    "blockId": "org.robotblocks.ev3-hitechnic-color:sees-color",
+                                    "operation": "org.robotblocks.ev3-hitechnic-color:sees-color",
+                                    "fields": { "PORT": "s1" },
+                                    "inputs": {
+                                      "NUMBER": {
+                                        "id": "ver-colores-lego-ev3-23",
+                                        "blockId": "core:number",
+                                        "operation": "core:number",
+                                        "fields": { "NUMBER": 8 },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  },
+                                  "RIGHT": {
+                                    "id": "ver-colores-lego-ev3-26",
+                                    "blockId": "org.robotblocks.ev3-hitechnic-color:sees-color",
+                                    "operation": "org.robotblocks.ev3-hitechnic-color:sees-color",
+                                    "fields": { "PORT": "s1" },
+                                    "inputs": {
+                                      "NUMBER": {
+                                        "id": "ver-colores-lego-ev3-25",
+                                        "blockId": "core:number",
+                                        "operation": "core:number",
+                                        "fields": { "NUMBER": 9 },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  }
+                                },
+                                "next": null
+                              },
+                              "BODY": {
+                                "id": "ver-colores-lego-ev3-31",
+                                "blockId": "core:set",
+                                "operation": "core:set",
+                                "fields": { "VARIABLE": "rojos" },
+                                "inputs": {
+                                  "VALUE": {
+                                    "id": "ver-colores-lego-ev3-30",
+                                    "blockId": "core:add",
+                                    "operation": "core:add",
+                                    "fields": {},
+                                    "inputs": {
+                                      "LEFT": {
+                                        "id": "ver-colores-lego-ev3-28",
+                                        "blockId": "core:variable",
+                                        "operation": "core:variable",
+                                        "fields": { "VARIABLE": "rojos" },
+                                        "inputs": {},
+                                        "next": null
+                                      },
+                                      "RIGHT": {
+                                        "id": "ver-colores-lego-ev3-29",
+                                        "blockId": "core:number",
+                                        "operation": "core:number",
+                                        "fields": { "NUMBER": 1 },
+                                        "inputs": {},
+                                        "next": null
+                                      }
+                                    },
+                                    "next": null
+                                  }
+                                },
+                                "next": {
+                                  "id": "ver-colores-lego-ev3-34",
+                                  "blockId": "org.robotblocks.lego-ev3-devices:beep",
+                                  "operation": "org.robotblocks.lego-ev3-devices:beep",
+                                  "fields": {},
+                                  "inputs": {
+                                    "HZ": {
+                                      "id": "ver-colores-lego-ev3-32",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 880 },
+                                      "inputs": {},
+                                      "next": null
+                                    },
+                                    "MS": {
+                                      "id": "ver-colores-lego-ev3-33",
+                                      "blockId": "core:number",
+                                      "operation": "core:number",
+                                      "fields": { "NUMBER": 100 },
+                                      "inputs": {},
+                                      "next": null
+                                    }
+                                  },
+                                  "next": null
+                                }
+                              }
+                            },
+                            "next": {
+                              "id": "ver-colores-lego-ev3-37",
+                              "blockId": "core:wait-ms",
+                              "operation": "core:wait-ms",
+                              "fields": {},
+                              "inputs": {
+                                "MS": {
+                                  "id": "ver-colores-lego-ev3-36",
+                                  "blockId": "core:number",
+                                  "operation": "core:number",
+                                  "fields": { "NUMBER": 200 },
+                                  "inputs": {},
+                                  "next": null
+                                }
+                              },
+                              "next": null
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "next": null
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [{ "id": "rojos", "name": "rojos", "type": "number", "scope": "project", "initialValue": 0 }],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.ev3-hitechnic-color", "version": "1.0.0" },
+    { "id": "org.robotblocks.lego-ev3", "version": "0.1.1" },
+    { "id": "org.robotblocks.lego-ev3-devices", "version": "0.4.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "ver-colores-lego-ev3-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:forever",
+        "category": "core:control",
+        "label": { "es": "por siempre %BODY", "en": "forever %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [{ "name": "BODY", "type": "statement" }],
+        "operation": "core:forever",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:if",
+        "category": "core:control",
+        "label": { "es": "si %CONDITION entonces %BODY", "en": "if %CONDITION then %BODY" },
+        "kind": "loop",
+        "fields": [],
+        "inputs": [
+          { "name": "CONDITION", "type": "boolean" },
+          { "name": "BODY", "type": "statement" }
+        ],
+        "operation": "core:if",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:add",
+        "operation": "core:add",
+        "category": "core:operators",
+        "label": { "es": "%LEFT + %RIGHT", "en": "%LEFT + %RIGHT" },
+        "kind": "reporter",
+        "output": "number",
+        "inputs": [
+          { "name": "LEFT", "type": "number", "default": 0 },
+          { "name": "RIGHT", "type": "number", "default": 1 }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:or",
+        "operation": "core:or",
+        "category": "core:operators",
+        "label": { "es": "%LEFT o %RIGHT", "en": "%LEFT or %RIGHT" },
+        "kind": "boolean",
+        "output": "boolean",
+        "inputs": [
+          { "name": "LEFT", "type": "boolean" },
+          { "name": "RIGHT", "type": "boolean" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:join",
+        "operation": "core:join",
+        "category": "core:operators",
+        "label": { "es": "unir %LEFT con %RIGHT", "en": "join %LEFT with %RIGHT" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [
+          { "name": "LEFT", "type": "string", "default": "hola" },
+          { "name": "RIGHT", "type": "string", "default": "mundo" }
+        ],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:to-text",
+        "operation": "core:to-text",
+        "category": "core:operators",
+        "label": { "es": "convertir %VALUE a texto", "en": "convert %VALUE to text" },
+        "kind": "reporter",
+        "output": "string",
+        "inputs": [{ "name": "VALUE", "type": "value", "default": 123 }],
+        "fields": [],
+        "tooltip": {
+          "es": "Expresión del programa generado. Consulta sus convenciones en el catálogo de bloques.",
+          "en": "Expression in the generated program. See conventions in the block catalog."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:wait-ms",
+        "operation": "core:wait-ms",
+        "category": "core:time",
+        "label": { "es": "esperar %MS ms", "en": "wait %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647, "integer": true }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:beep",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "altavoz beep %HZ Hz por %MS ms", "en": "speaker beep %HZ Hz for %MS ms" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "HZ", "type": "number", "default": 500, "min": 64, "max": 24000 },
+          { "name": "MS", "type": "number", "default": 100, "min": 0, "max": 2147483647 }
+        ],
+        "operation": "org.robotblocks.lego-ev3-devices:beep",
+        "tooltip": {
+          "es": "Pybricks 2.0 EV3 microSD · experimental. Unidades indicadas. Grande y mediano usan Motor; no compartas una maniobra pendiente entre procesos.",
+          "en": "Pybricks 2.0 EV3 microSD · experimental. Units shown. Large and medium motors use Motor; do not share a pending maneuver between processes."
+        },
+        "requiredCapabilities": ["hubSpeaker"],
+        "generators": { "pybricks": { "cooperative": true, "statement": "await rb_beep({HZ}, {MS}, {BLOCK_ID})" } }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:screen-text",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "pantalla escribir %TEXT", "en": "screen print %TEXT" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "TEXT", "type": "string", "default": "Hola" }],
+        "operation": "org.robotblocks.lego-ev3-devices:screen-text",
+        "tooltip": {
+          "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["hubDisplay"],
+        "generators": { "pybricks": { "statement": "rb_hub.screen.print({TEXT})" } }
+      },
+      {
+        "id": "org.robotblocks.lego-ev3-devices:screen-clear",
+        "category": "org.robotblocks.lego-ev3-devices:hub",
+        "label": { "es": "pantalla borrar", "en": "screen clear" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.lego-ev3-devices:screen-clear",
+        "tooltip": {
+          "es": "EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["hubDisplay"],
+        "generators": { "pybricks": { "statement": "rb_hub.screen.clear()" } }
+      },
+      {
+        "id": "org.robotblocks.ev3-hitechnic-color:configure",
+        "category": "org.robotblocks.ev3-hitechnic-color:color",
+        "label": { "es": "HT color %PORT configurar en modo %MODE", "en": "HT color %PORT set up in %MODE mode" },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "s1",
+            "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
+          },
+          {
+            "name": "MODE",
+            "type": "string",
+            "default": "activo",
+            "options": [
+              {
+                "label": { "es": "activo (LED, sin luz ambiente)", "en": "active (LED, no ambient light)" },
+                "value": "activo"
+              },
+              {
+                "label": { "es": "pasivo (solo luz ambiente)", "en": "passive (ambient light only)" },
+                "value": "pasivo"
+              },
+              { "label": { "es": "crudo (sin procesar)", "en": "raw (unprocessed)" }, "value": "crudo" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.ev3-hitechnic-color:configure",
+        "tooltip": {
+          "es": "Úsalo al iniciar, antes de leer. Activo: el LED ilumina y se resta la luz del cuarto; da número de color y rojo/verde/azul/blanco de 0 a 255. Pasivo: LED apagado, mide la luz que llega. Crudo: lecturas sin procesar. Pasivo y crudo dan valores de 0 a 65535 y no tienen número de color. Puedes volver a usarlo para cambiar de modo (tarda 0.1 s). HiTechnic NXT Color Sensor V2 (I2C 0x01) en EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "Use it at start, before reading. Active: the LED lights the target and room light is subtracted; gives color number and red/green/blue/white from 0 to 255. Passive: LED off, measures incoming light. Raw: unprocessed readings. Passive and raw give values from 0 to 65535 and have no color number. Use it again to change mode (takes 0.1 s). HiTechnic NXT Color Sensor V2 (I2C 0x01) on EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["ev3SensorPort"],
+        "generators": {
+          "pybricks": {
+            "imports": ["from pybricks.iodevices import I2CDevice", "from pybricks.tools import wait"],
+            "globals": [
+              "# HiTechnic NXT Color Sensor V2 (NCO1038) por I2C con Pybricks 2.0 en ev3dev.\n# Dirección 0x02 de 8 bits = 0x01 de 7 bits. Registro 0x41: modo 0 activo, 1 pasivo, 3 crudo.\n# Activo: 0x42 número de color 0..17; 0x43..0x46 rojo, verde, azul y blanco (0..255).\n# Pasivo y crudo: desde 0x42, rojo, verde, azul y blanco de 16 bits, byte alto primero.\n# Fuentes de cada registro en el README del paquete. Sin probar con el sensor real.\nHTCOLOR_DIRECCION = 0x01\nHTCOLOR_MODO = 0x41\nHTCOLOR_DATOS = 0x42\nHTCOLOR_MODOS = {\"activo\": 0, \"pasivo\": 1, \"crudo\": 3}\nHTCOLOR_CANALES = {\"rojo\": 0, \"verde\": 1, \"azul\": 2, \"blanco\": 3}\nhtcolor_sensores = {}\n\n\ndef htcolor_i2c(puerto):\n    # I2CDevice pone el puerto en modo other-i2c: quita el driver ht-nxt-color-v2 de ev3dev.\n    return I2CDevice(puerto, HTCOLOR_DIRECCION)\n\n\ndef htcolor_configurar(puerto, modo, bloque):\n    i2c = rb_device(puerto, htcolor_i2c, bloque)\n    try:\n        # Registros 0x08..0x0F: fabricante «HiTechnc», el mismo texto que reconoce ev3dev.\n        fabricante = bytes(i2c.read(0x08, 8))\n        if fabricante == b\"HiTechnc\":\n            i2c.write(HTCOLOR_MODO, bytes((HTCOLOR_MODOS[modo],)))\n            wait(100)\n            # Primera lectura descartada (OFDL: tras un programa interrumpido repite el valor viejo).\n            i2c.read(HTCOLOR_DATOS, 1)\n    except OSError:\n        rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n    if fabricante != b\"HiTechnc\":\n        rb_fail(bloque, \"El sensor del puerto no es un HiTechnic\")\n    htcolor_sensores[puerto] = [i2c, modo]\n\n\ndef htcolor(puerto, bloque):\n    if puerto not in htcolor_sensores:\n        rb_fail(bloque, \"Configura el HT color de este puerto al iniciar\")\n    return htcolor_sensores[puerto]\n\n\ndef htcolor_leer(puerto, registro, cuantos, bloque):\n    i2c = htcolor(puerto, bloque)[0]\n    for intento in range(3):\n        try:\n            datos = i2c.read(registro, cuantos)\n            if len(datos) == cuantos:\n                return datos\n        except OSError:\n            pass\n    rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n\n\ndef htcolor_numero(puerto, bloque):\n    if htcolor(puerto, bloque)[1] != \"activo\":\n        rb_fail(bloque, \"El número de color solo existe en modo activo\")\n    return htcolor_leer(puerto, HTCOLOR_DATOS, 1, bloque)[0]\n\n\ndef htcolor_canal(puerto, canal, bloque):\n    indice = HTCOLOR_CANALES[canal]\n    if htcolor(puerto, bloque)[1] == \"activo\":\n        return htcolor_leer(puerto, HTCOLOR_DATOS + 1 + indice, 1, bloque)[0]\n    datos = htcolor_leer(puerto, HTCOLOR_DATOS + 2 * indice, 2, bloque)\n    return datos[0] << 8 | datos[1]\n\n\ndef htcolor_ve(puerto, numero, bloque):\n    return htcolor_numero(puerto, bloque) == numero\n"
+            ],
+            "statement": "htcolor_configurar({PORT}, {MODE}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.ev3-hitechnic-color:color-number",
+        "category": "org.robotblocks.ev3-hitechnic-color:color",
+        "label": { "es": "HT color %PORT número de color (0–17)", "en": "HT color %PORT color number (0–17)" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "s1",
+            "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.ev3-hitechnic-color:color-number",
+        "tooltip": {
+          "es": "Número de color de 0 a 17 que calcula el sensor (0 negro, 17 blanco). Solo en modo activo. Mide primero los colores de tu pista: el número cambia con la distancia y el ángulo. HiTechnic NXT Color Sensor V2 (I2C 0x01) en EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "Color number from 0 to 17 computed by the sensor (0 black, 17 white). Active mode only. Measure your mat colors first: the number changes with distance and angle. HiTechnic NXT Color Sensor V2 (I2C 0x01) on EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["ev3SensorPort"],
+        "generators": {
+          "pybricks": {
+            "imports": ["from pybricks.iodevices import I2CDevice", "from pybricks.tools import wait"],
+            "globals": [
+              "# HiTechnic NXT Color Sensor V2 (NCO1038) por I2C con Pybricks 2.0 en ev3dev.\n# Dirección 0x02 de 8 bits = 0x01 de 7 bits. Registro 0x41: modo 0 activo, 1 pasivo, 3 crudo.\n# Activo: 0x42 número de color 0..17; 0x43..0x46 rojo, verde, azul y blanco (0..255).\n# Pasivo y crudo: desde 0x42, rojo, verde, azul y blanco de 16 bits, byte alto primero.\n# Fuentes de cada registro en el README del paquete. Sin probar con el sensor real.\nHTCOLOR_DIRECCION = 0x01\nHTCOLOR_MODO = 0x41\nHTCOLOR_DATOS = 0x42\nHTCOLOR_MODOS = {\"activo\": 0, \"pasivo\": 1, \"crudo\": 3}\nHTCOLOR_CANALES = {\"rojo\": 0, \"verde\": 1, \"azul\": 2, \"blanco\": 3}\nhtcolor_sensores = {}\n\n\ndef htcolor_i2c(puerto):\n    # I2CDevice pone el puerto en modo other-i2c: quita el driver ht-nxt-color-v2 de ev3dev.\n    return I2CDevice(puerto, HTCOLOR_DIRECCION)\n\n\ndef htcolor_configurar(puerto, modo, bloque):\n    i2c = rb_device(puerto, htcolor_i2c, bloque)\n    try:\n        # Registros 0x08..0x0F: fabricante «HiTechnc», el mismo texto que reconoce ev3dev.\n        fabricante = bytes(i2c.read(0x08, 8))\n        if fabricante == b\"HiTechnc\":\n            i2c.write(HTCOLOR_MODO, bytes((HTCOLOR_MODOS[modo],)))\n            wait(100)\n            # Primera lectura descartada (OFDL: tras un programa interrumpido repite el valor viejo).\n            i2c.read(HTCOLOR_DATOS, 1)\n    except OSError:\n        rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n    if fabricante != b\"HiTechnc\":\n        rb_fail(bloque, \"El sensor del puerto no es un HiTechnic\")\n    htcolor_sensores[puerto] = [i2c, modo]\n\n\ndef htcolor(puerto, bloque):\n    if puerto not in htcolor_sensores:\n        rb_fail(bloque, \"Configura el HT color de este puerto al iniciar\")\n    return htcolor_sensores[puerto]\n\n\ndef htcolor_leer(puerto, registro, cuantos, bloque):\n    i2c = htcolor(puerto, bloque)[0]\n    for intento in range(3):\n        try:\n            datos = i2c.read(registro, cuantos)\n            if len(datos) == cuantos:\n                return datos\n        except OSError:\n            pass\n    rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n\n\ndef htcolor_numero(puerto, bloque):\n    if htcolor(puerto, bloque)[1] != \"activo\":\n        rb_fail(bloque, \"El número de color solo existe en modo activo\")\n    return htcolor_leer(puerto, HTCOLOR_DATOS, 1, bloque)[0]\n\n\ndef htcolor_canal(puerto, canal, bloque):\n    indice = HTCOLOR_CANALES[canal]\n    if htcolor(puerto, bloque)[1] == \"activo\":\n        return htcolor_leer(puerto, HTCOLOR_DATOS + 1 + indice, 1, bloque)[0]\n    datos = htcolor_leer(puerto, HTCOLOR_DATOS + 2 * indice, 2, bloque)\n    return datos[0] << 8 | datos[1]\n\n\ndef htcolor_ve(puerto, numero, bloque):\n    return htcolor_numero(puerto, bloque) == numero\n"
+            ],
+            "expression": "htcolor_numero({PORT}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.ev3-hitechnic-color:channel",
+        "category": "org.robotblocks.ev3-hitechnic-color:color",
+        "label": { "es": "HT color %PORT %CHANNEL", "en": "HT color %PORT %CHANNEL" },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "s1",
+            "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
+          },
+          {
+            "name": "CHANNEL",
+            "type": "string",
+            "default": "rojo",
+            "options": [
+              { "label": { "es": "rojo", "en": "red" }, "value": "rojo" },
+              { "label": { "es": "verde", "en": "green" }, "value": "verde" },
+              { "label": { "es": "azul", "en": "blue" }, "value": "azul" },
+              { "label": { "es": "blanco", "en": "white" }, "value": "blanco" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.ev3-hitechnic-color:channel",
+        "tooltip": {
+          "es": "Cantidad de rojo, verde, azul o blanco (luz total). En modo activo va de 0 a 255; en pasivo y crudo, de 0 a 65535. HiTechnic NXT Color Sensor V2 (I2C 0x01) en EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "Amount of red, green, blue or white (total light). In active mode it goes from 0 to 255; in passive and raw, from 0 to 65535. HiTechnic NXT Color Sensor V2 (I2C 0x01) on EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["ev3SensorPort"],
+        "generators": {
+          "pybricks": {
+            "imports": ["from pybricks.iodevices import I2CDevice", "from pybricks.tools import wait"],
+            "globals": [
+              "# HiTechnic NXT Color Sensor V2 (NCO1038) por I2C con Pybricks 2.0 en ev3dev.\n# Dirección 0x02 de 8 bits = 0x01 de 7 bits. Registro 0x41: modo 0 activo, 1 pasivo, 3 crudo.\n# Activo: 0x42 número de color 0..17; 0x43..0x46 rojo, verde, azul y blanco (0..255).\n# Pasivo y crudo: desde 0x42, rojo, verde, azul y blanco de 16 bits, byte alto primero.\n# Fuentes de cada registro en el README del paquete. Sin probar con el sensor real.\nHTCOLOR_DIRECCION = 0x01\nHTCOLOR_MODO = 0x41\nHTCOLOR_DATOS = 0x42\nHTCOLOR_MODOS = {\"activo\": 0, \"pasivo\": 1, \"crudo\": 3}\nHTCOLOR_CANALES = {\"rojo\": 0, \"verde\": 1, \"azul\": 2, \"blanco\": 3}\nhtcolor_sensores = {}\n\n\ndef htcolor_i2c(puerto):\n    # I2CDevice pone el puerto en modo other-i2c: quita el driver ht-nxt-color-v2 de ev3dev.\n    return I2CDevice(puerto, HTCOLOR_DIRECCION)\n\n\ndef htcolor_configurar(puerto, modo, bloque):\n    i2c = rb_device(puerto, htcolor_i2c, bloque)\n    try:\n        # Registros 0x08..0x0F: fabricante «HiTechnc», el mismo texto que reconoce ev3dev.\n        fabricante = bytes(i2c.read(0x08, 8))\n        if fabricante == b\"HiTechnc\":\n            i2c.write(HTCOLOR_MODO, bytes((HTCOLOR_MODOS[modo],)))\n            wait(100)\n            # Primera lectura descartada (OFDL: tras un programa interrumpido repite el valor viejo).\n            i2c.read(HTCOLOR_DATOS, 1)\n    except OSError:\n        rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n    if fabricante != b\"HiTechnc\":\n        rb_fail(bloque, \"El sensor del puerto no es un HiTechnic\")\n    htcolor_sensores[puerto] = [i2c, modo]\n\n\ndef htcolor(puerto, bloque):\n    if puerto not in htcolor_sensores:\n        rb_fail(bloque, \"Configura el HT color de este puerto al iniciar\")\n    return htcolor_sensores[puerto]\n\n\ndef htcolor_leer(puerto, registro, cuantos, bloque):\n    i2c = htcolor(puerto, bloque)[0]\n    for intento in range(3):\n        try:\n            datos = i2c.read(registro, cuantos)\n            if len(datos) == cuantos:\n                return datos\n        except OSError:\n            pass\n    rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n\n\ndef htcolor_numero(puerto, bloque):\n    if htcolor(puerto, bloque)[1] != \"activo\":\n        rb_fail(bloque, \"El número de color solo existe en modo activo\")\n    return htcolor_leer(puerto, HTCOLOR_DATOS, 1, bloque)[0]\n\n\ndef htcolor_canal(puerto, canal, bloque):\n    indice = HTCOLOR_CANALES[canal]\n    if htcolor(puerto, bloque)[1] == \"activo\":\n        return htcolor_leer(puerto, HTCOLOR_DATOS + 1 + indice, 1, bloque)[0]\n    datos = htcolor_leer(puerto, HTCOLOR_DATOS + 2 * indice, 2, bloque)\n    return datos[0] << 8 | datos[1]\n\n\ndef htcolor_ve(puerto, numero, bloque):\n    return htcolor_numero(puerto, bloque) == numero\n"
+            ],
+            "expression": "htcolor_canal({PORT}, {CHANNEL}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.ev3-hitechnic-color:sees-color",
+        "category": "org.robotblocks.ev3-hitechnic-color:color",
+        "label": {
+          "es": "¿HT color %PORT ve el color número %NUMBER?",
+          "en": "does HT color %PORT see color number %NUMBER?"
+        },
+        "kind": "boolean",
+        "output": "boolean",
+        "fields": [
+          {
+            "name": "PORT",
+            "type": "string",
+            "default": "s1",
+            "reference": { "kind": "resource", "capabilities": ["ev3SensorPort"] }
+          }
+        ],
+        "inputs": [{ "name": "NUMBER", "type": "number", "default": 8, "min": 0, "max": 17, "integer": true }],
+        "operation": "org.robotblocks.ev3-hitechnic-color:sees-color",
+        "tooltip": {
+          "es": "Verdadero si el número de color leído es ese. Solo en modo activo. Para un color que da dos números (por ejemplo rojo), une dos de estos bloques con «o». HiTechnic NXT Color Sensor V2 (I2C 0x01) en EV3 microSD / Pybricks 2.0 · experimental.",
+          "en": "True if the color number read is that one. Active mode only. For a color that gives two numbers (for example red), join two of these blocks with «or». HiTechnic NXT Color Sensor V2 (I2C 0x01) on EV3 microSD / Pybricks 2.0 · experimental."
+        },
+        "requiredCapabilities": ["ev3SensorPort"],
+        "generators": {
+          "pybricks": {
+            "imports": ["from pybricks.iodevices import I2CDevice", "from pybricks.tools import wait"],
+            "globals": [
+              "# HiTechnic NXT Color Sensor V2 (NCO1038) por I2C con Pybricks 2.0 en ev3dev.\n# Dirección 0x02 de 8 bits = 0x01 de 7 bits. Registro 0x41: modo 0 activo, 1 pasivo, 3 crudo.\n# Activo: 0x42 número de color 0..17; 0x43..0x46 rojo, verde, azul y blanco (0..255).\n# Pasivo y crudo: desde 0x42, rojo, verde, azul y blanco de 16 bits, byte alto primero.\n# Fuentes de cada registro en el README del paquete. Sin probar con el sensor real.\nHTCOLOR_DIRECCION = 0x01\nHTCOLOR_MODO = 0x41\nHTCOLOR_DATOS = 0x42\nHTCOLOR_MODOS = {\"activo\": 0, \"pasivo\": 1, \"crudo\": 3}\nHTCOLOR_CANALES = {\"rojo\": 0, \"verde\": 1, \"azul\": 2, \"blanco\": 3}\nhtcolor_sensores = {}\n\n\ndef htcolor_i2c(puerto):\n    # I2CDevice pone el puerto en modo other-i2c: quita el driver ht-nxt-color-v2 de ev3dev.\n    return I2CDevice(puerto, HTCOLOR_DIRECCION)\n\n\ndef htcolor_configurar(puerto, modo, bloque):\n    i2c = rb_device(puerto, htcolor_i2c, bloque)\n    try:\n        # Registros 0x08..0x0F: fabricante «HiTechnc», el mismo texto que reconoce ev3dev.\n        fabricante = bytes(i2c.read(0x08, 8))\n        if fabricante == b\"HiTechnc\":\n            i2c.write(HTCOLOR_MODO, bytes((HTCOLOR_MODOS[modo],)))\n            wait(100)\n            # Primera lectura descartada (OFDL: tras un programa interrumpido repite el valor viejo).\n            i2c.read(HTCOLOR_DATOS, 1)\n    except OSError:\n        rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n    if fabricante != b\"HiTechnc\":\n        rb_fail(bloque, \"El sensor del puerto no es un HiTechnic\")\n    htcolor_sensores[puerto] = [i2c, modo]\n\n\ndef htcolor(puerto, bloque):\n    if puerto not in htcolor_sensores:\n        rb_fail(bloque, \"Configura el HT color de este puerto al iniciar\")\n    return htcolor_sensores[puerto]\n\n\ndef htcolor_leer(puerto, registro, cuantos, bloque):\n    i2c = htcolor(puerto, bloque)[0]\n    for intento in range(3):\n        try:\n            datos = i2c.read(registro, cuantos)\n            if len(datos) == cuantos:\n                return datos\n        except OSError:\n            pass\n    rb_fail(bloque, \"No responde el HiTechnic Color V2 (I2C 0x01)\")\n\n\ndef htcolor_numero(puerto, bloque):\n    if htcolor(puerto, bloque)[1] != \"activo\":\n        rb_fail(bloque, \"El número de color solo existe en modo activo\")\n    return htcolor_leer(puerto, HTCOLOR_DATOS, 1, bloque)[0]\n\n\ndef htcolor_canal(puerto, canal, bloque):\n    indice = HTCOLOR_CANALES[canal]\n    if htcolor(puerto, bloque)[1] == \"activo\":\n        return htcolor_leer(puerto, HTCOLOR_DATOS + 1 + indice, 1, bloque)[0]\n    datos = htcolor_leer(puerto, HTCOLOR_DATOS + 2 * indice, 2, bloque)\n    return datos[0] << 8 | datos[1]\n\n\ndef htcolor_ve(puerto, numero, bloque):\n    return htcolor_numero(puerto, bloque) == numero\n"
+            ],
+            "expression": "htcolor_ve({PORT}, {NUMBER}, {BLOCK_ID})"
+          }
+        }
+      }
+    ]
+  }
+}
