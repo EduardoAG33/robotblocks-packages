@@ -1,0 +1,108 @@
+{
+  "titulo": "Memoria · EEPROM I2C externa",
+  "tarjetas": [
+    "arduino-uno",
+    "arduino-nano",
+    "arduino-uno-r4-minima",
+    "arduino-giga-r1",
+    "teensy-40",
+    "teensy-41",
+    "seeed-xiao-esp32s3"
+  ],
+  "destinos": ["arduino"],
+  "variables": {
+    "numero": 0,
+    "falta": 0
+  },
+  "pines": {
+    "arduino-uno": {
+      "SDA": "a4",
+      "SCL": "a5"
+    },
+    "arduino-nano": {
+      "SDA": "a4",
+      "SCL": "a5"
+    },
+    "arduino-uno-r4-minima": {
+      "SDA": "a4",
+      "SCL": "a5"
+    },
+    "arduino-giga-r1": {
+      "SDA": "d102",
+      "SCL": "d101"
+    },
+    "teensy-40": {
+      "SDA": "d18",
+      "SCL": "d19"
+    },
+    "teensy-41": {
+      "SDA": "d18",
+      "SCL": "d19"
+    },
+    "seeed-xiao-esp32s3": {
+      "SDA": "d4",
+      "SCL": "d5"
+    }
+  },
+  "programa": [
+    [
+      ":use-i2c-eeprom",
+      {
+        "SDA": "$SDA",
+        "SCL": "$SCL",
+        "DIRECCION": "0x50"
+      }
+    ],
+    [
+      ":save",
+      {},
+      {
+        "VALOR": 123.25,
+        "NOMBRE": "qtr_min_1"
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "numero"
+      },
+      {
+        "VALUE": [
+          ":read",
+          {},
+          {
+            "NOMBRE": "qtr_min_1",
+            "PREDETERMINADO": -1
+          }
+        ]
+      }
+    ],
+    [
+      "core:set",
+      {
+        "VARIABLE": "falta"
+      },
+      {
+        "VALUE": [
+          ":read",
+          {},
+          {
+            "NOMBRE": "ausente",
+            "PREDETERMINADO": 42
+          }
+        ]
+      }
+    ],
+    [
+      "core:serial-println",
+      {},
+      {
+        "VALUE": {
+          "var": "numero"
+        }
+      }
+    ],
+    [":clear"]
+  ],
+  "ejemplo": "arduino-giga-r1"
+}
