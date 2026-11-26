@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "id": "org.robotblocks.ev3-hitechnic-color",
+  "name": "EV3 · HiTechnic Color V2 · experimental",
+  "version": "1.0.0",
+  "author": {
+    "name": "Los Grises · GreyForge"
+  },
+  "minAppVersion": "0.4.0",
+  "description": "HiTechnic NXT Color Sensor V2 en el EV3 con Pybricks 2.0: modo activo, pasivo o crudo, número de color 0–17 y rojo, verde, azul y blanco.",
+  "requiredCapabilities": ["ev3SensorPort"],
+  "supportedBoards": ["org.robotblocks.lego-ev3:board"],
+  "dependencies": [],
+  "permissions": [],
+  "contributes": {
+    "categories": [
+      {
+        "id": "org.robotblocks.ev3-hitechnic-color:color",
+        "name": "EV3 · HT Color V2",
+        "colour": "#C2563E"
+      }
+    ],
+    "blocks": ["blocks/index.json"],
+    "devices": [],
+    "boards": [],
+    "generators": [],
+    "monitors": []
+  },
+  "assets": [],
+  "metadata": {
+    "experimental": true,
+    "group": "sensors",
+    "translations": {
+      "en": {
+        "EV3 · HiTechnic Color V2 · experimental": "EV3 · HiTechnic Color V2 · experimental",
+        "HiTechnic NXT Color Sensor V2 en el EV3 con Pybricks 2.0: modo activo, pasivo o crudo, número de color 0–17 y rojo, verde, azul y blanco.": "HiTechnic NXT Color Sensor V2 on the EV3 with Pybricks 2.0: active, passive or raw mode, color number 0–17 and red, green, blue and white.",
+        "EV3 · HT Color V2": "EV3 · HT Color V2",
+        "No responde el HiTechnic Color V2 (I2C 0x01)": "The HiTechnic Color V2 (I2C 0x01) does not respond",
+        "El sensor del puerto no es un HiTechnic": "The sensor on this port is not a HiTechnic",
+        "Configura el HT color de este puerto al iniciar": "Set up the HT color on this port at start",
+        "El número de color solo existe en modo activo": "The color number only exists in active mode"
+      }
+    }
+  }
+}

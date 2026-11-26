@@ -1,0 +1,8 @@
+{
+  "titulo": "HT Color V2 · leer sin configurar da un error claro",
+  "tarjetas": ["lego-ev3"],
+  "variables": { "numero": 0 },
+  "programa": [["core:set", { "VARIABLE": "numero" }, { "VALUE": [":color-number", { "PORT": "s2" }] }]],
+  "fallo": "1",
+  "salida": ""
+}

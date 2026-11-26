@@ -1,0 +1,65 @@
+{
+  "titulo": "HT Color V2 · modos activo, pasivo y crudo (I2C simulado)",
+  "tarjetas": ["lego-ev3"],
+  "variables": {
+    "numero": 0,
+    "ve_rojo": false,
+    "ve_azul": false,
+    "rojo": 0,
+    "verde": 0,
+    "azul": 0,
+    "blanco": 0,
+    "rojo_pasivo": 0,
+    "verde_pasivo": 0,
+    "azul_pasivo": 0,
+    "blanco_pasivo": 0,
+    "rojo_crudo": 0,
+    "blanco_crudo": 0
+  },
+  "programa": [
+    [":configure", { "PORT": "s1", "MODE": "activo" }],
+    ["core:set", { "VARIABLE": "numero" }, { "VALUE": [":color-number", { "PORT": "s1" }] }],
+    ["core:set", { "VARIABLE": "ve_rojo" }, { "VALUE": [":sees-color", { "PORT": "s1" }, { "NUMBER": 8 }] }],
+    ["core:set", { "VARIABLE": "ve_azul" }, { "VALUE": [":sees-color", { "PORT": "s1" }, { "NUMBER": 3 }] }],
+    ["core:set", { "VARIABLE": "rojo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "rojo" }] }],
+    ["core:set", { "VARIABLE": "verde" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "verde" }] }],
+    ["core:set", { "VARIABLE": "azul" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "azul" }] }],
+    ["core:set", { "VARIABLE": "blanco" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "blanco" }] }],
+    [":configure", { "PORT": "s1", "MODE": "pasivo" }],
+    ["core:set", { "VARIABLE": "rojo_pasivo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "rojo" }] }],
+    ["core:set", { "VARIABLE": "verde_pasivo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "verde" }] }],
+    ["core:set", { "VARIABLE": "azul_pasivo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "azul" }] }],
+    ["core:set", { "VARIABLE": "blanco_pasivo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "blanco" }] }],
+    [":configure", { "PORT": "s1", "MODE": "crudo" }],
+    ["core:set", { "VARIABLE": "rojo_crudo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "rojo" }] }],
+    ["core:set", { "VARIABLE": "blanco_crudo" }, { "VALUE": [":channel", { "PORT": "s1", "CHANNEL": "blanco" }] }]
+  ],
+  "esperado": {
+    "numero": 8,
+    "ve_rojo": true,
+    "ve_azul": false,
+    "rojo": 64,
+    "verde": 17,
+    "azul": 8,
+    "blanco": 30,
+    "rojo_pasivo": 1034,
+    "verde_pasivo": 543,
+    "azul_pasivo": 185,
+    "blanco_pasivo": 1800,
+    "rojo_crudo": 37692,
+    "blanco_crudo": 40000
+  },
+  "evaluar": [
+    ["htcolor_sensores[Port.S1][1]", "crudo"],
+    ["htcolor_sensores[Port.S1][0].sensor.memory[0x41]", 3],
+    [
+      "[[reg, list(data)] for reg, data in htcolor_sensores[Port.S1][0].writes]",
+      [
+        [65, [0]],
+        [65, [1]],
+        [65, [3]]
+      ]
+    ],
+    ["_rb_devices[Port.S1][0].__name__", "htcolor_i2c"]
+  ]
+}

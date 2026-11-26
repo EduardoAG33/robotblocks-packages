@@ -1,0 +1,7 @@
+{
+  "titulo": "HT Color V2 · sin sensor en S4 da un error claro",
+  "tarjetas": ["lego-ev3"],
+  "programa": [[":configure", { "PORT": "s4", "MODE": "activo" }]],
+  "fallo": "1",
+  "salida": ""
+}
