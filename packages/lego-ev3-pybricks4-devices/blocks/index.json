@@ -1,0 +1,1866 @@
+[
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-run",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-run",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT girar a %SPEED grados/s",
+      "en": "motor %PORT run at %SPEED degrees/s"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 500,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-angle",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-angle",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT girar %ANGLE grados a %SPEED grados/s",
+      "en": "motor %PORT run %ANGLE degrees at %SPEED degrees/s"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90,
+        "min": -2147483648,
+        "max": 2147483647
+      },
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 500,
+        "min": 1,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle({SPEED}, {ANGLE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-time",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-time",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT girar %MS ms a %SPEED grados/s",
+      "en": "motor %PORT run %MS ms at %SPEED degrees/s"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "MS",
+        "type": "number",
+        "default": 1000,
+        "min": 0,
+        "max": 2147483647
+      },
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 500,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_time({SPEED}, {MS})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-stop",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-stop",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT detener %MODE",
+      "en": "motor %PORT stop %MODE"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      },
+      {
+        "name": "MODE",
+        "type": "string",
+        "default": "brake",
+        "options": [
+          {
+            "label": {
+              "es": "frenar",
+              "en": "brake"
+            },
+            "value": "brake"
+          },
+          {
+            "label": {
+              "es": "mantener",
+              "en": "hold"
+            },
+            "value": "hold"
+          },
+          {
+            "label": {
+              "es": "libre",
+              "en": "coast"
+            },
+            "value": "coast"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-position",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-position",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "ángulo del motor %PORT en grados",
+      "en": "motor %PORT angle in degrees"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-reset",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-reset",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT reiniciar ángulo a %ANGLE",
+      "en": "motor %PORT reset angle to %ANGLE"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 0,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:drive-config",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:drive-config",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "configurar base izq %LEFT sentido %LEFT_DIRECTION der %RIGHT sentido %RIGHT_DIRECTION rueda %DIAMETER mm eje %TRACK mm",
+      "en": "configure drive base left %LEFT direction %LEFT_DIRECTION right %RIGHT direction %RIGHT_DIRECTION wheel %DIAMETER mm track %TRACK mm"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "LEFT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      },
+      {
+        "name": "LEFT_DIRECTION",
+        "type": "string",
+        "default": "counterclockwise",
+        "options": [
+          {
+            "label": {
+              "es": "antihorario",
+              "en": "counterclockwise"
+            },
+            "value": "counterclockwise"
+          },
+          {
+            "label": {
+              "es": "horario",
+              "en": "clockwise"
+            },
+            "value": "clockwise"
+          }
+        ]
+      },
+      {
+        "name": "RIGHT",
+        "type": "string",
+        "default": "b",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      },
+      {
+        "name": "RIGHT_DIRECTION",
+        "type": "string",
+        "default": "clockwise",
+        "options": [
+          {
+            "label": {
+              "es": "horario",
+              "en": "clockwise"
+            },
+            "value": "clockwise"
+          },
+          {
+            "label": {
+              "es": "antihorario",
+              "en": "counterclockwise"
+            },
+            "value": "counterclockwise"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "DIAMETER",
+        "type": "number",
+        "default": 56,
+        "min": 1,
+        "max": 1000
+      },
+      {
+        "name": "TRACK",
+        "type": "number",
+        "default": 114,
+        "min": 1,
+        "max": 2000
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_drive_config({LEFT}, {RIGHT}, {DIAMETER}, {TRACK}, {LEFT_DIRECTION}, {RIGHT_DIRECTION}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:drive-straight",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:drive-straight",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "base avanzar %MM mm",
+      "en": "drive base straight %MM mm"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "MM",
+        "type": "number",
+        "default": 100,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "statement": "await rb_drive({BLOCK_ID}).straight({MM})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:drive-turn",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:drive-turn",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "base girar %ANGLE grados",
+      "en": "drive base turn %ANGLE degrees"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "statement": "await rb_drive({BLOCK_ID}).turn({ANGLE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:drive-drive",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:drive-drive",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "base conducir %SPEED mm/s giro %TURN grados/s",
+      "en": "drive base drive %SPEED mm/s turn rate %TURN degrees/s"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 100,
+        "min": -2147483648,
+        "max": 2147483647
+      },
+      {
+        "name": "TURN",
+        "type": "number",
+        "default": 0,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_drive({BLOCK_ID}).drive({SPEED}, {TURN})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:drive-stop",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:drive-stop",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "base detener",
+      "en": "drive base stop"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_drive({BLOCK_ID}).stop()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:color",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:color",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "color del sensor %PORT",
+      "en": "color sensor %PORT color"
+    },
+    "kind": "reporter",
+    "output": "string",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "expression": "rb_color_name(await rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:reflection",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:reflection",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "reflexión del sensor %PORT (%)",
+      "en": "sensor %PORT reflection (%)"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:ambient",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:ambient",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "luz ambiente del sensor %PORT (%)",
+      "en": "sensor %PORT ambient light (%)"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:distance",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:distance",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "distancia del sensor %PORT (mm)",
+      "en": "sensor %PORT distance (mm)"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s2",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "expression": "await rb_device({PORT}, UltrasonicSensor, {BLOCK_ID}).distance()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:button",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:button",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "botón %BUTTON presionado",
+      "en": "button %BUTTON pressed"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "BUTTON",
+        "type": "string",
+        "default": "left",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["hubButtons"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["hubButtons"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "expression": "{BUTTON} in rb_hub.buttons.pressed()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:beep",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:beep",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "altavoz beep %HZ Hz por %MS ms",
+      "en": "speaker beep %HZ Hz for %MS ms"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "HZ",
+        "type": "number",
+        "default": 500,
+        "min": 64,
+        "max": 24000
+      },
+      {
+        "name": "MS",
+        "type": "number",
+        "default": 100,
+        "min": 0,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["hubSpeaker"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental. Unidades indicadas. Grande y mediano usan Motor.",
+      "en": "EV3 con Pybricks 4 · experimental. Units shown. Large and medium motors use Motor."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "statement": "await rb_hub.speaker.beep({HZ}, {MS})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-angle",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-angle",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "giroscopio %PORT ángulo (grados)",
+      "en": "gyroscope %PORT angle (degrees)"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "output": "number",
+    "generators": {
+      "pybricks": {
+        "expression": "rb_gyro({PORT}, {BLOCK_ID}).angle()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-speed",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-speed",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "giroscopio %PORT velocidad (grados/s)",
+      "en": "gyroscope %PORT speed (degrees/s)"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "output": "number",
+    "generators": {
+      "pybricks": {
+        "expression": "rb_gyro({PORT}, {BLOCK_ID}).speed()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:touch",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:touch",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "tacto %PORT presionado",
+      "en": "touch sensor %PORT pressed"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s4",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "output": "boolean",
+    "generators": {
+      "pybricks": {
+        "expression": "rb_device({PORT}, TouchSensor, {BLOCK_ID}).pressed()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:infrared-distance",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:infrared-distance",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "infrarrojo %PORT distancia relativa (%)",
+      "en": "infrared %PORT relative distance (%)"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s4",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "output": "number",
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "expression": "await rb_device({PORT}, InfraredSensor, {BLOCK_ID}).distance()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-reset",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:gyro-reset",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:sensors",
+    "label": {
+      "es": "giroscopio %PORT reiniciar ángulo a %ANGLE",
+      "en": "gyroscope %PORT reset angle to %ANGLE"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s3",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 0,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["ev3SensorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_gyro({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:screen-text",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:screen-text",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "pantalla escribir %TEXT",
+      "en": "screen print %TEXT"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "TEXT",
+        "type": "string",
+        "default": "Hola"
+      }
+    ],
+    "requiredCapabilities": ["hubDisplay"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_hub.screen.print({TEXT})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:screen-number",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:screen-number",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "pantalla mostrar número %NUMBER",
+      "en": "screen display number %NUMBER"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": -2147483648,
+        "max": 2147483647
+      }
+    ],
+    "requiredCapabilities": ["hubDisplay"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_hub.screen.print({NUMBER})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:screen-clear",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:screen-clear",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "pantalla borrar",
+      "en": "screen clear"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "requiredCapabilities": ["hubDisplay"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_hub.screen.clear()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:light",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:light",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "luz de estado %COLOR",
+      "en": "status light %COLOR"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "COLOR",
+        "type": "string",
+        "default": "GREEN",
+        "options": [
+          {
+            "label": {
+              "es": "verde",
+              "en": "green"
+            },
+            "value": "GREEN"
+          },
+          {
+            "label": {
+              "es": "rojo",
+              "en": "red"
+            },
+            "value": "RED"
+          },
+          {
+            "label": {
+              "es": "naranja",
+              "en": "orange"
+            },
+            "value": "ORANGE"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["hubLight"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_light({COLOR})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:light-off",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:light-off",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "luz de estado apagar",
+      "en": "status light off"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "requiredCapabilities": ["hubLight"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4 · experimental.",
+      "en": "EV3 con Pybricks 4 · experimental."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_hub.light.off()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-configure",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-configure",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "configurar UART en el puerto %PORT a %BAUD baudios",
+      "en": "configure UART on port %PORT at %BAUD baud"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "BAUD",
+        "type": "number",
+        "default": 9600,
+        "min": 300,
+        "max": 115200,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "Prepara el puerto para recibir y enviar mensajes por UART, por ejemplo con un Arduino. Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Prepares the port to send and receive UART messages, for example with an Arduino. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_configurar_ev3(puerto, baudios, bloque):\n    # Pybricks 4: UARTDevice usa los pines 5 y 6 del puerto de sensor (3.3 V). timeout=0 no se admite.\n    try:\n        dispositivo = UARTDevice(puerto, int(baudios), timeout=100)\n    except (OSError, ValueError, TypeError) as error:\n        rb_fail(bloque, \"No se pudo iniciar UART en %s: %s\" % (puerto, error))\n    uart_puertos[puerto] = [dispositivo, b\"\", \"\", False]  # dispositivo, búfer, último mensaje, mensaje nuevo\n"
+        ],
+        "statement": "uart_configurar_ev3({PORT}, {BAUD}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-received",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-received",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "¿llegó un mensaje por UART %PORT?",
+      "en": "new message on UART %PORT?"
+    },
+    "kind": "boolean",
+    "output": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Verdadero una vez por cada mensaje nuevo y válido (los que tienen checksum incorrecto se descartan). Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "True once for each new valid message (messages with a wrong checksum are discarded). Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_hay_linea(puerto, bloque):\n    datos = uart_puerto(puerto, bloque)\n    nueva, datos[3] = datos[3], False\n    return nueva\n"
+        ],
+        "expression": "uart_hay_linea({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-field",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-field",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "dato %NUMBER del mensaje de UART %PORT",
+      "en": "value %NUMBER from UART %PORT message"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "NUMBER",
+        "type": "number",
+        "default": 1,
+        "min": 1,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "El dato número n del último mensaje («120,-30» → dato 2 = -30), sin contar el tipo. 0 si no existe. Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Value number n of the last message (“120,-30” → value 2 = -30), not counting the type. 0 if missing. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_dato(numero, puerto, bloque):\n    partes = uart_partes(puerto, bloque)[1]\n    try:\n        indice = int(numero) - 1\n        valor = float(partes[indice]) if indice >= 0 else 0\n        # Sin decimales se muestra como entero: 120 en vez de 120.0.\n        return int(valor) if valor == int(valor) else valor\n    except (IndexError, ValueError, OverflowError):\n        return 0\n"
+        ],
+        "expression": "uart_dato({NUMBER}, {PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-count",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-count",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "cantidad de datos de UART %PORT",
+      "en": "number of values on UART %PORT"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "Cuántos datos trae el último mensaje. Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "How many values the last message has. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_cantidad(puerto, bloque):\n    return len(uart_partes(puerto, bloque)[1])\n"
+        ],
+        "expression": "uart_cantidad({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-type",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-type",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "tipo del mensaje de UART %PORT",
+      "en": "message type on UART %PORT"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "tooltip": {
+      "es": "El número antes de «:» («2:120,-30» → 2). 0 si el mensaje no trae tipo. Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "The number before “:” (“2:120,-30” → 2). 0 if the message has no type. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_partes(puerto, bloque):\n    # «tipo:d1,d2» → (tipo, [\"d1\", \"d2\"]); sin «tipo:» el tipo es 0.\n    linea = uart_puerto(puerto, bloque)[2]\n    tipo = 0\n    if \":\" in linea:\n        cabeza, linea = linea.split(\":\", 1)\n        try:\n            tipo = int(cabeza)\n        except ValueError:\n            tipo = 0\n    return tipo, (linea.split(\",\") if linea.strip() else [])\n",
+          "def uart_tipo(puerto, bloque):\n    return uart_partes(puerto, bloque)[0]\n"
+        ],
+        "expression": "uart_tipo({PORT}, {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-send-data",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-send-data",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "enviar por UART %PORT %VERIFY los datos %DATA",
+      "en": "send on UART %PORT %VERIFY data %DATA"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      },
+      {
+        "name": "VERIFY",
+        "type": "string",
+        "default": "no",
+        "options": [
+          {
+            "label": {
+              "es": "sin verificación",
+              "en": "without checksum"
+            },
+            "value": "no"
+          },
+          {
+            "label": {
+              "es": "con verificación",
+              "en": "with checksum"
+            },
+            "value": "si"
+          }
+        ]
+      }
+    ],
+    "inputs": [],
+    "variadic": {
+      "input": {
+        "name": "DATA",
+        "type": "number",
+        "default": 0
+      },
+      "min": 1,
+      "max": 8
+    },
+    "tooltip": {
+      "es": "Envía varios números separados por comas. Usa + y − para cambiar cuántos. Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Sends several comma-separated numbers. Use + and − to change how many. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_numero(valor):\n    # 2.0 → «2» y 1.5 → «1.5», con hasta 3 decimales.\n    if valor == int(valor):\n        return str(int(valor))\n    return (\"%.3f\" % valor).rstrip(\"0\").rstrip(\".\")\nasync def uart_enviar_datos(puerto, tipo, verificar, datos, bloque):\n    texto = \",\".join(uart_numero(dato) for dato in datos)\n    if tipo is not None:\n        texto = \"%d:%s\" % (int(tipo), texto)\n    if verificar:\n        texto += \"*%02X\" % uart_suma(texto)\n    # Bytes: sirve para el UART de MicroPython y para UARTDevice de Pybricks.\n    await uart_puerto(puerto, bloque)[0].write((texto + \"\\n\").encode())\n"
+        ],
+        "statement": "await uart_enviar_datos({PORT}, None, {VERIFY} == \"si\", [{DATA}], {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:uart-send-message",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:uart-send-message",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:uart",
+    "label": {
+      "es": "enviar por UART %PORT %VERIFY mensaje tipo %TYPE con datos %DATA",
+      "en": "send on UART %PORT %VERIFY message type %TYPE with data %DATA"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      },
+      {
+        "name": "VERIFY",
+        "type": "string",
+        "default": "no",
+        "options": [
+          {
+            "label": {
+              "es": "sin verificación",
+              "en": "without checksum"
+            },
+            "value": "no"
+          },
+          {
+            "label": {
+              "es": "con verificación",
+              "en": "with checksum"
+            },
+            "value": "si"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "TYPE",
+        "type": "number",
+        "default": 1,
+        "min": 0,
+        "max": 9999,
+        "integer": true
+      }
+    ],
+    "variadic": {
+      "input": {
+        "name": "DATA",
+        "type": "number",
+        "default": 0
+      },
+      "min": 1,
+      "max": 8
+    },
+    "tooltip": {
+      "es": "Envía «tipo:datos», por ejemplo «2:120,-30». Puertos de sensor S1–S4 con Pybricks 4; el EV3 usa 3.3 V: baja a 3.3 V la señal TX de un Arduino de 5 V con un divisor.",
+      "en": "Sends “type:values”, for example “2:120,-30”. Sensor ports S1–S4 with Pybricks 4; the EV3 uses 3.3 V: level-shift a 5 V Arduino TX to 3.3 V with a divider."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "imports": ["from pybricks.iodevices import UARTDevice"],
+        "globals": [
+          "uart_puertos = {}\n",
+          "def uart_suma(texto):\n    # Checksum: XOR de todos los bytes antes de «*», en hexadecimal (como NMEA).\n    suma = 0\n    for byte in texto.encode():\n        suma ^= byte\n    return suma\ndef uart_valida(linea):\n    # «datos*CC»: devuelve los datos si el checksum coincide; sin «*» se acepta igual.\n    if \"*\" not in linea:\n        return linea\n    datos, suma = linea.rsplit(\"*\", 1)\n    try:\n        return datos if len(suma.strip()) == 2 and int(suma, 16) == uart_suma(datos) else None\n    except ValueError:\n        return None\n",
+          "def uart_puerto(puerto, bloque):\n    datos = uart_puertos.get(puerto)\n    if datos is None:\n        rb_fail(bloque, \"Configura UART %s al iniciar\" % puerto)\n    # Lee sin bloquear y guarda la última línea completa recibida.\n    while datos[0].waiting():\n        recibido = datos[0].read_all()\n        if not recibido:\n            break\n        datos[1] += recibido\n    while b\"\\n\" in datos[1]:\n        linea, datos[1] = datos[1].split(b\"\\n\", 1)\n        try:\n            texto = uart_valida(linea.decode().strip())\n        except UnicodeError:\n            texto = None\n        # Las líneas con checksum incorrecto se descartan.\n        if texto is not None:\n            datos[2] = texto.strip()\n            datos[3] = True\n    if len(datos[1]) > 512:\n        datos[1] = datos[1][-512:]\n    return datos\n",
+          "def uart_numero(valor):\n    # 2.0 → «2» y 1.5 → «1.5», con hasta 3 decimales.\n    if valor == int(valor):\n        return str(int(valor))\n    return (\"%.3f\" % valor).rstrip(\"0\").rstrip(\".\")\nasync def uart_enviar_datos(puerto, tipo, verificar, datos, bloque):\n    texto = \",\".join(uart_numero(dato) for dato in datos)\n    if tipo is not None:\n        texto = \"%d:%s\" % (int(tipo), texto)\n    if verificar:\n        texto += \"*%02X\" % uart_suma(texto)\n    # Bytes: sirve para el UART de MicroPython y para UARTDevice de Pybricks.\n    await uart_puerto(puerto, bloque)[0].write((texto + \"\\n\").encode())\n"
+        ],
+        "statement": "await uart_enviar_datos({PORT}, {TYPE}, {VERIFY} == \"si\", [{DATA}], {BLOCK_ID})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-read",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-read",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:i2c",
+    "label": {
+      "es": "leer registro %REG del I2C %ADDR en puerto %PORT",
+      "en": "read register %REG from I2C %ADDR on port %PORT"
+    },
+    "kind": "reporter",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 with Pybricks 4. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
+          "async def rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = await rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\nasync def rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        await rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n"
+        ],
+        "expression": "await rb_ev3_i2c_read({PORT}, {ADDR}, {REG})"
+      }
+    },
+    "output": "number"
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-write",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-write",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:i2c",
+    "label": {
+      "es": "escribir %VALUE en registro %REG del I2C %ADDR en puerto %PORT",
+      "en": "write %VALUE to register %REG of I2C %ADDR on port %PORT"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "VALUE",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "REG",
+        "type": "number",
+        "default": 1
+      },
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 with Pybricks 4. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
+          "async def rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = await rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\nasync def rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        await rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n"
+        ],
+        "statement": "await rb_ev3_i2c_write({PORT}, {ADDR}, {REG}, {VALUE})"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-responded",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:i2c-responded",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:i2c",
+    "label": {
+      "es": "¿respondió el I2C %ADDR en puerto %PORT?",
+      "en": "did I2C %ADDR on port %PORT respond?"
+    },
+    "kind": "boolean",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "s1",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3SensorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ADDR",
+        "type": "number",
+        "default": 8,
+        "min": 8,
+        "max": 119,
+        "integer": true
+      }
+    ],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental. Dirección de 7 bits (8 = 0x08), registros 1..16. Entero con signo little-endian; sin respuesta conserva el último valor bueno (0 inicialmente). Un dispositivo por puerto/dirección.",
+      "en": "Experimental EV3 with Pybricks 4. 7-bit address (8 = 0x08), registers 1..16. Signed little-endian integer; no response preserves the last good value (initially 0). One device per port/address."
+    },
+    "requiredCapabilities": ["ev3SensorPort"],
+    "generators": {
+      "pybricks": {
+        "imports": ["from pybricks.iodevices import I2CDevice"],
+        "globals": [
+          "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
+        ],
+        "expression": "rb_ev3_i2c_responded({PORT}, {ADDR})"
+      }
+    },
+    "output": "boolean"
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-power",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-power",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT encender a potencia %POWER %",
+      "en": "motor %PORT run at power %POWER %"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "POWER",
+        "type": "number",
+        "default": 50,
+        "slider": {
+          "min": -100,
+          "max": 100
+        }
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "globals": [
+          "_ev3_power_max = {}\n\ndef ev3_power_speed(motor, power):\n    # Potencia de EV3-G: el 100 % es la velocidad máxima del motor (grande o mediano) según Pybricks.\n    if motor not in _ev3_power_max:\n        _ev3_power_max[motor] = motor.control.limits()[0]\n    return max(-100, min(100, power)) * _ev3_power_max[motor] / 100\n"
+        ],
+        "statement": "rb_motor({PORT}, {BLOCK_ID}).run(ev3_power_speed(rb_motor({PORT}, {BLOCK_ID}), {POWER}))"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-angle-power",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-angle-power",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT girar %ANGLE grados a potencia %POWER % y %THEN",
+      "en": "motor %PORT run %ANGLE degrees at power %POWER % and %THEN"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      },
+      {
+        "name": "THEN",
+        "type": "string",
+        "default": "brake",
+        "options": [
+          {
+            "label": {
+              "es": "frenar",
+              "en": "brake"
+            },
+            "value": "brake"
+          },
+          {
+            "label": {
+              "es": "mantener",
+              "en": "hold"
+            },
+            "value": "hold"
+          },
+          {
+            "label": {
+              "es": "soltar",
+              "en": "coast"
+            },
+            "value": "coast"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "name": "ANGLE",
+        "type": "number",
+        "default": 90
+      },
+      {
+        "name": "POWER",
+        "type": "number",
+        "default": 50,
+        "slider": {
+          "min": -100,
+          "max": 100
+        }
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "globals": [
+          "_ev3_power_max = {}\n\ndef ev3_power_speed(motor, power):\n    # Potencia de EV3-G: el 100 % es la velocidad máxima del motor (grande o mediano) según Pybricks.\n    if motor not in _ev3_power_max:\n        _ev3_power_max[motor] = motor.control.limits()[0]\n    return max(-100, min(100, power)) * _ev3_power_max[motor] / 100\n",
+          "from pybricks.parameters import Stop",
+          "def ev3_stop_mode(mode):\n    return {'brake': Stop.BRAKE, 'hold': Stop.HOLD, 'coast': Stop.COAST}[mode]\n"
+        ],
+        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle(ev3_power_speed(rb_motor({PORT}, {BLOCK_ID}), {POWER}), {ANGLE}, ev3_stop_mode({THEN}))"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-dc",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-dc",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT potencia sin regular %POWER %",
+      "en": "motor %PORT unregulated power %POWER %"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "POWER",
+        "type": "number",
+        "default": 50,
+        "slider": {
+          "min": -100,
+          "max": 100
+        }
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_motor({PORT}, {BLOCK_ID}).dc(max(-100, min(100, {POWER})))"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-speed",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-speed",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "velocidad del motor %PORT (grados/s)",
+      "en": "motor %PORT speed (degrees/s)"
+    },
+    "kind": "reporter",
+    "output": "number",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "expression": "rb_motor({PORT}, {BLOCK_ID}).speed()"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:motor-stalled",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:motor-stalled",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:motors",
+    "label": {
+      "es": "motor %PORT girar a %SPEED grados/s hasta atascarse (fuerza %DUTY %)",
+      "en": "motor %PORT run at %SPEED degrees/s until stalled (duty %DUTY %)"
+    },
+    "kind": "command",
+    "fields": [
+      {
+        "name": "PORT",
+        "type": "string",
+        "default": "a",
+        "reference": {
+          "kind": "resource",
+          "capabilities": ["ev3MotorPort"]
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "name": "SPEED",
+        "type": "number",
+        "default": 200
+      },
+      {
+        "name": "DUTY",
+        "type": "number",
+        "default": 40,
+        "slider": {
+          "min": 10,
+          "max": 100
+        }
+      }
+    ],
+    "requiredCapabilities": ["ev3MotorPort"],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "cooperative": true,
+        "imports": ["from pybricks.parameters import Stop"],
+        "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_until_stalled({SPEED}, Stop.COAST, max(10, min(100, {DUTY})))"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:screen-grid",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:screen-grid",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "pantalla escribir %TEXT en fila %ROW columna %COL",
+      "en": "screen write %TEXT at row %ROW column %COL"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [
+      {
+        "name": "TEXT",
+        "type": "string",
+        "default": "Hola"
+      },
+      {
+        "name": "ROW",
+        "type": "number",
+        "default": 0,
+        "slider": {
+          "min": 0,
+          "max": 11
+        }
+      },
+      {
+        "name": "COL",
+        "type": "number",
+        "default": 0,
+        "slider": {
+          "min": 0,
+          "max": 21
+        }
+      }
+    ],
+    "requiredCapabilities": [],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "rb_hub.screen.draw_text(max(0, min(21, int({COL}))) * 8, max(0, min(11, int({ROW}))) * 10, str({TEXT}))"
+      }
+    }
+  },
+  {
+    "id": "org.robotblocks.lego-ev3-pybricks4-devices:program-stop",
+    "operation": "org.robotblocks.lego-ev3-pybricks4-devices:program-stop",
+    "category": "org.robotblocks.lego-ev3-pybricks4-devices:hub",
+    "label": {
+      "es": "detener programa",
+      "en": "stop program"
+    },
+    "kind": "command",
+    "fields": [],
+    "inputs": [],
+    "requiredCapabilities": [],
+    "tooltip": {
+      "es": "EV3 con Pybricks 4, experimental.",
+      "en": "Experimental EV3 with Pybricks 4."
+    },
+    "generators": {
+      "pybricks": {
+        "statement": "raise SystemExit"
+      }
+    }
+  }
+]

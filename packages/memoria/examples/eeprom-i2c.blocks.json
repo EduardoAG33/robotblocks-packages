@@ -1,0 +1,429 @@
+{
+  "formatVersion": 4,
+  "irVersion": 2,
+  "id": "eeprom-i2c",
+  "name": "Memoria · EEPROM I2C externa",
+  "board": { "definitionId": "org.robotblocks.arduino-giga-r1:board", "bindings": {} },
+  "devices": [],
+  "programs": [
+    {
+      "id": "main",
+      "name": "Programa principal",
+      "processes": [
+        {
+          "id": "eeprom-i2c-arduino-giga-r1-inicio",
+          "trigger": { "blockId": "core:start", "operation": "core:start", "fields": {} },
+          "body": {
+            "id": "eeprom-i2c-arduino-giga-r1-1",
+            "blockId": "org.robotblocks.memoria:use-i2c-eeprom",
+            "operation": "org.robotblocks.memoria:use-i2c-eeprom",
+            "fields": { "SDA": "d102", "SCL": "d101", "DIRECCION": "0x50" },
+            "inputs": {},
+            "next": {
+              "id": "eeprom-i2c-arduino-giga-r1-4",
+              "blockId": "org.robotblocks.memoria:save",
+              "operation": "org.robotblocks.memoria:save",
+              "fields": {},
+              "inputs": {
+                "VALOR": {
+                  "id": "eeprom-i2c-arduino-giga-r1-2",
+                  "blockId": "core:number",
+                  "operation": "core:number",
+                  "fields": { "NUMBER": 123.25 },
+                  "inputs": {},
+                  "next": null
+                },
+                "NOMBRE": {
+                  "id": "eeprom-i2c-arduino-giga-r1-3",
+                  "blockId": "core:text",
+                  "operation": "core:text",
+                  "fields": { "TEXT": "qtr_min_1" },
+                  "inputs": {},
+                  "next": null
+                }
+              },
+              "next": {
+                "id": "eeprom-i2c-arduino-giga-r1-8",
+                "blockId": "core:set",
+                "operation": "core:set",
+                "fields": { "VARIABLE": "numero" },
+                "inputs": {
+                  "VALUE": {
+                    "id": "eeprom-i2c-arduino-giga-r1-7",
+                    "blockId": "org.robotblocks.memoria:read",
+                    "operation": "org.robotblocks.memoria:read",
+                    "fields": {},
+                    "inputs": {
+                      "NOMBRE": {
+                        "id": "eeprom-i2c-arduino-giga-r1-5",
+                        "blockId": "core:text",
+                        "operation": "core:text",
+                        "fields": { "TEXT": "qtr_min_1" },
+                        "inputs": {},
+                        "next": null
+                      },
+                      "PREDETERMINADO": {
+                        "id": "eeprom-i2c-arduino-giga-r1-6",
+                        "blockId": "core:number",
+                        "operation": "core:number",
+                        "fields": { "NUMBER": -1 },
+                        "inputs": {},
+                        "next": null
+                      }
+                    },
+                    "next": null
+                  }
+                },
+                "next": {
+                  "id": "eeprom-i2c-arduino-giga-r1-12",
+                  "blockId": "core:set",
+                  "operation": "core:set",
+                  "fields": { "VARIABLE": "falta" },
+                  "inputs": {
+                    "VALUE": {
+                      "id": "eeprom-i2c-arduino-giga-r1-11",
+                      "blockId": "org.robotblocks.memoria:read",
+                      "operation": "org.robotblocks.memoria:read",
+                      "fields": {},
+                      "inputs": {
+                        "NOMBRE": {
+                          "id": "eeprom-i2c-arduino-giga-r1-9",
+                          "blockId": "core:text",
+                          "operation": "core:text",
+                          "fields": { "TEXT": "ausente" },
+                          "inputs": {},
+                          "next": null
+                        },
+                        "PREDETERMINADO": {
+                          "id": "eeprom-i2c-arduino-giga-r1-10",
+                          "blockId": "core:number",
+                          "operation": "core:number",
+                          "fields": { "NUMBER": 42 },
+                          "inputs": {},
+                          "next": null
+                        }
+                      },
+                      "next": null
+                    }
+                  },
+                  "next": {
+                    "id": "eeprom-i2c-arduino-giga-r1-14",
+                    "blockId": "core:serial-println",
+                    "operation": "core:serial-println",
+                    "fields": {},
+                    "inputs": {
+                      "VALUE": {
+                        "id": "eeprom-i2c-arduino-giga-r1-13",
+                        "blockId": "core:variable",
+                        "operation": "core:variable",
+                        "fields": { "VARIABLE": "numero" },
+                        "inputs": {},
+                        "next": null
+                      }
+                    },
+                    "next": {
+                      "id": "eeprom-i2c-arduino-giga-r1-15",
+                      "blockId": "org.robotblocks.memoria:clear",
+                      "operation": "org.robotblocks.memoria:clear",
+                      "fields": {},
+                      "inputs": {},
+                      "next": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "detachedNodes": []
+    }
+  ],
+  "variables": [
+    { "id": "numero", "name": "numero", "type": "number", "scope": "project", "initialValue": 0 },
+    { "id": "falta", "name": "falta", "type": "number", "scope": "project", "initialValue": 0 }
+  ],
+  "lists": [],
+  "projectSettings": { "locale": "es", "units": "metric" },
+  "extensions": [
+    { "id": "org.robotblocks.arduino-giga-r1", "version": "0.3.0" },
+    { "id": "org.robotblocks.memoria", "version": "1.1.0" }
+  ],
+  "editor": {
+    "adapter": "scratch-blocks",
+    "positions": { "eeprom-i2c-arduino-giga-r1-inicio": { "x": 52, "y": 64 } },
+    "blockDefinitions": [
+      {
+        "id": "core:start",
+        "category": "core:events",
+        "label": { "es": "al iniciar", "en": "when started" },
+        "kind": "event",
+        "fields": [],
+        "inputs": [],
+        "operation": "core:start",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": []
+      },
+      {
+        "id": "core:set",
+        "category": "core:variables",
+        "label": { "es": "fijar %VARIABLE a %VALUE", "en": "set %VARIABLE to %VALUE" },
+        "kind": "command",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [{ "name": "VALUE", "type": "number" }],
+        "operation": "core:set",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "inputTypeFromField": { "input": "VALUE", "field": "VARIABLE" }
+      },
+      {
+        "id": "core:variable",
+        "category": "core:variables",
+        "label": { "es": "valor de %VARIABLE", "en": "value of %VARIABLE" },
+        "kind": "reporter",
+        "fields": [{ "name": "VARIABLE", "type": "string", "default": "speed", "reference": { "kind": "variable" } }],
+        "inputs": [],
+        "operation": "core:variable",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number",
+        "outputFromField": "VARIABLE"
+      },
+      {
+        "id": "core:number",
+        "category": "core:operators",
+        "label": { "es": "%NUMBER", "en": "%NUMBER" },
+        "kind": "reporter",
+        "fields": [{ "name": "NUMBER", "type": "number", "default": 50 }],
+        "inputs": [],
+        "operation": "core:number",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "number"
+      },
+      {
+        "id": "core:text",
+        "category": "core:operators",
+        "label": { "es": "%TEXT", "en": "%TEXT" },
+        "kind": "reporter",
+        "fields": [{ "name": "TEXT", "type": "string", "default": "hola" }],
+        "inputs": [],
+        "operation": "core:text",
+        "tooltip": {
+          "es": "Genera código del programa. Consulta el resultado en la vista Código.",
+          "en": "Generates program code. See the result in the Code view."
+        },
+        "requiredCapabilities": [],
+        "output": "string"
+      },
+      {
+        "id": "core:serial-println",
+        "operation": "core:serial-println",
+        "category": "core:serial",
+        "label": { "es": "imprimir %VALUE con salto de línea", "en": "print %VALUE with newline" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [{ "name": "VALUE", "type": "value", "default": "hola" }],
+        "requiredCapabilities": [],
+        "tooltip": {
+          "es": "Código experimental. Consulta el contrato de serie, tiempo y eventos en el catálogo de bloques.",
+          "en": "Experimental code. See serial, time and event conventions in the block catalog."
+        },
+        "generators": {
+          "micropython": { "statement": "print({VALUE})", "canFail": false },
+          "arduino": { "statement": "Serial.println({VALUE});", "canFail": false },
+          "pybricks": { "statement": "print({VALUE})", "canFail": false }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:use-i2c-eeprom",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": {
+          "es": "usar EEPROM I2C para la memoria SDA %SDA SCL %SCL dirección %DIRECCION",
+          "en": "use I2C EEPROM for memory SDA %SDA SCL %SCL address %DIRECCION"
+        },
+        "kind": "command",
+        "fields": [
+          {
+            "name": "SDA",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "SCL",
+            "type": "string",
+            "default": "",
+            "reference": { "kind": "resource", "capabilities": ["digitalOutput"] }
+          },
+          {
+            "name": "DIRECCION",
+            "type": "string",
+            "default": "0x50",
+            "options": [
+              { "label": { "es": "0x50", "en": "0x50" }, "value": "0x50" },
+              { "label": { "es": "0x51", "en": "0x51" }, "value": "0x51" },
+              { "label": { "es": "0x52", "en": "0x52" }, "value": "0x52" },
+              { "label": { "es": "0x53", "en": "0x53" }, "value": "0x53" },
+              { "label": { "es": "0x54", "en": "0x54" }, "value": "0x54" },
+              { "label": { "es": "0x55", "en": "0x55" }, "value": "0x55" },
+              { "label": { "es": "0x56", "en": "0x56" }, "value": "0x56" },
+              { "label": { "es": "0x57", "en": "0x57" }, "value": "0x57" }
+            ]
+          }
+        ],
+        "inputs": [],
+        "operation": "org.robotblocks.memoria:use-i2c-eeprom",
+        "tooltip": {
+          "es": "Opcional, al principio de «al iniciar». Los bloques de memoria pasan a una EEPROM I2C externa de 32 Kbit o más (24C32…24C512, como DFRobot DFR0117): hasta 64 números, aunque cambies la tarjeta. Sin este bloque se usa la memoria de la tarjeta.",
+          "en": "Optional, at the top of “when started”. Memory blocks then use an external I2C EEPROM of 32 Kbit or more (24C32…24C512, such as DFRobot DFR0117): up to 64 numbers, even if you swap the board. Without this block the board’s own storage is used."
+        },
+        "requiredCapabilities": ["digitalOutput"],
+        "generators": {
+          "arduino": {
+            "hardware": { "i2c": { "sda": "SDA", "scl": "SCL" } },
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\n// «usar EEPROM I2C para la memoria» cambia el almacén; sin ese bloque se usa el de la tarjeta.\ntypedef bool (*MemoriaBuscar)(const String& nombre, float& valor, bool& existe, const char* bloque);\ntypedef void (*MemoriaEscribir)(const String& nombre, float valor, const char* bloque);\ntypedef void (*MemoriaBorrar)(const char* bloque);\nstatic MemoriaBuscar memoria_externa_buscar = nullptr;\nstatic MemoriaEscribir memoria_externa_escribir = nullptr;\nstatic MemoriaBorrar memoria_externa_borrar = nullptr;\ninline bool memoria_consultar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    if (memoria_externa_buscar) return memoria_externa_buscar(nombre, valor, existe, bloque);\n    return memoria_buscar(nombre, valor, existe, bloque);\n}\ninline void memoria_vaciar(const char* bloque) {\n    if (memoria_externa_borrar) memoria_externa_borrar(bloque);\n    else memoria_borrar(bloque);\n}\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_consultar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    if (memoria_externa_escribir) memoria_externa_escribir(nombre, valor, bloque);\n    else memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_consultar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_consultar(nombre, valor, existe, bloque) && existe;\n}\n",
+              "// EEPROM I2C externa de 32 Kbit o más (24C32…24C512): dirección interna de 2 bytes.\n// Formato GFM1 v2: cabecera «GFM1», 2, 64, 0, 0 y 64 entradas de 20 bytes desde la dirección 8:\n// nombre[12] rellenado con ceros, float32 LE, CRC16-CCITT del nombre y el número (LE), 0, 0.\n// Las entradas van seguidas; la primera cuyo nombre empieza con 0x00 o 0xff marca el final.\nstatic TwoWire* memoria_i2c_bus = nullptr;\nstatic uint8_t memoria_i2c_direccion = 0x50;\nstatic int8_t memoria_i2c_estado = -1; // -1 sin leer, 0 vacía o de otro programa, 1 tabla GreyForge\nstatic const uint8_t memoria_i2c_firma[8] = {'G', 'F', 'M', '1', 2, 64, 0, 0};\ninline uint16_t memoria_i2c_crc(const uint8_t* datos, uint8_t largo) {\n    uint16_t crc = 0xffff;\n    for (uint8_t i = 0; i < largo; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline bool memoria_i2c_leer(uint16_t direccion, uint8_t* datos, uint8_t largo) {\n    while (largo) {\n        uint8_t parte = largo > 16 ? 16 : largo;\n        memoria_i2c_bus->beginTransmission(memoria_i2c_direccion);\n        memoria_i2c_bus->write(uint8_t(direccion >> 8));\n        memoria_i2c_bus->write(uint8_t(direccion & 0xff));\n        if (memoria_i2c_bus->endTransmission(false) != 0) return false;\n        if (memoria_i2c_bus->requestFrom(memoria_i2c_direccion, parte) != parte) return false;\n        for (uint8_t i = 0; i < parte; i++) {\n            int valor = memoria_i2c_bus->read();\n            if (valor < 0) return false;\n            datos[i] = uint8_t(valor);\n        }\n        direccion += parte; datos += parte; largo -= parte;\n    }\n    return true;\n}\n// Tras escribir, el chip no responde hasta terminar (unos 5 ms): se pregunta hasta 20 ms.\ninline bool memoria_i2c_esperar() {\n    for (int intento = 0; intento < 80; intento++) {\n        memoria_i2c_bus->beginTransmission(memoria_i2c_direccion);\n        if (memoria_i2c_bus->endTransmission() == 0) return true;\n        delayMicroseconds(250);\n    }\n    return false;\n}\n// Escribe en trozos de 16 bytes alineados (nunca cruzan una página) y solo los que cambian.\ninline bool memoria_i2c_escribir(uint16_t direccion, const uint8_t* datos, uint8_t largo) {\n    while (largo) {\n        uint8_t parte = uint8_t(16 - direccion % 16);\n        if (parte > largo) parte = largo;\n        uint8_t actual[16];\n        if (!memoria_i2c_leer(direccion, actual, parte)) return false;\n        if (memcmp(actual, datos, parte) != 0) {\n            memoria_i2c_bus->beginTransmission(memoria_i2c_direccion);\n            memoria_i2c_bus->write(uint8_t(direccion >> 8));\n            memoria_i2c_bus->write(uint8_t(direccion & 0xff));\n            for (uint8_t i = 0; i < parte; i++) memoria_i2c_bus->write(datos[i]);\n            if (memoria_i2c_bus->endTransmission() != 0) return false;\n            if (!memoria_i2c_esperar()) return false;\n        }\n        direccion += parte; datos += parte; largo -= parte;\n    }\n    return true;\n}\ninline bool memoria_i2c_revisar(const char* bloque) {\n    if (memoria_i2c_estado >= 0) return true;\n    uint8_t cabecera[8];\n    if (!memoria_i2c_leer(0, cabecera, 8)) { rb_fail(bloque, \"No responde la EEPROM I2C\"); return false; }\n    // Una EEPROM nueva o con datos de otro programa se lee como vacía; guardar la prepara.\n    memoria_i2c_estado = memcmp(cabecera, memoria_i2c_firma, 8) == 0 ? 1 : 0;\n    return true;\n}\n// Devuelve el índice del nombre, -1 si no está (con «libre» en la primera entrada vacía) o -2 si falla.\ninline int memoria_i2c_indice(const String& nombre, uint8_t* entrada, uint8_t& libre, const char* bloque) {\n    libre = 0;\n    if (memoria_i2c_estado != 1) return -1;\n    for (uint8_t i = 0; i < 64; i++) {\n        if (!memoria_i2c_leer(uint16_t(8 + i * 20), entrada, 20)) { rb_fail(bloque, \"No responde la EEPROM I2C\"); return -2; }\n        if (entrada[0] == 0 || entrada[0] == 0xff) { libre = i; return -1; }\n        uint16_t crc = memoria_i2c_crc(entrada, 16);\n        if (entrada[16] != uint8_t(crc & 0xff) || entrada[17] != uint8_t(crc >> 8)) {\n            rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return -2;\n        }\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (entrada[c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    libre = 64;\n    return -1;\n}\ninline bool memoria_i2c_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    if (!memoria_i2c_revisar(bloque)) return false;\n    uint8_t entrada[20];\n    uint8_t libre = 0;\n    int indice = memoria_i2c_indice(nombre, entrada, libre, bloque);\n    if (indice == -2) return false;\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(entrada[12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\n// Primero el final de la tabla y después la firma: un corte a mitad deja la tabla vacía.\ninline void memoria_i2c_borrar(const char* bloque) {\n    uint8_t fin = 0;\n    if (!memoria_i2c_escribir(8, &fin, 1) || !memoria_i2c_escribir(0, memoria_i2c_firma, 8)) {\n        rb_fail(bloque, \"No responde la EEPROM I2C\"); return;\n    }\n    memoria_i2c_estado = 1;\n}\ninline void memoria_i2c_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_i2c_revisar(bloque)) return;\n    if (memoria_i2c_estado != 1) memoria_i2c_borrar(bloque);\n    if (rb_failed) return;\n    uint8_t entrada[20];\n    uint8_t libre = 0;\n    int indice = memoria_i2c_indice(nombre, entrada, libre, bloque);\n    if (indice == -2) return;\n    if (indice < 0) {\n        if (libre >= 64) { rb_fail(bloque, \"Memoria llena: maximo 64 numeros\"); return; }\n        indice = libre;\n        // El nuevo final va antes que la entrada, para que la tabla siempre termine.\n        uint8_t fin = 0;\n        if (indice + 1 < 64 && !memoria_i2c_escribir(uint16_t(8 + (indice + 1) * 20), &fin, 1)) {\n            rb_fail(bloque, \"No responde la EEPROM I2C\"); return;\n        }\n    }\n    for (int c = 0; c < 12; c++) entrada[c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) entrada[12 + c] = uint8_t(bits >> (8 * c));\n    uint16_t crc = memoria_i2c_crc(entrada, 16);\n    entrada[16] = uint8_t(crc & 0xff); entrada[17] = uint8_t(crc >> 8); entrada[18] = 0; entrada[19] = 0;\n    // La primera letra del nombre se escribe al final: la entrada aparece solo cuando está completa.\n    uint16_t inicio = uint16_t(8 + indice * 20);\n    if (!memoria_i2c_escribir(inicio + 1, entrada + 1, 19) || !memoria_i2c_escribir(inicio, entrada, 1))\n        rb_fail(bloque, \"No responde la EEPROM I2C\");\n}\ninline void memoria_i2c_usar(TwoWire& bus, const String& direccion, const char* bloque) {\n    // El menú da «0x50» … «0x57».\n    memoria_i2c_bus = &bus;\n    memoria_i2c_direccion = uint8_t(0x50 + (direccion.length() == 4 ? direccion[3] - '0' : 0));\n    memoria_i2c_estado = -1;\n    bus.beginTransmission(memoria_i2c_direccion);\n    if (bus.endTransmission() != 0) { rb_fail(bloque, \"No hay EEPROM I2C en esa direccion\"); return; }\n    memoria_externa_buscar = memoria_i2c_buscar;\n    memoria_externa_escribir = memoria_i2c_guardar;\n    memoria_externa_borrar = memoria_i2c_borrar;\n}"
+            ],
+            "setup": ["rb_wire_begin({I2C_BUS});"],
+            "statement": "memoria_i2c_usar({I2C_BUS}, {DIRECCION}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:save",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": { "es": "guardar número %VALOR como %NOMBRE", "en": "save number %VALOR as %NOMBRE" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [
+          { "name": "VALOR", "type": "number", "default": 0 },
+          { "name": "NOMBRE", "type": "string", "default": "qtr_min_1" }
+        ],
+        "operation": "org.robotblocks.memoria:save",
+        "tooltip": {
+          "es": "Guarda al terminar de calibrar; el valor sigue ahí al apagar. Nombre: 1–12 letras A–Z/a–z, dígitos o _.",
+          "en": "Save after calibration; the value remains after powering off. Name: 1–12 A–Z/a–z letters, digits or _."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "statement": "memoria_guardar({NOMBRE}, {VALOR}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\n// «usar EEPROM I2C para la memoria» cambia el almacén; sin ese bloque se usa el de la tarjeta.\ntypedef bool (*MemoriaBuscar)(const String& nombre, float& valor, bool& existe, const char* bloque);\ntypedef void (*MemoriaEscribir)(const String& nombre, float valor, const char* bloque);\ntypedef void (*MemoriaBorrar)(const char* bloque);\nstatic MemoriaBuscar memoria_externa_buscar = nullptr;\nstatic MemoriaEscribir memoria_externa_escribir = nullptr;\nstatic MemoriaBorrar memoria_externa_borrar = nullptr;\ninline bool memoria_consultar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    if (memoria_externa_buscar) return memoria_externa_buscar(nombre, valor, existe, bloque);\n    return memoria_buscar(nombre, valor, existe, bloque);\n}\ninline void memoria_vaciar(const char* bloque) {\n    if (memoria_externa_borrar) memoria_externa_borrar(bloque);\n    else memoria_borrar(bloque);\n}\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_consultar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    if (memoria_externa_escribir) memoria_externa_escribir(nombre, valor, bloque);\n    else memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_consultar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_consultar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "statement": "memoria_guardar({NOMBRE}, {VALOR}, {BLOCK_ID});"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:read",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": {
+          "es": "número guardado %NOMBRE si no existe %PREDETERMINADO",
+          "en": "saved number %NOMBRE if missing %PREDETERMINADO"
+        },
+        "kind": "reporter",
+        "output": "number",
+        "fields": [],
+        "inputs": [
+          { "name": "NOMBRE", "type": "string", "default": "qtr_min_1" },
+          { "name": "PREDETERMINADO", "type": "number", "default": 0 }
+        ],
+        "operation": "org.robotblocks.memoria:read",
+        "tooltip": {
+          "es": "Recupera el número por su nombre; si falta, devuelve el predeterminado. Usa el mismo nombre al guardar y leer.",
+          "en": "Retrieve a number by name; return the default if missing. Use the same name to save and read."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "expression": "memoria_leer({NOMBRE}, {PREDETERMINADO}, {BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\n// «usar EEPROM I2C para la memoria» cambia el almacén; sin ese bloque se usa el de la tarjeta.\ntypedef bool (*MemoriaBuscar)(const String& nombre, float& valor, bool& existe, const char* bloque);\ntypedef void (*MemoriaEscribir)(const String& nombre, float valor, const char* bloque);\ntypedef void (*MemoriaBorrar)(const char* bloque);\nstatic MemoriaBuscar memoria_externa_buscar = nullptr;\nstatic MemoriaEscribir memoria_externa_escribir = nullptr;\nstatic MemoriaBorrar memoria_externa_borrar = nullptr;\ninline bool memoria_consultar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    if (memoria_externa_buscar) return memoria_externa_buscar(nombre, valor, existe, bloque);\n    return memoria_buscar(nombre, valor, existe, bloque);\n}\ninline void memoria_vaciar(const char* bloque) {\n    if (memoria_externa_borrar) memoria_externa_borrar(bloque);\n    else memoria_borrar(bloque);\n}\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_consultar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    if (memoria_externa_escribir) memoria_externa_escribir(nombre, valor, bloque);\n    else memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_consultar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_consultar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "expression": "memoria_leer({NOMBRE}, {PREDETERMINADO}, {BLOCK_ID})"
+          }
+        }
+      },
+      {
+        "id": "org.robotblocks.memoria:clear",
+        "category": "org.robotblocks.memoria:memoria",
+        "label": { "es": "borrar números guardados", "en": "clear saved numbers" },
+        "kind": "command",
+        "fields": [],
+        "inputs": [],
+        "operation": "org.robotblocks.memoria:clear",
+        "tooltip": {
+          "es": "Borra todos los números de Memoria. En GIGA borra todo /kv/. Tendrás que calibrar de nuevo.",
+          "en": "Clear all Memory numbers. On GIGA clear all of /kv/. You will need to calibrate again."
+        },
+        "requiredCapabilities": [],
+        "generators": {
+          "micropython": {
+            "imports": ["import json", "import os"],
+            "globals": [
+              "def memoria_nombre(nombre, bloque):\n    if not isinstance(nombre, str) or not 1 <= len(nombre) <= 12 or any(c not in \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_\" for c in nombre):\n        rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\")\n\ndef memoria_datos(bloque):\n    try:\n        with open(\"memoria.json\", \"r\") as archivo:\n            datos = json.load(archivo)\n    except OSError as error:\n        if error.args and error.args[0] == 2:\n            return {}\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n    except ValueError:\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    if not isinstance(datos, dict) or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in datos.values()):\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\")\n    return datos\n\ndef memoria_volcar(datos, bloque):\n    try:\n        with open(\"memoria.json.tmp\", \"w\") as archivo:\n            json.dump(datos, archivo)\n            archivo.flush()\n        os.rename(\"memoria.json.tmp\", \"memoria.json\")\n    except (OSError, ValueError):\n        rb_fail(bloque, \"No se pudo acceder a la memoria\")\n\ndef memoria_guardar(nombre, valor, bloque):\n    memoria_nombre(nombre, bloque)\n    datos = memoria_datos(bloque)\n    if nombre in datos and datos[nombre] == valor:\n        return\n    datos[nombre] = valor\n    memoria_volcar(datos, bloque)\n\ndef memoria_leer(nombre, predeterminado, bloque):\n    memoria_nombre(nombre, bloque)\n    return memoria_datos(bloque).get(nombre, predeterminado)\n\ndef memoria_hay(nombre, bloque):\n    memoria_nombre(nombre, bloque)\n    return nombre in memoria_datos(bloque)\n\ndef memoria_borrar(bloque):\n    memoria_volcar({}, bloque)\n"
+            ],
+            "statement": "memoria_borrar({BLOCK_ID})"
+          },
+          "arduino": {
+            "includes": [
+              "#include <stdint.h>",
+              "#include <stdio.h>",
+              "#include <string.h>",
+              "#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\n#include <Preferences.h>\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n#include <kvstore_global_api.h>\n#include <mbed_error.h>\n#else\n#include <EEPROM.h>\n#endif"
+            ],
+            "globals": [
+              "inline bool memoria_nombre(const String& nombre, const char* bloque) {\n    bool valido = nombre.length() >= 1 && nombre.length() <= 12;\n    for (unsigned int i = 0; i < nombre.length(); i++) {\n        char c = nombre[i];\n        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')) valido = false;\n    }\n    if (!valido) rb_fail(bloque, \"Nombre de memoria invalido: usa 1 a 12 letras, digitos o _\");\n    return valido;\n}\n#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    existe = memoria_prefs.isKey(nombre.c_str());\n    if (existe) valor = memoria_prefs.getFloat(nombre.c_str(), 0);\n    memoria_prefs.end();\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (memoria_prefs.putFloat(nombre.c_str(), valor) != sizeof(float)) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\ninline void memoria_borrar(const char* bloque) {\n    Preferences memoria_prefs;\n    if (!memoria_prefs.begin(\"greyforge\", false)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    if (!memoria_prefs.clear()) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n    memoria_prefs.end();\n}\n#elif defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_MBED_GIGA)\n// Claves «/kv/gf_<nombre>»: borrar quita solo las de GreyForge y deja el resto del KVStore.\ninline void memoria_clave(char* clave, size_t largo, const String& nombre) {\n    snprintf(clave, largo, \"/kv/gf_%s\", nombre.c_str());\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    size_t leidos = 0;\n    int resultado = kv_get(clave, &valor, sizeof(valor), &leidos);\n    existe = resultado != MBED_ERROR_ITEM_NOT_FOUND;\n    if (!existe) return true;\n    if (resultado != MBED_SUCCESS || leidos != sizeof(valor)) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    char clave[24];\n    memoria_clave(clave, sizeof(clave), nombre);\n    if (kv_set(clave, &valor, sizeof(valor), 0) != MBED_SUCCESS) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\ninline void memoria_borrar(const char* bloque) {\n    kv_iterator_t lista;\n    if (kv_iterator_open(&lista, \"/kv/gf_\") != MBED_SUCCESS) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    char clave[32];\n    char ruta[40];\n    bool correcto = true;\n    while (kv_iterator_next(lista, clave, sizeof(clave)) == MBED_SUCCESS) {\n        // El iterador devuelve la clave sin «/kv/»; se acepta también la ruta completa.\n        if (clave[0] == '/') snprintf(ruta, sizeof(ruta), \"%s\", clave);\n        else snprintf(ruta, sizeof(ruta), \"/kv/%s\", clave);\n        if (kv_remove(ruta) != MBED_SUCCESS) correcto = false;\n    }\n    kv_iterator_close(lista);\n    if (!correcto) rb_fail(bloque, \"No se pudo acceder a la memoria\");\n}\n#else\n// Formato v1: GFM1, versión, reservado, CRC16-CCITT (little endian), 16 × (nombre[12], float32 LE).\nstatic const int memoria_bytes = 264;\ninline uint16_t memoria_crc(const uint8_t* datos) {\n    uint16_t crc = 0xffff;\n    for (int i = 8; i < memoria_bytes; i++) {\n        crc ^= uint16_t(datos[i]) << 8;\n        for (int bit = 0; bit < 8; bit++) crc = (crc & 0x8000) ? uint16_t((crc << 1) ^ 0x1021) : uint16_t(crc << 1);\n    }\n    return crc;\n}\ninline void memoria_vacia(uint8_t* datos) {\n    memset(datos, 0, memoria_bytes);\n    datos[0] = 'G'; datos[1] = 'F'; datos[2] = 'M'; datos[3] = '1'; datos[4] = 1;\n}\ninline bool memoria_tabla(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return false; }\n    bool virgen = true;\n    for (int i = 0; i < memoria_bytes; i++) { datos[i] = EEPROM.read(i); if (datos[i] != 0xff) virgen = false; }\n    // EEPROM nueva o con datos de otro programa (sin la firma GFM1): se usa como tabla vacía.\n    bool propia = datos[0] == 'G' && datos[1] == 'F' && datos[2] == 'M' && datos[3] == '1' && datos[4] == 1 && datos[5] == 0;\n    if (virgen || !propia) { memoria_vacia(datos); return true; }\n    uint16_t crc = memoria_crc(datos);\n    if (datos[6] != uint8_t(crc) || datos[7] != uint8_t(crc >> 8)) {\n        rb_fail(bloque, \"Memoria danada: borra los numeros guardados\"); return false;\n    }\n    return true;\n}\ninline void memoria_volcar(uint8_t* datos, const char* bloque) {\n    if (EEPROM.length() < memoria_bytes) { rb_fail(bloque, \"No se pudo acceder a la memoria\"); return; }\n    uint16_t crc = memoria_crc(datos);\n    datos[6] = uint8_t(crc); datos[7] = uint8_t(crc >> 8);\n    for (int i = 0; i < memoria_bytes; i++) if (EEPROM.read(i) != datos[i]) EEPROM.write(i, datos[i]);\n}\ninline int memoria_indice(const uint8_t* datos, const String& nombre) {\n    for (int i = 0; i < 16; i++) {\n        bool igual = true;\n        for (int c = 0; c < 12; c++) if (datos[8 + i * 16 + c] != (c < int(nombre.length()) ? uint8_t(nombre[c]) : 0)) igual = false;\n        if (igual) return i;\n    }\n    return -1;\n}\ninline bool memoria_buscar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return false;\n    int indice = memoria_indice(datos, nombre);\n    existe = indice >= 0;\n    if (existe) {\n        uint32_t bits = 0;\n        for (int c = 0; c < 4; c++) bits |= uint32_t(datos[8 + indice * 16 + 12 + c]) << (8 * c);\n        memcpy(&valor, &bits, 4);\n    }\n    return true;\n}\ninline void memoria_escribir(const String& nombre, float valor, const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    if (!memoria_tabla(datos, bloque)) return;\n    int indice = memoria_indice(datos, nombre);\n    if (indice < 0) for (int i = 0; i < 16; i++) if (datos[8 + i * 16] == 0) { indice = i; break; }\n    if (indice < 0) { rb_fail(bloque, \"Memoria llena: maximo 16 numeros\"); return; }\n    for (int c = 0; c < 12; c++) datos[8 + indice * 16 + c] = c < int(nombre.length()) ? uint8_t(nombre[c]) : 0;\n    uint32_t bits = 0;\n    static_assert(sizeof(float) == 4, \"Memoria requiere float de 32 bits\");\n    memcpy(&bits, &valor, 4);\n    for (int c = 0; c < 4; c++) datos[8 + indice * 16 + 12 + c] = uint8_t(bits >> (8 * c));\n    memoria_volcar(datos, bloque);\n}\ninline void memoria_borrar(const char* bloque) {\n    uint8_t datos[memoria_bytes];\n    memoria_vacia(datos);\n    memoria_volcar(datos, bloque);\n}\n#endif\n// «usar EEPROM I2C para la memoria» cambia el almacén; sin ese bloque se usa el de la tarjeta.\ntypedef bool (*MemoriaBuscar)(const String& nombre, float& valor, bool& existe, const char* bloque);\ntypedef void (*MemoriaEscribir)(const String& nombre, float valor, const char* bloque);\ntypedef void (*MemoriaBorrar)(const char* bloque);\nstatic MemoriaBuscar memoria_externa_buscar = nullptr;\nstatic MemoriaEscribir memoria_externa_escribir = nullptr;\nstatic MemoriaBorrar memoria_externa_borrar = nullptr;\ninline bool memoria_consultar(const String& nombre, float& valor, bool& existe, const char* bloque) {\n    if (memoria_externa_buscar) return memoria_externa_buscar(nombre, valor, existe, bloque);\n    return memoria_buscar(nombre, valor, existe, bloque);\n}\ninline void memoria_vaciar(const char* bloque) {\n    if (memoria_externa_borrar) memoria_externa_borrar(bloque);\n    else memoria_borrar(bloque);\n}\ninline void memoria_guardar(const String& nombre, float valor, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return;\n    float anterior = 0; bool existe = false;\n    if (!memoria_consultar(nombre, anterior, existe, bloque)) return;\n    if (existe && anterior == valor) return;\n    if (memoria_externa_escribir) memoria_externa_escribir(nombre, valor, bloque);\n    else memoria_escribir(nombre, valor, bloque);\n}\ninline float memoria_leer(const String& nombre, float predeterminado, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return predeterminado;\n    float valor = 0; bool existe = false;\n    if (!memoria_consultar(nombre, valor, existe, bloque)) return predeterminado;\n    return existe ? valor : predeterminado;\n}\ninline bool memoria_hay(const String& nombre, const char* bloque) {\n    if (!memoria_nombre(nombre, bloque)) return false;\n    float valor = 0; bool existe = false;\n    return memoria_consultar(nombre, valor, existe, bloque) && existe;\n}\n"
+            ],
+            "statement": "memoria_vaciar({BLOCK_ID});"
+          }
+        }
+      }
+    ]
+  }
+}

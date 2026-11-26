@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.memoria",
   "name": "Memoria",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "Los Grises · GreyForge"
   },
@@ -46,7 +46,10 @@
         "Nombre de memoria invalido: usa 1 a 12 letras, digitos o _": "Invalid memory name: use 1 to 12 letters, digits or _",
         "No se pudo acceder a la memoria": "Could not access memory",
         "Memoria llena: maximo 16 numeros": "Memory full: maximum 16 numbers",
-        "Memoria danada: borra los numeros guardados": "Damaged memory: clear saved numbers"
+        "Memoria danada: borra los numeros guardados": "Damaged memory: clear saved numbers",
+        "No responde la EEPROM I2C": "The I2C EEPROM does not respond",
+        "No hay EEPROM I2C en esa direccion": "No I2C EEPROM at that address",
+        "Memoria llena: maximo 64 numeros": "Memory full: maximum 64 numbers"
       }
     }
   }
