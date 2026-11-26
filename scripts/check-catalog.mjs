@@ -96,6 +96,7 @@ await import('./check-arduino-extensions.mjs');
 await import('./check-r4-xiao.mjs');
 await import('./check-spike.mjs');
 await import('./check-ev3.mjs');
+await import('./check-ev3-pybricks4.mjs');
 await import('./check-i2c.mjs');
 
 await import('./check-encoder.mjs');
