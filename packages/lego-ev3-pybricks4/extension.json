@@ -6,7 +6,7 @@
   "author": {
     "name": "Los Grises · GreyForge"
   },
-  "minAppVersion": "0.7.0",
+  "minAppVersion": "0.7.1",
   "description": "EV3 con el firmware Pybricks 4.1 o posterior, instalado en code.pybricks.com. Se conecta por cable USB y Cargar envía el programa. Reemplaza el firmware de LEGO hasta que lo restaures. Experimental.",
   "requiredCapabilities": [],
   "supportedBoards": [],
