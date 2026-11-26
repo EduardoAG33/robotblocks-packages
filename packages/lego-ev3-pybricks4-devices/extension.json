@@ -6,7 +6,7 @@
   "author": {
     "name": "Los Grises · GreyForge"
   },
-  "minAppVersion": "0.7.0",
+  "minAppVersion": "0.7.1",
   "description": "Plantillas declarativas para el EV3 con firmware Pybricks 4.1 o posterior, sin microSD.",
   "requiredCapabilities": ["ev3MotorPort", "ev3SensorPort"],
   "supportedBoards": ["org.robotblocks.lego-ev3-pybricks4:board"],
