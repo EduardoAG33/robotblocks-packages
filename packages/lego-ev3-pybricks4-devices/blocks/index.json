@@ -35,6 +35,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "rb_motor({PORT}, {BLOCK_ID}).run({SPEED})"
       }
     }
@@ -82,6 +83,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "cooperative": true,
         "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle({SPEED}, {ANGLE})"
       }
@@ -130,6 +132,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "cooperative": true,
         "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_time({SPEED}, {MS})"
       }
@@ -191,6 +194,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "rb_motor_stop(rb_motor({PORT}, {BLOCK_ID}), {MODE})"
       }
     }
@@ -224,6 +228,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "expression": "rb_motor({PORT}, {BLOCK_ID}).angle()"
       }
     }
@@ -264,6 +269,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "rb_motor({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
       }
     }
@@ -362,6 +368,10 @@
     },
     "generators": {
       "pybricks": {
+        "setup": [
+          "rb_prepare({LEFT}, Motor, {BLOCK_ID}, {LEFT_DIRECTION})",
+          "rb_prepare({RIGHT}, Motor, {BLOCK_ID}, {RIGHT_DIRECTION})"
+        ],
         "statement": "rb_drive_config({LEFT}, {RIGHT}, {DIAMETER}, {TRACK}, {LEFT_DIRECTION}, {RIGHT_DIRECTION}, {BLOCK_ID})"
       }
     }
@@ -516,6 +526,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, ColorSensor, {BLOCK_ID})"],
         "cooperative": true,
         "expression": "rb_color_name(await rb_device({PORT}, ColorSensor, {BLOCK_ID}).color())"
       }
@@ -550,6 +561,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, ColorSensor, {BLOCK_ID})"],
         "cooperative": true,
         "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).reflection()"
       }
@@ -584,6 +596,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, ColorSensor, {BLOCK_ID})"],
         "cooperative": true,
         "expression": "await rb_device({PORT}, ColorSensor, {BLOCK_ID}).ambient()"
       }
@@ -618,6 +631,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, UltrasonicSensor, {BLOCK_ID})"],
         "cooperative": true,
         "expression": "await rb_device({PORT}, UltrasonicSensor, {BLOCK_ID}).distance()"
       }
@@ -723,6 +737,7 @@
     "output": "number",
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, GyroSensor, {BLOCK_ID})"],
         "expression": "rb_gyro({PORT}, {BLOCK_ID}).angle()"
       }
     }
@@ -756,6 +771,7 @@
     "output": "number",
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, GyroSensor, {BLOCK_ID})"],
         "expression": "rb_gyro({PORT}, {BLOCK_ID}).speed()"
       }
     }
@@ -789,6 +805,7 @@
     "output": "boolean",
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, TouchSensor, {BLOCK_ID})"],
         "expression": "rb_device({PORT}, TouchSensor, {BLOCK_ID}).pressed()"
       }
     }
@@ -822,6 +839,7 @@
     "output": "number",
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, InfraredSensor, {BLOCK_ID})"],
         "cooperative": true,
         "expression": "await rb_device({PORT}, InfraredSensor, {BLOCK_ID}).distance()"
       }
@@ -863,6 +881,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, GyroSensor, {BLOCK_ID})"],
         "statement": "rb_gyro({PORT}, {BLOCK_ID}).reset_angle({ANGLE})"
       }
     }
@@ -1432,9 +1451,10 @@
         "imports": ["from pybricks.iodevices import I2CDevice"],
         "globals": [
           "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
-          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_new(port, address):\n    # Pybricks 4.1 opens a raw I2C port with custom=True; 4.2 replaced it with mode=I2CDevice.CUSTOM_NXT.\n    try:\n        return I2CDevice(port, address, custom=True)\n    except TypeError:\n        return I2CDevice(port, address, mode=I2CDevice.CUSTOM_NXT)\n\ndef rb_ev3_i2c_prepare(port):\n    # Pybricks 4 creates I2CDevice only before run_task; the address is a block input, so open them all.\n    for address in range(8, 120):\n        if (port, address) not in rb_ev3_i2c_devices:\n            rb_ev3_i2c_devices[(port, address)] = rb_ev3_i2c_new(port, address)\n\ndef rb_ev3_i2c_device(port, address):\n    return rb_ev3_i2c_devices[(port, address)]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
           "async def rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = await rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\nasync def rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        await rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n"
         ],
+        "setup": ["rb_ev3_i2c_prepare({PORT})"],
         "expression": "await rb_ev3_i2c_read({PORT}, {ADDR}, {REG})"
       }
     },
@@ -1491,9 +1511,10 @@
         "imports": ["from pybricks.iodevices import I2CDevice"],
         "globals": [
           "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
-          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_new(port, address):\n    # Pybricks 4.1 opens a raw I2C port with custom=True; 4.2 replaced it with mode=I2CDevice.CUSTOM_NXT.\n    try:\n        return I2CDevice(port, address, custom=True)\n    except TypeError:\n        return I2CDevice(port, address, mode=I2CDevice.CUSTOM_NXT)\n\ndef rb_ev3_i2c_prepare(port):\n    # Pybricks 4 creates I2CDevice only before run_task; the address is a block input, so open them all.\n    for address in range(8, 120):\n        if (port, address) not in rb_ev3_i2c_devices:\n            rb_ev3_i2c_devices[(port, address)] = rb_ev3_i2c_new(port, address)\n\ndef rb_ev3_i2c_device(port, address):\n    return rb_ev3_i2c_devices[(port, address)]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n",
           "async def rb_ev3_i2c_read(port, address, reg):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return 0\n    record = (port, address, reg)\n    last = rb_ev3_i2c_last.get(record, 0)\n    try:\n        data = await rb_ev3_i2c_device(port, address).read(reg, 2)\n        if len(data) != 2:\n            return last\n        rb_ev3_i2c_last[record] = rb_i2c_decode(data)\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        return last\n    return rb_ev3_i2c_last[record]\n\nasync def rb_ev3_i2c_write(port, address, reg, value):\n    address, reg = rb_i2c_index(address, 8, 119), rb_i2c_index(reg, 1, 16)\n    key = (port, address)\n    rb_ev3_i2c_ok[key] = False\n    if not address or not reg:\n        return\n    try:\n        await rb_ev3_i2c_device(port, address).write(reg, rb_i2c_encode(value))\n        rb_ev3_i2c_ok[key] = True\n    except OSError:\n        pass\n"
         ],
+        "setup": ["rb_ev3_i2c_prepare({PORT})"],
         "statement": "await rb_ev3_i2c_write({PORT}, {ADDR}, {REG}, {VALUE})"
       }
     }
@@ -1538,8 +1559,9 @@
         "imports": ["from pybricks.iodevices import I2CDevice"],
         "globals": [
           "def rb_i2c_value(value):\n    if value != value:\n        return 0\n    if value >= 32767:\n        return 32767\n    if value <= -32768:\n        return -32768\n    return int(value + 0.5) if value >= 0 else int(value - 0.5)\n\ndef rb_i2c_index(value, low, high):\n    return int(value) if low <= value <= high and value == int(value) else 0\n\ndef rb_i2c_decode(data):\n    value = data[0] | (data[1] << 8)\n    return value - 65536 if value >= 32768 else value\n\ndef rb_i2c_encode(value):\n    value = rb_i2c_value(value)\n    return bytes((value & 255, (value >> 8) & 255))\n",
-          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_device(port, address):\n    key = (port, address)\n    if key not in rb_ev3_i2c_devices:\n        rb_ev3_i2c_devices[key] = I2CDevice(port, address, custom=True)\n    return rb_ev3_i2c_devices[key]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
+          "rb_ev3_i2c_devices = {}\nrb_ev3_i2c_last = {}\nrb_ev3_i2c_ok = {}\n\ndef rb_ev3_i2c_new(port, address):\n    # Pybricks 4.1 opens a raw I2C port with custom=True; 4.2 replaced it with mode=I2CDevice.CUSTOM_NXT.\n    try:\n        return I2CDevice(port, address, custom=True)\n    except TypeError:\n        return I2CDevice(port, address, mode=I2CDevice.CUSTOM_NXT)\n\ndef rb_ev3_i2c_prepare(port):\n    # Pybricks 4 creates I2CDevice only before run_task; the address is a block input, so open them all.\n    for address in range(8, 120):\n        if (port, address) not in rb_ev3_i2c_devices:\n            rb_ev3_i2c_devices[(port, address)] = rb_ev3_i2c_new(port, address)\n\ndef rb_ev3_i2c_device(port, address):\n    return rb_ev3_i2c_devices[(port, address)]\n\ndef rb_ev3_i2c_responded(port, address):\n    return rb_ev3_i2c_ok.get((port, rb_i2c_index(address, 8, 119)), False)\n"
         ],
+        "setup": ["rb_ev3_i2c_prepare({PORT})"],
         "expression": "rb_ev3_i2c_responded({PORT}, {ADDR})"
       }
     },
@@ -1586,6 +1608,7 @@
         "globals": [
           "_ev3_power_max = {}\n\ndef ev3_power_speed(motor, power):\n    # Potencia de EV3-G: el 100 % es la velocidad máxima del motor (grande o mediano) según Pybricks.\n    if motor not in _ev3_power_max:\n        _ev3_power_max[motor] = motor.control.limits()[0]\n    return max(-100, min(100, power)) * _ev3_power_max[motor] / 100\n"
         ],
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "rb_motor({PORT}, {BLOCK_ID}).run(ev3_power_speed(rb_motor({PORT}, {BLOCK_ID}), {POWER}))"
       }
     }
@@ -1667,6 +1690,7 @@
           "from pybricks.parameters import Stop",
           "def ev3_stop_mode(mode):\n    return {'brake': Stop.BRAKE, 'hold': Stop.HOLD, 'coast': Stop.COAST}[mode]\n"
         ],
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_angle(ev3_power_speed(rb_motor({PORT}, {BLOCK_ID}), {POWER}), {ANGLE}, ev3_stop_mode({THEN}))"
       }
     }
@@ -1709,6 +1733,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "rb_motor({PORT}, {BLOCK_ID}).dc(max(-100, min(100, {POWER})))"
       }
     }
@@ -1742,6 +1767,7 @@
     },
     "generators": {
       "pybricks": {
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "expression": "rb_motor({PORT}, {BLOCK_ID}).speed()"
       }
     }
@@ -1791,6 +1817,7 @@
       "pybricks": {
         "cooperative": true,
         "imports": ["from pybricks.parameters import Stop"],
+        "setup": ["rb_prepare({PORT}, Motor, {BLOCK_ID})"],
         "statement": "await rb_motor({PORT}, {BLOCK_ID}).run_until_stalled({SPEED}, Stop.COAST, max(10, min(100, {DUTY})))"
       }
     }
