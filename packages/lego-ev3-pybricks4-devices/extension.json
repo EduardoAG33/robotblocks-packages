@@ -2,11 +2,11 @@
   "schemaVersion": 2,
   "id": "org.robotblocks.lego-ev3-pybricks4-devices",
   "name": "EV3 con Pybricks 4: motores, sensores y ladrillo · experimental",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Los Grises · GreyForge"
   },
-  "minAppVersion": "0.7.1",
+  "minAppVersion": "0.7.2",
   "description": "Plantillas declarativas para el EV3 con firmware Pybricks 4.1 o posterior, sin microSD.",
   "requiredCapabilities": ["ev3MotorPort", "ev3SensorPort"],
   "supportedBoards": ["org.robotblocks.lego-ev3-pybricks4:board"],
